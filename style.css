@@ -207,3 +207,20 @@ nav a {
   border: 1px solid #cbd5e1;
   background: #ffffff;
 }
+
+.post-meta-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 18px 0 24px;
+}
+
+.tag-pill {
+  background: #ecfeff;
+  color: #0369a1;
+}
+
+.jurusan-pill {
+  background: #fef3c7;
+  color: #92400e;
+}
