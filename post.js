@@ -114,3 +114,15 @@ async function loadPost() {
 }
 
 loadPost();
+
+function sharePost() {
+  if (navigator.share) {
+    navigator.share({
+      title: document.title,
+      url: window.location.href
+    });
+  } else {
+    navigator.clipboard.writeText(window.location.href);
+    alert("Link artikel disalin.");
+  }
+}
