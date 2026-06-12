@@ -7,122 +7,142 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <header class="header">
-    <nav class="navbar">
-      <div class="logo">Anak UPI</div>
-      <button class="menu-toggle" id="menuToggle">☰</button>
-      <ul class="nav-links" id="navLinks">
-        <li><a href="#beranda">Beranda</a></li>
-        <li><a href="#tentang">Tentang</a></li>
-        <li><a href="#kegiatan">Kegiatan</a></li>
-        <li><a href="#galeri">Galeri</a></li>
-        <li><a href="#kontak">Kontak</a></li>
-      </ul>
+  <header class="navbar">
+    <div class="brand">
+      <div class="logo">UPI</div>
+      <div>
+        <h1>Sekumpulan Anak UPI</h1>
+        <p>Informasi • Wiki • Lowongan</p>
+      </div>
+    </div>
+    <button class="menu-toggle" id="menuToggle">☰</button>
+    <nav id="navMenu">
+      <a href="#beranda">Beranda</a>
+      <a href="#kampus">Info Kampus</a>
+      <a href="#wiki">Wiki Kampus</a>
+      <a href="#lowongan">Lowongan</a>
     </nav>
   </header>
 
-  <section id="beranda" class="hero">
-    <div class="hero-content">
-      <p class="badge">Komunitas Mahasiswa UPI</p>
-      <h1>Komunitas Sekumpulan Anak UPI</h1>
-      <p>
-        Ruang berkumpul, berbagi cerita, belajar, berkarya, dan bertumbuh bersama
-        mahasiswa Universitas Pendidikan Indonesia.
-      </p>
-      <div class="hero-buttons">
-        <a href="#tentang" class="btn primary">Kenali Kami</a>
-        <a href="#kontak" class="btn secondary">Gabung Komunitas</a>
-      </div>
-    </div>
-  </section>
-
-  <section id="tentang" class="section">
-    <h2>Tentang Kami</h2>
-    <p class="section-desc">
-      Komunitas Sekumpulan Anak UPI adalah wadah santai namun produktif bagi mahasiswa
-      UPI untuk membangun relasi, berdiskusi, mengembangkan potensi, dan menciptakan
-      kegiatan positif di lingkungan kampus.
-    </p>
-
-    <div class="cards">
-      <div class="card">
-        <h3>Kolaboratif</h3>
-        <p>Kami percaya ide besar lahir dari kerja sama dan saling mendukung.</p>
-      </div>
-      <div class="card">
-        <h3>Kreatif</h3>
-        <p>Setiap anggota bebas mengekspresikan gagasan melalui karya dan kegiatan.</p>
-      </div>
-      <div class="card">
-        <h3>Aktif</h3>
-        <p>Kami bergerak melalui diskusi, event, proyek sosial, dan aktivitas kampus.</p>
-      </div>
-    </div>
-  </section>
-
-  <section id="kegiatan" class="section dark">
-    <h2>Kegiatan Komunitas</h2>
-    <div class="timeline">
-      <div class="timeline-item">
-        <span>01</span>
-        <div>
-          <h3>Diskusi Santai</h3>
-          <p>Ngobrol ringan tentang kuliah, organisasi, karier, dan kehidupan kampus.</p>
+  <main>
+    <section id="beranda" class="hero">
+      <div class="hero-text">
+        <span class="badge">Komunitas Mahasiswa UPI</span>
+        <h2>Pusat informasi anak UPI dalam satu website.</h2>
+        <p>Kelola informasi kampus, wiki-kampus, dan lowongan kerja secara sederhana menggunakan fitur CRUD: tambah, lihat, edit, dan hapus data.</p>
+        <div class="hero-actions">
+          <a class="btn primary" href="#kampus">Mulai Kelola</a>
+          <button class="btn secondary" id="resetDataBtn">Reset Data Demo</button>
         </div>
       </div>
-      <div class="timeline-item">
-        <span>02</span>
-        <div>
-          <h3>Belajar Bareng</h3>
-          <p>Sesi belajar bersama untuk tugas, riset, presentasi, dan persiapan ujian.</p>
-        </div>
+      <div class="stats-card">
+        <h3>Dashboard</h3>
+        <div class="stat"><span id="countInfo">0</span><small>Info Kampus</small></div>
+        <div class="stat"><span id="countWiki">0</span><small>Artikel Wiki</small></div>
+        <div class="stat"><span id="countJobs">0</span><small>Lowongan</small></div>
       </div>
-      <div class="timeline-item">
-        <span>03</span>
-        <div>
-          <h3>Proyek Kreatif</h3>
-          <p>Membuat konten, desain, tulisan, acara, dan karya digital bersama.</p>
-        </div>
+    </section>
+
+    <section id="kampus" class="crud-section">
+      <div class="section-heading">
+        <span>CRUD 01</span>
+        <h2>Informasi Kampus</h2>
+        <p>Untuk pengumuman kegiatan, agenda, beasiswa, administrasi, atau kabar penting sekitar UPI.</p>
       </div>
-      <div class="timeline-item">
-        <span>04</span>
-        <div>
-          <h3>Kegiatan Sosial</h3>
-          <p>Mengadakan aksi kecil yang bermanfaat untuk lingkungan sekitar kampus.</p>
+      <form class="form-card" id="infoForm">
+        <input type="hidden" id="infoId" />
+        <div class="grid-2">
+          <label>Judul Informasi
+            <input type="text" id="infoTitle" placeholder="Contoh: Seminar Pendidikan Kimia" required />
+          </label>
+          <label>Kategori
+            <select id="infoCategory" required>
+              <option value="Akademik">Akademik</option>
+              <option value="Kegiatan">Kegiatan</option>
+              <option value="Beasiswa">Beasiswa</option>
+              <option value="Administrasi">Administrasi</option>
+            </select>
+          </label>
         </div>
+        <label>Isi Informasi
+          <textarea id="infoContent" placeholder="Tulis detail informasi kampus..." required></textarea>
+        </label>
+        <div class="form-actions">
+          <button class="btn primary" type="submit">Simpan Informasi</button>
+          <button class="btn ghost" type="button" onclick="clearForm('info')">Batal Edit</button>
+        </div>
+      </form>
+      <div class="toolbar"><input type="search" id="infoSearch" placeholder="Cari informasi kampus..." /></div>
+      <div class="cards" id="infoList"></div>
+    </section>
+
+    <section id="wiki" class="crud-section alt">
+      <div class="section-heading">
+        <span>CRUD 02</span>
+        <h2>Wiki-Kampus</h2>
+        <p>Catatan kolektif tentang istilah kampus, tempat penting, tips kuliah, organisasi, dan kehidupan mahasiswa UPI.</p>
       </div>
-    </div>
-  </section>
+      <form class="form-card" id="wikiForm">
+        <input type="hidden" id="wikiId" />
+        <div class="grid-2">
+          <label>Topik Wiki
+            <input type="text" id="wikiTitle" placeholder="Contoh: Apa itu FPMIPA?" required />
+          </label>
+          <label>Tag
+            <input type="text" id="wikiTag" placeholder="Contoh: fakultas, akademik" required />
+          </label>
+        </div>
+        <label>Penjelasan
+          <textarea id="wikiContent" placeholder="Tulis penjelasan wiki-kampus..." required></textarea>
+        </label>
+        <div class="form-actions">
+          <button class="btn primary" type="submit">Simpan Wiki</button>
+          <button class="btn ghost" type="button" onclick="clearForm('wiki')">Batal Edit</button>
+        </div>
+      </form>
+      <div class="toolbar"><input type="search" id="wikiSearch" placeholder="Cari wiki-kampus..." /></div>
+      <div class="cards" id="wikiList"></div>
+    </section>
 
-  <section id="galeri" class="section">
-    <h2>Galeri Kegiatan</h2>
-    <p class="section-desc">Dokumentasi sederhana kegiatan komunitas.</p>
-    <div class="gallery">
-      <div class="gallery-item">Ngopi Bareng</div>
-      <div class="gallery-item">Diskusi Kampus</div>
-      <div class="gallery-item">Belajar Bersama</div>
-      <div class="gallery-item">Foto Angkatan</div>
-    </div>
-  </section>
+    <section id="lowongan" class="crud-section">
+      <div class="section-heading">
+        <span>CRUD 03</span>
+        <h2>Lowongan Kerja</h2>
+        <p>Untuk berbagi info magang, part-time, freelance, volunteer, asisten riset, atau pekerjaan untuk mahasiswa dan alumni.</p>
+      </div>
+      <form class="form-card" id="jobForm">
+        <input type="hidden" id="jobId" />
+        <div class="grid-2">
+          <label>Posisi
+            <input type="text" id="jobTitle" placeholder="Contoh: Tutor Kimia Part-Time" required />
+          </label>
+          <label>Instansi/Perusahaan
+            <input type="text" id="jobCompany" placeholder="Contoh: Bimbel EduBandung" required />
+          </label>
+        </div>
+        <div class="grid-2">
+          <label>Lokasi
+            <input type="text" id="jobLocation" placeholder="Contoh: Bandung / Remote" required />
+          </label>
+          <label>Deadline
+            <input type="date" id="jobDeadline" required />
+          </label>
+        </div>
+        <label>Deskripsi Lowongan
+          <textarea id="jobContent" placeholder="Tulis syarat, benefit, dan cara melamar..." required></textarea>
+        </label>
+        <div class="form-actions">
+          <button class="btn primary" type="submit">Simpan Lowongan</button>
+          <button class="btn ghost" type="button" onclick="clearForm('job')">Batal Edit</button>
+        </div>
+      </form>
+      <div class="toolbar"><input type="search" id="jobSearch" placeholder="Cari lowongan kerja..." /></div>
+      <div class="cards" id="jobList"></div>
+    </section>
+  </main>
 
-  <section id="kontak" class="section contact">
-    <h2>Gabung Bersama Kami</h2>
-    <p>
-      Tertarik ikut komunitas? Kirim pesan dan mulai jadi bagian dari Sekumpulan Anak UPI.
-    </p>
-
-    <form id="contactForm" class="contact-form">
-      <input type="text" id="nama" placeholder="Nama lengkap" required />
-      <input type="email" id="email" placeholder="Email" required />
-      <textarea id="pesan" placeholder="Pesan singkat" required></textarea>
-      <button type="submit" class="btn primary">Kirim Pesan</button>
-    </form>
-
-    <p id="formMessage" class="form-message"></p>
-  </section>
-
-  <footer class="footer">
-    <p>&copy; 2026 Komunitas Sekumpulan Anak UPI. Dibuat dengan semangat kebersamaan.</p>
+  <footer>
+    <p>© 2026 Komunitas Sekumpulan Anak UPI. Dibuat untuk GitHub Pages.</p>
   </footer>
 
   <script src="script.js"></script>
