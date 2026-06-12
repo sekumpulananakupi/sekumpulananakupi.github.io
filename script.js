@@ -123,51 +123,6 @@ function renderLatest() {
     ...infoData.map(item => ({
       id: item.id,
       type: "info",
-      title: item.judul,
-      content: item.isi,
-      gambar: item.gambar,
-      label: item.kategori || "Info Kampus",
-      created_at: item.created_at
-    })),
-
-    ...wikiData.map(item => ({
-      id: item.id,
-      type: "wiki",
-      title: item.judul,
-      content: item.isi,
-      gambar: item.gambar,
-      label: item.kategori || "Wiki Kampus",
-      created_at: item.created_at
-    })),
-
-    ...jobData.map(item => ({
-      id: item.id,
-      type: "job",
-      title: item.posisi,
-      content: item.deskripsi,
-      gambar: item.gambar,
-      label: item.perusahaan || "Lowongan",
-      created_at: item.created_at
-    }))
-  ];
-
-  const latest = combined
-    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-    .slice(0, 6);
-
-  latestList.innerHTML = latest.length
-    ? latest.map(item => createLatestCard(item)).join("")
-    : '<div class="empty">Belum ada artikel terbaru.</div>';
-}
-
-function renderLatest() {
-  const latestList = document.getElementById("latestList");
-  if (!latestList) return;
-
-  const combined = [
-    ...infoData.map(item => ({
-      id: item.id,
-      type: "info",
       title: item.judul || "",
       content: item.isi || "",
       gambar: item.gambar || "",
@@ -204,6 +159,18 @@ function renderLatest() {
   latestList.innerHTML = latest.length
     ? latest.map(item => createLatestCard(item)).join("")
     : '<div class="empty">Belum ada artikel terbaru.</div>';
+}
+
+function renderAll() {
+  renderLatest();
+
+  renderList("info", "infoList", "infoSearch", infoData);
+  renderList("wiki", "wikiList", "wikiSearch", wikiData);
+  renderList("job", "jobList", "jobSearch", jobData);
+
+  document.getElementById("countInfo").textContent = infoData.length;
+  document.getElementById("countWiki").textContent = wikiData.length;
+  document.getElementById("countJobs").textContent = jobData.length;
 }
 
 ["infoSearch", "wikiSearch", "jobSearch"].forEach(id =>
