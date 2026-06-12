@@ -105,6 +105,8 @@ async function loadPost() {
           : ""
       }
 
+      <button class="btn primary" onclick="sharePost()">Bagikan Artikel</button>
+      
       <br><br>
       <a href="index.html" class="btn ghost">← Kembali ke Beranda</a>
     </article>
