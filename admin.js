@@ -12,7 +12,7 @@ async function checkSession() {
   updateAdminUI();
 
   if (isAdmin) {
-    loadData();
+    checkSession();
   }
 }
 
