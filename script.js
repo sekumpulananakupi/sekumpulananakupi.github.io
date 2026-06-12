@@ -35,12 +35,9 @@ function createCard(type, item) {
       <article class="item-card">
         ${item.gambar ? `<img src="${escapeHTML(item.gambar)}" class="card-image" alt="${escapeHTML(item.judul)}">` : ""}
         <span class="pill">${escapeHTML(item.kategori || "Umum")}</span>
-        <h3>
-          <a href="post.html?type=info&id=${item.id}">
-          ${escapeHTML(item.judul)}
-          </a>
-        </h3>
-        <p>${escapeHTML(item.isi)}</p>
+        <h3>${escapeHTML(item.judul)}</h3>
+        <p>${escapeHTML(item.isi).slice(0, 120)}...</p>
+        <a class="btn ghost" href="post.html?type=info&id=${item.id}">Baca Selengkapnya</a>
       </article>
     `;
   }
@@ -50,12 +47,9 @@ function createCard(type, item) {
       <article class="item-card">
         ${item.gambar ? `<img src="${escapeHTML(item.gambar)}" class="card-image" alt="${escapeHTML(item.judul)}">` : ""}
         <span class="pill">${escapeHTML(item.kategori || "Wiki")}</span>
-        <h3>
-          <a href="post.html?type=wiki&id=${item.id}">
-          ${escapeHTML(item.judul)}
-          </a>
-        </h3>
-        <p>${escapeHTML(item.isi)}</p>
+        <h3>${escapeHTML(item.judul)}</h3>
+        <p>${escapeHTML(item.isi).slice(0, 120)}...</p>
+        <a class="btn ghost" href="post.html?type=wiki&id=${item.id}">Baca Selengkapnya</a>
       </article>
     `;
   }
@@ -65,13 +59,9 @@ function createCard(type, item) {
       ${item.gambar ? `<img src="${escapeHTML(item.gambar)}" class="card-image" alt="${escapeHTML(item.posisi)}">` : ""}
       <span class="pill">${escapeHTML(item.perusahaan)}</span>
       <span class="pill">${escapeHTML(item.lokasi || "Fleksibel")}</span>
-      <h3>
-        <a href="post.html?type=job&id=${item.id}">
-        ${escapeHTML(item.posisi)}
-        </a>
-      </h3>
-      <p>${escapeHTML(item.deskripsi)}</p>
-      ${item.link ? `<a class="btn ghost" href="${escapeHTML(item.link)}" target="_blank">Buka Link</a>` : ""}
+      <h3>${escapeHTML(item.posisi)}</h3>
+      <p>${escapeHTML(item.deskripsi).slice(0, 120)}...</p>
+      <a class="btn ghost" href="post.html?type=job&id=${item.id}">Lihat Detail</a>
     </article>
   `;
 }
