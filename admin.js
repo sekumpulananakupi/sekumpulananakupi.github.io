@@ -484,7 +484,7 @@ document.getElementById("jobForm").addEventListener("submit", async event => {
 
 /* EDIT */
 
-function editInfo(id) {
+async function editInfo(id) {
   const item = infoData.find(row => row.id === id);
   if (!item) return;
 
@@ -493,10 +493,18 @@ function editInfo(id) {
   document.getElementById("infoCategory").value = item.kategori || "";
   document.getElementById("infoContent").value = item.isi;
 
+  await setSelectedRelations(
+    "info",
+    id,
+    "infoKategoriMulti",
+    "infoTagMulti",
+    "infoJurusanMulti"
+  );
+
   location.hash = "#kampus";
 }
 
-function editWiki(id) {
+async function editWiki(id) {
   const item = wikiData.find(row => row.id === id);
   if (!item) return;
 
@@ -505,10 +513,18 @@ function editWiki(id) {
   document.getElementById("wikiTag").value = item.kategori || "";
   document.getElementById("wikiContent").value = item.isi;
 
+  await setSelectedRelations(
+    "wiki",
+    id,
+    "wikiKategoriMulti",
+    "wikiTagMulti",
+    "wikiJurusanMulti"
+  );
+
   location.hash = "#wiki";
 }
 
-function editJob(id) {
+async function editJob(id) {
   const item = jobData.find(row => row.id === id);
   if (!item) return;
 
@@ -518,6 +534,14 @@ function editJob(id) {
   document.getElementById("jobLocation").value = item.lokasi || "";
   document.getElementById("jobLink").value = item.link || "";
   document.getElementById("jobContent").value = item.deskripsi || "";
+
+  await setSelectedRelations(
+    "job",
+    id,
+    "jobKategoriMulti",
+    "jobTagMulti",
+    "jobJurusanMulti"
+  );
 
   location.hash = "#lowongan";
 }
@@ -564,6 +588,59 @@ function clearForm(type) {
   document.getElementById(`${type}Form`).reset();
   document.getElementById(`${type}Id`).value = "";
 }
+
+async function getRelations(type, artikelId) {
+  const { data: kategoriRows } = await supabaseClient
+    .from("artikel_kategori")
+    .select("kategori_id")
+    .eq("artikel_tipe", type)
+    .eq("artikel_id", artikelId);
+
+  const { data: tagRows } = await supabaseClient
+    .from("artikel_tags")
+    .select("tag_id")
+    .eq("artikel_tipe", type)
+    .eq("artikel_id", artikelId);
+
+  const { data: jurusanRows } = await supabaseClient
+    .from("artikel_jurusan")
+    .select("jurusan_id")
+    .eq("artikel_tipe", type)
+    .eq("artikel_id", artikelId);
+
+  const kategoriNames = (kategoriRows || [])
+    .map(row => kategoriData.find(k => k.id === row.kategori_id)?.nama)
+    .filter(Boolean);
+
+  const tagNames = (tagRows || [])
+    .map(row => tagData.find(t => t.id === row.tag_id)?.nama)
+    .filter(Boolean);
+
+  const jurusanNames = (jurusanRows || [])
+    .map(row => jurusanData.find(j => j.id === row.jurusan_id)?.nama)
+    .filter(Boolean);
+
+  return { kategoriNames, tagNames, jurusanNames };
+}
+
+async function setSelectedRelations(type, artikelId, kategoriSelectId, tagSelectId, jurusanSelectId) {
+  const relations = await getRelations(type, artikelId);
+
+  setSelectedOptions(kategoriSelectId, kategoriData, relations.kategoriNames);
+  setSelectedOptions(tagSelectId, tagData, relations.tagNames);
+  setSelectedOptions(jurusanSelectId, jurusanData, relations.jurusanNames);
+}
+
+function setSelectedOptions(selectId, masterData, selectedNames) {
+  const select = document.getElementById(selectId);
+  if (!select) return;
+
+  Array.from(select.options).forEach(option => {
+    const item = masterData.find(row => row.id === Number(option.value));
+    option.selected = item && selectedNames.includes(item.nama);
+  });
+}
+
 
 /* SEARCH */
 
