@@ -1,159 +1,250 @@
-const menuToggle = document.getElementById('menuToggle');
-const navMenu = document.getElementById('navMenu');
-menuToggle.addEventListener('click', () => navMenu.classList.toggle('show'));
+const SUPABASE_URL = "https://rozfgvucyiwqqmmrmbph.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_KL8Jcb1hEzU-kAZiOMYWFg_hupftFmq";
 
-const STORAGE_KEYS = {
-  info: 'sau_info_kampus',
-  wiki: 'sau_wiki_kampus',
-  job: 'sau_lowongan_kerja'
-};
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const seedData = {
-  info: [
-    { id: crypto.randomUUID(), title: 'Open Recruitment Panitia Kegiatan Mahasiswa', category: 'Kegiatan', content: 'Komunitas membuka pendaftaran panitia untuk kegiatan diskusi bulanan mahasiswa UPI.' },
-    { id: crypto.randomUUID(), title: 'Info Beasiswa Prestasi Mahasiswa', category: 'Beasiswa', content: 'Mahasiswa dapat menyiapkan CV, transkrip nilai, dan surat rekomendasi untuk pendaftaran beasiswa.' }
-  ],
-  wiki: [
-    { id: crypto.randomUUID(), title: 'Apa itu FPMIPA?', tag: 'fakultas, akademik', content: 'FPMIPA adalah Fakultas Pendidikan Matematika dan Ilmu Pengetahuan Alam di Universitas Pendidikan Indonesia.' },
-    { id: crypto.randomUUID(), title: 'Tips Naik Angkot ke Kampus', tag: 'transportasi, mahasiswa baru', content: 'Mahasiswa baru sebaiknya mengecek rute dan menyiapkan uang kecil saat menggunakan transportasi umum menuju kampus.' }
-  ],
-  job: [
-    { id: crypto.randomUUID(), title: 'Tutor Kimia Part-Time', company: 'Bimbel EduBandung', location: 'Bandung', deadline: '2026-07-31', content: 'Dibutuhkan tutor kimia untuk siswa SMA. Jadwal fleksibel, cocok untuk mahasiswa tingkat akhir atau alumni.' }
-  ]
-};
+const menuToggle = document.getElementById("menuToggle");
+const navMenu = document.getElementById("navMenu");
 
-function getData(type) {
-  return JSON.parse(localStorage.getItem(STORAGE_KEYS[type])) || [];
-}
+menuToggle.addEventListener("click", () => {
+  navMenu.classList.toggle("show");
+});
 
-function saveData(type, data) {
-  localStorage.setItem(STORAGE_KEYS[type], JSON.stringify(data));
+let infoData = [];
+let wikiData = [];
+let jobData = [];
+
+async function loadData() {
+  const { data: info } = await supabaseClient
+    .from("informasi_kampus")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  const { data: wiki } = await supabaseClient
+    .from("wiki_kampus")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  const { data: job } = await supabaseClient
+    .from("lowongan_kerja")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  infoData = info || [];
+  wikiData = wiki || [];
+  jobData = job || [];
+
   renderAll();
 }
 
-function initData() {
-  Object.keys(STORAGE_KEYS).forEach(type => {
-    if (!localStorage.getItem(STORAGE_KEYS[type])) saveData(type, seedData[type]);
-  });
-}
-
 function createCard(type, item) {
-  if (type === 'info') {
+  if (type === "info") {
     return `
       <article class="item-card">
-        <div class="meta"><span class="pill">${item.category}</span></div>
-        <h3>${item.title}</h3>
-        <p>${item.content}</p>
+        <div class="meta"><span class="pill">${item.kategori || "-"}</span></div>
+        <h3>${item.judul}</h3>
+        <p>${item.isi}</p>
         <div class="card-actions">
-          <button class="btn ghost" onclick="editInfo('${item.id}')">Edit</button>
-          <button class="btn danger" onclick="deleteItem('info','${item.id}')">Hapus</button>
+          <button class="btn ghost" onclick="editInfo(${item.id})">Edit</button>
+          <button class="btn danger" onclick="deleteItem('info', ${item.id})">Hapus</button>
         </div>
       </article>`;
   }
-  if (type === 'wiki') {
+
+  if (type === "wiki") {
     return `
       <article class="item-card">
-        <div class="meta"><span class="pill">${item.tag}</span></div>
-        <h3>${item.title}</h3>
-        <p>${item.content}</p>
+        <div class="meta"><span class="pill">${item.kategori || "-"}</span></div>
+        <h3>${item.judul}</h3>
+        <p>${item.isi}</p>
         <div class="card-actions">
-          <button class="btn ghost" onclick="editWiki('${item.id}')">Edit</button>
-          <button class="btn danger" onclick="deleteItem('wiki','${item.id}')">Hapus</button>
+          <button class="btn ghost" onclick="editWiki(${item.id})">Edit</button>
+          <button class="btn danger" onclick="deleteItem('wiki', ${item.id})">Hapus</button>
         </div>
       </article>`;
   }
+
   return `
     <article class="item-card">
-      <div class="meta"><span class="pill">${item.company}</span><span class="pill">${item.location}</span><span class="pill">Deadline: ${item.deadline}</span></div>
-      <h3>${item.title}</h3>
-      <p>${item.content}</p>
+      <div class="meta">
+        <span class="pill">${item.perusahaan}</span>
+        <span class="pill">${item.lokasi || "-"}</span>
+      </div>
+      <h3>${item.posisi}</h3>
+      <p>${item.deskripsi || ""}</p>
+      ${item.link ? `<a href="${item.link}" target="_blank" class="btn ghost">Lihat Link</a>` : ""}
       <div class="card-actions">
-        <button class="btn ghost" onclick="editJob('${item.id}')">Edit</button>
-        <button class="btn danger" onclick="deleteItem('job','${item.id}')">Hapus</button>
+        <button class="btn ghost" onclick="editJob(${item.id})">Edit</button>
+        <button class="btn danger" onclick="deleteItem('job', ${item.id})">Hapus</button>
       </div>
     </article>`;
 }
 
 function renderList(type, listId, searchId) {
   const keyword = document.getElementById(searchId).value.toLowerCase();
-  const data = getData(type).filter(item => JSON.stringify(item).toLowerCase().includes(keyword));
-  document.getElementById(listId).innerHTML = data.length
-    ? data.map(item => createCard(type, item)).join('')
+
+  let data = [];
+  if (type === "info") data = infoData;
+  if (type === "wiki") data = wikiData;
+  if (type === "job") data = jobData;
+
+  const filtered = data.filter(item =>
+    JSON.stringify(item).toLowerCase().includes(keyword)
+  );
+
+  document.getElementById(listId).innerHTML = filtered.length
+    ? filtered.map(item => createCard(type, item)).join("")
     : '<div class="empty">Belum ada data atau hasil pencarian tidak ditemukan.</div>';
 }
 
 function renderAll() {
-  renderList('info', 'infoList', 'infoSearch');
-  renderList('wiki', 'wikiList', 'wikiSearch');
-  renderList('job', 'jobList', 'jobSearch');
-  document.getElementById('countInfo').textContent = getData('info').length;
-  document.getElementById('countWiki').textContent = getData('wiki').length;
-  document.getElementById('countJobs').textContent = getData('job').length;
+  renderList("info", "infoList", "infoSearch");
+  renderList("wiki", "wikiList", "wikiSearch");
+  renderList("job", "jobList", "jobSearch");
+
+  document.getElementById("countInfo").textContent = infoData.length;
+  document.getElementById("countWiki").textContent = wikiData.length;
+  document.getElementById("countJobs").textContent = jobData.length;
 }
 
-function upsert(type, item) {
-  const data = getData(type);
-  const index = data.findIndex(row => row.id === item.id);
-  if (index >= 0) data[index] = item;
-  else data.unshift({ ...item, id: crypto.randomUUID() });
-  saveData(type, data);
+async function upsertInfo() {
+  const id = infoId.value;
+
+  const payload = {
+    judul: infoTitle.value,
+    kategori: infoCategory.value,
+    isi: infoContent.value
+  };
+
+  if (id) {
+    await supabaseClient.from("informasi_kampus").update(payload).eq("id", id);
+  } else {
+    await supabaseClient.from("informasi_kampus").insert(payload);
+  }
+
+  clearForm("info");
+  loadData();
 }
 
-function deleteItem(type, id) {
-  if (!confirm('Yakin ingin menghapus data ini?')) return;
-  saveData(type, getData(type).filter(item => item.id !== id));
+async function upsertWiki() {
+  const id = wikiId.value;
+
+  const payload = {
+    judul: wikiTitle.value,
+    kategori: wikiTag.value,
+    isi: wikiContent.value
+  };
+
+  if (id) {
+    await supabaseClient.from("wiki_kampus").update(payload).eq("id", id);
+  } else {
+    await supabaseClient.from("wiki_kampus").insert(payload);
+  }
+
+  clearForm("wiki");
+  loadData();
+}
+
+async function upsertJob() {
+  const id = jobId.value;
+
+  const payload = {
+    posisi: jobTitle.value,
+    perusahaan: jobCompany.value,
+    lokasi: jobLocation.value,
+    deskripsi: jobContent.value,
+    link: ""
+  };
+
+  if (id) {
+    await supabaseClient.from("lowongan_kerja").update(payload).eq("id", id);
+  } else {
+    await supabaseClient.from("lowongan_kerja").insert(payload);
+  }
+
+  clearForm("job");
+  loadData();
+}
+
+async function deleteItem(type, id) {
+  if (!confirm("Yakin ingin menghapus data ini?")) return;
+
+  if (type === "info") {
+    await supabaseClient.from("informasi_kampus").delete().eq("id", id);
+  }
+
+  if (type === "wiki") {
+    await supabaseClient.from("wiki_kampus").delete().eq("id", id);
+  }
+
+  if (type === "job") {
+    await supabaseClient.from("lowongan_kerja").delete().eq("id", id);
+  }
+
+  loadData();
 }
 
 function clearForm(type) {
   document.getElementById(`${type}Form`).reset();
-  document.getElementById(`${type}Id`).value = '';
+  document.getElementById(`${type}Id`).value = "";
 }
 
 function editInfo(id) {
-  const item = getData('info').find(row => row.id === id);
-  infoId.value = item.id; infoTitle.value = item.title; infoCategory.value = item.category; infoContent.value = item.content;
-  location.hash = '#kampus';
+  const item = infoData.find(row => row.id === id);
+
+  infoId.value = item.id;
+  infoTitle.value = item.judul;
+  infoCategory.value = item.kategori;
+  infoContent.value = item.isi;
+
+  location.hash = "#kampus";
 }
 
 function editWiki(id) {
-  const item = getData('wiki').find(row => row.id === id);
-  wikiId.value = item.id; wikiTitle.value = item.title; wikiTag.value = item.tag; wikiContent.value = item.content;
-  location.hash = '#wiki';
+  const item = wikiData.find(row => row.id === id);
+
+  wikiId.value = item.id;
+  wikiTitle.value = item.judul;
+  wikiTag.value = item.kategori;
+  wikiContent.value = item.isi;
+
+  location.hash = "#wiki";
 }
 
 function editJob(id) {
-  const item = getData('job').find(row => row.id === id);
-  jobId.value = item.id; jobTitle.value = item.title; jobCompany.value = item.company; jobLocation.value = item.location; jobDeadline.value = item.deadline; jobContent.value = item.content;
-  location.hash = '#lowongan';
+  const item = jobData.find(row => row.id === id);
+
+  jobId.value = item.id;
+  jobTitle.value = item.posisi;
+  jobCompany.value = item.perusahaan;
+  jobLocation.value = item.lokasi;
+  jobContent.value = item.deskripsi;
+
+  location.hash = "#lowongan";
 }
 
-document.getElementById('infoForm').addEventListener('submit', event => {
+document.getElementById("infoForm").addEventListener("submit", event => {
   event.preventDefault();
-  upsert('info', { id: infoId.value, title: infoTitle.value, category: infoCategory.value, content: infoContent.value });
-  clearForm('info');
+  upsertInfo();
 });
 
-document.getElementById('wikiForm').addEventListener('submit', event => {
+document.getElementById("wikiForm").addEventListener("submit", event => {
   event.preventDefault();
-  upsert('wiki', { id: wikiId.value, title: wikiTitle.value, tag: wikiTag.value, content: wikiContent.value });
-  clearForm('wiki');
+  upsertWiki();
 });
 
-document.getElementById('jobForm').addEventListener('submit', event => {
+document.getElementById("jobForm").addEventListener("submit", event => {
   event.preventDefault();
-  upsert('job', { id: jobId.value, title: jobTitle.value, company: jobCompany.value, location: jobLocation.value, deadline: jobDeadline.value, content: jobContent.value });
-  clearForm('job');
+  upsertJob();
 });
 
-['infoSearch', 'wikiSearch', 'jobSearch'].forEach(id => {
-  document.getElementById(id).addEventListener('input', renderAll);
+["infoSearch", "wikiSearch", "jobSearch"].forEach(id => {
+  document.getElementById(id).addEventListener("input", renderAll);
 });
 
-document.getElementById('resetDataBtn').addEventListener('click', () => {
-  if (!confirm('Reset semua data demo? Data yang kamu tambah akan hilang.')) return;
-  Object.keys(STORAGE_KEYS).forEach(type => localStorage.setItem(STORAGE_KEYS[type], JSON.stringify(seedData[type])));
-  renderAll();
-});
+const resetBtn = document.getElementById("resetDataBtn");
+if (resetBtn) {
+  resetBtn.style.display = "none";
+}
 
-initData();
-renderAll();
+loadData();
