@@ -16,6 +16,109 @@ let isAdmin = false;
 let infoData = [];
 let wikiData = [];
 let jobData = [];
+let kategoriData = [];
+let tagData = [];
+let jurusanData = [];
+
+async function loadMasterData() {
+  const { data: kategori } = await supabaseClient
+    .from("kategori")
+    .select("*")
+    .order("nama", { ascending: true });
+
+  const { data: tags } = await supabaseClient
+    .from("tags")
+    .select("*")
+    .order("nama", { ascending: true });
+
+  const { data: jurusan } = await supabaseClient
+    .from("jurusan")
+    .select("*")
+    .order("nama", { ascending: true });
+
+  kategoriData = kategori || [];
+  tagData = tags || [];
+  jurusanData = jurusan || [];
+
+  fillMultiSelect("infoKategoriMulti", kategoriData);
+  fillMultiSelect("wikiKategoriMulti", kategoriData);
+  fillMultiSelect("jobKategoriMulti", kategoriData);
+
+  fillMultiSelect("infoTagMulti", tagData);
+  fillMultiSelect("wikiTagMulti", tagData);
+  fillMultiSelect("jobTagMulti", tagData);
+
+  fillMultiSelect("infoJurusanMulti", jurusanData);
+  fillMultiSelect("wikiJurusanMulti", jurusanData);
+  fillMultiSelect("jobJurusanMulti", jurusanData);
+}
+
+function fillMultiSelect(elementId, data) {
+  const select = document.getElementById(elementId);
+  if (!select) return;
+
+  select.innerHTML = data
+    .map(item => `<option value="${item.id}">${item.nama}</option>`)
+    .join("");
+}
+
+function getSelectedValues(elementId) {
+  const select = document.getElementById(elementId);
+  if (!select) return [];
+
+  return Array.from(select.selectedOptions).map(option => Number(option.value));
+}
+
+async function saveRelations(type, artikelId, kategoriIds, tagIds, jurusanIds) {
+  await supabaseClient
+    .from("artikel_kategori")
+    .delete()
+    .eq("artikel_tipe", type)
+    .eq("artikel_id", artikelId);
+
+  await supabaseClient
+    .from("artikel_tags")
+    .delete()
+    .eq("artikel_tipe", type)
+    .eq("artikel_id", artikelId);
+
+  await supabaseClient
+    .from("artikel_jurusan")
+    .delete()
+    .eq("artikel_tipe", type)
+    .eq("artikel_id", artikelId);
+
+  if (kategoriIds.length) {
+    await supabaseClient.from("artikel_kategori").insert(
+      kategoriIds.map(id => ({
+        artikel_tipe: type,
+        artikel_id: artikelId,
+        kategori_id: id
+      }))
+    );
+  }
+
+  if (tagIds.length) {
+    await supabaseClient.from("artikel_tags").insert(
+      tagIds.map(id => ({
+        artikel_tipe: type,
+        artikel_id: artikelId,
+        tag_id: id
+      }))
+    );
+  }
+
+  if (jurusanIds.length) {
+    await supabaseClient.from("artikel_jurusan").insert(
+      jurusanIds.map(id => ({
+        artikel_tipe: type,
+        artikel_id: artikelId,
+        jurusan_id: id
+      }))
+    );
+  }
+}
+
 
 /* LOGIN */
 
@@ -26,6 +129,7 @@ async function checkSession() {
   updateAdminUI();
 
   if (isAdmin) {
+    await loadMasterData();
     await loadData();
   }
 }
@@ -239,11 +343,15 @@ document.getElementById("infoForm").addEventListener("submit", async event => {
     response = await supabaseClient
       .from("informasi_kampus")
       .update(payload)
-      .eq("id", id);
+      .eq("id", id)
+      .select()
+      .single();
   } else {
     response = await supabaseClient
       .from("informasi_kampus")
-      .insert(payload);
+      .insert(payload)
+      .select()
+      .single();
   }
 
   if (response.error) {
@@ -251,6 +359,16 @@ document.getElementById("infoForm").addEventListener("submit", async event => {
     return;
   }
 
+  const savedId = id ? Number(id) : response.data.id;
+
+await saveRelations(
+  "info",
+  savedId,
+  getSelectedValues("infoKategoriMulti"),
+  getSelectedValues("infoTagMulti"),
+  getSelectedValues("infoJurusanMulti")
+);
+  
   clearForm("info");
   await loadData();
 });
@@ -278,11 +396,15 @@ document.getElementById("wikiForm").addEventListener("submit", async event => {
     response = await supabaseClient
       .from("wiki_kampus")
       .update(payload)
-      .eq("id", id);
+      .eq("id", id)
+      .select()
+      .single();
   } else {
     response = await supabaseClient
       .from("wiki_kampus")
-      .insert(payload);
+      .insert(payload)
+      .select()
+      .single();
   }
 
   if (response.error) {
@@ -290,6 +412,16 @@ document.getElementById("wikiForm").addEventListener("submit", async event => {
     return;
   }
 
+const savedId = id ? Number(id) : response.data.id;
+
+await saveRelations(
+  "wiki",
+  savedId,
+  getSelectedValues("wikiKategoriMulti"),
+  getSelectedValues("wikiTagMulti"),
+  getSelectedValues("wikiJurusanMulti")
+);
+  
   clearForm("wiki");
   await loadData();
 });
@@ -319,11 +451,15 @@ document.getElementById("jobForm").addEventListener("submit", async event => {
     response = await supabaseClient
       .from("lowongan_kerja")
       .update(payload)
-      .eq("id", id);
+      .eq("id", id)
+      .select()
+      .single();
   } else {
     response = await supabaseClient
       .from("lowongan_kerja")
-      .insert(payload);
+      .insert(payload)
+      .select()
+      .single();
   }
 
   if (response.error) {
@@ -331,6 +467,17 @@ document.getElementById("jobForm").addEventListener("submit", async event => {
     return;
   }
 
+
+  const savedId = id ? Number(id) : response.data.id;
+
+  await saveRelations(
+    "job",
+    savedId,
+    getSelectedValues("jobKategoriMulti"),
+    getSelectedValues("jobTagMulti"),
+    getSelectedValues("jobJurusanMulti")
+  );
+    
   clearForm("job");
   await loadData();
 });
