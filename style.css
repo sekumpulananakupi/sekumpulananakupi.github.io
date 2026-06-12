@@ -107,3 +107,52 @@ nav a {
   }
 }
 
+.slider-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.latest-slider {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 10px 4px 24px;
+}
+
+.latest-slider .item-card {
+  min-width: 300px;
+  max-width: 300px;
+  flex: 0 0 auto;
+}
+
+.slider-btn {
+  border: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  background: #1d4ed8;
+  color: white;
+  font-size: 28px;
+  cursor: pointer;
+}
+
+.latest-slider::-webkit-scrollbar {
+  height: 8px;
+}
+
+.latest-slider::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 999px;
+}
+
+@media (max-width: 768px) {
+  .slider-btn {
+    display: none;
+  }
+
+  .latest-slider .item-card {
+    min-width: 260px;
+  }
+}
