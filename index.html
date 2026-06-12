@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Komunitas Sekumpulan Anak UPI</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="header">
+    <nav class="navbar">
+      <div class="logo">Anak UPI</div>
+      <button class="menu-toggle" id="menuToggle">☰</button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#beranda">Beranda</a></li>
+        <li><a href="#tentang">Tentang</a></li>
+        <li><a href="#kegiatan">Kegiatan</a></li>
+        <li><a href="#galeri">Galeri</a></li>
+        <li><a href="#kontak">Kontak</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section id="beranda" class="hero">
+    <div class="hero-content">
+      <p class="badge">Komunitas Mahasiswa UPI</p>
+      <h1>Komunitas Sekumpulan Anak UPI</h1>
+      <p>
+        Ruang berkumpul, berbagi cerita, belajar, berkarya, dan bertumbuh bersama
+        mahasiswa Universitas Pendidikan Indonesia.
+      </p>
+      <div class="hero-buttons">
+        <a href="#tentang" class="btn primary">Kenali Kami</a>
+        <a href="#kontak" class="btn secondary">Gabung Komunitas</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="tentang" class="section">
+    <h2>Tentang Kami</h2>
+    <p class="section-desc">
+      Komunitas Sekumpulan Anak UPI adalah wadah santai namun produktif bagi mahasiswa
+      UPI untuk membangun relasi, berdiskusi, mengembangkan potensi, dan menciptakan
+      kegiatan positif di lingkungan kampus.
+    </p>
+
+    <div class="cards">
+      <div class="card">
+        <h3>Kolaboratif</h3>
+        <p>Kami percaya ide besar lahir dari kerja sama dan saling mendukung.</p>
+      </div>
+      <div class="card">
+        <h3>Kreatif</h3>
+        <p>Setiap anggota bebas mengekspresikan gagasan melalui karya dan kegiatan.</p>
+      </div>
+      <div class="card">
+        <h3>Aktif</h3>
+        <p>Kami bergerak melalui diskusi, event, proyek sosial, dan aktivitas kampus.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="kegiatan" class="section dark">
+    <h2>Kegiatan Komunitas</h2>
+    <div class="timeline">
+      <div class="timeline-item">
+        <span>01</span>
+        <div>
+          <h3>Diskusi Santai</h3>
+          <p>Ngobrol ringan tentang kuliah, organisasi, karier, dan kehidupan kampus.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <span>02</span>
+        <div>
+          <h3>Belajar Bareng</h3>
+          <p>Sesi belajar bersama untuk tugas, riset, presentasi, dan persiapan ujian.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <span>03</span>
+        <div>
+          <h3>Proyek Kreatif</h3>
+          <p>Membuat konten, desain, tulisan, acara, dan karya digital bersama.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <span>04</span>
+        <div>
+          <h3>Kegiatan Sosial</h3>
+          <p>Mengadakan aksi kecil yang bermanfaat untuk lingkungan sekitar kampus.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="galeri" class="section">
+    <h2>Galeri Kegiatan</h2>
+    <p class="section-desc">Dokumentasi sederhana kegiatan komunitas.</p>
+    <div class="gallery">
+      <div class="gallery-item">Ngopi Bareng</div>
+      <div class="gallery-item">Diskusi Kampus</div>
+      <div class="gallery-item">Belajar Bersama</div>
+      <div class="gallery-item">Foto Angkatan</div>
+    </div>
+  </section>
+
+  <section id="kontak" class="section contact">
+    <h2>Gabung Bersama Kami</h2>
+    <p>
+      Tertarik ikut komunitas? Kirim pesan dan mulai jadi bagian dari Sekumpulan Anak UPI.
+    </p>
+
+    <form id="contactForm" class="contact-form">
+      <input type="text" id="nama" placeholder="Nama lengkap" required />
+      <input type="email" id="email" placeholder="Email" required />
+      <textarea id="pesan" placeholder="Pesan singkat" required></textarea>
+      <button type="submit" class="btn primary">Kirim Pesan</button>
+    </form>
+
+    <p id="formMessage" class="form-message"></p>
+  </section>
+
+  <footer class="footer">
+    <p>&copy; 2026 Komunitas Sekumpulan Anak UPI. Dibuat dengan semangat kebersamaan.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
