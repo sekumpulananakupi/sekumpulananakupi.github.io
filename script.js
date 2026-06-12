@@ -6,6 +6,7 @@ const menuToggle = document.getElementById("menuToggle");
 const navMenu = document.getElementById("navMenu");
 menuToggle.addEventListener("click", () => navMenu.classList.toggle("show"));
 
+let activeFilter = "all";
 let infoData = [];
 let wikiData = [];
 let jobData = [];
@@ -68,8 +69,32 @@ function createCard(type, item) {
 
 function renderList(type, listId, searchId, data) {
   const keyword = document.getElementById(searchId).value.toLowerCase();
-  const filtered = data.filter(item => JSON.stringify(item).toLowerCase().includes(keyword));
-  document.getElementById(listId).innerHTML = filtered.length ? filtered.map(item => createCard(type, item)).join("") : '<div class="empty">Belum ada data.</div>';
+
+  const filtered = data.filter(item => {
+    const text = JSON.stringify(item).toLowerCase();
+
+    const matchSearch = text.includes(keyword);
+
+    let categoryText = "";
+
+    if (type === "info" || type === "wiki") {
+      categoryText = item.kategori || "";
+    }
+
+    if (type === "job") {
+      categoryText = "lowongan";
+    }
+
+    const matchFilter =
+      activeFilter === "all" ||
+      categoryText.toLowerCase().includes(activeFilter);
+
+    return matchSearch && matchFilter;
+  });
+
+  document.getElementById(listId).innerHTML = filtered.length
+    ? filtered.map(item => createCard(type, item)).join("")
+    : '<div class="empty">Belum ada data.</div>';
 }
 
 function renderAll() {
