@@ -156,3 +156,39 @@ nav a {
     min-width: 260px;
   }
 }
+
+.filter-section {
+  padding: 40px 0 10px;
+}
+
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.filter-btn {
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #0f172a;
+  padding: 11px 18px;
+  border-radius: 999px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s ease;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
+}
+
+.filter-btn:hover {
+  background: #dbeafe;
+  border-color: #2563eb;
+  color: #1d4ed8;
+  transform: translateY(-2px);
+}
+
+.filter-btn.active {
+  background: #1d4ed8;
+  color: #ffffff;
+  border-color: #1d4ed8;
+}
