@@ -194,7 +194,23 @@ function renderList(type, listId, searchId) {
     : `<div class="empty">Belum ada data.</div>`;
 }
 
+function updateDashboardStats() {
+  const countInfo = document.getElementById("adminCountInfo");
+  const countWiki = document.getElementById("adminCountWiki");
+  const countJobs = document.getElementById("adminCountJobs");
+  const countTotal = document.getElementById("adminCountTotal");
+
+  if (!countInfo || !countWiki || !countJobs || !countTotal) return;
+
+  countInfo.textContent = infoData.length;
+  countWiki.textContent = wikiData.length;
+  countJobs.textContent = jobData.length;
+  countTotal.textContent = infoData.length + wikiData.length + jobData.length;
+}
+
 function renderAll() {
+  updateDashboardStats();
+
   if (document.getElementById("infoList")) renderList("info", "infoList", "infoSearch");
   if (document.getElementById("wikiList")) renderList("wiki", "wikiList", "wikiSearch");
   if (document.getElementById("jobList")) renderList("job", "jobList", "jobSearch");
