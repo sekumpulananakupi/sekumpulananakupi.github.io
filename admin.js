@@ -467,3 +467,28 @@ if (imageUrl) {
   payload.gambar = imageUrl;
 }
 
+const imageFile = document.getElementById("wikiImage").files[0];
+const imageUrl = await uploadImage(imageFile);
+
+const payload = {
+  judul: document.getElementById("wikiTitle").value,
+  kategori: document.getElementById("wikiCategory").value,
+  isi: document.getElementById("wikiContent").value
+};
+
+if (imageUrl) {
+  payload.gambar = imageUrl;
+}
+
+const imageFile = document.getElementById("jobImage").files[0];
+const imageUrl = await uploadImage(imageFile);
+
+const payload = {
+  judul: document.getElementById("jobTitle").value,
+  kategori: document.getElementById("jobCategory").value,
+  isi: document.getElementById("jobContent").value
+};
+
+if (imageUrl) {
+  payload.gambar = imageUrl;
+}
