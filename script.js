@@ -106,5 +106,25 @@ function renderAll() {
   document.getElementById("countJobs").textContent = jobData.length;
 }
 
-["infoSearch", "wikiSearch", "jobSearch"].forEach(id => document.getElementById(id).addEventListener("input", renderAll));
+["infoSearch", "wikiSearch", "jobSearch"].forEach(id =>
+  document.getElementById(id).addEventListener("input", renderAll)
+);
+
+/* FILTER KATEGORI */
+
+document.querySelectorAll(".filter-btn").forEach(button => {
+  button.addEventListener("click", () => {
+
+    document.querySelectorAll(".filter-btn").forEach(btn => {
+      btn.classList.remove("active");
+    });
+
+    button.classList.add("active");
+
+    activeFilter = button.dataset.filter;
+
+    renderAll();
+  });
+});
+
 loadData();
