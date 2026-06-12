@@ -1,5 +1,5 @@
-const SUPABASE_URL = "ISI_PROJECT_URL_SUPABASE_KAMU";
-const SUPABASE_KEY = "ISI_PUBLISHABLE_KEY_SUPABASE_KAMU";
+const SUPABASE_URL = "https://rozfgvucyiwqqmmrmbph.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_KL8Jcb1hEzU-kAZiOMYWFg_hupftFmq";
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const menuToggle = document.getElementById("menuToggle");
