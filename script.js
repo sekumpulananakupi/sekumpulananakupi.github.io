@@ -67,6 +67,24 @@ function createCard(type, item) {
   `;
 }
 
+function createLatestCard(item) {
+  return `
+    <article class="item-card">
+      ${item.gambar ? `<img src="${escapeHTML(item.gambar)}" class="card-image" alt="${escapeHTML(item.title)}">` : ""}
+
+      <span class="pill">${escapeHTML(item.label)}</span>
+
+      <h3>${escapeHTML(item.title)}</h3>
+
+      <p>${escapeHTML(item.content).slice(0, 120)}...</p>
+
+      <a class="btn ghost" href="post.html?type=${item.type}&id=${item.id}">
+        Baca Selengkapnya
+      </a>
+    </article>
+  `;
+}
+
 function renderList(type, listId, searchId, data) {
   const keyword = document.getElementById(searchId).value.toLowerCase();
 
@@ -97,10 +115,58 @@ function renderList(type, listId, searchId, data) {
     : '<div class="empty">Belum ada data.</div>';
 }
 
+function renderLatest() {
+  const latestList = document.getElementById("latestList");
+  if (!latestList) return;
+
+  const combined = [
+    ...infoData.map(item => ({
+      id: item.id,
+      type: "info",
+      title: item.judul,
+      content: item.isi,
+      gambar: item.gambar,
+      label: item.kategori || "Info Kampus",
+      created_at: item.created_at
+    })),
+
+    ...wikiData.map(item => ({
+      id: item.id,
+      type: "wiki",
+      title: item.judul,
+      content: item.isi,
+      gambar: item.gambar,
+      label: item.kategori || "Wiki Kampus",
+      created_at: item.created_at
+    })),
+
+    ...jobData.map(item => ({
+      id: item.id,
+      type: "job",
+      title: item.posisi,
+      content: item.deskripsi,
+      gambar: item.gambar,
+      label: item.perusahaan || "Lowongan",
+      created_at: item.created_at
+    }))
+  ];
+
+  const latest = combined
+    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+    .slice(0, 6);
+
+  latestList.innerHTML = latest.length
+    ? latest.map(item => createLatestCard(item)).join("")
+    : '<div class="empty">Belum ada artikel terbaru.</div>';
+}
+
 function renderAll() {
+  renderLatest();
+
   renderList("info", "infoList", "infoSearch", infoData);
   renderList("wiki", "wikiList", "wikiSearch", wikiData);
   renderList("job", "jobList", "jobSearch", jobData);
+
   document.getElementById("countInfo").textContent = infoData.length;
   document.getElementById("countWiki").textContent = wikiData.length;
   document.getElementById("countJobs").textContent = jobData.length;
