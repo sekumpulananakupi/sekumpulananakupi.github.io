@@ -82,6 +82,14 @@
           <input type="hidden" id="infoId" />
           <input type="text" id="infoTitle" placeholder="Judul informasi" required />
           <input type="text" id="infoCategory" placeholder="Kategori" required />
+          <label>Kategori</label>
+            <select id="infoKategoriMulti" multiple></select>
+
+            <label>Tag</label>
+            <select id="infoTagMulti" multiple></select>
+
+            <label>Jurusan Terkait</label>
+            <select id="infoJurusanMulti" multiple></select>
           <textarea id="infoContent" placeholder="Isi informasi" required></textarea>
           <input type="file" id="infoImage" accept="image/*" />
 
@@ -108,6 +116,14 @@
           <input type="hidden" id="wikiId" />
           <input type="text" id="wikiTitle" placeholder="Judul wiki" required />
           <input type="text" id="wikiTag" placeholder="Kategori/tag" required />
+            <label>Kategori</label>
+            <select id="wikiKategoriMulti" multiple></select>
+            
+            <label>Tag</label>
+            <select id="wikiTagMulti" multiple></select>
+            
+            <label>Jurusan Terkait</label>
+            <select id="wikiJurusanMulti" multiple></select>
           <textarea id="wikiContent" placeholder="Isi wiki" required></textarea>
           <input type="file" id="wikiImage" accept="image/*" />
 
@@ -131,11 +147,18 @@
         </div>
 
         <form id="jobForm" class="form-card">
-          <input type="hidden" id="jobId" />
-          <input type="text" id="jobTitle" placeholder="Posisi" required />
-          <input type="text" id="jobCompany" placeholder="Perusahaan" required />
           <input type="text" id="jobLocation" placeholder="Lokasi" />
           <input type="url" id="jobLink" placeholder="Link pendaftaran" />
+          
+          <label>Kategori</label>
+          <select id="jobKategoriMulti" multiple></select>
+          
+          <label>Tag</label>
+          <select id="jobTagMulti" multiple></select>
+          
+          <label>Jurusan Terkait</label>
+          <select id="jobJurusanMulti" multiple></select>
+          
           <input type="file" id="jobImage" accept="image/*" />
           <textarea id="jobContent" placeholder="Deskripsi lowongan"></textarea>
 
