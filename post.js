@@ -69,6 +69,8 @@ async function loadPost() {
     return;
   }
 
+  const relations = await loadRelations(type, id);
+
   let title = "";
   let category = "";
   let content = "";
@@ -95,6 +97,12 @@ async function loadPost() {
 
       <p class="post-date">${formatDate(data.created_at)}</p>
 
+      <div class="post-meta-group">
+        ${renderPills(relations.kategori)}
+        ${renderPills(relations.tags, "tag-pill")}
+        ${renderPills(relations.jurusan, "jurusan-pill")}
+      </div>
+
       <div class="post-content">
         ${escapeHTML(content).replace(/\n/g, "<br>")}
       </div>
@@ -106,11 +114,45 @@ async function loadPost() {
       }
 
       <button class="btn primary" onclick="sharePost()">Bagikan Artikel</button>
-      
+
       <br><br>
       <a href="index.html" class="btn ghost">← Kembali ke Beranda</a>
     </article>
   `;
+}
+
+async function loadRelations(type, artikelId) {
+  const { data: kategoriRows } = await supabaseClient
+    .from("artikel_kategori")
+    .select("kategori:kategori_id(nama)")
+    .eq("artikel_tipe", type)
+    .eq("artikel_id", artikelId);
+
+  const { data: tagRows } = await supabaseClient
+    .from("artikel_tags")
+    .select("tag:tag_id(nama)")
+    .eq("artikel_tipe", type)
+    .eq("artikel_id", artikelId);
+
+  const { data: jurusanRows } = await supabaseClient
+    .from("artikel_jurusan")
+    .select("jurusan:jurusan_id(nama)")
+    .eq("artikel_tipe", type)
+    .eq("artikel_id", artikelId);
+
+  return {
+    kategori: (kategoriRows || []).map(row => row.kategori?.nama).filter(Boolean),
+    tags: (tagRows || []).map(row => row.tag?.nama).filter(Boolean),
+    jurusan: (jurusanRows || []).map(row => row.jurusan?.nama).filter(Boolean)
+  };
+}
+
+function renderPills(items, className = "") {
+  if (!items.length) return "";
+
+  return items
+    .map(item => `<span class="pill ${className}">${escapeHTML(item)}</span>`)
+    .join("");
 }
 
 loadPost();
