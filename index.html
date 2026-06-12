@@ -6,11 +6,14 @@
   <title>Sekumpulan Anak UPI</title>
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
   <header class="site-header">
     <nav class="navbar container">
       <a href="#beranda" class="brand">SA<span>UPI</span></a>
+
       <button class="menu-toggle" id="menuToggle">☰</button>
+
       <ul class="nav-menu" id="navMenu">
         <li><a href="#beranda">Beranda</a></li>
         <li><a href="#kampus">Info Kampus</a></li>
@@ -27,44 +30,90 @@
         <div>
           <p class="eyebrow">Komunitas Mahasiswa</p>
           <h1>Sekumpulan Anak UPI</h1>
-          <p class="hero-text">Portal komunitas untuk berbagi informasi kampus, pengetahuan seputar UPI, dan peluang kerja untuk mahasiswa serta alumni.</p>
+          <p class="hero-text">
+            Portal komunitas untuk berbagi informasi kampus, pengetahuan seputar UPI,
+            dan peluang kerja untuk mahasiswa serta alumni.
+          </p>
+
           <div class="hero-actions">
             <a href="#kampus" class="btn primary">Lihat Info</a>
             <a href="#lowongan" class="btn ghost">Cari Lowongan</a>
           </div>
         </div>
+
         <div class="hero-card">
           <h3>Ringkasan Data</h3>
+
           <div class="stats">
-            <div><strong id="countInfo">0</strong><span>Info Kampus</span></div>
-            <div><strong id="countWiki">0</strong><span>Wiki</span></div>
-            <div><strong id="countJobs">0</strong><span>Lowongan</span></div>
+            <div>
+              <strong id="countInfo">0</strong>
+              <span>Info Kampus</span>
+            </div>
+
+            <div>
+              <strong id="countWiki">0</strong>
+              <span>Wiki</span>
+            </div>
+
+            <div>
+              <strong id="countJobs">0</strong>
+              <span>Lowongan</span>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
+    <section class="container filter-section">
+      <p class="eyebrow">Filter Konten</p>
+      <h2>Jelajahi Berdasarkan Kategori</h2>
+
+      <div class="filter-bar">
+        <button class="filter-btn active" data-filter="all">Semua</button>
+        <button class="filter-btn" data-filter="akademik">Akademik</button>
+        <button class="filter-btn" data-filter="beasiswa">Beasiswa</button>
+        <button class="filter-btn" data-filter="kegiatan">Kegiatan</button>
+        <button class="filter-btn" data-filter="organisasi">Organisasi</button>
+        <button class="filter-btn" data-filter="lowongan">Lowongan</button>
+      </div>
+    </section>
+
     <section class="section container" id="kampus">
       <div class="section-heading">
-        <div><p class="eyebrow">Update</p><h2>Informasi Kampus</h2></div>
+        <div>
+          <p class="eyebrow">Update</p>
+          <h2>Informasi Kampus</h2>
+        </div>
+
         <input type="search" id="infoSearch" placeholder="Cari informasi kampus..." />
       </div>
+
       <div class="grid-list" id="infoList"></div>
     </section>
 
     <section class="section container" id="wiki">
       <div class="section-heading">
-        <div><p class="eyebrow">Pengetahuan</p><h2>Wiki Kampus</h2></div>
+        <div>
+          <p class="eyebrow">Pengetahuan</p>
+          <h2>Wiki Kampus</h2>
+        </div>
+
         <input type="search" id="wikiSearch" placeholder="Cari wiki kampus..." />
       </div>
+
       <div class="grid-list" id="wikiList"></div>
     </section>
 
     <section class="section container" id="lowongan">
       <div class="section-heading">
-        <div><p class="eyebrow">Karier</p><h2>Lowongan Kerja</h2></div>
+        <div>
+          <p class="eyebrow">Karier</p>
+          <h2>Lowongan Kerja</h2>
+        </div>
+
         <input type="search" id="jobSearch" placeholder="Cari lowongan..." />
       </div>
+
       <div class="grid-list" id="jobList"></div>
     </section>
   </main>
