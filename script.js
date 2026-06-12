@@ -31,12 +31,37 @@ function escapeHTML(text) {
 
 function createCard(type, item) {
   if (type === "info") {
-    return `<article class="item-card"><span class="pill">${escapeHTML(item.kategori || "Umum")}</span><h3>${escapeHTML(item.judul)}</h3><p>${escapeHTML(item.isi)}</p></article>`;
+    return `
+      <article class="item-card">
+        ${item.gambar ? `<img src="${escapeHTML(item.gambar)}" class="card-image" alt="${escapeHTML(item.judul)}">` : ""}
+        <span class="pill">${escapeHTML(item.kategori || "Umum")}</span>
+        <h3>${escapeHTML(item.judul)}</h3>
+        <p>${escapeHTML(item.isi)}</p>
+      </article>
+    `;
   }
+
   if (type === "wiki") {
-    return `<article class="item-card"><span class="pill">${escapeHTML(item.kategori || "Wiki")}</span><h3>${escapeHTML(item.judul)}</h3><p>${escapeHTML(item.isi)}</p></article>`;
+    return `
+      <article class="item-card">
+        ${item.gambar ? `<img src="${escapeHTML(item.gambar)}" class="card-image" alt="${escapeHTML(item.judul)}">` : ""}
+        <span class="pill">${escapeHTML(item.kategori || "Wiki")}</span>
+        <h3>${escapeHTML(item.judul)}</h3>
+        <p>${escapeHTML(item.isi)}</p>
+      </article>
+    `;
   }
-  return `<article class="item-card"><span class="pill">${escapeHTML(item.perusahaan)}</span><span class="pill">${escapeHTML(item.lokasi || "Fleksibel")}</span><h3>${escapeHTML(item.posisi)}</h3><p>${escapeHTML(item.deskripsi)}</p>${item.link ? `<a class="btn ghost" href="${escapeHTML(item.link)}" target="_blank">Buka Link</a>` : ""}</article>`;
+
+  return `
+    <article class="item-card">
+      ${item.gambar ? `<img src="${escapeHTML(item.gambar)}" class="card-image" alt="${escapeHTML(item.posisi)}">` : ""}
+      <span class="pill">${escapeHTML(item.perusahaan)}</span>
+      <span class="pill">${escapeHTML(item.lokasi || "Fleksibel")}</span>
+      <h3>${escapeHTML(item.posisi)}</h3>
+      <p>${escapeHTML(item.deskripsi)}</p>
+      ${item.link ? `<a class="btn ghost" href="${escapeHTML(item.link)}" target="_blank">Buka Link</a>` : ""}
+    </article>
+  `;
 }
 
 function renderList(type, listId, searchId, data) {
