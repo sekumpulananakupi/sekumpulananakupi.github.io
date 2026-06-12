@@ -227,4 +227,25 @@ document.querySelectorAll(".filter-btn").forEach(button => {
   });
 });
 
+const latestPrev = document.getElementById("latestPrev");
+const latestNext = document.getElementById("latestNext");
+const latestList = document.getElementById("latestList");
+
+if (latestPrev && latestNext && latestList) {
+  latestPrev.addEventListener("click", () => {
+    latestList.scrollBy({
+      left: -320,
+      behavior: "smooth"
+    });
+  });
+
+  latestNext.addEventListener("click", () => {
+    latestList.scrollBy({
+      left: 320,
+      behavior: "smooth"
+    });
+  });
+}
+
+
 loadData();
