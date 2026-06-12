@@ -2,6 +2,62 @@ const SUPABASE_URL = "https://rozfgvucyiwqqmmrmbph.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_KL8Jcb1hEzU-kAZiOMYWFg_hupftFmq";
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+let isAdmin = false;
+
+async function checkSession() {
+  const { data } = await supabaseClient.auth.getSession();
+
+  isAdmin = !!data.session;
+
+  updateAdminUI();
+
+  if (isAdmin) {
+    loadData();
+  }
+}
+
+function updateAdminUI() {
+  const adminPanel = document.getElementById("adminPanel");
+  const loginBtn = document.getElementById("loginBtn");
+  const logoutBtn = document.getElementById("logoutBtn");
+  const loginStatus = document.getElementById("loginStatus");
+
+  adminPanel.style.display = isAdmin ? "block" : "none";
+  loginBtn.style.display = isAdmin ? "none" : "inline-block";
+  logoutBtn.style.display = isAdmin ? "inline-block" : "none";
+
+  loginStatus.textContent = isAdmin
+    ? "Login berhasil. Mode admin aktif."
+    : "Belum login.";
+}
+
+document.getElementById("loginBtn").addEventListener("click", async () => {
+  const email = document.getElementById("adminEmail").value;
+  const password = document.getElementById("adminPassword").value;
+
+  const { error } = await supabaseClient.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  if (error) {
+    alert("Login gagal: " + error.message);
+    return;
+  }
+
+  isAdmin = true;
+  updateAdminUI();
+  loadData();
+});
+
+document.getElementById("logoutBtn").addEventListener("click", async () => {
+  await supabaseClient.auth.signOut();
+
+  isAdmin = false;
+  updateAdminUI();
+});
+
+
 const menuToggle = document.getElementById("menuToggle");
 const navMenu = document.getElementById("navMenu");
 menuToggle.addEventListener("click", () => navMenu.classList.toggle("show"));
