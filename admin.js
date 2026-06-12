@@ -429,3 +429,41 @@ function clearForm(type) {
 ========================= */
 
 checkSession();
+
+
+async function uploadImage(file) {
+  if (!file) return "";
+
+  const fileExt = file.name.split(".").pop();
+  const fileName = `${Date.now()}-${Math.random()}.${fileExt}`;
+  const filePath = `uploads/${fileName}`;
+
+  const { error } = await supabaseClient.storage
+    .from("images")
+    .upload(filePath, file);
+
+  if (error) {
+    alert("Gagal upload gambar: " + error.message);
+    return "";
+  }
+
+  const { data } = supabaseClient.storage
+    .from("images")
+    .getPublicUrl(filePath);
+
+  return data.publicUrl;
+}
+
+const imageFile = document.getElementById("infoImage").files[0];
+const imageUrl = await uploadImage(imageFile);
+
+const payload = {
+  judul: document.getElementById("infoTitle").value,
+  kategori: document.getElementById("infoCategory").value,
+  isi: document.getElementById("infoContent").value
+};
+
+if (imageUrl) {
+  payload.gambar = imageUrl;
+}
+
