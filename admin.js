@@ -17,17 +17,10 @@ let infoData = [];
 let wikiData = [];
 let jobData = [];
 
-/* =========================
-   LOGIN ADMIN
-========================= */
+/* LOGIN */
 
 async function checkSession() {
-  const { data, error } = await supabaseClient.auth.getSession();
-
-  if (error) {
-    console.error("Session error:", error);
-    return;
-  }
+  const { data } = await supabaseClient.auth.getSession();
 
   isAdmin = !!data.session;
   updateAdminUI();
@@ -38,16 +31,11 @@ async function checkSession() {
 }
 
 function updateAdminUI() {
-  const adminPanel = document.getElementById("adminPanel");
-  const loginBtn = document.getElementById("loginBtn");
-  const logoutBtn = document.getElementById("logoutBtn");
-  const loginStatus = document.getElementById("loginStatus");
+  document.getElementById("adminPanel").style.display = isAdmin ? "block" : "none";
+  document.getElementById("loginBtn").style.display = isAdmin ? "none" : "inline-block";
+  document.getElementById("logoutBtn").style.display = isAdmin ? "inline-block" : "none";
 
-  adminPanel.style.display = isAdmin ? "block" : "none";
-  loginBtn.style.display = isAdmin ? "none" : "inline-block";
-  logoutBtn.style.display = isAdmin ? "inline-block" : "none";
-
-  loginStatus.textContent = isAdmin
+  document.getElementById("loginStatus").textContent = isAdmin
     ? "Login berhasil. Mode admin aktif."
     : "Belum login.";
 }
@@ -61,13 +49,12 @@ document.getElementById("loginBtn").addEventListener("click", async () => {
     return;
   }
 
-  const { data, error } = await supabaseClient.auth.signInWithPassword({
+  const { error } = await supabaseClient.auth.signInWithPassword({
     email,
     password
   });
 
   if (error) {
-    console.error("Login error:", error);
     alert("Login gagal: " + error.message);
     return;
   }
@@ -75,46 +62,62 @@ document.getElementById("loginBtn").addEventListener("click", async () => {
   isAdmin = true;
   updateAdminUI();
   await loadData();
-
-  console.log("Login berhasil:", data);
 });
 
 document.getElementById("logoutBtn").addEventListener("click", async () => {
   await supabaseClient.auth.signOut();
 
   isAdmin = false;
-  updateAdminUI();
-
   infoData = [];
   wikiData = [];
   jobData = [];
 
+  updateAdminUI();
   renderAll();
 });
 
-/* =========================
-   LOAD DATA
-========================= */
+/* UPLOAD GAMBAR */
+
+async function uploadImage(file) {
+  if (!file) return "";
+
+  const fileExt = file.name.split(".").pop();
+  const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+  const filePath = `uploads/${fileName}`;
+
+  const { error } = await supabaseClient.storage
+    .from("images")
+    .upload(filePath, file);
+
+  if (error) {
+    alert("Gagal upload gambar: " + error.message);
+    return "";
+  }
+
+  const { data } = supabaseClient.storage
+    .from("images")
+    .getPublicUrl(filePath);
+
+  return data.publicUrl;
+}
+
+/* LOAD DATA */
 
 async function loadData() {
-  const { data: info, error: infoError } = await supabaseClient
+  const { data: info } = await supabaseClient
     .from("informasi_kampus")
     .select("*")
     .order("created_at", { ascending: false });
 
-  const { data: wiki, error: wikiError } = await supabaseClient
+  const { data: wiki } = await supabaseClient
     .from("wiki_kampus")
     .select("*")
     .order("created_at", { ascending: false });
 
-  const { data: job, error: jobError } = await supabaseClient
+  const { data: job } = await supabaseClient
     .from("lowongan_kerja")
     .select("*")
     .order("created_at", { ascending: false });
-
-  if (infoError) console.error("Info error:", infoError);
-  if (wikiError) console.error("Wiki error:", wikiError);
-  if (jobError) console.error("Job error:", jobError);
 
   infoData = info || [];
   wikiData = wiki || [];
@@ -123,28 +126,16 @@ async function loadData() {
   renderAll();
 }
 
-/* =========================
-   RENDER DATA
-========================= */
+/* RENDER */
 
 function createCard(type, item) {
   if (type === "info") {
     return `
       <article class="item-card">
-
-        ${
-          item.gambar
-            ? `<img src="${item.gambar}" class="card-image" alt="${item.judul}">`
-            : ""
-        }
-
-        <div class="meta">
-          <span class="pill">${item.kategori || "-"}</span>
-        </div>
-
+        ${item.gambar ? `<img src="${item.gambar}" class="card-image" alt="${item.judul}">` : ""}
+        <div class="meta"><span class="pill">${item.kategori || "-"}</span></div>
         <h3>${item.judul}</h3>
         <p>${item.isi}</p>
-
         <div class="card-actions">
           <button class="btn ghost" onclick="editInfo(${item.id})">Edit</button>
           <button class="btn danger" onclick="deleteItem('info', ${item.id})">Hapus</button>
@@ -156,20 +147,10 @@ function createCard(type, item) {
   if (type === "wiki") {
     return `
       <article class="item-card">
-
-        ${
-          item.gambar
-            ? `<img src="${item.gambar}" class="card-image" alt="${item.judul}">`
-            : ""
-        }
-
-        <div class="meta">
-          <span class="pill">${item.kategori || "-"}</span>
-        </div>
-
+        ${item.gambar ? `<img src="${item.gambar}" class="card-image" alt="${item.judul}">` : ""}
+        <div class="meta"><span class="pill">${item.kategori || "-"}</span></div>
         <h3>${item.judul}</h3>
         <p>${item.isi}</p>
-
         <div class="card-actions">
           <button class="btn ghost" onclick="editWiki(${item.id})">Edit</button>
           <button class="btn danger" onclick="deleteItem('wiki', ${item.id})">Hapus</button>
@@ -180,27 +161,14 @@ function createCard(type, item) {
 
   return `
     <article class="item-card">
-
-      ${
-        item.gambar
-          ? `<img src="${item.gambar}" class="card-image" alt="${item.posisi}">`
-          : ""
-      }
-
+      ${item.gambar ? `<img src="${item.gambar}" class="card-image" alt="${item.posisi}">` : ""}
       <div class="meta">
         <span class="pill">${item.perusahaan || "-"}</span>
         <span class="pill">${item.lokasi || "-"}</span>
       </div>
-
       <h3>${item.posisi}</h3>
       <p>${item.deskripsi || ""}</p>
-
-      ${
-        item.link
-          ? `<a href="${item.link}" target="_blank" class="btn ghost">Buka Link</a>`
-          : ""
-      }
-
+      ${item.link ? `<a href="${item.link}" target="_blank" class="btn ghost">Buka Link</a>` : ""}
       <div class="card-actions">
         <button class="btn ghost" onclick="editJob(${item.id})">Edit</button>
         <button class="btn danger" onclick="deleteItem('job', ${item.id})">Hapus</button>
@@ -210,11 +178,9 @@ function createCard(type, item) {
 }
 
 function renderList(type, listId, searchId) {
-  const searchInput = document.getElementById(searchId);
-  const keyword = searchInput ? searchInput.value.toLowerCase() : "";
+  const keyword = document.getElementById(searchId)?.value.toLowerCase() || "";
 
   let data = [];
-
   if (type === "info") data = infoData;
   if (type === "wiki") data = wikiData;
   if (type === "job") data = jobData;
@@ -229,29 +195,27 @@ function renderList(type, listId, searchId) {
 }
 
 function renderAll() {
-  const infoList = document.getElementById("infoList");
-  const wikiList = document.getElementById("wikiList");
-  const jobList = document.getElementById("jobList");
-
-  if (infoList) renderList("info", "infoList", "infoSearch");
-  if (wikiList) renderList("wiki", "wikiList", "wikiSearch");
-  if (jobList) renderList("job", "jobList", "jobSearch");
+  if (document.getElementById("infoList")) renderList("info", "infoList", "infoSearch");
+  if (document.getElementById("wikiList")) renderList("wiki", "wikiList", "wikiSearch");
+  if (document.getElementById("jobList")) renderList("job", "jobList", "jobSearch");
 }
 
-/* =========================
-   CRUD INFO KAMPUS
-========================= */
+/* CRUD INFO */
 
 document.getElementById("infoForm").addEventListener("submit", async event => {
   event.preventDefault();
 
   const id = document.getElementById("infoId").value;
+  const imageFile = document.getElementById("infoImage")?.files[0];
+  const imageUrl = await uploadImage(imageFile);
 
   const payload = {
     judul: document.getElementById("infoTitle").value,
     kategori: document.getElementById("infoCategory").value,
     isi: document.getElementById("infoContent").value
   };
+
+  if (imageUrl) payload.gambar = imageUrl;
 
   let response;
 
@@ -275,20 +239,22 @@ document.getElementById("infoForm").addEventListener("submit", async event => {
   await loadData();
 });
 
-/* =========================
-   CRUD WIKI
-========================= */
+/* CRUD WIKI */
 
 document.getElementById("wikiForm").addEventListener("submit", async event => {
   event.preventDefault();
 
   const id = document.getElementById("wikiId").value;
+  const imageFile = document.getElementById("wikiImage")?.files[0];
+  const imageUrl = await uploadImage(imageFile);
 
   const payload = {
     judul: document.getElementById("wikiTitle").value,
     kategori: document.getElementById("wikiTag").value,
     isi: document.getElementById("wikiContent").value
   };
+
+  if (imageUrl) payload.gambar = imageUrl;
 
   let response;
 
@@ -312,14 +278,14 @@ document.getElementById("wikiForm").addEventListener("submit", async event => {
   await loadData();
 });
 
-/* =========================
-   CRUD LOWONGAN
-========================= */
+/* CRUD LOWONGAN */
 
 document.getElementById("jobForm").addEventListener("submit", async event => {
   event.preventDefault();
 
   const id = document.getElementById("jobId").value;
+  const imageFile = document.getElementById("jobImage")?.files[0];
+  const imageUrl = await uploadImage(imageFile);
 
   const payload = {
     posisi: document.getElementById("jobTitle").value,
@@ -328,6 +294,8 @@ document.getElementById("jobForm").addEventListener("submit", async event => {
     link: document.getElementById("jobLink").value,
     deskripsi: document.getElementById("jobContent").value
   };
+
+  if (imageUrl) payload.gambar = imageUrl;
 
   let response;
 
@@ -351,9 +319,7 @@ document.getElementById("jobForm").addEventListener("submit", async event => {
   await loadData();
 });
 
-/* =========================
-   EDIT DATA
-========================= */
+/* EDIT */
 
 function editInfo(id) {
   const item = infoData.find(row => row.id === id);
@@ -393,9 +359,7 @@ function editJob(id) {
   location.hash = "#lowongan";
 }
 
-/* =========================
-   DELETE DATA
-========================= */
+/* DELETE */
 
 async function deleteItem(type, id) {
   if (!confirm("Yakin ingin menghapus data ini?")) return;
@@ -431,92 +395,20 @@ async function deleteItem(type, id) {
   await loadData();
 }
 
-/* =========================
-   CLEAR FORM
-========================= */
+/* CLEAR */
 
 function clearForm(type) {
   document.getElementById(`${type}Form`).reset();
   document.getElementById(`${type}Id`).value = "";
 }
 
-/* =========================
-   SEARCH
-========================= */
+/* SEARCH */
 
 ["infoSearch", "wikiSearch", "jobSearch"].forEach(id => {
   const input = document.getElementById(id);
-
-  if (input) {
-    input.addEventListener("input", renderAll);
-  }
+  if (input) input.addEventListener("input", renderAll);
 });
 
-/* =========================
-   START
-========================= */
+/* START */
 
 checkSession();
-
-
-async function uploadImage(file) {
-  if (!file) return "";
-
-  const fileExt = file.name.split(".").pop();
-  const fileName = `${Date.now()}-${Math.random()}.${fileExt}`;
-  const filePath = `uploads/${fileName}`;
-
-  const { error } = await supabaseClient.storage
-    .from("images")
-    .upload(filePath, file);
-
-  if (error) {
-    alert("Gagal upload gambar: " + error.message);
-    return "";
-  }
-
-  const { data } = supabaseClient.storage
-    .from("images")
-    .getPublicUrl(filePath);
-
-  return data.publicUrl;
-}
-
-const imageFile = document.getElementById("infoImage").files[0];
-const imageUrl = await uploadImage(imageFile);
-
-const payload = {
-  judul: document.getElementById("infoTitle").value,
-  kategori: document.getElementById("infoCategory").value,
-  isi: document.getElementById("infoContent").value
-};
-
-if (imageUrl) {
-  payload.gambar = imageUrl;
-}
-
-const imageFile = document.getElementById("wikiImage").files[0];
-const imageUrl = await uploadImage(imageFile);
-
-const payload = {
-  judul: document.getElementById("wikiTitle").value,
-  kategori: document.getElementById("wikiCategory").value,
-  isi: document.getElementById("wikiContent").value
-};
-
-if (imageUrl) {
-  payload.gambar = imageUrl;
-}
-
-const imageFile = document.getElementById("jobImage").files[0];
-const imageUrl = await uploadImage(imageFile);
-
-const payload = {
-  judul: document.getElementById("jobTitle").value,
-  kategori: document.getElementById("jobCategory").value,
-  isi: document.getElementById("jobContent").value
-};
-
-if (imageUrl) {
-  payload.gambar = imageUrl;
-}
