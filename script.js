@@ -205,6 +205,7 @@ function renderLatest() {
 
 function renderAll() {
   renderLatest();
+  renderLatestJobs();
 
   renderList("info", "infoList", "infoSearch", infoData);
   renderList("wiki", "wikiList", "wikiSearch", wikiData);
@@ -315,6 +316,17 @@ function stripHTML(html) {
   const div = document.createElement("div");
   div.innerHTML = html || "";
   return div.textContent || div.innerText || "";
+}
+
+function renderLatestJobs() {
+  const list = document.getElementById("latestJobList");
+  if (!list) return;
+
+  const latestJobs = jobData.slice(0, 3);
+
+  list.innerHTML = latestJobs.length
+    ? latestJobs.map(item => createCard("job", item)).join("")
+    : `<div class="empty">Belum ada lowongan terbaru.</div>`;
 }
 
 loadData();
