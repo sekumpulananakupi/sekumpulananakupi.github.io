@@ -47,6 +47,49 @@ async function loadJurusanDetail() {
       <div class="post-content">
         ${escapeHTML(jurusan.deskripsi || "Deskripsi jurusan belum tersedia.").replace(/\n/g, "<br>")}
       </div>
+
+      <h2>Informasi Program Studi</h2>
+
+      <div class="jurusan-info-grid">
+        <div class="stat-card">
+          <span>Akreditasi</span>
+          <strong>${escapeHTML(jurusan.akreditasi || "-")}</strong>
+        </div>
+      
+        <div class="stat-card">
+          <span>Jenjang</span>
+          <strong>${escapeHTML(jurusan.jenjang || "-")}</strong>
+        </div>
+      
+        <div class="stat-card">
+          <span>Fakultas</span>
+          <strong>${escapeHTML(jurusan.fakultas || "-")}</strong>
+        </div>
+      </div>
+      
+      ${
+        jurusan.website_resmi
+          ? `<a href="${escapeHTML(jurusan.website_resmi)}" target="_blank" class="btn ghost">Website Resmi</a>`
+          : ""
+      }
+      
+      <h2>Mata Kuliah</h2>
+      <ul>
+        ${(jurusan.mata_kuliah || "")
+          .split("\n")
+          .filter(Boolean)
+          .map(item => `<li>${escapeHTML(item)}</li>`)
+          .join("")}
+      </ul>
+      
+      <h2>Prospek Kerja</h2>
+      <ul>
+        ${(jurusan.prospek_kerja || "")
+          .split("\n")
+          .filter(Boolean)
+          .map(item => `<li>${escapeHTML(item)}</li>`)
+          .join("")}
+      </ul>
       
       <h2>Statistik Penerimaan</h2>
       ${renderStatistik(statistik)}
