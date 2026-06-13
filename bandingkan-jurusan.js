@@ -6,6 +6,15 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 let jurusanData = [];
 let statistikData = [];
 
+const menuToggle = document.getElementById("menuToggle");
+const navMenu = document.getElementById("navMenu");
+
+if (menuToggle && navMenu) {
+  menuToggle.addEventListener("click", () => {
+    navMenu.classList.toggle("show");
+  });
+}
+
 function escapeHTML(text) {
   return String(text || "").replace(/[&<>'"]/g, char => ({
     "&": "&amp;",
