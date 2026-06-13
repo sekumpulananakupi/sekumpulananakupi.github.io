@@ -69,7 +69,7 @@ function initQuillEditors() {
           [{ header: [1, 2, 3, false] }],
           ["bold", "italic", "underline"],
           [{ list: "ordered" }, { list: "bullet" }],
-          ["link", "blockquote"],
+          ["link", "blockquote", "image"],
           ["clean"]
         ]
       }
@@ -85,7 +85,7 @@ function initQuillEditors() {
           [{ header: [1, 2, 3, false] }],
           ["bold", "italic", "underline"],
           [{ list: "ordered" }, { list: "bullet" }],
-          ["link", "blockquote"],
+          ["link", "blockquote", "image"],
           ["clean"]
         ]
       }
@@ -101,13 +101,20 @@ function initQuillEditors() {
           [{ header: [1, 2, 3, false] }],
           ["bold", "italic", "underline"],
           [{ list: "ordered" }, { list: "bullet" }],
-          ["link", "blockquote"],
+          ["link", "blockquote", "image"],
           ["clean"]
         ]
       }
     });
   }
+
+    // TAMBAHKAN DI SINI
+  setupQuillImageUpload(infoEditor);
+  setupQuillImageUpload(wikiEditor);
+  setupQuillImageUpload(jobEditor);
 }
+
+
 
 function getEditorHTML(type) {
   if (type === "info" && infoEditor) return infoEditor.root.innerHTML;
@@ -433,6 +440,31 @@ async function uploadImage(file) {
     .getPublicUrl(filePath);
 
   return data.publicUrl;
+}
+
+function setupQuillImageUpload(editor) {
+  if (!editor) return;
+
+  const toolbar = editor.getModule("toolbar");
+
+  toolbar.addHandler("image", () => {
+    const input = document.createElement("input");
+    input.setAttribute("type", "file");
+    input.setAttribute("accept", "image/*");
+    input.click();
+
+    input.onchange = async () => {
+      const file = input.files[0];
+      if (!file) return;
+
+      const imageUrl = await uploadImage(file);
+      if (!imageUrl) return;
+
+      const range = editor.getSelection(true);
+      editor.insertEmbed(range.index, "image", imageUrl);
+      editor.setSelection(range.index + 1);
+    };
+  });
 }
 
 /* =========================
