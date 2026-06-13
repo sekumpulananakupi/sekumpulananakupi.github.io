@@ -39,23 +39,30 @@ function renderJurusan() {
 }
 
 function createCard(item) {
+  const prospekSingkat = item.prospek_kerja
+    ? item.prospek_kerja.split("\n").slice(0, 3).join(", ")
+    : "Prospek kerja belum tersedia.";
 
   return `
     <article class="item-card">
+      <span class="pill">${escapeHTML(item.fakultas || "UPI")}</span>
+      <span class="pill">${escapeHTML(item.jenjang || "S1")}</span>
 
-      <h3>${item.nama}</h3>
+      ${
+        item.akreditasi
+          ? `<span class="pill">Akreditasi ${escapeHTML(item.akreditasi)}</span>`
+          : ""
+      }
 
-      <p>
-        ${item.fakultas || "-"}
-      </p>
+      <h3>${escapeHTML(item.nama)}</h3>
 
-      <a
-        href="jurusan-detail.html?id=${item.id}"
-        class="btn primary"
-      >
+      <p>${escapeHTML(item.deskripsi || "").slice(0, 120)}...</p>
+
+      <p><strong>Prospek:</strong> ${escapeHTML(prospekSingkat)}</p>
+
+      <a href="jurusan-detail.html?id=${item.id}" class="btn primary">
         Lihat Detail
       </a>
-
     </article>
   `;
 }
