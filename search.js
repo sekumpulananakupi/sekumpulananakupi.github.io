@@ -75,7 +75,14 @@ async function loadSearchData() {
       url: `jurusan-detail.html?id=${item.id}`
     }))
   ];
+  
+  const params = new URLSearchParams(window.location.search);
+  const keyword = params.get("q");
 
+  if (keyword) {
+    document.getElementById("globalSearch").value = keyword;
+  }
+  
   renderSearchResults();
 }
 
