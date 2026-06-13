@@ -239,7 +239,12 @@
               <input type="hidden" id="kategoriId" />
               <input type="text" id="kategoriNama" placeholder="Nama kategori" required />
               <input type="text" id="kategoriSlug" placeholder="Slug kategori" required />
-
+              
+              <select id="kategoriTipe" required>
+                <option value="info">Info Kampus</option>
+                <option value="wiki">Wiki Kampus</option>
+              </select>
+              
               <div class="form-actions">
                 <button class="btn primary" type="submit">Simpan Kategori</button>
                 <button class="btn ghost" type="button" onclick="clearKategoriForm()">Batal</button>
