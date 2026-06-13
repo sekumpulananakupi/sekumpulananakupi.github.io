@@ -173,7 +173,7 @@ function createRelatedCard(item) {
   }
 
   return `
-    <article class="item-card">
+    <article class="item-card" ${item.type === "job" ? `data-job-id="${item.id}"` : ""}>
       ${item.gambar ? `<img src="${escapeHTML(item.gambar)}" class="card-image" alt="${escapeHTML(title)}">` : ""}
       <span class="pill">${escapeHTML(label)}</span>
       <h3>${escapeHTML(title)}</h3>
@@ -229,16 +229,25 @@ async function loadAutoMatchedJobs(jurusan, relatedJobList) {
 
   if (!matchedJobs.length) return;
 
-  const existingHTML = relatedJobList.innerHTML;
+const existingJobIds = new Set(
+  Array.from(relatedJobList.querySelectorAll("[data-job-id]"))
+    .map(card => Number(card.dataset.jobId))
+);
 
-  relatedJobList.innerHTML = `
-    ${matchedJobs.map(job => createRelatedCard({
-      ...job,
-      type: "job"
-    })).join("")}
+const uniqueMatchedJobs = matchedJobs.filter(job => !existingJobIds.has(job.id));
 
-    ${existingHTML.includes("Belum ada lowongan") ? "" : existingHTML}
-  `;
+if (!uniqueMatchedJobs.length) return;
+
+const existingHTML = relatedJobList.innerHTML;
+
+relatedJobList.innerHTML = `
+  ${uniqueMatchedJobs.map(job => createRelatedCard({
+    ...job,
+    type: "job"
+  })).join("")}
+
+  ${existingHTML.includes("Belum ada lowongan") ? "" : existingHTML}
+`;
 }
 
 async function loadStatistikJurusan(jurusanId) {
