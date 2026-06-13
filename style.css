@@ -481,3 +481,13 @@ nav a {
   color: #475569;
   margin: 20px 0;
 }
+
+.post-content img {
+  max-width: 680px;
+  width: 100%;
+  max-height: 420px;
+  object-fit: contain;
+  margin: 20px auto;
+  display: block;
+  border-radius: 16px;
+}
