@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jurusan UPI</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="navbar container">
+    <a href="index.html" class="brand">SA<span>UPI</span></a>
+  </nav>
+</header>
+
+<main class="container">
+
+  <section class="section">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">Direktori</p>
+        <h2>Jurusan UPI</h2>
+      </div>
+
+      <input
+        type="search"
+        id="jurusanSearch"
+        placeholder="Cari jurusan..."
+      />
+    </div>
+
+    <div class="grid-list" id="jurusanList"></div>
+
+  </section>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="jurusan.js"></script>
+
+</body>
+</html>
