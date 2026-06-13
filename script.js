@@ -2,9 +2,6 @@ const SUPABASE_URL = "https://rozfgvucyiwqqmmrmbph.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_KL8Jcb1hEzU-kAZiOMYWFg_hupftFmq";
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-const menuToggle = document.getElementById("menuToggle");
-const navMenu = document.getElementById("navMenu");
-menuToggle.addEventListener("click", () => navMenu.classList.toggle("show"));
 
 let activeFilter = "all";
 let infoData = [];
