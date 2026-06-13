@@ -353,3 +353,36 @@ nav a {
   max-height: 120px;
   overflow-y: auto;
 }
+
+.admin-content .grid-list {
+  display: block;
+}
+
+.admin-list-item {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 16px 18px;
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+}
+
+.admin-list-item h3 {
+  margin: 6px 0;
+  font-size: 18px;
+}
+
+.admin-list-item p {
+  margin: 0;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.admin-list-item .card-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
