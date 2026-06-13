@@ -34,6 +34,7 @@ async function loadData() {
   jobData = jobs || [];
   kategoriData = kategori || [];
   artikelKategoriData = artikelKategori || [];
+  renderFilterButtons();
   
   renderAll();
 }
@@ -193,20 +194,20 @@ function renderAll() {
 
 /* FILTER KATEGORI */
 
-document.querySelectorAll(".filter-btn").forEach(button => {
-  button.addEventListener("click", () => {
+function initFilterButtons() {
+  document.querySelectorAll(".filter-btn").forEach(button => {
+    button.addEventListener("click", () => {
+      document.querySelectorAll(".filter-btn").forEach(btn => {
+        btn.classList.remove("active");
+      });
 
-    document.querySelectorAll(".filter-btn").forEach(btn => {
-      btn.classList.remove("active");
+      button.classList.add("active");
+      activeFilter = button.dataset.filter;
+
+      renderAll();
     });
-
-    button.classList.add("active");
-
-    activeFilter = button.dataset.filter;
-
-    renderAll();
   });
-});
+}
 
 const latestPrev = document.getElementById("latestPrev");
 const latestNext = document.getElementById("latestNext");
