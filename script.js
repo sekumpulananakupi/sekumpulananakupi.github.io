@@ -10,12 +10,21 @@ let activeFilter = "all";
 let infoData = [];
 let wikiData = [];
 let jobData = [];
+let kategoriData = [];
+let artikelKategoriData = [];
 
 async function loadData() {
   const { data: info, error: infoError } = await supabaseClient.from("informasi_kampus").select("*").order("created_at", { ascending: false });
   const { data: wiki, error: wikiError } = await supabaseClient.from("wiki_kampus").select("*").order("created_at", { ascending: false });
   const { data: jobs, error: jobError } = await supabaseClient.from("lowongan_kerja").select("*").order("created_at", { ascending: false });
+  const { data: kategori } = await supabaseClient
+  .from("kategori")
+  .select("*");
 
+  const { data: artikelKategori } = await supabaseClient
+  .from("artikel_kategori")
+  .select("*");
+  
   if (infoError || wikiError || jobError) {
     console.error("Gagal mengambil data:", infoError || wikiError || jobError);
   }
@@ -23,6 +32,9 @@ async function loadData() {
   infoData = info || [];
   wikiData = wiki || [];
   jobData = jobs || [];
+  kategoriData = kategori || [];
+  artikelKategoriData = artikelKategori || [];
+  
   renderAll();
 }
 
@@ -35,6 +47,7 @@ function createCard(type, item) {
     return `
       <article class="item-card">
         ${item.gambar ? `<img src="${escapeHTML(item.gambar)}" class="card-image" alt="${escapeHTML(item.judul)}">` : ""}
+        ${renderKategoriPills("info", item.id)}
         <h3>${escapeHTML(item.judul)}</h3>
         <p>${escapeHTML(item.isi).slice(0, 120)}...</p>
         <a class="btn ghost" href="post.html?type=info&id=${item.id}">Baca Selengkapnya</a>
@@ -46,7 +59,7 @@ function createCard(type, item) {
     return `
       <article class="item-card">
         ${item.gambar ? `<img src="${escapeHTML(item.gambar)}" class="card-image" alt="${escapeHTML(item.judul)}">` : ""}
-
+        <span class="pill">${escapeHTML(item.kategori || "Wiki")}</span>
         <h3>${escapeHTML(item.judul)}</h3>
         <p>${escapeHTML(item.isi).slice(0, 120)}...</p>
         <a class="btn ghost" href="post.html?type=wiki&id=${item.id}">Baca Selengkapnya</a>
@@ -212,6 +225,24 @@ if (latestPrev && latestNext && latestList) {
     });
   });
 }
+
+function getArtikelKategori(type, artikelId) {
+  return artikelKategoriData
+    .filter(row => row.artikel_tipe === type && row.artikel_id === artikelId)
+    .map(row => kategoriData.find(k => k.id === row.kategori_id)?.nama)
+    .filter(Boolean);
+}
+
+function renderKategoriPills(type, artikelId) {
+  const kategori = getArtikelKategori(type, artikelId);
+
+  if (!kategori.length) return "";
+
+  return kategori
+    .map(item => `<span class="pill">${escapeHTML(item)}</span>`)
+    .join("");
+}
+
 
 
 loadData();
