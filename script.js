@@ -238,6 +238,17 @@ function renderAll() {
   document.getElementById("countInfo").textContent = infoData.length;
   document.getElementById("countWiki").textContent = wikiData.length;
   document.getElementById("countJobs").textContent = jobData.length;
+  if (document.getElementById("countJurusan")) {
+  document.getElementById("countJurusan").textContent = jurusanData.length;
+}
+
+if (document.getElementById("countDokumen")) {
+  document.getElementById("countDokumen").textContent = dokumenData.length;
+}
+
+if (document.getElementById("countFaq")) {
+  document.getElementById("countFaq").textContent = faqData.length;
+}
 }
 
 ["infoSearch", "wikiSearch", "jobSearch"].forEach(id =>
