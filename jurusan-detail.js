@@ -176,6 +176,7 @@ function createRelatedCard(item) {
     <article class="item-card" ${item.type === "job" ? `data-job-id="${item.id}"` : ""}>
       ${item.gambar ? `<img src="${escapeHTML(item.gambar)}" class="card-image" alt="${escapeHTML(title)}">` : ""}
       <span class="pill">${escapeHTML(label)}</span>
+      ${item.matchLabel ? `<span class="pill tag-pill">${escapeHTML(item.matchLabel)}</span>` : ""}
       <h3>${escapeHTML(title)}</h3>
       <p>${escapeHTML(content).slice(0, 120)}...</p>
       <a href="post.html?type=${item.type}&id=${item.id}" class="btn ghost">Baca Detail</a>
@@ -243,7 +244,8 @@ const existingHTML = relatedJobList.innerHTML;
 relatedJobList.innerHTML = `
   ${uniqueMatchedJobs.map(job => createRelatedCard({
     ...job,
-    type: "job"
+    type: "job",
+    matchLabel: "Cocok dengan prospek kerja"
   })).join("")}
 
   ${existingHTML.includes("Belum ada lowongan") ? "" : existingHTML}
