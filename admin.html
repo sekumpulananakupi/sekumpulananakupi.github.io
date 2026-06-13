@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin - Sekumpulan Anak UPI</title>
+  <link href="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
 </head>
 
@@ -88,7 +89,8 @@
               <label>Kategori Info Kampus</label>
               <div id="infoKategoriMulti" class="checkbox-group"></div>
 
-              <textarea id="infoContent" placeholder="Isi informasi" required></textarea>
+              <div id="infoEditor"></div>
+              <input type="hidden" id="infoContent">
               <input type="file" id="infoImage" accept="image/*" />
 
               <div class="form-actions">
@@ -121,7 +123,8 @@
               <div id="wikiTagMulti" class="checkbox-group"></div>
               
               
-              <textarea id="wikiContent" placeholder="Isi wiki" required></textarea>
+             <div id="wikiEditor"></div>
+              <input type="hidden" id="wikiContent">
               <input type="file" id="wikiImage" accept="image/*" />
 
               <div class="form-actions">
@@ -156,7 +159,8 @@
               <div id="jobJurusanMulti" class="checkbox-group"></div>
 
               <input type="file" id="jobImage" accept="image/*" />
-              <textarea id="jobContent" placeholder="Deskripsi lowongan"></textarea>
+              <div id="jobEditor"></div>
+              <input type="hidden" id="jobContent">
 
               <div class="form-actions">
                 <button class="btn primary" type="submit">Simpan</button>
@@ -274,5 +278,6 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="admin.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.js"></script>
 </body>
 </html>
