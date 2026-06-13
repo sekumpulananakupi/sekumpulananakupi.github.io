@@ -188,7 +188,7 @@ function getProspekList(jurusan) {
   return String(jurusan.prospek_kerja || "")
     .split("\n")
     .map(item => item.trim().toLowerCase())
-    .filter(Boolean);
+    .filter(item => item.length >= 4);
 }
 
 async function loadAutoMatchedJobs(jurusan, relatedJobList) {
@@ -223,9 +223,11 @@ async function loadAutoMatchedJobs(jurusan, relatedJobList) {
       .join(" ")
       .toLowerCase();
 
-    return prospekList.some(prospek =>
-      jobText.includes(prospek) || tagNames.includes(prospek)
-    );
+    return prospekList.some(prospek => {
+    const regex = new RegExp(`\\b${prospek.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`, "i");
+
+    return regex.test(jobText) || regex.test(tagNames);
+    });
   });
 
   if (!matchedJobs.length) return;
