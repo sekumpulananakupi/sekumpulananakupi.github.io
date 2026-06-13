@@ -21,6 +21,8 @@ let tagData = [];
 let jurusanData = [];
 let statistikData = [];
 let jurusanAdminData = [];
+let kategoriAdminData = [];
+let tagAdminData = [];
 
 async function loadMasterData() {
   const { data: kategori } = await supabaseClient
@@ -156,6 +158,7 @@ async function checkSession() {
     await loadData();
     await loadStatistikData();
     await loadJurusanAdminData();
+    await loadTaxonomyAdminData();
   }
 }
 
@@ -884,6 +887,193 @@ if (jurusanNamaInput && jurusanSlugInput) {
     jurusanSlugInput.value = makeSlug(jurusanNamaInput.value);
   });
 }
+
+async function loadTaxonomyAdminData() {
+  const { data: kategori } = await supabaseClient
+    .from("kategori")
+    .select("*")
+    .order("nama", { ascending: true });
+
+  const { data: tags } = await supabaseClient
+    .from("tags")
+    .select("*")
+    .order("nama", { ascending: true });
+
+  kategoriAdminData = kategori || [];
+  tagAdminData = tags || [];
+
+  renderKategoriAdminList();
+  renderTagAdminList();
+}
+
+function renderKategoriAdminList() {
+  const list = document.getElementById("kategoriAdminList");
+  if (!list) return;
+
+  list.innerHTML = kategoriAdminData.length
+    ? kategoriAdminData.map(item => `
+      <article class="item-card">
+        <h3>${item.nama}</h3>
+        <p>Slug: ${item.slug}</p>
+        <div class="card-actions">
+          <button class="btn ghost" onclick="editKategori(${item.id})">Edit</button>
+          <button class="btn danger" onclick="deleteKategori(${item.id})">Hapus</button>
+        </div>
+      </article>
+    `).join("")
+    : `<div class="empty">Belum ada kategori.</div>`;
+}
+
+function renderTagAdminList() {
+  const list = document.getElementById("tagAdminList");
+  if (!list) return;
+
+  list.innerHTML = tagAdminData.length
+    ? tagAdminData.map(item => `
+      <article class="item-card">
+        <h3>${item.nama}</h3>
+        <p>Slug: ${item.slug}</p>
+        <div class="card-actions">
+          <button class="btn ghost" onclick="editTag(${item.id})">Edit</button>
+          <button class="btn danger" onclick="deleteTag(${item.id})">Hapus</button>
+        </div>
+      </article>
+    `).join("")
+    : `<div class="empty">Belum ada tag.</div>`;
+}
+
+document.getElementById("kategoriForm").addEventListener("submit", async event => {
+  event.preventDefault();
+
+  const id = document.getElementById("kategoriId").value;
+
+  const payload = {
+    nama: document.getElementById("kategoriNama").value,
+    slug: document.getElementById("kategoriSlug").value
+  };
+
+  const response = id
+    ? await supabaseClient.from("kategori").update(payload).eq("id", id)
+    : await supabaseClient.from("kategori").insert(payload);
+
+  if (response.error) {
+    alert("Gagal menyimpan kategori: " + response.error.message);
+    return;
+  }
+
+  clearKategoriForm();
+  await loadTaxonomyAdminData();
+  await loadMasterData();
+});
+
+document.getElementById("tagForm").addEventListener("submit", async event => {
+  event.preventDefault();
+
+  const id = document.getElementById("tagId").value;
+
+  const payload = {
+    nama: document.getElementById("tagNama").value,
+    slug: document.getElementById("tagSlug").value
+  };
+
+  const response = id
+    ? await supabaseClient.from("tags").update(payload).eq("id", id)
+    : await supabaseClient.from("tags").insert(payload);
+
+  if (response.error) {
+    alert("Gagal menyimpan tag: " + response.error.message);
+    return;
+  }
+
+  clearTagForm();
+  await loadTaxonomyAdminData();
+  await loadMasterData();
+});
+
+function editKategori(id) {
+  const item = kategoriAdminData.find(row => row.id === id);
+  if (!item) return;
+
+  document.getElementById("kategoriId").value = item.id;
+  document.getElementById("kategoriNama").value = item.nama;
+  document.getElementById("kategoriSlug").value = item.slug;
+
+  location.hash = "#taxonomyAdmin";
+}
+
+async function deleteKategori(id) {
+  if (!confirm("Yakin ingin menghapus kategori ini?")) return;
+
+  const { error } = await supabaseClient
+    .from("kategori")
+    .delete()
+    .eq("id", id);
+
+  if (error) {
+    alert("Gagal menghapus kategori: " + error.message);
+    return;
+  }
+
+  await loadTaxonomyAdminData();
+  await loadMasterData();
+}
+
+function clearKategoriForm() {
+  document.getElementById("kategoriForm").reset();
+  document.getElementById("kategoriId").value = "";
+}
+
+function editTag(id) {
+  const item = tagAdminData.find(row => row.id === id);
+  if (!item) return;
+
+  document.getElementById("tagId").value = item.id;
+  document.getElementById("tagNama").value = item.nama;
+  document.getElementById("tagSlug").value = item.slug;
+
+  location.hash = "#taxonomyAdmin";
+}
+
+async function deleteTag(id) {
+  if (!confirm("Yakin ingin menghapus tag ini?")) return;
+
+  const { error } = await supabaseClient
+    .from("tags")
+    .delete()
+    .eq("id", id);
+
+  if (error) {
+    alert("Gagal menghapus tag: " + error.message);
+    return;
+  }
+
+  await loadTaxonomyAdminData();
+  await loadMasterData();
+}
+
+function clearTagForm() {
+  document.getElementById("tagForm").reset();
+  document.getElementById("tagId").value = "";
+}
+
+const kategoriNamaInput = document.getElementById("kategoriNama");
+const kategoriSlugInput = document.getElementById("kategoriSlug");
+
+if (kategoriNamaInput && kategoriSlugInput) {
+  kategoriNamaInput.addEventListener("input", () => {
+    kategoriSlugInput.value = makeSlug(kategoriNamaInput.value);
+  });
+}
+
+const tagNamaInput = document.getElementById("tagNama");
+const tagSlugInput = document.getElementById("tagSlug");
+
+if (tagNamaInput && tagSlugInput) {
+  tagNamaInput.addEventListener("input", () => {
+    tagSlugInput.value = makeSlug(tagNamaInput.value);
+  });
+}
+
 
 /* SEARCH */
 
