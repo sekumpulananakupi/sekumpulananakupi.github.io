@@ -372,8 +372,7 @@ document.getElementById("infoForm").addEventListener("submit", async event => {
       .from("informasi_kampus")
       .update(payload)
       .eq("id", id)
-      .select()
-      .single();
+
   } else {
     response = await supabaseClient
       .from("informasi_kampus")
@@ -425,8 +424,7 @@ document.getElementById("wikiForm").addEventListener("submit", async event => {
       .from("wiki_kampus")
       .update(payload)
       .eq("id", id)
-      .select()
-      .single();
+
   } else {
     response = await supabaseClient
       .from("wiki_kampus")
@@ -480,8 +478,7 @@ document.getElementById("jobForm").addEventListener("submit", async event => {
       .from("lowongan_kerja")
       .update(payload)
       .eq("id", id)
-      .select()
-      .single();
+
   } else {
     response = await supabaseClient
       .from("lowongan_kerja")
