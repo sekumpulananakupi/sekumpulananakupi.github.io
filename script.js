@@ -228,32 +228,52 @@ function renderLatest() {
 }
 
 function renderAll() {
-  renderLatest();
-  renderLatestJobs();
+  if (typeof renderLatest === "function") renderLatest();
+  if (typeof renderLatestJobs === "function") renderLatestJobs();
+  if (typeof renderHomeDokumen === "function") renderHomeDokumen();
+  if (typeof renderHomeFaq === "function") renderHomeFaq();
 
-  renderList("info", "infoList", "infoSearch", infoData);
-  renderList("wiki", "wikiList", "wikiSearch", wikiData);
-  renderList("job", "jobList", "jobSearch", jobData);
+  if (document.getElementById("infoList")) {
+    renderList("info", "infoList", "infoSearch", infoData);
+  }
 
-  document.getElementById("countInfo").textContent = infoData.length;
-  document.getElementById("countWiki").textContent = wikiData.length;
-  document.getElementById("countJobs").textContent = jobData.length;
+  if (document.getElementById("wikiList")) {
+    renderList("wiki", "wikiList", "wikiSearch", wikiData);
+  }
+
+  if (document.getElementById("jobList")) {
+    renderList("job", "jobList", "jobSearch", jobData);
+  }
+
+  if (document.getElementById("countInfo")) {
+    document.getElementById("countInfo").textContent = infoData.length;
+  }
+
+  if (document.getElementById("countWiki")) {
+    document.getElementById("countWiki").textContent = wikiData.length;
+  }
+
+  if (document.getElementById("countJobs")) {
+    document.getElementById("countJobs").textContent = jobData.length;
+  }
+
   if (document.getElementById("countJurusan")) {
-  document.getElementById("countJurusan").textContent = jurusanData.length;
+    document.getElementById("countJurusan").textContent = jurusanData.length;
+  }
+
+  if (document.getElementById("countDokumen")) {
+    document.getElementById("countDokumen").textContent = dokumenData.length;
+  }
+
+  if (document.getElementById("countFaq")) {
+    document.getElementById("countFaq").textContent = faqData.length;
+  }
 }
 
-if (document.getElementById("countDokumen")) {
-  document.getElementById("countDokumen").textContent = dokumenData.length;
-}
-
-if (document.getElementById("countFaq")) {
-  document.getElementById("countFaq").textContent = faqData.length;
-}
-}
-
-["infoSearch", "wikiSearch", "jobSearch"].forEach(id =>
-  document.getElementById(id).addEventListener("input", renderAll)
-);
+["infoSearch", "wikiSearch", "jobSearch"].forEach(id => {
+  const input = document.getElementById(id);
+  if (input) input.addEventListener("input", renderAll);
+});
 
 /* FILTER KATEGORI */
 
