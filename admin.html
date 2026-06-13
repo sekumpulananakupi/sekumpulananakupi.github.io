@@ -85,14 +85,8 @@
               <input type="text" id="infoTitle" placeholder="Judul informasi" required />
               <input type="hidden" id="infoCategory" value="" />
 
-              <label>Kategori</label>
-              <select id="infoKategoriMulti" multiple></select>
-
-              <label>Tag</label>
-              <select id="infoTagMulti" multiple></select>
-
-              <label>Jurusan Terkait</label>
-              <select id="infoJurusanMulti" multiple></select>
+              <label>Kategori Info Kampus</label>
+              <div id="infoKategoriMulti" class="checkbox-group"></div>
 
               <textarea id="infoContent" placeholder="Isi informasi" required></textarea>
               <input type="file" id="infoImage" accept="image/*" />
@@ -120,15 +114,13 @@
               <input type="text" id="wikiTitle" placeholder="Judul wiki" required />
               <input type="hidden" id="wikiTag" value="" />
 
-              <label>Kategori</label>
-              <select id="wikiKategoriMulti" multiple></select>
-
-              <label>Tag</label>
-              <select id="wikiTagMulti" multiple></select>
-
-              <label>Jurusan Terkait</label>
-              <select id="wikiJurusanMulti" multiple></select>
-
+              <label>Kategori Wiki</label>
+              <div id="wikiKategoriMulti" class="checkbox-group"></div>
+              
+              <label>Tag Wiki</label>
+              <div id="wikiTagMulti" class="checkbox-group"></div>
+              
+              
               <textarea id="wikiContent" placeholder="Isi wiki" required></textarea>
               <input type="file" id="wikiImage" accept="image/*" />
 
@@ -157,14 +149,11 @@
               <input type="text" id="jobLocation" placeholder="Lokasi" />
               <input type="url" id="jobLink" placeholder="Link pendaftaran" />
 
-              <label>Kategori</label>
-              <select id="jobKategoriMulti" multiple></select>
-
-              <label>Tag</label>
-              <select id="jobTagMulti" multiple></select>
-
+              <label>Tag Lowongan</label>
+              <div id="jobTagMulti" class="checkbox-group"></div>
+              
               <label>Jurusan Terkait</label>
-              <select id="jobJurusanMulti" multiple></select>
+              <div id="jobJurusanMulti" class="checkbox-group"></div>
 
               <input type="file" id="jobImage" accept="image/*" />
               <textarea id="jobContent" placeholder="Deskripsi lowongan"></textarea>
