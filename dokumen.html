@@ -27,20 +27,35 @@
   </header>
 
   <main class="container">
-    <section class="section">
-      <div class="section-heading">
-        <div>
-          <p class="eyebrow">Referensi</p>
-          <h2>Dokumen Penting Kampus</h2>
-        </div>
+  <section class="section">
 
-        <input type="search" id="dokumenSearch" placeholder="Cari dokumen..." />
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">Referensi</p>
+        <h2>Dokumen Penting Kampus</h2>
       </div>
 
-      <div class="grid-list" id="dokumenList"></div>
-    </section>
-  </main>
+      <div class="filter-inline">
 
+        <input
+          type="search"
+          id="dokumenSearch"
+          placeholder="Cari dokumen..."
+        />
+
+        <select id="dokumenKategoriFilter">
+          <option value="all">Semua Kategori</option>
+        </select>
+
+      </div>
+
+    </div>
+
+    <div class="grid-list" id="dokumenList"></div>
+
+  </section>
+</main>
+  
   <footer class="footer">
     <div class="container">
       <p>© 2026 Sekumpulan Anak UPI. Dibuat untuk komunitas mahasiswa.</p>
