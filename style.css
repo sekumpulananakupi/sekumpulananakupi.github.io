@@ -457,3 +457,27 @@ nav a {
 .ql-container {
   border-radius: 0 0 12px 12px;
 }
+
+.post-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 16px;
+  margin: 18px 0;
+  display: block;
+}
+
+.post-content iframe {
+  max-width: 100%;
+}
+
+.post-content ul,
+.post-content ol {
+  padding-left: 24px;
+}
+
+.post-content blockquote {
+  border-left: 4px solid #1d4ed8;
+  padding-left: 16px;
+  color: #475569;
+  margin: 20px 0;
+}
