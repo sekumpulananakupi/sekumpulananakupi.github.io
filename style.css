@@ -538,3 +538,14 @@ nav a {
     flex-direction: column;
   }
 }
+
+.prospek-chip-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 16px 0 24px;
+}
+
+.prospek-chip {
+  text-decoration: none;
+}
