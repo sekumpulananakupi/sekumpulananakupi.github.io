@@ -595,3 +595,21 @@ nav a {
 .admin-page.active {
   display: block;
 }
+
+.faq-item {
+  background: white;
+  border-radius: 16px;
+  margin-bottom: 16px;
+  padding: 18px;
+  box-shadow: var(--shadow);
+}
+
+.faq-item summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.faq-answer {
+  margin-top: 16px;
+  line-height: 1.7;
+}
