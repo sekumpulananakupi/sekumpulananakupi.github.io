@@ -20,6 +20,7 @@
         <li><a href="#wiki">Wiki</a></li>
         <li><a href="#lowongan">Lowongan</a></li>
         <li><a href="#statistik">Statistik Jurusan</a></li>
+        <li><a href="#jurusanAdmin">Jurusan</a></li>
       </ul>
     </nav>
   </header>
@@ -210,6 +211,32 @@
   <div class="grid-list" id="statistikList"></div>
 </section>
   
+<section class="section admin-section" id="jurusanAdmin">
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">CRUD</p>
+      <h2>Data Jurusan</h2>
+    </div>
+  </div>
+
+  <form id="jurusanForm" class="form-card">
+    <input type="hidden" id="jurusanId" />
+
+    <input type="text" id="jurusanNama" placeholder="Nama jurusan" required />
+    <input type="text" id="jurusanSlug" placeholder="Slug, contoh: pendidikan-kimia" required />
+    <input type="text" id="jurusanFakultas" placeholder="Fakultas, contoh: FPMIPA" />
+    <input type="text" id="jurusanJenjang" placeholder="Jenjang, contoh: S1" />
+    <textarea id="jurusanDeskripsi" placeholder="Deskripsi jurusan"></textarea>
+
+    <div class="form-actions">
+      <button class="btn primary" type="submit">Simpan Jurusan</button>
+      <button class="btn ghost" type="button" onclick="clearJurusanForm()">Batal</button>
+    </div>
+  </form>
+
+  <div class="grid-list" id="jurusanAdminList"></div>
+</section>
+
   
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="admin.js"></script>
