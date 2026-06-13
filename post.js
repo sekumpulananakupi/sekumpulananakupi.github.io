@@ -111,8 +111,8 @@ async function loadPost() {
         ${renderPills(relations.jurusan, "jurusan-pill")}
       </div>
 
-      <div class="post-content">
-        ${escapeHTML(content).replace(/\n/g, "<br>")}
+     <div class="post-content">
+      ${content || ""}
       </div>
 
       ${
