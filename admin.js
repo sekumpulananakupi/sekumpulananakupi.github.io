@@ -645,17 +645,22 @@ function renderList(type, listId, searchId) {
 }
 
 function updateDashboardStats() {
-  const countInfo = qs("adminCountInfo");
-  const countWiki = qs("adminCountWiki");
-  const countJobs = qs("adminCountJobs");
-  const countTotal = qs("adminCountTotal");
+  const totalKonten =
+    infoData.length +
+    wikiData.length +
+    jobData.length +
+    dokumenData.length +
+    faqData.length;
 
-  if (!countInfo || !countWiki || !countJobs || !countTotal) return;
-
-  countInfo.textContent = infoData.length;
-  countWiki.textContent = wikiData.length;
-  countJobs.textContent = jobData.length;
-  countTotal.textContent = infoData.length + wikiData.length + jobData.length;
+  if (qs("adminCountInfo")) qs("adminCountInfo").textContent = infoData.length;
+  if (qs("adminCountWiki")) qs("adminCountWiki").textContent = wikiData.length;
+  if (qs("adminCountJobs")) qs("adminCountJobs").textContent = jobData.length;
+  if (qs("adminCountJurusan")) qs("adminCountJurusan").textContent = jurusanAdminData.length || jurusanData.length;
+  if (qs("adminCountDokumen")) qs("adminCountDokumen").textContent = dokumenData.length;
+  if (qs("adminCountFaq")) qs("adminCountFaq").textContent = faqData.length;
+  if (qs("adminCountKategori")) qs("adminCountKategori").textContent = kategoriAdminData.length || kategoriData.length;
+  if (qs("adminCountTag")) qs("adminCountTag").textContent = tagAdminData.length || tagData.length;
+  if (qs("adminCountTotal")) qs("adminCountTotal").textContent = totalKonten;
 }
 
 function renderAll() {
