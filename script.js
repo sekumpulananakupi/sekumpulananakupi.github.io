@@ -11,28 +11,20 @@ let kategoriData = [];
 let artikelKategoriData = [];
 let jurusanData = [];
 let artikelJurusanData = [];
+let dokumenData = [];
+let faqData = [];
 let activeJobJurusan = "all";
 
 async function loadData() {
   const { data: info, error: infoError } = await supabaseClient.from("informasi_kampus").select("*").order("created_at", { ascending: false });
   const { data: wiki, error: wikiError } = await supabaseClient.from("wiki_kampus").select("*").order("created_at", { ascending: false });
   const { data: jobs, error: jobError } = await supabaseClient.from("lowongan_kerja").select("*").order("created_at", { ascending: false });
-  const { data: kategori } = await supabaseClient
-  .from("kategori")
-  .select("*");
-
-  const { data: artikelKategori } = await supabaseClient
-  .from("artikel_kategori")
-  .select("*");
-
-  const { data: jurusan } = await supabaseClient
-  .from("jurusan")
-  .select("*")
-  .order("nama", { ascending: true });
-
-const { data: artikelJurusan } = await supabaseClient
-  .from("artikel_jurusan")
-  .select("*");
+  const { data: dokumen } = await supabaseClient.from("dokumen_kampus").select("*").order("created_at", { ascending: false }).limit(4);
+  const { data: faq } = await supabaseClient.from("faq_kampus").select("*").order("created_at", { ascending: false }).limit(4);
+  const { data: kategori } = await supabaseClient.from("kategori").select("*");
+  const { data: artikelKategori } = await supabaseClient.from("artikel_kategori").select("*");
+  const { data: jurusan } = await supabaseClient.from("jurusan").select("*").order("nama", { ascending: true });
+  const { data: artikelJurusan } = await supabaseClient.from("artikel_jurusan").select("*");
   
   
   if (infoError || wikiError || jobError) {
@@ -46,15 +38,50 @@ const { data: artikelJurusan } = await supabaseClient
   artikelKategoriData = artikelKategori || [];
   jurusanData = jurusan || [];
   artikelJurusanData = artikelJurusan || [];
+  dokumenData = dokumen || [];
+  faqData = faq || [];
 
   renderJurusanJobFilter();
   renderFilterButtons();
-  
+  renderHomeDokumen();
+  renderHomeFaq();
   renderAll();
 }
 
 function escapeHTML(text) {
   return String(text || "").replace(/[&<>'"]/g, char => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", "'":"&#39;", '"':"&quot;" }[char]));
+}
+
+function renderHomeDokumen() {
+  const list = document.getElementById("homeDokumenList");
+  if (!list) return;
+
+  list.innerHTML = dokumenData.length
+    ? `<div class="home-mini-list">
+        ${dokumenData.map(item => `
+          <a href="${escapeHTML(item.link)}" target="_blank" class="home-mini-item">
+            <strong>${escapeHTML(item.judul)}</strong>
+            <span>${escapeHTML(item.kategori || "Dokumen")}</span>
+          </a>
+        `).join("")}
+      </div>`
+    : `<div class="empty">Belum ada dokumen.</div>`;
+}
+
+function renderHomeFaq() {
+  const list = document.getElementById("homeFaqList");
+  if (!list) return;
+
+  list.innerHTML = faqData.length
+    ? `<div class="home-mini-list">
+        ${faqData.map(item => `
+          <a href="faq.html" class="home-mini-item">
+            <strong>${escapeHTML(item.pertanyaan)}</strong>
+            <span>${escapeHTML(item.kategori || "FAQ")}</span>
+          </a>
+        `).join("")}
+      </div>`
+    : `<div class="empty">Belum ada FAQ.</div>`;
 }
 
 function createCard(type, item) {
