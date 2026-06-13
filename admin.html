@@ -8,272 +8,276 @@
 </head>
 
 <body>
-  <header class="site-header">
-    <nav class="navbar container">
-      <a href="index.html" class="brand">ADMIN<span>SAUPI</span></a>
-
-      <button class="menu-toggle" id="menuToggle">☰</button>
-
-      <ul class="nav-menu" id="navMenu">
-        <li><a href="index.html">Halaman Publik</a></li>
-        <li><a href="#kampus">Info Kampus</a></li>
-        <li><a href="#wiki">Wiki</a></li>
-        <li><a href="#lowongan">Lowongan</a></li>
-        <li><a href="#statistik">Statistik Jurusan</a></li>
-        <li><a href="#jurusanAdmin">Jurusan</a></li>
-        <li><a href="#taxonomyAdmin">Kategori & Tag</a></li>
-      </ul>
-    </nav>
-  </header>
-
   <main class="container admin-main">
 
     <section class="admin-login" id="loginBox">
       <h1>Login Admin</h1>
-      <p>Login untuk menambah, mengedit, dan menghapus data.</p>
+      <p>Login untuk mengelola data SAU UPI.</p>
 
       <input type="email" id="adminEmail" placeholder="Email admin" />
       <input type="password" id="adminPassword" placeholder="Password admin" />
 
       <button class="btn primary" id="loginBtn">Login</button>
-      <button class="btn ghost" id="logoutBtn" style="display:none;">Logout</button>
-
       <p id="loginStatus">Belum login</p>
     </section>
 
     <div id="adminPanel" style="display:none;">
+      <div class="admin-layout">
 
-      <section class="admin-toolbar">
-        <h2>Panel Kelola Data</h2>
-        <p>Mode admin aktif. Kamu bisa menambah, mengedit, dan menghapus data.</p>
-      </section>
+        <aside class="admin-sidebar">
+          <h2>SAU UPI</h2>
+          <p>Dashboard Admin</p>
 
-      <section class="admin-stats">
-        <div class="stat-card">
-          <strong id="adminCountInfo">0</strong>
-          <span>Info Kampus</span>
-        </div>
-      
-        <div class="stat-card">
-          <strong id="adminCountWiki">0</strong>
-          <span>Wiki Kampus</span>
-        </div>
-      
-        <div class="stat-card">
-          <strong id="adminCountJobs">0</strong>
-          <span>Lowongan</span>
-        </div>
-      
-        <div class="stat-card">
-          <strong id="adminCountTotal">0</strong>
-          <span>Total Konten</span>
-        </div>
-      </section>
+          <button class="sidebar-link active" data-page="dashboardPage">Dashboard</button>
+          <button class="sidebar-link" data-page="infoPage">Info Kampus</button>
+          <button class="sidebar-link" data-page="wikiPage">Wiki Kampus</button>
+          <button class="sidebar-link" data-page="jobPage">Lowongan Kerja</button>
+          <button class="sidebar-link" data-page="statistikPage">Statistik Jurusan</button>
+          <button class="sidebar-link" data-page="jurusanPage">Data Jurusan</button>
+          <button class="sidebar-link" data-page="taxonomyPage">Kategori & Tag</button>
 
-      
-      <section class="section admin-section" id="kampus">
-        <div class="section-heading">
-          <div>
-            <p class="eyebrow">CRUD</p>
-            <h2>Informasi Kampus</h2>
-          </div>
+          <a href="index.html" class="sidebar-link">Halaman Publik</a>
+          <button class="btn danger" id="logoutBtn" style="margin-top:16px;">Logout</button>
+        </aside>
 
-          <input type="search" id="infoSearch" placeholder="Cari info..." />
-        </div>
+        <section class="admin-content">
 
-        <form id="infoForm" class="form-card">
-          <input type="hidden" id="infoId" />
-          <input type="text" id="infoTitle" placeholder="Judul informasi" required />
-          <input type="text" id="infoCategory" placeholder="Kategori" required />
-          <label>Kategori</label>
-            <select id="infoKategoriMulti" multiple></select>
+          <section class="admin-page active" id="dashboardPage">
+            <div class="admin-toolbar">
+              <h2>Panel Kelola Data</h2>
+              <p>Mode admin aktif. Pilih menu di sidebar untuk mengelola data.</p>
+            </div>
 
-            <label>Tag</label>
-            <select id="infoTagMulti" multiple></select>
+            <section class="admin-stats">
+              <div class="stat-card">
+                <strong id="adminCountInfo">0</strong>
+                <span>Info Kampus</span>
+              </div>
 
-            <label>Jurusan Terkait</label>
-            <select id="infoJurusanMulti" multiple></select>
-          <textarea id="infoContent" placeholder="Isi informasi" required></textarea>
-          <input type="file" id="infoImage" accept="image/*" />
+              <div class="stat-card">
+                <strong id="adminCountWiki">0</strong>
+                <span>Wiki Kampus</span>
+              </div>
 
-          <div class="form-actions">
-            <button class="btn primary" type="submit">Simpan</button>
-            <button class="btn ghost" type="button" onclick="clearForm('info')">Batal</button>
-          </div>
-        </form>
+              <div class="stat-card">
+                <strong id="adminCountJobs">0</strong>
+                <span>Lowongan</span>
+              </div>
 
-        <div class="grid-list" id="infoList"></div>
-      </section>
+              <div class="stat-card">
+                <strong id="adminCountTotal">0</strong>
+                <span>Total Konten</span>
+              </div>
+            </section>
+          </section>
 
-      <section class="section admin-section" id="wiki">
-        <div class="section-heading">
-          <div>
-            <p class="eyebrow">CRUD</p>
-            <h2>Wiki Kampus</h2>
-          </div>
+          <section class="admin-page" id="infoPage">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">CRUD</p>
+                <h2>Informasi Kampus</h2>
+              </div>
+              <input type="search" id="infoSearch" placeholder="Cari info..." />
+            </div>
 
-          <input type="search" id="wikiSearch" placeholder="Cari wiki..." />
-        </div>
+            <form id="infoForm" class="form-card">
+              <input type="hidden" id="infoId" />
+              <input type="text" id="infoTitle" placeholder="Judul informasi" required />
+              <input type="text" id="infoCategory" placeholder="Kategori lama / ringkasan" />
 
-        <form id="wikiForm" class="form-card">
-          <input type="hidden" id="wikiId" />
-          <input type="text" id="wikiTitle" placeholder="Judul wiki" required />
-          <input type="text" id="wikiTag" placeholder="Kategori/tag" required />
-            <label>Kategori</label>
-            <select id="wikiKategoriMulti" multiple></select>
-            
-            <label>Tag</label>
-            <select id="wikiTagMulti" multiple></select>
-            
-            <label>Jurusan Terkait</label>
-            <select id="wikiJurusanMulti" multiple></select>
-          <textarea id="wikiContent" placeholder="Isi wiki" required></textarea>
-          <input type="file" id="wikiImage" accept="image/*" />
+              <label>Kategori</label>
+              <select id="infoKategoriMulti" multiple></select>
 
-          <div class="form-actions">
-            <button class="btn primary" type="submit">Simpan</button>
-            <button class="btn ghost" type="button" onclick="clearForm('wiki')">Batal</button>
-          </div>
-        </form>
+              <label>Tag</label>
+              <select id="infoTagMulti" multiple></select>
 
-        <div class="grid-list" id="wikiList"></div>
-      </section>
+              <label>Jurusan Terkait</label>
+              <select id="infoJurusanMulti" multiple></select>
 
-      <section class="section admin-section" id="lowongan">
-        <div class="section-heading">
-          <div>
-            <p class="eyebrow">CRUD</p>
-            <h2>Lowongan Kerja</h2>
-          </div>
+              <textarea id="infoContent" placeholder="Isi informasi" required></textarea>
+              <input type="file" id="infoImage" accept="image/*" />
 
-          <input type="search" id="jobSearch" placeholder="Cari lowongan..." />
-        </div>
+              <div class="form-actions">
+                <button class="btn primary" type="submit">Simpan</button>
+                <button class="btn ghost" type="button" onclick="clearForm('info')">Batal</button>
+              </div>
+            </form>
 
-        <form id="jobForm" class="form-card">
-          <input type="text" id="jobLocation" placeholder="Lokasi" />
-          <input type="url" id="jobLink" placeholder="Link pendaftaran" />
-          
-          <label>Kategori</label>
-          <select id="jobKategoriMulti" multiple></select>
-          
-          <label>Tag</label>
-          <select id="jobTagMulti" multiple></select>
-          
-          <label>Jurusan Terkait</label>
-          <select id="jobJurusanMulti" multiple></select>
-          
-          <input type="file" id="jobImage" accept="image/*" />
-          <textarea id="jobContent" placeholder="Deskripsi lowongan"></textarea>
+            <div class="grid-list" id="infoList"></div>
+          </section>
 
-          <div class="form-actions">
-            <button class="btn primary" type="submit">Simpan</button>
-            <button class="btn ghost" type="button" onclick="clearForm('job')">Batal</button>
-          </div>
-        </form>
+          <section class="admin-page" id="wikiPage">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">CRUD</p>
+                <h2>Wiki Kampus</h2>
+              </div>
+              <input type="search" id="wikiSearch" placeholder="Cari wiki..." />
+            </div>
 
-        <div class="grid-list" id="jobList"></div>
-      </section>
+            <form id="wikiForm" class="form-card">
+              <input type="hidden" id="wikiId" />
+              <input type="text" id="wikiTitle" placeholder="Judul wiki" required />
+              <input type="text" id="wikiTag" placeholder="Kategori lama / ringkasan" />
 
+              <label>Kategori</label>
+              <select id="wikiKategoriMulti" multiple></select>
+
+              <label>Tag</label>
+              <select id="wikiTagMulti" multiple></select>
+
+              <label>Jurusan Terkait</label>
+              <select id="wikiJurusanMulti" multiple></select>
+
+              <textarea id="wikiContent" placeholder="Isi wiki" required></textarea>
+              <input type="file" id="wikiImage" accept="image/*" />
+
+              <div class="form-actions">
+                <button class="btn primary" type="submit">Simpan</button>
+                <button class="btn ghost" type="button" onclick="clearForm('wiki')">Batal</button>
+              </div>
+            </form>
+
+            <div class="grid-list" id="wikiList"></div>
+          </section>
+
+          <section class="admin-page" id="jobPage">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">CRUD</p>
+                <h2>Lowongan Kerja</h2>
+              </div>
+              <input type="search" id="jobSearch" placeholder="Cari lowongan..." />
+            </div>
+
+            <form id="jobForm" class="form-card">
+              <input type="hidden" id="jobId" />
+              <input type="text" id="jobTitle" placeholder="Posisi" required />
+              <input type="text" id="jobCompany" placeholder="Perusahaan" required />
+              <input type="text" id="jobLocation" placeholder="Lokasi" />
+              <input type="url" id="jobLink" placeholder="Link pendaftaran" />
+
+              <label>Kategori</label>
+              <select id="jobKategoriMulti" multiple></select>
+
+              <label>Tag</label>
+              <select id="jobTagMulti" multiple></select>
+
+              <label>Jurusan Terkait</label>
+              <select id="jobJurusanMulti" multiple></select>
+
+              <input type="file" id="jobImage" accept="image/*" />
+              <textarea id="jobContent" placeholder="Deskripsi lowongan"></textarea>
+
+              <div class="form-actions">
+                <button class="btn primary" type="submit">Simpan</button>
+                <button class="btn ghost" type="button" onclick="clearForm('job')">Batal</button>
+              </div>
+            </form>
+
+            <div class="grid-list" id="jobList"></div>
+          </section>
+
+          <section class="admin-page" id="statistikPage">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">CRUD</p>
+                <h2>Statistik Jurusan</h2>
+              </div>
+            </div>
+
+            <form id="statistikForm" class="form-card">
+              <input type="hidden" id="statistikId" />
+
+              <label>Jurusan</label>
+              <select id="statistikJurusan" required></select>
+
+              <input type="number" id="statistikTahun" placeholder="Tahun" required />
+
+              <select id="statistikJalur" required>
+                <option value="">Pilih Jalur</option>
+                <option value="SNBP">SNBP</option>
+                <option value="SNBT">SNBT</option>
+                <option value="Mandiri">Mandiri</option>
+              </select>
+
+              <input type="number" id="statistikDayaTampung" placeholder="Daya tampung" required />
+              <input type="number" id="statistikPeminat" placeholder="Peminat" required />
+
+              <div class="form-actions">
+                <button class="btn primary" type="submit">Simpan Statistik</button>
+                <button class="btn ghost" type="button" onclick="clearStatistikForm()">Batal</button>
+              </div>
+            </form>
+
+            <div class="grid-list" id="statistikList"></div>
+          </section>
+
+          <section class="admin-page" id="jurusanPage">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">CRUD</p>
+                <h2>Data Jurusan</h2>
+              </div>
+            </div>
+
+            <form id="jurusanForm" class="form-card">
+              <input type="hidden" id="jurusanId" />
+              <input type="text" id="jurusanNama" placeholder="Nama jurusan" required />
+              <input type="text" id="jurusanSlug" placeholder="Slug, contoh: pendidikan-kimia" required />
+              <input type="text" id="jurusanFakultas" placeholder="Fakultas, contoh: FPMIPA" />
+              <input type="text" id="jurusanJenjang" placeholder="Jenjang, contoh: S1" />
+              <textarea id="jurusanDeskripsi" placeholder="Deskripsi jurusan"></textarea>
+
+              <div class="form-actions">
+                <button class="btn primary" type="submit">Simpan Jurusan</button>
+                <button class="btn ghost" type="button" onclick="clearJurusanForm()">Batal</button>
+              </div>
+            </form>
+
+            <div class="grid-list" id="jurusanAdminList"></div>
+          </section>
+
+          <section class="admin-page" id="taxonomyPage">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">CRUD</p>
+                <h2>Kategori & Tag</h2>
+              </div>
+            </div>
+
+            <form id="kategoriForm" class="form-card">
+              <input type="hidden" id="kategoriId" />
+              <input type="text" id="kategoriNama" placeholder="Nama kategori" required />
+              <input type="text" id="kategoriSlug" placeholder="Slug kategori" required />
+
+              <div class="form-actions">
+                <button class="btn primary" type="submit">Simpan Kategori</button>
+                <button class="btn ghost" type="button" onclick="clearKategoriForm()">Batal</button>
+              </div>
+            </form>
+
+            <div class="grid-list" id="kategoriAdminList"></div>
+
+            <form id="tagForm" class="form-card">
+              <input type="hidden" id="tagId" />
+              <input type="text" id="tagNama" placeholder="Nama tag" required />
+              <input type="text" id="tagSlug" placeholder="Slug tag" required />
+
+              <div class="form-actions">
+                <button class="btn primary" type="submit">Simpan Tag</button>
+                <button class="btn ghost" type="button" onclick="clearTagForm()">Batal</button>
+              </div>
+            </form>
+
+            <div class="grid-list" id="tagAdminList"></div>
+          </section>
+
+        </section>
+      </div>
     </div>
   </main>
 
-<section class="section admin-section" id="statistik">
-  <div class="section-heading">
-    <div>
-      <p class="eyebrow">CRUD</p>
-      <h2>Statistik Jurusan</h2>
-    </div>
-  </div>
-
-  <form id="statistikForm" class="form-card">
-    <input type="hidden" id="statistikId" />
-
-    <label>Jurusan</label>
-    <select id="statistikJurusan" required></select>
-
-    <input type="number" id="statistikTahun" placeholder="Tahun" required />
-
-    <select id="statistikJalur" required>
-      <option value="">Pilih Jalur</option>
-      <option value="SNBP">SNBP</option>
-      <option value="SNBT">SNBT</option>
-      <option value="Mandiri">Mandiri</option>
-    </select>
-
-    <input type="number" id="statistikDayaTampung" placeholder="Daya tampung" required />
-    <input type="number" id="statistikPeminat" placeholder="Peminat" required />
-
-    <div class="form-actions">
-      <button class="btn primary" type="submit">Simpan Statistik</button>
-      <button class="btn ghost" type="button" onclick="clearStatistikForm()">Batal</button>
-    </div>
-  </form>
-
-  <div class="grid-list" id="statistikList"></div>
-</section>
-  
-<section class="section admin-section" id="jurusanAdmin">
-  <div class="section-heading">
-    <div>
-      <p class="eyebrow">CRUD</p>
-      <h2>Data Jurusan</h2>
-    </div>
-  </div>
-
-  <form id="jurusanForm" class="form-card">
-    <input type="hidden" id="jurusanId" />
-
-    <input type="text" id="jurusanNama" placeholder="Nama jurusan" required />
-    <input type="text" id="jurusanSlug" placeholder="Slug, contoh: pendidikan-kimia" required />
-    <input type="text" id="jurusanFakultas" placeholder="Fakultas, contoh: FPMIPA" />
-    <input type="text" id="jurusanJenjang" placeholder="Jenjang, contoh: S1" />
-    <textarea id="jurusanDeskripsi" placeholder="Deskripsi jurusan"></textarea>
-
-    <div class="form-actions">
-      <button class="btn primary" type="submit">Simpan Jurusan</button>
-      <button class="btn ghost" type="button" onclick="clearJurusanForm()">Batal</button>
-    </div>
-  </form>
-
-  <div class="grid-list" id="jurusanAdminList"></div>
-</section>
-
-<section class="section admin-section" id="taxonomyAdmin">
-  <div class="section-heading">
-    <div>
-      <p class="eyebrow">CRUD</p>
-      <h2>Kategori & Tag</h2>
-    </div>
-  </div>
-
-  <form id="kategoriForm" class="form-card">
-    <input type="hidden" id="kategoriId" />
-    <input type="text" id="kategoriNama" placeholder="Nama kategori" required />
-    <input type="text" id="kategoriSlug" placeholder="Slug kategori" required />
-
-    <div class="form-actions">
-      <button class="btn primary" type="submit">Simpan Kategori</button>
-      <button class="btn ghost" type="button" onclick="clearKategoriForm()">Batal</button>
-    </div>
-  </form>
-
-  <div class="grid-list" id="kategoriAdminList"></div>
-
-  <form id="tagForm" class="form-card">
-    <input type="hidden" id="tagId" />
-    <input type="text" id="tagNama" placeholder="Nama tag" required />
-    <input type="text" id="tagSlug" placeholder="Slug tag" required />
-
-    <div class="form-actions">
-      <button class="btn primary" type="submit">Simpan Tag</button>
-      <button class="btn ghost" type="button" onclick="clearTagForm()">Batal</button>
-    </div>
-  </form>
-
-  <div class="grid-list" id="tagAdminList"></div>
-</section>
-
-  
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="admin.js"></script>
 </body>
