@@ -46,6 +46,9 @@ async function loadJurusanDetail() {
       <div class="post-content">
         ${escapeHTML(jurusan.deskripsi || "Deskripsi jurusan belum tersedia.").replace(/\n/g, "<br>")}
       </div>
+      
+      <h2>Statistik Penerimaan</h2>
+      ${renderStatistik(statistik)}
 
       <a href="jurusan.html" class="btn ghost">← Kembali ke Daftar Jurusan</a>
     </article>
