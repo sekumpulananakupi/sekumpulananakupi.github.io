@@ -19,7 +19,8 @@ async function loadJurusanDetail() {
 
   const detail = document.getElementById("jurusanDetail");
   const statistik = await loadStatistikJurusan(id);
-  const relatedList = document.getElementById("relatedList");
+  const relatedArticleList = document.getElementById("relatedArticleList");
+  const relatedJobList = document.getElementById("relatedJobList");
 
   if (!id) {
     detail.innerHTML = `<div class="empty">Jurusan tidak ditemukan.</div>`;
@@ -54,24 +55,27 @@ async function loadJurusanDetail() {
     </article>
   `;
 
-  await loadRelatedContent(id, relatedList);
+  await loadRelatedContent(id, relatedArticleList, relatedJobList);
 }
 
-async function loadRelatedContent(jurusanId, relatedList) {
+async function loadRelatedContent(jurusanId, relatedArticleList, relatedJobList) {
   const { data: relasi } = await supabaseClient
     .from("artikel_jurusan")
     .select("*")
     .eq("jurusan_id", jurusanId);
 
   if (!relasi || !relasi.length) {
-    relatedList.innerHTML = `<div class="empty">Belum ada artikel atau lowongan terkait.</div>`;
+    relatedArticleList.innerHTML = `<div class="empty">Belum ada artikel terkait.</div>`;
+    relatedJobList.innerHTML = `<div class="empty">Belum ada lowongan terkait.</div>`;
     return;
   }
 
-  const items = [];
+  const articles = [];
+  const jobs = [];
 
   for (const row of relasi) {
     let table = "";
+
     if (row.artikel_tipe === "info") table = "informasi_kampus";
     if (row.artikel_tipe === "wiki") table = "wiki_kampus";
     if (row.artikel_tipe === "job") table = "lowongan_kerja";
@@ -84,19 +88,28 @@ async function loadRelatedContent(jurusanId, relatedList) {
       .eq("id", row.artikel_id)
       .single();
 
-    if (data) {
-      items.push({
-        ...data,
-        type: row.artikel_tipe
-      });
+    if (!data) continue;
+
+    const item = {
+      ...data,
+      type: row.artikel_tipe
+    };
+
+    if (row.artikel_tipe === "job") {
+      jobs.push(item);
+    } else {
+      articles.push(item);
     }
   }
 
-  relatedList.innerHTML = items.length
-    ? items.map(createRelatedCard).join("")
-    : `<div class="empty">Belum ada konten terkait.</div>`;
-}
+  relatedArticleList.innerHTML = articles.length
+    ? articles.map(createRelatedCard).join("")
+    : `<div class="empty">Belum ada artikel terkait.</div>`;
 
+  relatedJobList.innerHTML = jobs.length
+    ? jobs.map(createRelatedCard).join("")
+    : `<div class="empty">Belum ada lowongan terkait.</div>`;
+}
 function createRelatedCard(item) {
   let title = "";
   let content = "";
