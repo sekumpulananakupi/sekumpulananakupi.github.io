@@ -311,3 +311,39 @@ nav a {
     min-height: auto;
   }
 }
+
+.admin-list-item {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 16px 18px;
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+}
+
+.admin-list-item h3 {
+  margin: 8px 0 4px;
+  font-size: 18px;
+}
+
+.admin-list-item p {
+  margin: 0;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.admin-list-item .card-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .admin-list-item {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
