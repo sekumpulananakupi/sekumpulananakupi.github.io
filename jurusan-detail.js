@@ -210,7 +210,8 @@ async function loadAutoMatchedJobs(jurusan, relatedJobList) {
     .from("tags")
     .select("*");
 
-  const matchedJobs = (jobs || []).filter(job => {
+  const matchedJobs = (jobs || [])
+  .map(job => {
     const jobText = `
       ${job.posisi || ""}
       ${job.perusahaan || ""}
@@ -223,14 +224,23 @@ async function loadAutoMatchedJobs(jurusan, relatedJobList) {
       .join(" ")
       .toLowerCase();
 
-    return prospekList.some(prospek => {
-    const regex = new RegExp(`\\b${prospek.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`, "i");
+    const matchedProspek = prospekList.find(prospek => {
+      const safeProspek = prospek.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const regex = new RegExp(`\\b${safeProspek}\\b`, "i");
 
-    return regex.test(jobText) || regex.test(tagNames);
+      return regex.test(jobText) || regex.test(tagNames);
     });
-  });
 
-  if (!matchedJobs.length) return;
+    if (!matchedProspek) return null;
+
+    return {
+      ...job,
+      matchedProspek
+    };
+  })
+  .filter(Boolean);
+
+if (!matchedJobs.length) return;
 
 const existingJobIds = new Set(
   Array.from(relatedJobList.querySelectorAll("[data-job-id]"))
@@ -247,13 +257,11 @@ relatedJobList.innerHTML = `
   ${uniqueMatchedJobs.map(job => createRelatedCard({
     ...job,
     type: "job",
-    matchLabel: "Cocok dengan prospek kerja"
+    matchLabel: `Cocok dengan: ${job.matchedProspek}`
   })).join("")}
 
   ${existingHTML.includes("Belum ada lowongan") ? "" : existingHTML}
 `;
-}
-
 async function loadStatistikJurusan(jurusanId) {
   const { data } = await supabaseClient
     .from("statistik_jurusan")
