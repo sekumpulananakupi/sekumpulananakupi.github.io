@@ -26,37 +26,19 @@ let tagAdminData = [];
 
 async function loadMasterData() {
   const { data: kategori } = await supabaseClient
-    .from("kategori")
-    .select("*")
-    .order("nama", { ascending: true });
+  .from("kategori")
+  .select("*")
+  .order("nama", { ascending: true });
 
-  const { data: tags } = await supabaseClient
-    .from("tags")
-    .select("*")
-    .order("nama", { ascending: true });
+kategoriData = kategori || [];
 
-  const { data: jurusan } = await supabaseClient
-    .from("jurusan")
-    .select("*")
-    .order("nama", { ascending: true });
+const kategoriInfo = kategoriData.filter(item => item.tipe === "info");
+const kategoriWiki = kategoriData.filter(item => item.tipe === "wiki");
 
-  kategoriData = kategori || [];
-  tagData = tags || [];
-  jurusanData = jurusan || [];
-
-  fillMultiSelect("infoKategoriMulti", kategoriData);
-  fillMultiSelect("wikiKategoriMulti", kategoriData);
-  fillMultiSelect("jobKategoriMulti", kategoriData);
-
-  fillMultiSelect("infoTagMulti", tagData);
-  fillMultiSelect("wikiTagMulti", tagData);
-  fillMultiSelect("jobTagMulti", tagData);
-
-  fillMultiSelect("infoJurusanMulti", jurusanData);
-  fillMultiSelect("wikiJurusanMulti", jurusanData);
-  fillMultiSelect("jobJurusanMulti", jurusanData);
-
-  fillSingleSelect("statistikJurusan", jurusanData);
+fillMultiSelect("infoKategoriMulti", kategoriInfo);
+fillMultiSelect("wikiKategoriMulti", kategoriWiki);
+  
+fillSingleSelect("statistikJurusan", jurusanData);
 }
 
 function fillSingleSelect(elementId, data) {
