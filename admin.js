@@ -1310,4 +1310,19 @@ document.querySelectorAll(".sidebar-link[data-page]").forEach(button => {
 ========================= */
 
 initQuillEditors();
+
+const infoEditor = new Quill("#infoEditor", {
+  theme: "snow"
+});
+
+const wikiEditor = new Quill("#wikiEditor", {
+  theme: "snow"
+});
+
+const jobEditor = new Quill("#jobEditor", {
+  theme: "snow"
+});
+
+
+
 checkSession();
