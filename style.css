@@ -613,3 +613,29 @@ nav a {
   margin-top: 16px;
   line-height: 1.7;
 }
+
+@media (max-width: 800px) {
+  .menu-toggle {
+    display: block;
+    z-index: 999;
+  }
+
+  .nav-menu {
+    display: none !important;
+  }
+
+  .nav-menu.show {
+    display: flex !important;
+    position: absolute;
+    top: 70px;
+    left: 4%;
+    right: 4%;
+    flex-direction: column;
+    gap: 14px;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 18px;
+    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.18);
+    z-index: 998;
+  }
+}
