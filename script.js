@@ -329,28 +329,6 @@ function renderKategoriPills(type, artikelId) {
     .join("");
 }
 
-function renderFilterButtons() {
-  const filterBar = document.getElementById("filterBar");
-  if (!filterBar) return;
-
-  const kategoriButtons = kategoriData
-    .filter(item => item.tipe === "info" || item.tipe === "wiki")
-    .map(item => `
-      <button class="filter-btn" data-filter="${escapeHTML(item.nama.toLowerCase())}">
-        ${escapeHTML(item.nama)}
-      </button>
-    `)
-    .join("");
-
-  filterBar.innerHTML = `
-    <button class="filter-btn active" data-filter="all">Semua</button>
-    ${kategoriButtons}
-    <button class="filter-btn" data-filter="lowongan">Lowongan</button>
-  `;
-
-  initFilterButtons();
-}
-
 function renderJurusanJobFilter() {
   const select = document.getElementById("jobJurusanFilter");
   if (!select) return;
