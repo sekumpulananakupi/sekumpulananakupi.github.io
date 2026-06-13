@@ -867,7 +867,23 @@ function clearJurusanForm() {
   document.getElementById("jurusanId").value = "";
 }
 
+function makeSlug(text) {
+  return String(text || "")
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-");
+}
 
+const jurusanNamaInput = document.getElementById("jurusanNama");
+const jurusanSlugInput = document.getElementById("jurusanSlug");
+
+if (jurusanNamaInput && jurusanSlugInput) {
+  jurusanNamaInput.addEventListener("input", () => {
+    jurusanSlugInput.value = makeSlug(jurusanNamaInput.value);
+  });
+}
 
 /* SEARCH */
 
