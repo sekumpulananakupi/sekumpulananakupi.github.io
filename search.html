@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pencarian - SA UPI</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <header class="site-header">
+    <nav class="navbar container">
+      <a href="index.html" class="brand">SA<span>UPI</span></a>
+
+      <ul class="nav-menu">
+        <li><a href="index.html">Beranda</a></li>
+        <li><a href="jurusan.html">Jurusan</a></li>
+        <li><a href="lowongan.html">Lowongan</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="section">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Search</p>
+          <h2>Pencarian Global</h2>
+        </div>
+      </div>
+
+      <div class="filter-panel">
+        <input type="search" id="globalSearch" placeholder="Cari info, wiki, lowongan, atau jurusan..." />
+      </div>
+
+      <div class="grid-list" id="searchResults"></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>© 2026 Sekumpulan Anak UPI. Dibuat untuk komunitas mahasiswa.</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="search.js"></script>
+</body>
+</html>
