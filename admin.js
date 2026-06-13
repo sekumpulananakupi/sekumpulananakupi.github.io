@@ -912,14 +912,18 @@ function renderKategoriAdminList() {
 
   list.innerHTML = kategoriAdminData.length
     ? kategoriAdminData.map(item => `
-      <article class="item-card">
+     <article class="admin-list-item">
+      <div>
+        <span class="pill">${item.tipe || "info"}</span>
         <h3>${item.nama}</h3>
         <p>Slug: ${item.slug}</p>
-        <div class="card-actions">
-          <button class="btn ghost" onclick="editKategori(${item.id})">Edit</button>
-          <button class="btn danger" onclick="deleteKategori(${item.id})">Hapus</button>
-        </div>
-      </article>
+      </div>
+    
+      <div class="card-actions">
+        <button class="btn ghost" onclick="editKategori(${item.id})">Edit</button>
+        <button class="btn danger" onclick="deleteKategori(${item.id})">Hapus</button>
+      </div>
+    </article>
     `).join("")
     : `<div class="empty">Belum ada kategori.</div>`;
 }
@@ -947,11 +951,12 @@ document.getElementById("kategoriForm").addEventListener("submit", async event =
 
   const id = document.getElementById("kategoriId").value;
 
-  const payload = {
-    nama: document.getElementById("kategoriNama").value,
-    slug: document.getElementById("kategoriSlug").value
-  };
-
+const payload = {
+  nama: document.getElementById("kategoriNama").value,
+  slug: document.getElementById("kategoriSlug").value,
+  tipe: document.getElementById("kategoriTipe").value
+};
+  
   const response = id
     ? await supabaseClient.from("kategori").update(payload).eq("id", id)
     : await supabaseClient.from("kategori").insert(payload);
@@ -997,6 +1002,7 @@ function editKategori(id) {
   document.getElementById("kategoriId").value = item.id;
   document.getElementById("kategoriNama").value = item.nama;
   document.getElementById("kategoriSlug").value = item.slug;
+  document.getElementById("kategoriTipe").value = item.tipe || "info";
 
   location.hash = "#taxonomyAdmin";
 }
