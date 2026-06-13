@@ -17,6 +17,7 @@ let isAdmin = false;
 let infoData = [];
 let wikiData = [];
 let jobData = [];
+let dokumenData = [];
 
 let kategoriData = [];
 let tagData = [];
@@ -232,6 +233,7 @@ async function refreshAdminData() {
   await loadStatistikData();
   await loadJurusanAdminData();
   await loadTaxonomyAdminData();
+  await loadDokumenData();
 }
 
 if (qs("loginBtn")) {
@@ -831,6 +833,105 @@ if (qs("jobForm")) {
     localStorage.removeItem("draft_job");
   });
 }
+
+/* =========================
+   CRUD DOKUMEN
+========================= */
+
+async function loadDokumenData() {
+  const { data } = await supabaseClient
+    .from("dokumen_kampus")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  dokumenData = data || [];
+  renderDokumenList();
+}
+
+function renderDokumenList() {
+  const list = qs("dokumenList");
+  if (!list) return;
+
+  list.innerHTML = dokumenData.length
+    ? dokumenData.map(item => `
+      <article class="admin-list-item">
+        <div>
+          <span class="pill">${item.kategori || "Dokumen"}</span>
+          <h3>${item.judul}</h3>
+          <p>${item.deskripsi || ""}</p>
+        </div>
+
+        <div class="card-actions">
+          <a href="${item.link}" target="_blank" class="btn ghost">Buka</a>
+          <button class="btn ghost" onclick="editDokumen(${item.id})">Edit</button>
+          <button class="btn danger" onclick="deleteDokumen(${item.id})">Hapus</button>
+        </div>
+      </article>
+    `).join("")
+    : `<div class="empty">Belum ada dokumen.</div>`;
+}
+
+if (qs("dokumenForm")) {
+  qs("dokumenForm").addEventListener("submit", async event => {
+    event.preventDefault();
+
+    const id = qs("dokumenId").value;
+
+    const payload = {
+      judul: qs("dokumenJudul").value,
+      kategori: qs("dokumenKategori").value,
+      deskripsi: qs("dokumenDeskripsi").value,
+      link: qs("dokumenLink").value
+    };
+
+    const response = id
+      ? await supabaseClient.from("dokumen_kampus").update(payload).eq("id", id)
+      : await supabaseClient.from("dokumen_kampus").insert(payload);
+
+    if (response.error) {
+      alert("Gagal menyimpan dokumen: " + response.error.message);
+      return;
+    }
+
+    clearDokumenForm();
+    await loadDokumenData();
+  });
+}
+
+function editDokumen(id) {
+  const item = dokumenData.find(row => row.id === id);
+  if (!item) return;
+
+  qs("dokumenId").value = item.id;
+  qs("dokumenJudul").value = item.judul || "";
+  qs("dokumenKategori").value = item.kategori || "";
+  qs("dokumenDeskripsi").value = item.deskripsi || "";
+  qs("dokumenLink").value = item.link || "";
+
+  showAdminPage("dokumenPage");
+}
+
+async function deleteDokumen(id) {
+  if (!confirm("Yakin ingin menghapus dokumen ini?")) return;
+
+  const { error } = await supabaseClient
+    .from("dokumen_kampus")
+    .delete()
+    .eq("id", id);
+
+  if (error) {
+    alert("Gagal menghapus dokumen: " + error.message);
+    return;
+  }
+
+  await loadDokumenData();
+}
+
+function clearDokumenForm() {
+  qs("dokumenForm")?.reset();
+  if (qs("dokumenId")) qs("dokumenId").value = "";
+}
+
 
 /* =========================
    EDIT DATA
