@@ -112,8 +112,33 @@ function initQuillEditors() {
   setupQuillImageUpload(infoEditor);
   setupQuillImageUpload(wikiEditor);
   setupQuillImageUpload(jobEditor);
+  setupDraftAutosave("info", infoEditor);
+  setupDraftAutosave("wiki", wikiEditor);
+  setupDraftAutosave("job", jobEditor);
 }
 
+/* =========================
+   AUTO SAVE DRAFT
+========================= */
+
+function setupDraftAutosave(type, editor) {
+  if (!editor) return;
+
+  const key = `draft_${type}`;
+
+  const saved = localStorage.getItem(key);
+
+  if (saved) {
+    editor.root.innerHTML = saved;
+  }
+
+  editor.on("text-change", () => {
+    localStorage.setItem(
+      key,
+      editor.root.innerHTML
+    );
+  });
+}
 
 
 function getEditorHTML(type) {
@@ -643,6 +668,7 @@ if (qs("infoForm")) {
 
     clearForm("info");
     await loadData();
+    localStorage.removeItem("draft_info");
   });
 }
 
@@ -698,6 +724,7 @@ if (qs("wikiForm")) {
 
     clearForm("wiki");
     await loadData();
+    localStorage.removeItem("draft_wiki");
   });
 }
 
@@ -755,6 +782,7 @@ if (qs("jobForm")) {
 
     clearForm("job");
     await loadData();
+    localStorage.removeItem("draft_job");
   });
 }
 
@@ -1336,6 +1364,7 @@ document.querySelectorAll(".sidebar-link[data-page]").forEach(button => {
   const input = qs(id);
   if (input) input.addEventListener("input", renderAll);
 });
+
 
 /* =========================
    START
