@@ -428,3 +428,20 @@ nav a {
   background: #ffffff;
   font-weight: 600;
 }
+
+.filter-panel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 24px 0;
+}
+
+.filter-panel input,
+.filter-panel select {
+  padding: 12px 16px;
+  border-radius: 14px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  font-weight: 600;
+  min-width: 220px;
+}
