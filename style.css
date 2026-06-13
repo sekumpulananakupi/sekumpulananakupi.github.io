@@ -685,3 +685,39 @@ nav a {
     grid-template-columns: 1fr;
   }
 }
+
+.homepage-two-column {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+.home-mini-list {
+  display: grid;
+  gap: 12px;
+}
+
+.home-mini-item {
+  display: block;
+  background: #f8fafc;
+  padding: 14px 16px;
+  border-radius: 14px;
+  text-decoration: none;
+  color: #0f172a;
+}
+
+.home-mini-item strong {
+  display: block;
+  color: #163b73;
+}
+
+.home-mini-item span {
+  color: #64748b;
+  font-size: 14px;
+}
+
+@media (max-width: 768px) {
+  .homepage-two-column {
+    grid-template-columns: 1fr;
+  }
+}
