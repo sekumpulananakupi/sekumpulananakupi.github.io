@@ -1410,6 +1410,42 @@ document.querySelectorAll(".sidebar-link[data-page]").forEach(button => {
   });
 });
 
+function initSidebarNavigation() {
+
+  const links =
+    document.querySelectorAll(".sidebar-link[data-page]");
+
+  links.forEach(link => {
+
+    link.addEventListener("click", () => {
+
+      const page =
+        link.dataset.page;
+
+      document
+        .querySelectorAll(".sidebar-link")
+        .forEach(item =>
+          item.classList.remove("active")
+        );
+
+      link.classList.add("active");
+
+      document
+        .querySelectorAll(".admin-page")
+        .forEach(item =>
+          item.classList.remove("active")
+        );
+
+      document
+        .getElementById(page)
+        ?.classList.add("active");
+
+    });
+
+  });
+
+}
+
 /* =========================
    SEARCH
 ========================= */
@@ -1425,4 +1461,5 @@ document.querySelectorAll(".sidebar-link[data-page]").forEach(button => {
 ========================= */
 
 initQuillEditors();
+initSidebarNavigation();
 checkSession();
