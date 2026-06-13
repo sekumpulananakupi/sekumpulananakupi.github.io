@@ -1087,6 +1087,10 @@ if (qs("jurusanForm")) {
       slug: qs("jurusanSlug").value,
       fakultas: qs("jurusanFakultas").value,
       jenjang: qs("jurusanJenjang").value,
+      akreditasi: qs("jurusanAkreditasi").value,
+      website_resmi: qs("jurusanWebsite").value,
+      mata_kuliah: qs("jurusanMataKuliah").value,
+      prospek_kerja: qs("jurusanProspekKerja").value,
       deskripsi: qs("jurusanDeskripsi").value
     };
 
@@ -1115,6 +1119,10 @@ function editJurusan(id) {
   qs("jurusanFakultas").value = item.fakultas || "";
   qs("jurusanJenjang").value = item.jenjang || "";
   qs("jurusanDeskripsi").value = item.deskripsi || "";
+  qs("jurusanAkreditasi").value = item.akreditasi || "";
+  qs("jurusanWebsite").value = item.website_resmi || "";
+  qs("jurusanMataKuliah").value = item.mata_kuliah || "";
+  qs("jurusanProspekKerja").value = item.prospek_kerja || "";
 
   showAdminPage("jurusanPage");
 }
