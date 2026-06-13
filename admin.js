@@ -277,7 +277,7 @@ function createCard(type, item) {
         <div>
           <span class="pill">${item.kategori || "Info"}</span>
           <h3>${item.judul}</h3>
-          <p>${item.isi ? item.isi.slice(0, 80) : ""}...</p>
+          <p>${item.isi ? item.isi.slice(0, 100) : ""}...</p>
         </div>
 
         <div class="card-actions">
@@ -294,7 +294,7 @@ function createCard(type, item) {
         <div>
           <span class="pill">${item.kategori || "Wiki"}</span>
           <h3>${item.judul}</h3>
-          <p>${item.isi ? item.isi.slice(0, 80) : ""}...</p>
+          <p>${item.isi ? item.isi.slice(0, 100) : ""}...</p>
         </div>
 
         <div class="card-actions">
@@ -310,7 +310,7 @@ function createCard(type, item) {
       <div>
         <span class="pill">${item.perusahaan || "Lowongan"}</span>
         <h3>${item.posisi}</h3>
-        <p>${item.deskripsi ? item.deskripsi.slice(0, 80) : ""}...</p>
+        <p>${item.deskripsi ? item.deskripsi.slice(0, 100) : ""}...</p>
       </div>
 
       <div class="card-actions">
