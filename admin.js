@@ -163,13 +163,23 @@ async function checkSession() {
 }
 
 function updateAdminUI() {
-  document.getElementById("adminPanel").style.display = isAdmin ? "block" : "none";
-  document.getElementById("loginBtn").style.display = isAdmin ? "none" : "inline-block";
-  document.getElementById("logoutBtn").style.display = isAdmin ? "inline-block" : "none";
+  const loginBox = document.getElementById("loginBox");
+  const adminPanel = document.getElementById("adminPanel");
+  const loginBtn = document.getElementById("loginBtn");
+  const logoutBtn = document.getElementById("logoutBtn");
+  const loginStatus = document.getElementById("loginStatus");
 
-  document.getElementById("loginStatus").textContent = isAdmin
-    ? "Login berhasil. Mode admin aktif."
-    : "Belum login.";
+  loginBox.style.display = isAdmin ? "none" : "block";
+  adminPanel.style.display = isAdmin ? "block" : "none";
+
+  if (loginBtn) loginBtn.style.display = isAdmin ? "none" : "inline-block";
+  if (logoutBtn) logoutBtn.style.display = isAdmin ? "inline-block" : "none";
+
+  if (loginStatus) {
+    loginStatus.textContent = isAdmin
+      ? "Login berhasil. Mode admin aktif."
+      : "Belum login.";
+  }
 }
 
 document.getElementById("loginBtn").addEventListener("click", async () => {
