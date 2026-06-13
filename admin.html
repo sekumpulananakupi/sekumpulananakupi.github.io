@@ -41,6 +41,7 @@
             <button class="sidebar-link" data-page="infoPage">Info Kampus</button>
             <button class="sidebar-link" data-page="wikiPage">Wiki Kampus</button>
             <button class="sidebar-link" data-page="jobPage">Lowongan Kerja</button>
+            <button class="sidebar-link" data-page="dokumenPage">Dokumen Kampus</button>
           </div>
         
           <div class="sidebar-group">
@@ -192,6 +193,59 @@
             <div class="grid-list" id="jobList"></div>
           </section>
 
+          <section class="admin-page" id="dokumenPage">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">CRUD</p>
+              <h2>Dokumen Kampus</h2>
+            </div>
+          </div>
+        
+          <form id="dokumenForm" class="form-card">
+        
+            <input type="hidden" id="dokumenId">
+        
+            <input
+              type="text"
+              id="dokumenJudul"
+              placeholder="Judul dokumen"
+              required
+            >
+        
+            <input
+              type="text"
+              id="dokumenKategori"
+              placeholder="Kategori"
+            >
+        
+            <textarea
+              id="dokumenDeskripsi"
+              placeholder="Deskripsi singkat"
+            ></textarea>
+        
+            <input
+              type="url"
+              id="dokumenLink"
+              placeholder="Link dokumen"
+              required
+            >
+        
+            <div class="form-actions">
+              <button class="btn primary">
+                Simpan
+              </button>
+            </div>
+        
+          </form>
+        
+          <div
+            class="grid-list"
+            id="dokumenList"
+          ></div>
+        
+        </section>
+
+          
           <section class="admin-page" id="statistikPage">
             <div class="section-heading">
               <div>
