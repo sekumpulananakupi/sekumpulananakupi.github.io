@@ -102,22 +102,24 @@ function renderList(type, listId, searchId, data) {
 
   const filtered = data.filter(item => {
     const text = JSON.stringify(item).toLowerCase();
-
     const matchSearch = text.includes(keyword);
 
-    let categoryText = "";
+    let matchFilter = true;
 
-    if (type === "info" || type === "wiki") {
-      categoryText = item.kategori || "";
+    if (activeFilter !== "all") {
+      if (type === "info" || type === "wiki") {
+        const kategoriNames = getArtikelKategori(type, item.id)
+          .map(nama => nama.toLowerCase());
+
+        matchFilter = kategoriNames.some(nama =>
+          nama.includes(activeFilter)
+        );
+      }
+
+      if (type === "job") {
+        matchFilter = activeFilter === "lowongan";
+      }
     }
-
-    if (type === "job") {
-      categoryText = "lowongan";
-    }
-
-    const matchFilter =
-      activeFilter === "all" ||
-      categoryText.toLowerCase().includes(activeFilter);
 
     return matchSearch && matchFilter;
   });
