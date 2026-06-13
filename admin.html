@@ -19,6 +19,7 @@
         <li><a href="#kampus">Info Kampus</a></li>
         <li><a href="#wiki">Wiki</a></li>
         <li><a href="#lowongan">Lowongan</a></li>
+        <li><a href="#statistik">Statistik Jurusan</a></li>
       </ul>
     </nav>
   </header>
@@ -174,6 +175,42 @@
     </div>
   </main>
 
+<section class="section admin-section" id="statistik">
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">CRUD</p>
+      <h2>Statistik Jurusan</h2>
+    </div>
+  </div>
+
+  <form id="statistikForm" class="form-card">
+    <input type="hidden" id="statistikId" />
+
+    <label>Jurusan</label>
+    <select id="statistikJurusan" required></select>
+
+    <input type="number" id="statistikTahun" placeholder="Tahun" required />
+
+    <select id="statistikJalur" required>
+      <option value="">Pilih Jalur</option>
+      <option value="SNBP">SNBP</option>
+      <option value="SNBT">SNBT</option>
+      <option value="Mandiri">Mandiri</option>
+    </select>
+
+    <input type="number" id="statistikDayaTampung" placeholder="Daya tampung" required />
+    <input type="number" id="statistikPeminat" placeholder="Peminat" required />
+
+    <div class="form-actions">
+      <button class="btn primary" type="submit">Simpan Statistik</button>
+      <button class="btn ghost" type="button" onclick="clearStatistikForm()">Batal</button>
+    </div>
+  </form>
+
+  <div class="grid-list" id="statistikList"></div>
+</section>
+  
+  
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="admin.js"></script>
 </body>
