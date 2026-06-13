@@ -54,6 +54,14 @@ async function loadLowongan() {
   artikelJurusanData = artikelJurusan || [];
   artikelTagData = artikelTag || [];
 
+
+  const params = new URLSearchParams(window.location.search);
+const keyword = params.get("q");
+
+if (keyword) {
+  document.getElementById("jobSearch").value = keyword;
+}
+  
   renderFilters();
   renderJobs();
 }
