@@ -83,13 +83,21 @@ async function loadJurusanDetail() {
       </ul>
       
       <h2>Prospek Kerja</h2>
-      <ul>
+
+      <div class="prospek-chip-group">
         ${(jurusan.prospek_kerja || "")
           .split("\n")
           .filter(Boolean)
-          .map(item => `<li>${escapeHTML(item)}</li>`)
+          .map(item => `
+            <a
+              class="pill prospek-chip"
+              href="lowongan.html?q=${encodeURIComponent(item.trim())}"
+            >
+              ${escapeHTML(item.trim())}
+            </a>
+          `)
           .join("")}
-      </ul>
+      </div>
       
       <h2>Statistik Penerimaan</h2>
       ${renderStatistik(statistik)}
@@ -257,7 +265,7 @@ relatedJobList.innerHTML = `
   ${uniqueMatchedJobs.map(job => createRelatedCard({
     ...job,
     type: "job",
-    matchLabel: `Cocok dengan: ${job.matchedProspek}`
+    matchLabel: `Cocok dengan: ${toTitleCase(job.matchedProspek)}`
   })).join("")}
 
   ${existingHTML.includes("Belum ada lowongan") ? "" : existingHTML}
@@ -296,4 +304,11 @@ function renderStatistik(statistik) {
   `;
 }
 
+function toTitleCase(text) {
+  return String(text || "")
+    .split(" ")
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
+  
 loadJurusanDetail();
