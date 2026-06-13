@@ -42,6 +42,7 @@
             <button class="sidebar-link" data-page="wikiPage">Wiki Kampus</button>
             <button class="sidebar-link" data-page="jobPage">Lowongan Kerja</button>
             <button class="sidebar-link" data-page="dokumenPage">Dokumen Kampus</button>
+            <button class="sidebar-link" data-page="faqPage">FAQ Kampus</button>
           </div>
         
           <div class="sidebar-group">
@@ -245,6 +246,28 @@
         
         </section>
 
+          <section class="admin-page" id="faqPage">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">CRUD</p>
+              <h2>FAQ Kampus</h2>
+            </div>
+          </div>
+        
+          <form id="faqForm" class="form-card">
+            <input type="hidden" id="faqId" />
+            <input type="text" id="faqPertanyaan" placeholder="Pertanyaan" required />
+            <input type="text" id="faqKategori" placeholder="Kategori" />
+            <textarea id="faqJawaban" placeholder="Jawaban" required></textarea>
+        
+            <div class="form-actions">
+              <button class="btn primary" type="submit">Simpan FAQ</button>
+              <button class="btn ghost" type="button" onclick="clearFaqForm()">Batal</button>
+            </div>
+          </form>
+        
+          <div class="grid-list" id="faqList"></div>
+        </section>
           
           <section class="admin-page" id="statistikPage">
             <div class="section-heading">
