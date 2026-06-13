@@ -1074,6 +1074,22 @@ if (tagNamaInput && tagSlugInput) {
   });
 }
 
+document.querySelectorAll(".sidebar-link[data-page]").forEach(button => {
+  button.addEventListener("click", () => {
+    const targetPage = button.dataset.page;
+
+    document.querySelectorAll(".sidebar-link[data-page]").forEach(btn => {
+      btn.classList.remove("active");
+    });
+
+    document.querySelectorAll(".admin-page").forEach(page => {
+      page.classList.remove("active");
+    });
+
+    button.classList.add("active");
+    document.getElementById(targetPage).classList.add("active");
+  });
+});
 
 /* SEARCH */
 
