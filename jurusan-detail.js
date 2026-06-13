@@ -121,4 +121,38 @@ function createRelatedCard(item) {
   `;
 }
 
+async function loadStatistikJurusan(jurusanId) {
+  const { data } = await supabaseClient
+    .from("statistik_jurusan")
+    .select("*")
+    .eq("jurusan_id", jurusanId)
+    .order("tahun", { ascending: false });
+
+  return data || [];
+}
+
+function renderStatistik(statistik) {
+  if (!statistik.length) {
+    return `<div class="empty">Statistik jurusan belum tersedia.</div>`;
+  }
+
+  return `
+    <div class="statistik-grid">
+      ${statistik.map(item => {
+        const persen = item.peminat > 0
+          ? ((item.daya_tampung / item.peminat) * 100).toFixed(2)
+          : "0.00";
+
+        return `
+          <div class="stat-card">
+            <span>${escapeHTML(item.jalur)} ${item.tahun}</span>
+            <strong>${persen}%</strong>
+            <p>${item.daya_tampung} kursi dari ${item.peminat} peminat</p>
+          </div>
+        `;
+      }).join("")}
+    </div>
+  `;
+}
+
 loadJurusanDetail();
