@@ -35,7 +35,6 @@ function createCard(type, item) {
     return `
       <article class="item-card">
         ${item.gambar ? `<img src="${escapeHTML(item.gambar)}" class="card-image" alt="${escapeHTML(item.judul)}">` : ""}
-        <span class="pill">${escapeHTML(item.kategori || "Umum")}</span>
         <h3>${escapeHTML(item.judul)}</h3>
         <p>${escapeHTML(item.isi).slice(0, 120)}...</p>
         <a class="btn ghost" href="post.html?type=info&id=${item.id}">Baca Selengkapnya</a>
@@ -47,7 +46,7 @@ function createCard(type, item) {
     return `
       <article class="item-card">
         ${item.gambar ? `<img src="${escapeHTML(item.gambar)}" class="card-image" alt="${escapeHTML(item.judul)}">` : ""}
-        <span class="pill">${escapeHTML(item.kategori || "Wiki")}</span>
+
         <h3>${escapeHTML(item.judul)}</h3>
         <p>${escapeHTML(item.isi).slice(0, 120)}...</p>
         <a class="btn ghost" href="post.html?type=wiki&id=${item.id}">Baca Selengkapnya</a>
