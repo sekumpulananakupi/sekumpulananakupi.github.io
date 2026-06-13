@@ -26,20 +26,41 @@
       <div class="admin-layout">
 
         <aside class="admin-sidebar">
-          <h2>SA-UPI</h2>
-          <p>Dashboard Admin</p>
-
-          <button class="sidebar-link active" data-page="dashboardPage">Dashboard</button>
-          <button class="sidebar-link" data-page="infoPage">Info Kampus</button>
-          <button class="sidebar-link" data-page="wikiPage">Wiki Kampus</button>
-          <button class="sidebar-link" data-page="jobPage">Lowongan Kerja</button>
-          <button class="sidebar-link" data-page="statistikPage">Statistik Jurusan</button>
-          <button class="sidebar-link" data-page="jurusanPage">Data Jurusan</button>
-          <button class="sidebar-link" data-page="taxonomyPage">Kategori & Tag</button>
-
-          <a href="index.html" class="sidebar-link">Halaman Publik</a>
-          <button class="btn danger" id="logoutBtn" style="margin-top:16px;">Logout</button>
+          <div class="sidebar-brand">
+            <h2>SA-UPI</h2>
+            <p>Dashboard Admin</p>
+          </div>
+        
+          <div class="sidebar-group">
+            <span class="sidebar-label">Utama</span>
+            <button class="sidebar-link active" data-page="dashboardPage">Dashboard</button>
+          </div>
+        
+          <div class="sidebar-group">
+            <span class="sidebar-label">Konten</span>
+            <button class="sidebar-link" data-page="infoPage">Info Kampus</button>
+            <button class="sidebar-link" data-page="wikiPage">Wiki Kampus</button>
+            <button class="sidebar-link" data-page="jobPage">Lowongan Kerja</button>
+          </div>
+        
+          <div class="sidebar-group">
+            <span class="sidebar-label">Jurusan</span>
+            <button class="sidebar-link" data-page="jurusanPage">Data Jurusan</button>
+            <button class="sidebar-link" data-page="statistikPage">Statistik Jurusan</button>
+          </div>
+        
+          <div class="sidebar-group">
+            <span class="sidebar-label">Pengaturan</span>
+            <button class="sidebar-link" data-page="taxonomyPage">Kategori & Tag</button>
+          </div>
+        
+          <div class="sidebar-group sidebar-bottom">
+            <span class="sidebar-label">Navigasi</span>
+            <a href="index.html" class="sidebar-link">Halaman Publik</a>
+            <button class="btn danger sidebar-logout" id="logoutBtn">Logout</button>
+          </div>
         </aside>
+        
 
         <section class="admin-content">
 
