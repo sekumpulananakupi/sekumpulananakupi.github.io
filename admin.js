@@ -19,6 +19,7 @@ let jobData = [];
 let kategoriData = [];
 let tagData = [];
 let jurusanData = [];
+let statistikData = [];
 
 async function loadMasterData() {
   const { data: kategori } = await supabaseClient
@@ -51,6 +52,27 @@ async function loadMasterData() {
   fillMultiSelect("infoJurusanMulti", jurusanData);
   fillMultiSelect("wikiJurusanMulti", jurusanData);
   fillMultiSelect("jobJurusanMulti", jurusanData);
+
+  fillSingleSelect("statistikJurusan", jurusanData);
+}
+
+function fillSingleSelect(elementId, data) {
+  const select = document.getElementById(elementId);
+  if (!select) return;
+
+  select.innerHTML =
+    `<option value="">Pilih jurusan</option>` +
+    data.map(item => `<option value="${item.id}">${item.nama}</option>`).join("");
+}
+
+async function loadStatistikData() {
+  const { data } = await supabaseClient
+    .from("statistik_jurusan")
+    .select("*, jurusan:jurusan_id(nama)")
+    .order("tahun", { ascending: false });
+
+  statistikData = data || [];
+  renderStatistikList();
 }
 
 function fillMultiSelect(elementId, data) {
@@ -131,6 +153,7 @@ async function checkSession() {
   if (isAdmin) {
     await loadMasterData();
     await loadData();
+    await loadStatistikData();
   }
 }
 
@@ -640,6 +663,106 @@ function setSelectedOptions(selectId, masterData, selectedNames) {
     option.selected = item && selectedNames.includes(item.nama);
   });
 }
+
+function renderStatistikList() {
+  const list = document.getElementById("statistikList");
+  if (!list) return;
+
+  list.innerHTML = statistikData.length
+    ? statistikData.map(item => {
+        const persen = item.peminat > 0
+          ? ((item.daya_tampung / item.peminat) * 100).toFixed(2)
+          : "0.00";
+
+        return `
+          <article class="item-card">
+            <span class="pill">${item.jurusan?.nama || "-"}</span>
+            <h3>${item.jalur} ${item.tahun}</h3>
+            <p>Daya tampung: ${item.daya_tampung}</p>
+            <p>Peminat: ${item.peminat}</p>
+            <p>Persentase diterima: ${persen}%</p>
+
+            <div class="card-actions">
+              <button class="btn ghost" onclick="editStatistik(${item.id})">Edit</button>
+              <button class="btn danger" onclick="deleteStatistik(${item.id})">Hapus</button>
+            </div>
+          </article>
+        `;
+      }).join("")
+    : `<div class="empty">Belum ada statistik jurusan.</div>`;
+}
+
+document.getElementById("statistikForm").addEventListener("submit", async event => {
+  event.preventDefault();
+
+  const id = document.getElementById("statistikId").value;
+
+  const payload = {
+    jurusan_id: Number(document.getElementById("statistikJurusan").value),
+    tahun: Number(document.getElementById("statistikTahun").value),
+    jalur: document.getElementById("statistikJalur").value,
+    daya_tampung: Number(document.getElementById("statistikDayaTampung").value),
+    peminat: Number(document.getElementById("statistikPeminat").value)
+  };
+
+  let response;
+
+  if (id) {
+    response = await supabaseClient
+      .from("statistik_jurusan")
+      .update(payload)
+      .eq("id", id);
+  } else {
+    response = await supabaseClient
+      .from("statistik_jurusan")
+      .insert(payload);
+  }
+
+  if (response.error) {
+    alert("Gagal menyimpan statistik: " + response.error.message);
+    return;
+  }
+
+  clearStatistikForm();
+  await loadStatistikData();
+});
+
+function editStatistik(id) {
+  const item = statistikData.find(row => row.id === id);
+  if (!item) return;
+
+  document.getElementById("statistikId").value = item.id;
+  document.getElementById("statistikJurusan").value = item.jurusan_id;
+  document.getElementById("statistikTahun").value = item.tahun;
+  document.getElementById("statistikJalur").value = item.jalur;
+  document.getElementById("statistikDayaTampung").value = item.daya_tampung;
+  document.getElementById("statistikPeminat").value = item.peminat;
+
+  location.hash = "#statistik";
+}
+
+async function deleteStatistik(id) {
+  if (!confirm("Yakin ingin menghapus statistik ini?")) return;
+
+  const { error } = await supabaseClient
+    .from("statistik_jurusan")
+    .delete()
+    .eq("id", id);
+
+  if (error) {
+    alert("Gagal menghapus statistik: " + error.message);
+    return;
+  }
+
+  await loadStatistikData();
+}
+
+function clearStatistikForm() {
+  document.getElementById("statistikForm").reset();
+  document.getElementById("statistikId").value = "";
+}
+
+
 
 
 /* SEARCH */
