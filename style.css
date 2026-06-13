@@ -347,3 +347,9 @@ nav a {
     flex-direction: column;
   }
 }
+
+.form-card select[multiple] {
+  min-height: 90px;
+  max-height: 120px;
+  overflow-y: auto;
+}
