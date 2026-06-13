@@ -99,6 +99,7 @@ async function loadJurusanDetail() {
   `;
 
   await loadRelatedContent(id, relatedArticleList, relatedJobList);
+  await loadAutoMatchedJobs(jurusan, relatedJobList);
 }
 
 async function loadRelatedContent(jurusanId, relatedArticleList, relatedJobList) {
@@ -153,6 +154,7 @@ async function loadRelatedContent(jurusanId, relatedArticleList, relatedJobList)
     ? jobs.map(createRelatedCard).join("")
     : `<div class="empty">Belum ada lowongan terkait.</div>`;
 }
+
 function createRelatedCard(item) {
   let title = "";
   let content = "";
@@ -178,6 +180,64 @@ function createRelatedCard(item) {
       <p>${escapeHTML(content).slice(0, 120)}...</p>
       <a href="post.html?type=${item.type}&id=${item.id}" class="btn ghost">Baca Detail</a>
     </article>
+  `;
+}
+
+function getProspekList(jurusan) {
+  return String(jurusan.prospek_kerja || "")
+    .split("\n")
+    .map(item => item.trim().toLowerCase())
+    .filter(Boolean);
+}
+
+async function loadAutoMatchedJobs(jurusan, relatedJobList) {
+  const prospekList = getProspekList(jurusan);
+
+  if (!prospekList.length) return;
+
+  const { data: jobs } = await supabaseClient
+    .from("lowongan_kerja")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  const { data: tagRows } = await supabaseClient
+    .from("artikel_tags")
+    .select("artikel_id, tag_id")
+    .eq("artikel_tipe", "job");
+
+  const { data: tags } = await supabaseClient
+    .from("tags")
+    .select("*");
+
+  const matchedJobs = (jobs || []).filter(job => {
+    const jobText = `
+      ${job.posisi || ""}
+      ${job.perusahaan || ""}
+      ${job.deskripsi || ""}
+    `.toLowerCase();
+
+    const tagNames = (tagRows || [])
+      .filter(row => row.artikel_id === job.id)
+      .map(row => tags.find(tag => tag.id === row.tag_id)?.nama || "")
+      .join(" ")
+      .toLowerCase();
+
+    return prospekList.some(prospek =>
+      jobText.includes(prospek) || tagNames.includes(prospek)
+    );
+  });
+
+  if (!matchedJobs.length) return;
+
+  const existingHTML = relatedJobList.innerHTML;
+
+  relatedJobList.innerHTML = `
+    ${matchedJobs.map(job => createRelatedCard({
+      ...job,
+      type: "job"
+    })).join("")}
+
+    ${existingHTML.includes("Belum ada lowongan") ? "" : existingHTML}
   `;
 }
 
