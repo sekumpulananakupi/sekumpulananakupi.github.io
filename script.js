@@ -12,6 +12,9 @@ let wikiData = [];
 let jobData = [];
 let kategoriData = [];
 let artikelKategoriData = [];
+let jurusanData = [];
+let artikelJurusanData = [];
+let activeJobJurusan = "all";
 
 async function loadData() {
   const { data: info, error: infoError } = await supabaseClient.from("informasi_kampus").select("*").order("created_at", { ascending: false });
@@ -24,6 +27,16 @@ async function loadData() {
   const { data: artikelKategori } = await supabaseClient
   .from("artikel_kategori")
   .select("*");
+
+  const { data: jurusan } = await supabaseClient
+  .from("jurusan")
+  .select("*")
+  .order("nama", { ascending: true });
+
+const { data: artikelJurusan } = await supabaseClient
+  .from("artikel_jurusan")
+  .select("*");
+  
   
   if (infoError || wikiError || jobError) {
     console.error("Gagal mengambil data:", infoError || wikiError || jobError);
@@ -34,6 +47,10 @@ async function loadData() {
   jobData = jobs || [];
   kategoriData = kategori || [];
   artikelKategoriData = artikelKategori || [];
+  jurusanData = jurusan || [];
+  artikelJurusanData = artikelJurusan || [];
+
+  renderJurusanJobFilter();
   renderFilterButtons();
   
   renderAll();
@@ -122,7 +139,17 @@ function renderList(type, listId, searchId, data) {
       }
     }
 
-    return matchSearch && matchFilter;
+let matchJurusan = true;
+
+if (type === "job" && activeJobJurusan !== "all") {
+  matchJurusan = artikelJurusanData.some(row =>
+    row.artikel_tipe === "job" &&
+    row.artikel_id === item.id &&
+    String(row.jurusan_id) === String(activeJobJurusan)
+  );
+}
+    
+    return matchSearch && matchFilter && matchJurusan;
   });
 
   document.getElementById(listId).innerHTML = filtered.length
@@ -266,6 +293,22 @@ function renderFilterButtons() {
   `;
 
   initFilterButtons();
+}
+
+function renderJurusanJobFilter() {
+  const select = document.getElementById("jobJurusanFilter");
+  if (!select) return;
+
+  select.innerHTML =
+    `<option value="all">Semua Jurusan</option>` +
+    jurusanData
+      .map(item => `<option value="${item.id}">${escapeHTML(item.nama)}</option>`)
+      .join("");
+
+  select.addEventListener("change", () => {
+    activeJobJurusan = select.value;
+    renderAll();
+  });
 }
 
 loadData();
