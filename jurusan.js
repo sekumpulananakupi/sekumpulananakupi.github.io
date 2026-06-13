@@ -38,6 +38,16 @@ function renderJurusan() {
       : `<div class="empty">Tidak ada jurusan.</div>`;
 }
 
+function escapeHTML(text) {
+  return String(text || "").replace(/[&<>'"]/g, char => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    "'": "&#39;",
+    '"': "&quot;"
+  }[char]));
+}
+
 function createCard(item) {
   const prospekSingkat = item.prospek_kerja
     ? item.prospek_kerja.split("\n").slice(0, 3).join(", ")
