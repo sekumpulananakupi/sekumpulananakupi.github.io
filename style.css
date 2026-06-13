@@ -517,3 +517,24 @@ nav a {
     grid-template-columns: 1fr;
   }
 }
+
+.hero-search {
+  display: flex;
+  gap: 10px;
+  margin-top: 24px;
+  max-width: 620px;
+}
+
+.hero-search input {
+  flex: 1;
+  padding: 14px 16px;
+  border: none;
+  border-radius: 14px;
+  font: inherit;
+}
+
+@media (max-width: 768px) {
+  .hero-search {
+    flex-direction: column;
+  }
+}
