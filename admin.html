@@ -237,6 +237,41 @@
   <div class="grid-list" id="jurusanAdminList"></div>
 </section>
 
+<section class="section admin-section" id="taxonomyAdmin">
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">CRUD</p>
+      <h2>Kategori & Tag</h2>
+    </div>
+  </div>
+
+  <form id="kategoriForm" class="form-card">
+    <input type="hidden" id="kategoriId" />
+    <input type="text" id="kategoriNama" placeholder="Nama kategori" required />
+    <input type="text" id="kategoriSlug" placeholder="Slug kategori" required />
+
+    <div class="form-actions">
+      <button class="btn primary" type="submit">Simpan Kategori</button>
+      <button class="btn ghost" type="button" onclick="clearKategoriForm()">Batal</button>
+    </div>
+  </form>
+
+  <div class="grid-list" id="kategoriAdminList"></div>
+
+  <form id="tagForm" class="form-card">
+    <input type="hidden" id="tagId" />
+    <input type="text" id="tagNama" placeholder="Nama tag" required />
+    <input type="text" id="tagSlug" placeholder="Slug tag" required />
+
+    <div class="form-actions">
+      <button class="btn primary" type="submit">Simpan Tag</button>
+      <button class="btn ghost" type="button" onclick="clearTagForm()">Batal</button>
+    </div>
+  </form>
+
+  <div class="grid-list" id="tagAdminList"></div>
+</section>
+
   
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="admin.js"></script>
