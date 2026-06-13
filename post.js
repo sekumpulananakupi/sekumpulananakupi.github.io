@@ -100,7 +100,6 @@ async function loadPost() {
     <article class="post-card">
       ${data.gambar ? `<img src="${escapeHTML(data.gambar)}" class="post-image" alt="${escapeHTML(title)}">` : ""}
 
-      <span class="pill">${escapeHTML(category)}</span>
 
       <h1>${escapeHTML(title)}</h1>
 
