@@ -616,8 +616,7 @@ nav a {
 
 @media (max-width: 800px) {
   .menu-toggle {
-    display: block;
-    z-index: 999;
+    display: block !important;
   }
 
   .nav-menu {
@@ -631,11 +630,9 @@ nav a {
     left: 4%;
     right: 4%;
     flex-direction: column;
-    gap: 14px;
     background: #ffffff;
     padding: 20px;
     border-radius: 18px;
-    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.18);
-    z-index: 998;
+    z-index: 999;
   }
 }
