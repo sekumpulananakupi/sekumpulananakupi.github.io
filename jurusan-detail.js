@@ -18,6 +18,7 @@ async function loadJurusanDetail() {
   const id = params.get("id");
 
   const detail = document.getElementById("jurusanDetail");
+  const statistik = await loadStatistikJurusan(id);
   const relatedList = document.getElementById("relatedList");
 
   if (!id) {
