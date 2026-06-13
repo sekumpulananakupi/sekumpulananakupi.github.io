@@ -79,19 +79,25 @@ async function loadStatistikData() {
 }
 
 function fillMultiSelect(elementId, data) {
-  const select = document.getElementById(elementId);
-  if (!select) return;
+  const container = document.getElementById(elementId);
+  if (!container) return;
 
-  select.innerHTML = data
-    .map(item => `<option value="${item.id}">${item.nama}</option>`)
+  container.innerHTML = data
+    .map(item => `
+      <label class="check-option">
+        <input type="checkbox" value="${item.id}">
+        <span>${item.nama}</span>
+      </label>
+    `)
     .join("");
 }
 
 function getSelectedValues(elementId) {
-  const select = document.getElementById(elementId);
-  if (!select) return [];
+  const container = document.getElementById(elementId);
+  if (!container) return [];
 
-  return Array.from(select.selectedOptions).map(option => Number(option.value));
+  return Array.from(container.querySelectorAll("input[type='checkbox']:checked"))
+    .map(input => Number(input.value));
 }
 
 async function saveRelations(type, artikelId, kategoriIds, tagIds, jurusanIds) {
@@ -405,8 +411,8 @@ await saveRelations(
   "info",
   savedId,
   getSelectedValues("infoKategoriMulti"),
-  getSelectedValues("infoTagMulti"),
-  getSelectedValues("infoJurusanMulti")
+  [],
+  []
 );
   
   clearForm("info");
@@ -459,7 +465,7 @@ await saveRelations(
   savedId,
   getSelectedValues("wikiKategoriMulti"),
   getSelectedValues("wikiTagMulti"),
-  getSelectedValues("wikiJurusanMulti")
+  []
 );
   
   clearForm("wiki");
@@ -511,12 +517,12 @@ document.getElementById("jobForm").addEventListener("submit", async event => {
   const savedId = id ? Number(id) : response.data.id;
 
   await saveRelations(
-    "job",
-    savedId,
-    getSelectedValues("jobKategoriMulti"),
-    getSelectedValues("jobTagMulti"),
-    getSelectedValues("jobJurusanMulti")
-  );
+  "job",
+  savedId,
+  [],
+  getSelectedValues("jobTagMulti"),
+  getSelectedValues("jobJurusanMulti")
+);
     
   clearForm("job");
   await loadData();
@@ -671,13 +677,13 @@ async function setSelectedRelations(type, artikelId, kategoriSelectId, tagSelect
   setSelectedOptions(jurusanSelectId, jurusanData, relations.jurusanNames);
 }
 
-function setSelectedOptions(selectId, masterData, selectedNames) {
-  const select = document.getElementById(selectId);
-  if (!select) return;
+function setSelectedOptions(containerId, masterData, selectedNames) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
 
-  Array.from(select.options).forEach(option => {
-    const item = masterData.find(row => row.id === Number(option.value));
-    option.selected = item && selectedNames.includes(item.nama);
+  container.querySelectorAll("input[type='checkbox']").forEach(input => {
+    const item = masterData.find(row => row.id === Number(input.value));
+    input.checked = item && selectedNames.includes(item.nama);
   });
 }
 
