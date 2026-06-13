@@ -273,11 +273,13 @@ async function loadData() {
 function createCard(type, item) {
   if (type === "info") {
     return `
-      <article class="item-card">
-        ${item.gambar ? `<img src="${item.gambar}" class="card-image" alt="${item.judul}">` : ""}
-        <div class="meta"><span class="pill">${item.kategori || "-"}</span></div>
-        <h3>${item.judul}</h3>
-        <p>${item.isi}</p>
+      <article class="admin-list-item">
+        <div>
+          <span class="pill">${item.kategori || "Info"}</span>
+          <h3>${item.judul}</h3>
+          <p>${item.isi ? item.isi.slice(0, 80) : ""}...</p>
+        </div>
+
         <div class="card-actions">
           <button class="btn ghost" onclick="editInfo(${item.id})">Edit</button>
           <button class="btn danger" onclick="deleteItem('info', ${item.id})">Hapus</button>
@@ -288,11 +290,13 @@ function createCard(type, item) {
 
   if (type === "wiki") {
     return `
-      <article class="item-card">
-        ${item.gambar ? `<img src="${item.gambar}" class="card-image" alt="${item.judul}">` : ""}
-        <div class="meta"><span class="pill">${item.kategori || "-"}</span></div>
-        <h3>${item.judul}</h3>
-        <p>${item.isi}</p>
+      <article class="admin-list-item">
+        <div>
+          <span class="pill">${item.kategori || "Wiki"}</span>
+          <h3>${item.judul}</h3>
+          <p>${item.isi ? item.isi.slice(0, 80) : ""}...</p>
+        </div>
+
         <div class="card-actions">
           <button class="btn ghost" onclick="editWiki(${item.id})">Edit</button>
           <button class="btn danger" onclick="deleteItem('wiki', ${item.id})">Hapus</button>
@@ -302,15 +306,13 @@ function createCard(type, item) {
   }
 
   return `
-    <article class="item-card">
-      ${item.gambar ? `<img src="${item.gambar}" class="card-image" alt="${item.posisi}">` : ""}
-      <div class="meta">
-        <span class="pill">${item.perusahaan || "-"}</span>
-        <span class="pill">${item.lokasi || "-"}</span>
+    <article class="admin-list-item">
+      <div>
+        <span class="pill">${item.perusahaan || "Lowongan"}</span>
+        <h3>${item.posisi}</h3>
+        <p>${item.deskripsi ? item.deskripsi.slice(0, 80) : ""}...</p>
       </div>
-      <h3>${item.posisi}</h3>
-      <p>${item.deskripsi || ""}</p>
-      ${item.link ? `<a href="${item.link}" target="_blank" class="btn ghost">Buka Link</a>` : ""}
+
       <div class="card-actions">
         <button class="btn ghost" onclick="editJob(${item.id})">Edit</button>
         <button class="btn danger" onclick="deleteItem('job', ${item.id})">Hapus</button>
