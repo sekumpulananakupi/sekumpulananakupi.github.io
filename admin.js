@@ -20,6 +20,7 @@ let kategoriData = [];
 let tagData = [];
 let jurusanData = [];
 let statistikData = [];
+let jurusanAdminData = [];
 
 async function loadMasterData() {
   const { data: kategori } = await supabaseClient
@@ -154,6 +155,7 @@ async function checkSession() {
     await loadMasterData();
     await loadData();
     await loadStatistikData();
+    await loadJurusanAdminData();
   }
 }
 
@@ -762,6 +764,108 @@ function clearStatistikForm() {
   document.getElementById("statistikId").value = "";
 }
 
+async function loadJurusanAdminData() {
+  const { data } = await supabaseClient
+    .from("jurusan")
+    .select("*")
+    .order("nama", { ascending: true });
+
+  jurusanAdminData = data || [];
+  renderJurusanAdminList();
+}
+
+function renderJurusanAdminList() {
+  const list = document.getElementById("jurusanAdminList");
+  if (!list) return;
+
+  list.innerHTML = jurusanAdminData.length
+    ? jurusanAdminData.map(item => `
+      <article class="item-card">
+        <span class="pill">${item.fakultas || "-"}</span>
+        <h3>${item.nama}</h3>
+        <p>Jenjang: ${item.jenjang || "-"}</p>
+        <p>${item.deskripsi || "Belum ada deskripsi."}</p>
+
+        <div class="card-actions">
+          <button class="btn ghost" onclick="editJurusan(${item.id})">Edit</button>
+          <button class="btn danger" onclick="deleteJurusan(${item.id})">Hapus</button>
+        </div>
+      </article>
+    `).join("")
+    : `<div class="empty">Belum ada data jurusan.</div>`;
+}
+
+document.getElementById("jurusanForm").addEventListener("submit", async event => {
+  event.preventDefault();
+
+  const id = document.getElementById("jurusanId").value;
+
+  const payload = {
+    nama: document.getElementById("jurusanNama").value,
+    slug: document.getElementById("jurusanSlug").value,
+    fakultas: document.getElementById("jurusanFakultas").value,
+    jenjang: document.getElementById("jurusanJenjang").value,
+    deskripsi: document.getElementById("jurusanDeskripsi").value
+  };
+
+  let response;
+
+  if (id) {
+    response = await supabaseClient
+      .from("jurusan")
+      .update(payload)
+      .eq("id", id);
+  } else {
+    response = await supabaseClient
+      .from("jurusan")
+      .insert(payload);
+  }
+
+  if (response.error) {
+    alert("Gagal menyimpan jurusan: " + response.error.message);
+    return;
+  }
+
+  clearJurusanForm();
+  await loadJurusanAdminData();
+  await loadMasterData();
+});
+
+function editJurusan(id) {
+  const item = jurusanAdminData.find(row => row.id === id);
+  if (!item) return;
+
+  document.getElementById("jurusanId").value = item.id;
+  document.getElementById("jurusanNama").value = item.nama;
+  document.getElementById("jurusanSlug").value = item.slug;
+  document.getElementById("jurusanFakultas").value = item.fakultas || "";
+  document.getElementById("jurusanJenjang").value = item.jenjang || "";
+  document.getElementById("jurusanDeskripsi").value = item.deskripsi || "";
+
+  location.hash = "#jurusanAdmin";
+}
+
+async function deleteJurusan(id) {
+  if (!confirm("Yakin ingin menghapus jurusan ini?")) return;
+
+  const { error } = await supabaseClient
+    .from("jurusan")
+    .delete()
+    .eq("id", id);
+
+  if (error) {
+    alert("Gagal menghapus jurusan: " + error.message);
+    return;
+  }
+
+  await loadJurusanAdminData();
+  await loadMasterData();
+}
+
+function clearJurusanForm() {
+  document.getElementById("jurusanForm").reset();
+  document.getElementById("jurusanId").value = "";
+}
 
 
 
