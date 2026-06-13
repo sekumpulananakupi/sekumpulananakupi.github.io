@@ -67,7 +67,7 @@ function createCard(type, item) {
         ${item.gambar ? `<img src="${escapeHTML(item.gambar)}" class="card-image" alt="${escapeHTML(item.judul)}">` : ""}
         ${renderKategoriPills("info", item.id)}
         <h3>${escapeHTML(item.judul)}</h3>
-        <p>${escapeHTML(item.isi).slice(0, 120)}...</p>
+        <p>${escapeHTML(stripHTML(item.isi)).slice(0, 120)}...</p>
         <a class="btn ghost" href="post.html?type=info&id=${item.id}">Baca Selengkapnya</a>
       </article>
     `;
@@ -79,7 +79,7 @@ function createCard(type, item) {
         ${item.gambar ? `<img src="${escapeHTML(item.gambar)}" class="card-image" alt="${escapeHTML(item.judul)}">` : ""}
         <span class="pill">${escapeHTML(item.kategori || "Wiki")}</span>
         <h3>${escapeHTML(item.judul)}</h3>
-        <p>${escapeHTML(item.isi).slice(0, 120)}...</p>
+        <p>${escapeHTML(stripHTML(item.isi)).slice(0, 120)}...</p>
         <a class="btn ghost" href="post.html?type=wiki&id=${item.id}">Baca Selengkapnya</a>
       </article>
     `;
@@ -91,7 +91,7 @@ function createCard(type, item) {
       <span class="pill">${escapeHTML(item.perusahaan)}</span>
       <span class="pill">${escapeHTML(item.lokasi || "Fleksibel")}</span>
       <h3>${escapeHTML(item.posisi)}</h3>
-      <p>${escapeHTML(item.deskripsi).slice(0, 120)}...</p>
+      <p>${escapeHTML(stripHTML(item.deskripsi)).slice(0, 120)}...</p>
       <a class="btn ghost" href="post.html?type=job&id=${item.id}">Lihat Detail</a>
     </article>
   `;
@@ -309,6 +309,12 @@ function renderJurusanJobFilter() {
     activeJobJurusan = select.value;
     renderAll();
   });
+}
+
+function stripHTML(html) {
+  const div = document.createElement("div");
+  div.innerHTML = html || "";
+  return div.textContent || div.innerText || "";
 }
 
 loadData();
