@@ -445,3 +445,15 @@ nav a {
   font-weight: 600;
   min-width: 220px;
 }
+
+.ql-editor {
+  min-height: 250px;
+}
+
+.ql-toolbar {
+  border-radius: 12px 12px 0 0;
+}
+
+.ql-container {
+  border-radius: 0 0 12px 12px;
+}
