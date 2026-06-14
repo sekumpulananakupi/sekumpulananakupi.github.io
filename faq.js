@@ -132,6 +132,7 @@ if (filtered.length) {
     "❓"
   );
 }
+}
 
   
 function createFaqCard(item) {
