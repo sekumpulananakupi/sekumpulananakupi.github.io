@@ -746,3 +746,28 @@ nav a {
     min-width: auto;
   }
 }
+
+.category-chip-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0 0 24px;
+}
+
+.category-chip {
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #0f172a;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.06);
+}
+
+.category-chip.active,
+.category-chip:hover {
+  background: #163b73;
+  color: #ffffff;
+  border-color: #163b73;
+}
