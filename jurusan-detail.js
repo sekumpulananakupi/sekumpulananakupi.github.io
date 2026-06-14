@@ -174,25 +174,13 @@ async function loadJurusanDetail() {
       ${renderStatistik(statistik)}
 
       <div class="jurusan-ukt">
-      <h2>UKT</h2>
-      <p class="jurusan-ukt-text">${jurusan.ukt || "Belum tersedia"}</p>
-    
-      <div class="info-note">
-        <strong>Catatan:</strong>
-        Data UKT yang ditampilkan merupakan referensi Tahun Akademik 2026.
-        Besaran UKT dapat berubah sesuai kebijakan Universitas Pendidikan Indonesia.
-        Untuk informasi biaya pendidikan terbaru dan resmi, silakan kunjungi situs PMB UPI.
-      </div>
-    
-      <a
-        href="https://pmb.upi.edu/biaya_pendidikan"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="btn secondary"
-      >
-        Cek Biaya Pendidikan Resmi UPI
-      </a>
-    </div>
+        <h3>Biaya Pendidikan / UKT</h3>
+        <p class="jurusan-ukt-text">${jurusan.ukt || "Belum tersedia"}</p>
+      
+        <div class="info-note">
+          <strong>Catatan:</strong>
+          Informasi biaya pendidikan dapat berbeda berdasarkan jenjang dan jalur masuk, seperti SNBP/SNBT, Seleksi Mandiri, Kelas Internasional, RPL, Pascasarjana, dan Pendidikan Profesi. Data yang ditampilkan merupakan referensi Tahun Akademik 2026. Untuk informasi terbaru dan resmi, silakan cek situs PMB UPI.
+        </div>
       
         <a
           href="https://pmb.upi.edu/biaya_pendidikan"
