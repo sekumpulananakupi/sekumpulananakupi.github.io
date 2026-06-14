@@ -152,6 +152,7 @@ if (filtered.length) {
     "💼"
   );
 }
+}
 
 function createJobCard(item) {
   return `
