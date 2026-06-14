@@ -50,10 +50,13 @@ async function loadDokumen() {
     .select("*")
     .order("created_at", { ascending: false });
 
-  if (error) {
-    console.error("Gagal mengambil dokumen:", error);
-    return;
-  }
+if (error) {
+  document.getElementById("dokumenList").innerHTML = `
+    <div class="empty">Gagal memuat dokumen.</div>
+  `;
+  console.error(error);
+  return;
+}
 
   dokumenData = data || [];
 
