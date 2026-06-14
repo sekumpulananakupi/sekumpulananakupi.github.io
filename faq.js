@@ -30,6 +30,7 @@ async function loadFaq() {
   faqData = data || [];
 
   renderFaqKategoriFilter();
+  renderFaqCategoryChips();
   renderFaq();
 }
 
@@ -49,10 +50,18 @@ function renderFaqKategoriFilter() {
       .map(item => `<option value="${escapeHTML(item)}">${escapeHTML(item)}</option>`)
       .join("");
 
-  select.addEventListener("change", () => {
-    activeFaqKategori = select.value;
-    renderFaq();
+select.addEventListener("change", () => {
+  activeFaqKategori = select.value;
+
+  document.querySelectorAll("#faqCategoryChips .category-chip").forEach(btn => {
+    btn.classList.toggle(
+      "active",
+      btn.dataset.kategori === activeFaqKategori
+    );
   });
+
+  renderFaq();
+});
 }
 
 function renderFaq() {
@@ -101,6 +110,43 @@ const faqSearch = document.getElementById("faqSearch");
 
 if (faqSearch) {
   faqSearch.addEventListener("input", renderFaq);
+}
+
+function renderFaqCategoryChips() {
+  const container = document.getElementById("faqCategoryChips");
+  if (!container) return;
+
+  const kategoriList = [...new Set(
+    faqData
+      .map(item => item.kategori)
+      .filter(Boolean)
+  )];
+
+  container.innerHTML =
+    `<button class="category-chip active" data-kategori="all">Semua</button>` +
+    kategoriList
+      .map(item => `
+        <button class="category-chip" data-kategori="${escapeHTML(item)}">
+          ${escapeHTML(item)}
+        </button>
+      `)
+      .join("");
+
+  container.querySelectorAll(".category-chip").forEach(button => {
+    button.addEventListener("click", () => {
+      container.querySelectorAll(".category-chip").forEach(btn => {
+        btn.classList.remove("active");
+      });
+
+      button.classList.add("active");
+      activeFaqKategori = button.dataset.kategori;
+
+      const select = document.getElementById("faqKategoriFilter");
+      if (select) select.value = activeFaqKategori;
+
+      renderFaq();
+    });
+  });
 }
 
 loadFaq();
