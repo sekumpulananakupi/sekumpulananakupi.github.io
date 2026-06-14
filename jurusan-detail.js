@@ -98,6 +98,15 @@ async function loadJurusanDetail() {
           `)
           .join("")}
       </div>
+
+      <h2>UKT</h2>
+<ul>
+  ${(jurusan.ukt || "")
+    .split("\n")
+    .filter(Boolean)
+    .map(item => `<li>${escapeHTML(item)}</li>`)
+    .join("")}
+</ul>
       
       <h2>Statistik Penerimaan</h2>
       ${renderStatistik(statistik)}
