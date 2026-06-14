@@ -2,6 +2,7 @@ const SUPABASE_URL = "https://rozfgvucyiwqqmmrmbph.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_KL8Jcb1hEzU-kAZiOMYWFg_hupftFmq";
 
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+let admissionChart = null;
 
 function showLoading(targetId, count = 3) {
   const target = document.getElementById(targetId);
@@ -211,6 +212,7 @@ async function loadJurusanDetail() {
   `;
 
   setupShareButtons();
+  setupAdmissionStatistik(statistik);
   await loadRelatedContent(id, relatedArticleList, relatedJobList);
   await loadAutoMatchedJobs(jurusan, relatedJobList);
 }
@@ -231,22 +233,152 @@ function renderStatistik(statistik) {
   }
 
   return `
-    <div class="statistik-grid">
-      ${statistik.map(item => {
-        const persen = item.peminat > 0
-          ? ((item.daya_tampung / item.peminat) * 100).toFixed(2)
-          : "0.00";
+    <section class="admission-section">
+      <div class="admission-tabs">
+        <button class="admission-tab active" data-jalur="SNBP">SNBP</button>
+        <button class="admission-tab" data-jalur="SNBT">SNBT</button>
+      </div>
 
-        return `
-          <div class="stat-card">
-            <span>${escapeHTML(item.jalur)} ${item.tahun}</span>
-            <strong>${persen}%</strong>
-            <p>${item.daya_tampung} kursi dari ${item.peminat} peminat</p>
-          </div>
-        `;
-      }).join("")}
-    </div>
+      <div class="admission-card">
+        <canvas id="admissionChart"></canvas>
+      </div>
+
+      <div class="admission-table-wrap">
+        <table class="admission-table">
+          <thead>
+            <tr>
+              <th>Tahun</th>
+              <th>Daya Tampung</th>
+              <th>Peminat</th>
+              <th>Keterimaan</th>
+            </tr>
+          </thead>
+          <tbody id="admissionTableBody"></tbody>
+        </table>
+      </div>
+    </section>
   `;
+}
+
+function persenKeterimaan(item) {
+  const dayaTampung = Number(item.daya_tampung);
+  const peminat = Number(item.peminat);
+
+  if (!peminat || peminat === 0) {
+    return "0.00";
+  }
+
+  return ((dayaTampung / peminat) * 100).toFixed(2);
+}
+
+function setupAdmissionStatistik(statistik) {
+  const tabs = document.querySelectorAll(".admission-tab");
+  const tbody = document.getElementById("admissionTableBody");
+  const canvas = document.getElementById("admissionChart");
+
+  if (!tabs.length || !tbody || !canvas) return;
+
+  function renderAdmission(jalur) {
+    const data = statistik
+      .filter(item => String(item.jalur).toUpperCase() === jalur)
+      .sort((a, b) => Number(a.tahun) - Number(b.tahun));
+
+    if (admissionChart) {
+      admissionChart.destroy();
+      admissionChart = null;
+    }
+
+    if (!data.length) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="4" class="empty-statistik">
+            Data ${jalur} belum tersedia.
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    const labels = data.map(item => item.tahun);
+    const dayaTampung = data.map(item => Number(item.daya_tampung));
+    const peminat = data.map(item => Number(item.peminat));
+    const persentase = data.map(item => Number(persenKeterimaan(item)));
+
+    admissionChart = new Chart(canvas, {
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            type: "bar",
+            label: "Daya Tampung",
+            data: dayaTampung,
+            yAxisID: "y"
+          },
+          {
+            type: "bar",
+            label: "Peminat",
+            data: peminat,
+            yAxisID: "y"
+          },
+          {
+            type: "line",
+            label: "Keterimaan (%)",
+            data: persentase,
+            yAxisID: "y1",
+            tension: 0.35
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: {
+          mode: "index",
+          intersect: false
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            position: "left"
+          },
+          y1: {
+            beginAtZero: true,
+            position: "right",
+            grid: {
+              drawOnChartArea: false
+            },
+            ticks: {
+              callback: value => value + "%"
+            }
+          }
+        }
+      }
+    });
+
+    tbody.innerHTML = data
+      .slice()
+      .sort((a, b) => Number(b.tahun) - Number(a.tahun))
+      .map(item => `
+        <tr>
+          <td>${item.tahun}</td>
+          <td>${item.daya_tampung} kursi</td>
+          <td>${item.peminat} peminat</td>
+          <td><strong>${persenKeterimaan(item)}%</strong></td>
+        </tr>
+      `)
+      .join("");
+  }
+
+  tabs.forEach(tab => {
+    tab.addEventListener("click", function() {
+      tabs.forEach(item => item.classList.remove("active"));
+      this.classList.add("active");
+
+      renderAdmission(this.dataset.jalur);
+    });
+  });
+
+  renderAdmission("SNBP");
 }
 
 async function loadRelatedContent(jurusanId, relatedArticleList, relatedJobList) {
