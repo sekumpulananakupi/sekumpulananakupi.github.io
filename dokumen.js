@@ -132,6 +132,7 @@ if (filtered.length) {
     "📄"
   );
 }
+}
   
 function createDokumenCard(item) {
   return `
