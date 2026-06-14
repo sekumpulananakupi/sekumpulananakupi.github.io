@@ -895,3 +895,18 @@ nav a {
   font-size:.9rem;
   line-height:1.5;
 }
+
+.jurusan-ukt-text {
+  white-space: pre-line;
+  line-height: 1.7;
+}
+
+.info-note {
+  margin-top: 12px;
+  padding: 12px;
+  border-left: 4px solid #f59e0b;
+  background: #fffbeb;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
