@@ -30,6 +30,7 @@ async function loadDokumen() {
   dokumenData = data || [];
 
   renderDokumenKategoriFilter();
+  renderDokumenCategoryChips();
   renderDokumen();
 }
 
@@ -49,10 +50,18 @@ function renderDokumenKategoriFilter() {
       .map(item => `<option value="${escapeHTML(item)}">${escapeHTML(item)}</option>`)
       .join("");
 
-  select.addEventListener("change", () => {
-    activeDokumenKategori = select.value;
-    renderDokumen();
+ select.addEventListener("change", () => {
+  activeDokumenKategori = select.value;
+
+  document.querySelectorAll(".category-chip").forEach(btn => {
+    btn.classList.toggle(
+      "active",
+      btn.dataset.kategori === activeDokumenKategori
+    );
   });
+
+  renderDokumen();
+});
 }
 
 function renderDokumen() {
@@ -102,6 +111,43 @@ const dokumenSearch = document.getElementById("dokumenSearch");
 
 if (dokumenSearch) {
   dokumenSearch.addEventListener("input", renderDokumen);
+}
+
+function renderDokumenCategoryChips() {
+  const container = document.getElementById("dokumenCategoryChips");
+  if (!container) return;
+
+  const kategoriList = [...new Set(
+    dokumenData
+      .map(item => item.kategori)
+      .filter(Boolean)
+  )];
+
+  container.innerHTML =
+    `<button class="category-chip active" data-kategori="all">Semua</button>` +
+    kategoriList
+      .map(item => `
+        <button class="category-chip" data-kategori="${escapeHTML(item)}">
+          ${escapeHTML(item)}
+        </button>
+      `)
+      .join("");
+
+  container.querySelectorAll(".category-chip").forEach(button => {
+    button.addEventListener("click", () => {
+      container.querySelectorAll(".category-chip").forEach(btn => {
+        btn.classList.remove("active");
+      });
+
+      button.classList.add("active");
+      activeDokumenKategori = button.dataset.kategori;
+
+      const select = document.getElementById("dokumenKategoriFilter");
+      if (select) select.value = activeDokumenKategori;
+
+      renderDokumen();
+    });
+  });
 }
 
 loadDokumen();
