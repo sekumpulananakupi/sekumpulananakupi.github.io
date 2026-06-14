@@ -12,6 +12,32 @@ let artikelTagData = [];
 let activeJurusan = "all";
 let activeTag = "all";
 
+function showLoading(targetId, count = 3) {
+  const target = document.getElementById(targetId);
+  if (!target) return;
+
+  target.innerHTML = Array.from({ length: count }).map(() => `
+    <article class="skeleton-card">
+      <div class="skeleton-line title"></div>
+      <div class="skeleton-line"></div>
+      <div class="skeleton-line"></div>
+      <div class="skeleton-line short"></div>
+    </article>
+  `).join("");
+}
+
+function showSimpleLoading(targetId, message = "Memuat data...") {
+  const target = document.getElementById(targetId);
+  if (!target) return;
+
+  target.innerHTML = `
+    <div class="loading-state">
+      <div class="loading-spinner"></div>
+      ${message}
+    </div>
+  `;
+}
+
 function escapeHTML(text) {
   return String(text || "").replace(/[&<>'"]/g, char => ({
     "&": "&amp;",
