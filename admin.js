@@ -1312,7 +1312,12 @@ function renderJurusanAdminList() {
         <div>
           <span class="pill">${item.fakultas || "-"}</span>
           <h3>${item.nama}</h3>
-          <p>Jenjang: ${item.jenjang || "-"} · ${stripHTML(item.deskripsi).slice(0, 80)}...</p>
+          <p>
+            Jenjang: ${item.jenjang || "-"} · 
+            Akreditasi: ${item.akreditasi || "-"} · 
+            UKT: ${item.ukt || "-"}
+          </p>
+          <p>${stripHTML(item.deskripsi || "").slice(0, 80)}...</p>
         </div>
 
         <div class="card-actions">
@@ -1338,7 +1343,8 @@ if (qs("jurusanForm")) {
       akreditasi: qs("jurusanAkreditasi").value,
       ukt: qs("jurusanUkt").value,
       website_resmi: qs("jurusanWebsite").value,
-      mata_kuliah: qs("jurusanMataKuliah").value,
+      url_kurikulum: qs("jurusanUrlKurikulum").value,
+      url_akreditasi: qs("jurusanUrlAkreditasi").value,
       prospek_kerja: qs("jurusanProspekKerja").value,
       deskripsi: qs("jurusanDeskripsi").value
     };
@@ -1363,15 +1369,16 @@ function editJurusan(id) {
   if (!item) return;
 
   qs("jurusanId").value = item.id;
-  qs("jurusanNama").value = item.nama;
-  qs("jurusanSlug").value = item.slug;
+  qs("jurusanNama").value = item.nama || "";
+  qs("jurusanSlug").value = item.slug || "";
   qs("jurusanFakultas").value = item.fakultas || "";
   qs("jurusanJenjang").value = item.jenjang || "";
   qs("jurusanDeskripsi").value = item.deskripsi || "";
   qs("jurusanAkreditasi").value = item.akreditasi || "";
   qs("jurusanUkt").value = item.ukt || "";
   qs("jurusanWebsite").value = item.website_resmi || "";
-  qs("jurusanMataKuliah").value = item.mata_kuliah || "";
+  qs("jurusanUrlKurikulum").value = item.url_kurikulum || "";
+  qs("jurusanUrlAkreditasi").value = item.url_akreditasi || "";
   qs("jurusanProspekKerja").value = item.prospek_kerja || "";
 
   showAdminPage("jurusanPage");
