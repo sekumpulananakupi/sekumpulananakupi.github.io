@@ -174,9 +174,6 @@ function renderPills(items, className = "") {
 }
 
 
-
-loadPost();
-
 setupShareButtons();
 function setupShareButtons() {
   const shareBtn = document.getElementById("shareWhatsapp");
@@ -212,3 +209,6 @@ function setupShareButtons() {
     });
   }
 }
+
+loadPost();
+
