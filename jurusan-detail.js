@@ -250,7 +250,7 @@ function renderStatistik(statistik) {
               <th>Tahun</th>
               <th>Daya Tampung</th>
               <th>Peminat</th>
-              <th>Keterimaan</th>
+              <th>Keketatan</th>
             </tr>
           </thead>
           <tbody id="admissionTableBody"></tbody>
@@ -322,7 +322,7 @@ function setupAdmissionStatistik(statistik) {
           },
           {
             type: "line",
-            label: "Keterimaan (%)",
+            label: "Keketatan (%)",
             data: persentase,
             yAxisID: "y1",
             tension: 0.35
