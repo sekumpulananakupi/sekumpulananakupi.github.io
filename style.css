@@ -970,3 +970,11 @@ nav a {
   text-align: center;
   color: #64748b;
 }
+
+#biayaNominalPreview {
+  display: block;
+  margin-top: -8px;
+  margin-bottom: 14px;
+  color: #2563eb;
+  font-weight: 700;
+}
