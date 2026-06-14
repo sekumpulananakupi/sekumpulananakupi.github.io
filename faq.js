@@ -3,19 +3,6 @@ const SUPABASE_ANON_KEY = "sb_publishable_KL8Jcb1hEzU-kAZiOMYWFg_hupftFmq";
 
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-let faqData = [];
-let activeFaqKategori = "all";
-
-function escapeHTML(text) {
-  return String(text || "").replace(/[&<>'"]/g, char => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    "'": "&#39;",
-    '"': "&quot;"
-  }[char]));
-}
-
 function showLoading(targetId, count = 3) {
   const target = document.getElementById(targetId);
   if (!target) return;
@@ -42,9 +29,29 @@ function showSimpleLoading(targetId, message = "Memuat data...") {
   `;
 }
 
+function showError(targetId, message = "Gagal memuat data.") {
+  const target = document.getElementById(targetId);
+  if (!target) return;
+
+  target.innerHTML = `<div class="empty">${message}</div>`;
+}
+
+let faqData = [];
+let activeFaqKategori = "all";
+
+function escapeHTML(text) {
+  return String(text || "").replace(/[&<>'"]/g, char => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    "'": "&#39;",
+    '"': "&quot;"
+  }[char]));
+}
+
 async function loadFaq() {
   showSimpleLoading("faqContainer", "Memuat FAQ...");
-    
+
   const { data, error } = await supabaseClient
     .from("faq_kampus")
     .select("*")
@@ -52,6 +59,7 @@ async function loadFaq() {
 
   if (error) {
     console.error("Gagal mengambil FAQ:", error);
+    showError("faqContainer", "Gagal memuat FAQ.");
     return;
   }
 
