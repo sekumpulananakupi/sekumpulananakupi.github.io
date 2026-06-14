@@ -23,6 +23,7 @@ let faqData = [];
 let kategoriData = [];
 let tagData = [];
 let jurusanData = [];
+let biayaPendidikanData = [];
 
 let statistikData = [];
 let jurusanAdminData = [];
@@ -233,6 +234,8 @@ async function refreshAdminData() {
   await loadData();
   await loadStatistikData();
   await loadJurusanAdminData();
+  populateBiayaJurusanOptions();
+  await loadBiayaPendidikanAdminData();
   await loadTaxonomyAdminData();
   await loadDokumenData();
   await loadFaqData();
@@ -1590,6 +1593,184 @@ async function deleteTag(id) {
 function clearTagForm() {
   qs("tagForm")?.reset();
   if (qs("tagId")) qs("tagId").value = "";
+}
+
+/* =========================
+   CRUD BIAYA PENDIDIKAN
+========================= */
+
+function getJalurLabel(jalur) {
+  const labels = {
+    snbp_snbt: "SNBP/SNBT",
+    mandiri: "Seleksi Mandiri",
+    internasional: "Kelas Internasional",
+    rpl: "RPL",
+    reguler: "Reguler"
+  };
+
+  return labels[jalur] || jalur || "-";
+}
+
+function getJenisLabel(jenis) {
+  const labels = {
+    ukt: "UKT",
+    ipi: "IPI / Uang Pangkal"
+  };
+
+  return labels[jenis] || jenis || "-";
+}
+
+async function loadBiayaPendidikanAdminData() {
+  const { data, error } = await supabaseClient
+    .from("biaya_pendidikan")
+    .select(`
+      *,
+      jurusan:jurusan_id (
+        nama
+      )
+    `)
+    .order("tahun", { ascending: false })
+    .order("jenjang", { ascending: true })
+    .order("jalur", { ascending: true })
+    .order("jenis", { ascending: true })
+    .order("golongan", { ascending: true });
+
+  if (error) {
+    alert("Gagal memuat biaya pendidikan: " + error.message);
+    return;
+  }
+
+  biayaPendidikanData = data || [];
+  renderBiayaPendidikanAdminList();
+}
+
+function renderBiayaPendidikanAdminList() {
+  const list = qs("biayaPendidikanAdminList");
+  if (!list) return;
+
+  list.innerHTML = biayaPendidikanData.length
+    ? biayaPendidikanData.map(item => `
+      <article class="admin-list-item">
+        <div>
+          <span class="pill">${item.tahun}</span>
+          <h3>${item.jurusan?.nama || "Jurusan tidak ditemukan"}</h3>
+          <p>
+            ${item.jenjang || "-"} ·
+            ${getJalurLabel(item.jalur)} ·
+            ${getJenisLabel(item.jenis)} ·
+            ${item.golongan ? `Golongan ${item.golongan}` : "Tanpa golongan"} ·
+            <strong>${formatRupiah(item.nominal)}</strong>
+          </p>
+        </div>
+
+        <div class="card-actions">
+          <button class="btn ghost" onclick="editBiayaPendidikan(${item.id})">Edit</button>
+          <button class="btn danger" onclick="deleteBiayaPendidikan(${item.id})">Hapus</button>
+        </div>
+      </article>
+    `).join("")
+    : `<div class="empty">Belum ada data biaya pendidikan.</div>`;
+}
+
+function populateBiayaJurusanOptions() {
+  const select = qs("biayaJurusanId");
+  if (!select) return;
+
+  select.innerHTML = `
+    <option value="">Pilih jurusan</option>
+    ${jurusanAdminData.map(jurusan => `
+      <option value="${jurusan.id}">
+        ${jurusan.nama}
+      </option>
+    `).join("")}
+  `;
+}
+
+if (qs("biayaPendidikanForm")) {
+  qs("biayaPendidikanForm").addEventListener("submit", async event => {
+    event.preventDefault();
+
+    const id = qs("biayaId").value;
+    const golonganValue = qs("biayaGolongan").value;
+
+    const payload = {
+      jurusan_id: Number(qs("biayaJurusanId").value),
+      tahun: Number(qs("biayaTahun").value),
+      jenjang: qs("biayaJenjang").value,
+      jalur: qs("biayaJalur").value,
+      jenis: qs("biayaJenis").value,
+      golongan: golonganValue ? Number(golonganValue) : null,
+      nominal: Number(qs("biayaNominal").value)
+    };
+
+    const response = id
+      ? await supabaseClient.from("biaya_pendidikan").update(payload).eq("id", id)
+      : await supabaseClient.from("biaya_pendidikan").insert(payload);
+
+    if (response.error) {
+      alert("Gagal menyimpan biaya pendidikan: " + response.error.message);
+      return;
+    }
+
+    clearBiayaPendidikanForm();
+    await loadBiayaPendidikanAdminData();
+  });
+}
+
+function editBiayaPendidikan(id) {
+  const item = biayaPendidikanData.find(row => row.id === id);
+  if (!item) return;
+
+  qs("biayaId").value = item.id;
+  qs("biayaJurusanId").value = item.jurusan_id;
+  qs("biayaTahun").value = item.tahun;
+  qs("biayaJenjang").value = item.jenjang || "";
+  qs("biayaJalur").value = item.jalur;
+  qs("biayaJenis").value = item.jenis;
+  qs("biayaGolongan").value = item.golongan || "";
+  qs("biayaNominal").value = item.nominal;
+
+  updateBiayaNominalPreview();
+
+  showAdminPage("biayaPendidikanPage");
+}
+
+async function deleteBiayaPendidikan(id) {
+  if (!confirm("Yakin ingin menghapus data biaya pendidikan ini?")) return;
+
+  const { error } = await supabaseClient
+    .from("biaya_pendidikan")
+    .delete()
+    .eq("id", id);
+
+  if (error) {
+    alert("Gagal menghapus biaya pendidikan: " + error.message);
+    return;
+  }
+
+  await loadBiayaPendidikanAdminData();
+}
+
+function clearBiayaPendidikanForm() {
+  qs("biayaPendidikanForm")?.reset();
+
+  if (qs("biayaId")) qs("biayaId").value = "";
+  if (qs("biayaTahun")) qs("biayaTahun").value = 2026;
+
+  updateBiayaNominalPreview();
+}
+
+function updateBiayaNominalPreview() {
+  const input = qs("biayaNominal");
+  const preview = qs("biayaNominalPreview");
+
+  if (!input || !preview) return;
+
+  preview.textContent = formatRupiah(input.value || 0);
+}
+
+if (qs("biayaNominal")) {
+  qs("biayaNominal").addEventListener("input", updateBiayaNominalPreview);
 }
 
 /* =========================
