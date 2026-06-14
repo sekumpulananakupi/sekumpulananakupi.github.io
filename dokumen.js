@@ -4,6 +4,7 @@ const SUPABASE_ANON_KEY = "sb_publishable_KL8Jcb1hEzU-kAZiOMYWFg_hupftFmq";
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 let dokumenData = [];
+let activeDokumenKategori = "all";
 
 function escapeHTML(text) {
   return String(text || "").replace(/[&<>'"]/g, char => ({
@@ -16,23 +17,67 @@ function escapeHTML(text) {
 }
 
 async function loadDokumen() {
-  const { data } = await supabaseClient
+  const { data, error } = await supabaseClient
     .from("dokumen_kampus")
     .select("*")
     .order("created_at", { ascending: false });
 
+  if (error) {
+    console.error("Gagal mengambil dokumen:", error);
+    return;
+  }
+
   dokumenData = data || [];
+
+  renderDokumenKategoriFilter();
   renderDokumen();
 }
 
+function renderDokumenKategoriFilter() {
+  const select = document.getElementById("dokumenKategoriFilter");
+  if (!select) return;
+
+  const kategoriList = [...new Set(
+    dokumenData
+      .map(item => item.kategori)
+      .filter(Boolean)
+  )];
+
+  select.innerHTML =
+    `<option value="all">Semua Kategori</option>` +
+    kategoriList
+      .map(item => `<option value="${escapeHTML(item)}">${escapeHTML(item)}</option>`)
+      .join("");
+
+  select.addEventListener("change", () => {
+    activeDokumenKategori = select.value;
+    renderDokumen();
+  });
+}
+
 function renderDokumen() {
-  const keyword = document.getElementById("dokumenSearch").value.toLowerCase();
+  const searchInput = document.getElementById("dokumenSearch");
+  const container = document.getElementById("dokumenList");
 
-  const filtered = dokumenData.filter(item =>
-    JSON.stringify(item).toLowerCase().includes(keyword)
-  );
+  if (!container) return;
 
-  document.getElementById("dokumenList").innerHTML = filtered.length
+  const keyword = searchInput
+    ? searchInput.value.toLowerCase()
+    : "";
+
+  const filtered = dokumenData.filter(item => {
+    const matchSearch = JSON.stringify(item)
+      .toLowerCase()
+      .includes(keyword);
+
+    const matchKategori =
+      activeDokumenKategori === "all" ||
+      item.kategori === activeDokumenKategori;
+
+    return matchSearch && matchKategori;
+  });
+
+  container.innerHTML = filtered.length
     ? filtered.map(createDokumenCard).join("")
     : `<div class="empty">Belum ada dokumen.</div>`;
 }
@@ -53,6 +98,10 @@ function createDokumenCard(item) {
   `;
 }
 
-document.getElementById("dokumenSearch").addEventListener("input", renderDokumen);
+const dokumenSearch = document.getElementById("dokumenSearch");
+
+if (dokumenSearch) {
+  dokumenSearch.addEventListener("input", renderDokumen);
+}
 
 loadDokumen();
