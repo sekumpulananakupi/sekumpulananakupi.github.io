@@ -1120,3 +1120,86 @@ nav a {
   display: flex;
   gap: 10px;
 }
+
+.multi-select {
+  position: relative;
+  width: 100%;
+}
+
+.multi-select-button {
+  width: 100%;
+  min-height: 46px;
+  padding: 12px 42px 12px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  background: #fff;
+  text-align: left;
+  font-size: 0.95rem;
+  color: #111827;
+  cursor: pointer;
+}
+
+.multi-select-button::after {
+  content: "▾";
+  position: absolute;
+  right: 16px;
+  top: 13px;
+  color: #6b7280;
+}
+
+.multi-select-panel {
+  display: none;
+  position: absolute;
+  z-index: 99;
+  width: 100%;
+  margin-top: 6px;
+  padding: 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.16);
+}
+
+.multi-select.open .multi-select-panel {
+  display: block;
+}
+
+.multi-select-search {
+  width: 100%;
+  margin-bottom: 8px;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+}
+
+.multi-select-options {
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.multi-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 8px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.multi-option:hover {
+  background: #f3f4f6;
+}
+
+.multi-option input {
+  width: 16px;
+  height: 16px;
+  min-height: unset;
+  accent-color: #f59e0b;
+}
+
+.multi-empty {
+  padding: 10px;
+  color: #6b7280;
+  font-size: 0.85rem;
+}
