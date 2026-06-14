@@ -137,6 +137,7 @@ async function loadPost() {
       <a href="index.html" class="btn ghost">← Kembali ke Beranda</a>
     </article>
   `;
+  setupShareButtons();
 }
 
 async function loadRelations(type, artikelId) {
