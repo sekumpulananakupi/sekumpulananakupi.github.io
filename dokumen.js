@@ -3,19 +3,6 @@ const SUPABASE_ANON_KEY = "sb_publishable_KL8Jcb1hEzU-kAZiOMYWFg_hupftFmq";
 
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-let dokumenData = [];
-let activeDokumenKategori = "all";
-
-function escapeHTML(text) {
-  return String(text || "").replace(/[&<>'"]/g, char => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    "'": "&#39;",
-    '"': "&quot;"
-  }[char]));
-}
-
 function showLoading(targetId, count = 3) {
   const target = document.getElementById(targetId);
   if (!target) return;
@@ -42,6 +29,26 @@ function showSimpleLoading(targetId, message = "Memuat data...") {
   `;
 }
 
+function showError(targetId, message = "Gagal memuat data.") {
+  const target = document.getElementById(targetId);
+  if (!target) return;
+
+  target.innerHTML = `<div class="empty">${message}</div>`;
+}
+
+let dokumenData = [];
+let activeDokumenKategori = "all";
+
+function escapeHTML(text) {
+  return String(text || "").replace(/[&<>'"]/g, char => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    "'": "&#39;",
+    '"': "&quot;"
+  }[char]));
+}
+
 async function loadDokumen() {
   showLoading("dokumenList", 6);
 
@@ -50,13 +57,11 @@ async function loadDokumen() {
     .select("*")
     .order("created_at", { ascending: false });
 
-if (error) {
-  document.getElementById("dokumenList").innerHTML = `
-    <div class="empty">Gagal memuat dokumen.</div>
-  `;
-  console.error(error);
-  return;
-}
+  if (error) {
+    console.error("Gagal mengambil dokumen:", error);
+    showError("dokumenList", "Gagal memuat dokumen.");
+    return;
+  }
 
   dokumenData = data || [];
 
