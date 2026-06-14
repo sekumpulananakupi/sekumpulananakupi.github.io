@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin - Sekumpulan Anak UPI</title>
+
   <link href="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -30,12 +31,12 @@
             <h2>SA-UPI</h2>
             <p>Dashboard Admin</p>
           </div>
-        
+
           <div class="sidebar-group">
             <span class="sidebar-label">Utama</span>
             <button class="sidebar-link active" data-page="dashboardPage">Dashboard</button>
           </div>
-        
+
           <div class="sidebar-group">
             <span class="sidebar-label">Konten</span>
             <button class="sidebar-link" data-page="infoPage">Info Kampus</button>
@@ -44,26 +45,25 @@
             <button class="sidebar-link" data-page="dokumenPage">Dokumen Kampus</button>
             <button class="sidebar-link" data-page="faqPage">FAQ Kampus</button>
           </div>
-        
+
           <div class="sidebar-group">
             <span class="sidebar-label">Jurusan</span>
             <button class="sidebar-link" data-page="jurusanPage">Data Jurusan</button>
             <button class="sidebar-link" data-page="statistikPage">Statistik Jurusan</button>
             <button class="sidebar-link" data-page="biayaPendidikanPage">Biaya Pendidikan</button>
           </div>
-        
+
           <div class="sidebar-group">
             <span class="sidebar-label">Pengaturan</span>
             <button class="sidebar-link" data-page="taxonomyPage">Kategori & Tag</button>
           </div>
-        
+
           <div class="sidebar-group sidebar-bottom">
             <span class="sidebar-label">Navigasi</span>
             <a href="index.html" class="sidebar-link">Halaman Publik</a>
             <button class="btn danger sidebar-logout" id="logoutBtn">Logout</button>
           </div>
         </aside>
-        
 
         <section class="admin-content">
 
@@ -98,29 +98,28 @@
                 <strong id="adminCountJurusan">0</strong>
                 <span>Jurusan</span>
               </div>
-              
+
               <div class="stat-card">
                 <strong id="adminCountDokumen">0</strong>
                 <span>Dokumen</span>
               </div>
-              
+
               <div class="stat-card">
                 <strong id="adminCountFaq">0</strong>
                 <span>FAQ</span>
               </div>
-              
+
               <div class="stat-card">
                 <strong id="adminCountKategori">0</strong>
                 <span>Kategori</span>
               </div>
-              
+
               <div class="stat-card">
                 <strong id="adminCountTag">0</strong>
                 <span>Tag</span>
               </div>
             </section>
           </section>
-          
 
           <section class="admin-page" id="infoPage">
             <div class="section-heading">
@@ -168,12 +167,11 @@
 
               <label>Kategori Wiki</label>
               <div id="wikiKategoriMulti" class="checkbox-group"></div>
-              
+
               <label>Tag Wiki</label>
               <div id="wikiTagMulti" class="checkbox-group"></div>
-              
-              
-             <div id="wikiEditor"></div>
+
+              <div id="wikiEditor"></div>
               <input type="hidden" id="wikiContent">
               <input type="file" id="wikiImage" accept="image/*" />
 
@@ -204,7 +202,7 @@
 
               <label>Tag Lowongan</label>
               <div id="jobTagMulti" class="checkbox-group"></div>
-              
+
               <label>Jurusan Terkait</label>
               <div id="jobJurusanMulti" class="checkbox-group"></div>
 
@@ -222,161 +220,153 @@
           </section>
 
           <section class="admin-page" id="dokumenPage">
-          <div class="section-heading">
-            <div>
-              <p class="eyebrow">CRUD</p>
-              <h2>Dokumen Kampus</h2>
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">CRUD</p>
+                <h2>Dokumen Kampus</h2>
+              </div>
             </div>
-          </div>
-        
-          <form id="dokumenForm" class="form-card">
-        
-            <input type="hidden" id="dokumenId">
-        
-            <input
-              type="text"
-              id="dokumenJudul"
-              placeholder="Judul dokumen"
-              required
-            >
-        
-            <input
-              type="text"
-              id="dokumenKategori"
-              placeholder="Kategori"
-            >
-        
-            <textarea
-              id="dokumenDeskripsi"
-              placeholder="Deskripsi singkat"
-            ></textarea>
-        
-            <input
-              type="url"
-              id="dokumenLink"
-              placeholder="Link dokumen"
-              required
-            >
-        
-            <div class="form-actions">
-              <button class="btn primary">
-                Simpan
-              </button>
-            </div>
-        
-          </form>
-        
-          <div
-            class="grid-list"
-            id="dokumenList"
-          ></div>
-        
-        </section>
+
+            <form id="dokumenForm" class="form-card">
+              <input type="hidden" id="dokumenId">
+
+              <input
+                type="text"
+                id="dokumenJudul"
+                placeholder="Judul dokumen"
+                required
+              >
+
+              <input
+                type="text"
+                id="dokumenKategori"
+                placeholder="Kategori"
+              >
+
+              <textarea
+                id="dokumenDeskripsi"
+                placeholder="Deskripsi singkat"
+              ></textarea>
+
+              <input
+                type="url"
+                id="dokumenLink"
+                placeholder="Link dokumen"
+                required
+              >
+
+              <div class="form-actions">
+                <button class="btn primary" type="submit">Simpan</button>
+              </div>
+            </form>
+
+            <div class="grid-list" id="dokumenList"></div>
+          </section>
 
           <section class="admin-page" id="faqPage">
-          <div class="section-heading">
-            <div>
-              <p class="eyebrow">CRUD</p>
-              <h2>FAQ Kampus</h2>
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">CRUD</p>
+                <h2>FAQ Kampus</h2>
+              </div>
             </div>
-          </div>
-        
-          <form id="faqForm" class="form-card">
-            <input type="hidden" id="faqId" />
-            <input type="text" id="faqPertanyaan" placeholder="Pertanyaan" required />
-            <input type="text" id="faqKategori" placeholder="Kategori" />
-            <textarea id="faqJawaban" placeholder="Jawaban" required></textarea>
-        
-            <div class="form-actions">
-              <button class="btn primary" type="submit">Simpan FAQ</button>
-              <button class="btn ghost" type="button" onclick="clearFaqForm()">Batal</button>
-            </div>
-          </form>
-        
-          <div class="grid-list" id="faqList"></div>
-        </section>
 
-        <section id="biayaPendidikanPage" class="admin-page">
-          <div class="section-heading">
-            <div>
-              <p class="eyebrow">Admin</p>
-              <h2>Biaya Pendidikan</h2>
+            <form id="faqForm" class="form-card">
+              <input type="hidden" id="faqId" />
+              <input type="text" id="faqPertanyaan" placeholder="Pertanyaan" required />
+              <input type="text" id="faqKategori" placeholder="Kategori" />
+              <textarea id="faqJawaban" placeholder="Jawaban" required></textarea>
+
+              <div class="form-actions">
+                <button class="btn primary" type="submit">Simpan FAQ</button>
+                <button class="btn ghost" type="button" onclick="clearFaqForm()">Batal</button>
+              </div>
+            </form>
+
+            <div class="grid-list" id="faqList"></div>
+          </section>
+
+          <section class="admin-page" id="biayaPendidikanPage">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Admin</p>
+                <h2>Biaya Pendidikan</h2>
+              </div>
             </div>
-          </div>
-        
-          <form id="biayaPendidikanForm" class="admin-form">
-            <input type="hidden" id="biayaId" />
-        
-            <label>Jurusan</label>
-            <select id="biayaJurusanId" required>
-              <option value="">Pilih jurusan</option>
-            </select>
-        
-            <label>Tahun</label>
-            <input type="number" id="biayaTahun" value="2026" required />
-        
-            <label>Jenjang</label>
-            <select id="biayaJenjang" required>
-              <option value="">Pilih jenjang</option>
-              <option value="S1">S1</option>
-              <option value="S2">S2</option>
-              <option value="S3">S3</option>
-              <option value="Profesi">Profesi</option>
-            </select>
-        
-            <label>Jalur</label>
-            <select id="biayaJalur" required>
-              <option value="">Pilih jalur</option>
-              <option value="snbp_snbt">SNBP/SNBT</option>
-              <option value="mandiri">Seleksi Mandiri</option>
-              <option value="internasional">Kelas Internasional</option>
-              <option value="rpl">RPL</option>
-              <option value="reguler">Reguler</option>
-            </select>
-        
-            <label>Jenis Biaya</label>
-            <select id="biayaJenis" required>
-              <option value="">Pilih jenis</option>
-              <option value="ukt">UKT</option>
-              <option value="ipi">IPI / Uang Pangkal</option>
-            </select>
-        
-            <label>Golongan</label>
-            <select id="biayaGolongan">
-              <option value="">Tanpa golongan</option>
-              <option value="1">Golongan 1</option>
-              <option value="2">Golongan 2</option>
-              <option value="3">Golongan 3</option>
-              <option value="4">Golongan 4</option>
-              <option value="5">Golongan 5</option>
-              <option value="6">Golongan 6</option>
-              <option value="7">Golongan 7</option>
-              <option value="8">Golongan 8</option>
-            </select>
-        
-            <label>Nominal</label>
-            <input
-              type="number"
-              id="biayaNominal"
-              min="0"
-              step="1000"
-              placeholder="Contoh: 5000000"
-              required
-            />
-        
-            <small id="biayaNominalPreview">Rp0</small>
-        
-            <div class="form-actions">
-              <button type="submit" class="btn">Simpan</button>
-              <button type="button" class="btn ghost" onclick="clearBiayaPendidikanForm()">
-                Bersihkan
-              </button>
-            </div>
-          </form>
-        
-          <div id="biayaPendidikanAdminList" class="admin-list"></div>
-        </section>
-          
+
+            <form id="biayaPendidikanForm" class="form-card">
+              <input type="hidden" id="biayaId" />
+
+              <label>Jurusan</label>
+              <select id="biayaJurusanId" required>
+                <option value="">Pilih jurusan</option>
+              </select>
+
+              <label>Tahun</label>
+              <input type="number" id="biayaTahun" value="2026" required />
+
+              <label>Jenjang</label>
+              <select id="biayaJenjang" required>
+                <option value="">Pilih jenjang</option>
+                <option value="S1">S1</option>
+                <option value="S2">S2</option>
+                <option value="S3">S3</option>
+                <option value="Profesi">Profesi</option>
+              </select>
+
+              <label>Jalur</label>
+              <select id="biayaJalur" required>
+                <option value="">Pilih jalur</option>
+                <option value="snbp_snbt">SNBP/SNBT</option>
+                <option value="mandiri">Seleksi Mandiri</option>
+                <option value="internasional">Kelas Internasional</option>
+                <option value="rpl">RPL</option>
+                <option value="reguler">Reguler</option>
+              </select>
+
+              <label>Jenis Biaya</label>
+              <select id="biayaJenis" required>
+                <option value="">Pilih jenis</option>
+                <option value="ukt">UKT</option>
+                <option value="ipi">IPI / Uang Pangkal</option>
+              </select>
+
+              <label>Golongan</label>
+              <select id="biayaGolongan">
+                <option value="">Tanpa golongan</option>
+                <option value="1">Golongan 1</option>
+                <option value="2">Golongan 2</option>
+                <option value="3">Golongan 3</option>
+                <option value="4">Golongan 4</option>
+                <option value="5">Golongan 5</option>
+                <option value="6">Golongan 6</option>
+                <option value="7">Golongan 7</option>
+                <option value="8">Golongan 8</option>
+              </select>
+
+              <label>Nominal</label>
+              <input
+                type="number"
+                id="biayaNominal"
+                min="0"
+                step="1000"
+                placeholder="Contoh: 5000000"
+                required
+              />
+
+              <small id="biayaNominalPreview">Rp0</small>
+
+              <div class="form-actions">
+                <button type="submit" class="btn primary">Simpan</button>
+                <button type="button" class="btn ghost" onclick="clearBiayaPendidikanForm()">
+                  Bersihkan
+                </button>
+              </div>
+            </form>
+
+            <div id="biayaPendidikanAdminList" class="admin-list"></div>
+          </section>
+
           <section class="admin-page" id="statistikPage">
             <div class="section-heading">
               <div>
@@ -422,30 +412,17 @@
 
             <form id="jurusanForm" class="form-card">
               <input type="hidden" id="jurusanId" />
+
               <input type="text" id="jurusanNama" placeholder="Nama jurusan" required />
               <input type="text" id="jurusanSlug" placeholder="Slug, contoh: pendidikan-kimia" required />
               <input type="text" id="jurusanFakultas" placeholder="Fakultas, contoh: FPMIPA" />
               <input type="text" id="jurusanJenjang" placeholder="Jenjang, contoh: S1" />
               <input type="text" id="jurusanAkreditasi" placeholder="Akreditasi, contoh: Unggul" />
-              <label>Biaya Pendidikan / UKT</label>
-              <textarea
-                id="jurusanUkt"
-                rows="10"
-                placeholder="Contoh:
-              S1 SNBP/SNBT:
-              - UKT Kelompok 1: Rp...
-              - UKT Kelompok 2: Rp...
-              
-              S1 Seleksi Mandiri:
-              - UKT: Rp...
-              - IPI/Uang Pangkal: Rp...
-              
-              S2:
-              - SPP/UKT: Rp..."
-              ></textarea>
+
               <input type="url" id="jurusanWebsite" placeholder="Website resmi jurusan" />
               <input type="url" id="jurusanUrlKurikulum" placeholder="Website kurikulum sesuai jurusan. https://kurikulum.upi.edu/..." />
-              <input type="url" id="jurusanUrlAkreditasi" placeholder="Link akreditasi/sertifikat" />              
+              <input type="url" id="jurusanUrlAkreditasi" placeholder="Link akreditasi/sertifikat" />
+
               <textarea id="jurusanProspekKerja" placeholder="Prospek kerja, pisahkan per baris"></textarea>
               <textarea id="jurusanDeskripsi" placeholder="Deskripsi jurusan"></textarea>
 
@@ -470,12 +447,12 @@
               <input type="hidden" id="kategoriId" />
               <input type="text" id="kategoriNama" placeholder="Nama kategori" required />
               <input type="text" id="kategoriSlug" placeholder="Slug kategori" required />
-              
+
               <select id="kategoriTipe" required>
                 <option value="info">Info Kampus</option>
                 <option value="wiki">Wiki Kampus</option>
               </select>
-              
+
               <div class="form-actions">
                 <button class="btn primary" type="submit">Simpan Kategori</button>
                 <button class="btn ghost" type="button" onclick="clearKategoriForm()">Batal</button>
@@ -503,9 +480,9 @@
     </div>
   </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.js"></script>
-    <script src="admin.js"></script>
-    <script src="menu.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.js"></script>
+  <script src="admin.js"></script>
+  <script src="menu.js"></script>
 </body>
 </html>
