@@ -1336,6 +1336,7 @@ if (qs("jurusanForm")) {
       fakultas: qs("jurusanFakultas").value,
       jenjang: qs("jurusanJenjang").value,
       akreditasi: qs("jurusanAkreditasi").value,
+      ukt: qs("jurusanUkt").value,
       website_resmi: qs("jurusanWebsite").value,
       mata_kuliah: qs("jurusanMataKuliah").value,
       prospek_kerja: qs("jurusanProspekKerja").value,
