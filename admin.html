@@ -49,6 +49,7 @@
             <span class="sidebar-label">Jurusan</span>
             <button class="sidebar-link" data-page="jurusanPage">Data Jurusan</button>
             <button class="sidebar-link" data-page="statistikPage">Statistik Jurusan</button>
+            <button class="sidebar-link" data-page="biayaPendidikanPage">Biaya Pendidikan</button>
           </div>
         
           <div class="sidebar-group">
@@ -293,6 +294,87 @@
           </form>
         
           <div class="grid-list" id="faqList"></div>
+        </section>
+
+        <section id="biayaPendidikanPage" class="admin-page">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Admin</p>
+              <h2>Biaya Pendidikan</h2>
+            </div>
+          </div>
+        
+          <form id="biayaPendidikanForm" class="admin-form">
+            <input type="hidden" id="biayaId" />
+        
+            <label>Jurusan</label>
+            <select id="biayaJurusanId" required>
+              <option value="">Pilih jurusan</option>
+            </select>
+        
+            <label>Tahun</label>
+            <input type="number" id="biayaTahun" value="2026" required />
+        
+            <label>Jenjang</label>
+            <select id="biayaJenjang" required>
+              <option value="">Pilih jenjang</option>
+              <option value="S1">S1</option>
+              <option value="S2">S2</option>
+              <option value="S3">S3</option>
+              <option value="Profesi">Profesi</option>
+            </select>
+        
+            <label>Jalur</label>
+            <select id="biayaJalur" required>
+              <option value="">Pilih jalur</option>
+              <option value="snbp_snbt">SNBP/SNBT</option>
+              <option value="mandiri">Seleksi Mandiri</option>
+              <option value="internasional">Kelas Internasional</option>
+              <option value="rpl">RPL</option>
+              <option value="reguler">Reguler</option>
+            </select>
+        
+            <label>Jenis Biaya</label>
+            <select id="biayaJenis" required>
+              <option value="">Pilih jenis</option>
+              <option value="ukt">UKT</option>
+              <option value="ipi">IPI / Uang Pangkal</option>
+            </select>
+        
+            <label>Golongan</label>
+            <select id="biayaGolongan">
+              <option value="">Tanpa golongan</option>
+              <option value="1">Golongan 1</option>
+              <option value="2">Golongan 2</option>
+              <option value="3">Golongan 3</option>
+              <option value="4">Golongan 4</option>
+              <option value="5">Golongan 5</option>
+              <option value="6">Golongan 6</option>
+              <option value="7">Golongan 7</option>
+              <option value="8">Golongan 8</option>
+            </select>
+        
+            <label>Nominal</label>
+            <input
+              type="number"
+              id="biayaNominal"
+              min="0"
+              step="1000"
+              placeholder="Contoh: 5000000"
+              required
+            />
+        
+            <small id="biayaNominalPreview">Rp0</small>
+        
+            <div class="form-actions">
+              <button type="submit" class="btn">Simpan</button>
+              <button type="button" class="btn ghost" onclick="clearBiayaPendidikanForm()">
+                Bersihkan
+              </button>
+            </div>
+          </form>
+        
+          <div id="biayaPendidikanAdminList" class="admin-list"></div>
         </section>
           
           <section class="admin-page" id="statistikPage">
