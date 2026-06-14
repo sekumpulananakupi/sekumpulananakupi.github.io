@@ -48,7 +48,6 @@ showSimpleLoading("homeFaqList", "Memuat FAQ...");
   faqData = faq || [];
 
   renderJurusanJobFilter();
-  renderFilterButtons();
   renderHomeDokumen();
   renderHomeFaq();
   renderAll();
