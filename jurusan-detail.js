@@ -91,10 +91,14 @@ function renderChipLinks(text) {
 }
 
 async function loadJurusanDetail() {
+  
   const params = new URLSearchParams(window.location.search);
   const id = params.get("id");
 
   const detail = document.getElementById("jurusanDetail");
+    showSimpleLoading("jurusanDetail", "Memuat detail jurusan...");
+    showLoading("relatedArticleList", 3);
+    showLoading("relatedJobList", 3);
   const relatedArticleList = document.getElementById("relatedArticleList");
   const relatedJobList = document.getElementById("relatedJobList");
 
