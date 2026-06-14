@@ -161,7 +161,7 @@ function createLatestCard(item) {
 
       <h3>${escapeHTML(item.title)}</h3>
 
-      <p>${escapeHTML(item.content).slice(0, 120)}...</p>
+      <p>${escapeHTML(stripHTML(item.content)).slice(0, 120)}...</p>
 
       <a class="btn ghost" href="post.html?type=${item.type}&id=${item.id}">
         Baca Selengkapnya
