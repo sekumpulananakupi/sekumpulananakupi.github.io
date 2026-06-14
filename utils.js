@@ -23,3 +23,16 @@ function showError(targetId, message = "Gagal memuat data.") {
     </div>
   `;
 }
+
+function formatRupiah(value) {
+  if (value === null || value === undefined || value === "") return "-";
+
+  const number = Number(value);
+  if (Number.isNaN(number)) return "-";
+
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    maximumFractionDigits: 0
+  }).format(number);
+}
