@@ -249,6 +249,8 @@ async function refreshAdminData() {
   await loadTaxonomyAdminData();
   await loadDokumenData();
   await loadFaqData();
+
+  renderAll();
 }
 
 if (qs("loginBtn")) {
@@ -934,6 +936,7 @@ async function loadDokumenData() {
 
   dokumenData = data || [];
   renderDokumenList();
+  updateDashboardStats();
 }
 
 function renderDokumenList() {
@@ -1032,6 +1035,7 @@ async function loadFaqData() {
 
   faqData = data || [];
   renderFaqList();
+  updateDashboardStats();
 }
 
 function renderFaqList() {
