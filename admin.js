@@ -337,15 +337,83 @@ function fillCheckGroup(elementId, data) {
   const container = qs(elementId);
   if (!container) return;
 
-  container.innerHTML = data
-    .map(item => `
-      <label class="check-option">
-        <input type="checkbox" value="${item.id}">
-        <span>${item.nama}</span>
-      </label>
-    `)
-    .join("");
+  container.className = "multi-select";
+
+  container.innerHTML = `
+    <button type="button" class="multi-select-button">Pilih data</button>
+
+    <div class="multi-select-panel">
+      <input type="search" class="multi-select-search" placeholder="Cari..." />
+
+      <div class="multi-select-options">
+        ${data.map(item => `
+          <label class="multi-option">
+            <input type="checkbox" value="${item.id}">
+            <span>${item.nama}</span>
+          </label>
+        `).join("")}
+      </div>
+    </div>
+  `;
+
+  const button = container.querySelector(".multi-select-button");
+  const search = container.querySelector(".multi-select-search");
+  const options = container.querySelector(".multi-select-options");
+
+  button.addEventListener("click", event => {
+    event.stopPropagation();
+    closeAllMultiSelect(container);
+    container.classList.toggle("open");
+    search.focus();
+  });
+
+  search.addEventListener("input", () => {
+    const keyword = search.value.toLowerCase();
+
+    options.querySelectorAll(".multi-option").forEach(option => {
+      const text = option.textContent.toLowerCase();
+      option.style.display = text.includes(keyword) ? "flex" : "none";
+    });
+  });
+
+  container.querySelectorAll("input[type='checkbox']").forEach(input => {
+    input.addEventListener("change", () => {
+      updateMultiSelectLabel(container);
+    });
+  });
+
+  updateMultiSelectLabel(container);
 }
+
+function updateMultiSelectLabel(container) {
+  const button = container.querySelector(".multi-select-button");
+  const checked = container.querySelectorAll("input[type='checkbox']:checked");
+
+  if (!button) return;
+
+  if (!checked.length) {
+    button.textContent = "Pilih data";
+    return;
+  }
+
+  if (checked.length === 1) {
+    const label = checked[0].closest("label")?.querySelector("span")?.textContent;
+    button.textContent = label || "1 data dipilih";
+    return;
+  }
+
+  button.textContent = `${checked.length} data dipilih`;
+}
+
+function closeAllMultiSelect(except = null) {
+  document.querySelectorAll(".multi-select.open").forEach(select => {
+    if (select !== except) select.classList.remove("open");
+  });
+}
+
+document.addEventListener("click", () => {
+  closeAllMultiSelect();
+});
 
 function fillSingleSelect(elementId, data) {
   const select = qs(elementId);
