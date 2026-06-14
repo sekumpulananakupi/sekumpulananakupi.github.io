@@ -121,7 +121,17 @@ async function loadPost() {
           : ""
       }
 
-      <button class="btn primary" onclick="sharePost()">Bagikan Artikel</button>
+      <div class="share-actions">
+
+  <button id="shareWhatsapp" class="btn primary">
+    📤 Bagikan ke WhatsApp
+  </button>
+
+  <button id="copyLink" class="btn ghost">
+    🔗 Salin Link
+  </button>
+
+</div>
 
       <br><br>
       <a href="index.html" class="btn ghost">← Kembali ke Beranda</a>
@@ -163,16 +173,42 @@ function renderPills(items, className = "") {
     .join("");
 }
 
+
+
 loadPost();
 
-function sharePost() {
-  if (navigator.share) {
-    navigator.share({
-      title: document.title,
-      url: window.location.href
+setupShareButtons();
+function setupShareButtons() {
+  const shareBtn = document.getElementById("shareWhatsapp");
+  const copyBtn = document.getElementById("copyLink");
+
+  if (shareBtn) {
+    shareBtn.addEventListener("click", () => {
+      const url = window.location.href;
+
+      window.open(
+        `https://wa.me/?text=${encodeURIComponent(url)}`,
+        "_blank"
+      );
     });
-  } else {
-    navigator.clipboard.writeText(window.location.href);
-    alert("Link artikel disalin.");
+  }
+
+  if (copyBtn) {
+    copyBtn.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(
+          window.location.href
+        );
+
+        copyBtn.textContent = "✅ Link Tersalin";
+
+        setTimeout(() => {
+          copyBtn.textContent = "🔗 Salin Link";
+        }, 2000);
+
+      } catch {
+        alert("Gagal menyalin link.");
+      }
+    });
   }
 }
