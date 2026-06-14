@@ -155,14 +155,43 @@ async function loadJurusanDetail() {
         ? `<a href="${escapeHTML(jurusan.website_resmi)}" target="_blank" class="btn ghost">Website Resmi</a>`
         : ""}
 
+        <div class="program-links">
+        ${jurusan.url_kurikulum ? `
+          <a href="${jurusan.url_kurikulum}" target="_blank" class="btn-link">
+            📚 Lihat Kurikulum
+          </a>
+        ` : ''}
+      
+        ${jurusan.url_akreditasi ? `
+          <a href="${jurusan.url_akreditasi}" target="_blank" class="btn-link">
+            📄 Lihat Akreditasi
+          </a>
+        ` : ''}
+      </div>
+
+
       <h2>Statistik Penerimaan</h2>
       ${renderStatistik(statistik)}
 
       <h2>UKT</h2>
-      ${renderLineList(jurusan.ukt, "Data UKT belum tersedia.")}
-
-      <h2>Mata Kuliah</h2>
-      ${renderLineList(jurusan.mata_kuliah, "Data mata kuliah belum tersedia.")}
+      <div class="jurusan-ukt">
+        <h3>UKT</h3>
+        <p>${jurusan.ukt || "Belum tersedia"}</p>
+      
+        <div class="info-note">
+          <strong>Catatan:</strong>
+          Data UKT yang ditampilkan merupakan referensi Tahun Akademik 2026. Besaran UKT dapat berubah sesuai kebijakan Universitas Pendidikan Indonesia. Untuk informasi biaya pendidikan terbaru dan resmi, silakan kunjungi situs PMB UPI.
+        </div>
+      
+        <a
+          href="https://pmb.upi.edu/biaya_pendidikan"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn secondary"
+        >
+          Cek Biaya Pendidikan Resmi UPI
+        </a>
+      </div>
 
       <h2>Prospek Kerja</h2>
       ${renderChipLinks(jurusan.prospek_kerja)}
