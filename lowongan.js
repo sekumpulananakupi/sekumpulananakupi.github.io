@@ -49,6 +49,8 @@ function escapeHTML(text) {
 }
 
 async function loadLowongan() {
+  showLoading("jobList", 6);
+
   const { data: jobs } = await supabaseClient
     .from("lowongan_kerja")
     .select("*")
