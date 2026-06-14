@@ -173,15 +173,26 @@ async function loadJurusanDetail() {
       <h2>Statistik Penerimaan</h2>
       ${renderStatistik(statistik)}
 
-      <h2>UKT</h2>
       <div class="jurusan-ukt">
-        <h3>UKT</h3>
-        <p>${jurusan.ukt || "Belum tersedia"}</p>
-      
-        <div class="info-note">
-          <strong>Catatan:</strong>
-          Data UKT yang ditampilkan merupakan referensi Tahun Akademik 2026. Besaran UKT dapat berubah sesuai kebijakan Universitas Pendidikan Indonesia. Untuk informasi biaya pendidikan terbaru dan resmi, silakan kunjungi situs PMB UPI.
-        </div>
+      <h2>UKT</h2>
+      <p class="jurusan-ukt-text">${jurusan.ukt || "Belum tersedia"}</p>
+    
+      <div class="info-note">
+        <strong>Catatan:</strong>
+        Data UKT yang ditampilkan merupakan referensi Tahun Akademik 2026.
+        Besaran UKT dapat berubah sesuai kebijakan Universitas Pendidikan Indonesia.
+        Untuk informasi biaya pendidikan terbaru dan resmi, silakan kunjungi situs PMB UPI.
+      </div>
+    
+      <a
+        href="https://pmb.upi.edu/biaya_pendidikan"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn secondary"
+      >
+        Cek Biaya Pendidikan Resmi UPI
+      </a>
+    </div>
       
         <a
           href="https://pmb.upi.edu/biaya_pendidikan"
