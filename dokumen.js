@@ -43,6 +43,8 @@ function showSimpleLoading(targetId, message = "Memuat data...") {
 }
 
 async function loadDokumen() {
+  showLoading("dokumenList", 6);
+
   const { data, error } = await supabaseClient
     .from("dokumen_kampus")
     .select("*")
