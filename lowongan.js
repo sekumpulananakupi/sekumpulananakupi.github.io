@@ -163,7 +163,7 @@ function createJobCard(item) {
       <span class="pill">${escapeHTML(item.lokasi || "Fleksibel")}</span>
 
       <h3>${escapeHTML(item.posisi)}</h3>
-      <p>${escapeHTML(item.deskripsi || "").slice(0, 140)}...</p>
+      <p>${escapeHTML(stripHTML(item.deskripsi)).slice(0, 140)}...</p>
 
       <a href="post.html?type=job&id=${item.id}" class="btn ghost">Lihat Detail</a>
     </article>
