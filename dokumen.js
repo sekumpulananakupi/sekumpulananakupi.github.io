@@ -16,6 +16,32 @@ function escapeHTML(text) {
   }[char]));
 }
 
+function showLoading(targetId, count = 3) {
+  const target = document.getElementById(targetId);
+  if (!target) return;
+
+  target.innerHTML = Array.from({ length: count }).map(() => `
+    <article class="skeleton-card">
+      <div class="skeleton-line title"></div>
+      <div class="skeleton-line"></div>
+      <div class="skeleton-line"></div>
+      <div class="skeleton-line short"></div>
+    </article>
+  `).join("");
+}
+
+function showSimpleLoading(targetId, message = "Memuat data...") {
+  const target = document.getElementById(targetId);
+  if (!target) return;
+
+  target.innerHTML = `
+    <div class="loading-state">
+      <div class="loading-spinner"></div>
+      ${message}
+    </div>
+  `;
+}
+
 async function loadDokumen() {
   const { data, error } = await supabaseClient
     .from("dokumen_kampus")
