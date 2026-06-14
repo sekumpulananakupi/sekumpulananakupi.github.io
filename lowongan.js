@@ -142,9 +142,15 @@ function renderJobs() {
     );
   });
 
-  document.getElementById("jobList").innerHTML = filtered.length
-    ? filtered.map(createJobCard).join("")
-    : `<div class="empty">Tidak ada lowongan yang sesuai.</div>`;
+if (filtered.length) {
+  document.getElementById("jobList").innerHTML = filtered.map(createJobCard).join("");
+} else {
+  showEmpty(
+    "jobList",
+    "Lowongan tidak ditemukan",
+    "Coba gunakan kata kunci, tag, atau jurusan lain.",
+    "💼"
+  );
 }
 
 function createJobCard(item) {
