@@ -167,10 +167,22 @@ async function loadJurusanDetail() {
       <h2>Prospek Kerja</h2>
       ${renderChipLinks(jurusan.prospek_kerja)}
 
+      <div class="share-actions">
+      
+        <button id="shareWhatsapp" class="btn primary">
+          📤 Bagikan Jurusan
+        </button>
+      
+        <button id="copyLink" class="btn ghost">
+          🔗 Salin Link
+        </button>
+      
+      </div>
       <a href="jurusan.html" class="btn ghost">← Kembali ke Daftar Jurusan</a>
     </article>
   `;
 
+  setupShareButtons();
   await loadRelatedContent(id, relatedArticleList, relatedJobList);
   await loadAutoMatchedJobs(jurusan, relatedJobList);
 }
@@ -371,6 +383,41 @@ async function loadAutoMatchedJobs(jurusan, relatedJobList) {
 
     ${existingHTML.includes("Belum ada lowongan") ? "" : existingHTML}
   `;
+}
+
+function setupShareButtons() {
+  const shareBtn = document.getElementById("shareWhatsapp");
+  const copyBtn = document.getElementById("copyLink");
+
+  if (shareBtn) {
+    shareBtn.addEventListener("click", () => {
+      const url = window.location.href;
+
+      window.open(
+        `https://wa.me/?text=${encodeURIComponent(url)}`,
+        "_blank"
+      );
+    });
+  }
+
+  if (copyBtn) {
+    copyBtn.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(
+          window.location.href
+        );
+
+        copyBtn.textContent = "✅ Link Tersalin";
+
+        setTimeout(() => {
+          copyBtn.textContent = "🔗 Salin Link";
+        }, 2000);
+
+      } catch {
+        alert("Gagal menyalin link.");
+      }
+    });
+  }
 }
 
 loadJurusanDetail();
