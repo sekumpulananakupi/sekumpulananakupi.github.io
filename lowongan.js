@@ -48,6 +48,12 @@ function escapeHTML(text) {
   }[char]));
 }
 
+function stripHTML(html) {
+  const div = document.createElement("div");
+  div.innerHTML = html || "";
+  return (div.textContent || div.innerText || "").trim();
+}
+
 async function loadLowongan() {
   showLoading("jobList", 6);
 
