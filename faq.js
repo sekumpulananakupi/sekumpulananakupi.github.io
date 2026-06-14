@@ -122,11 +122,18 @@ function renderFaq() {
     return matchSearch && matchKategori;
   });
 
-  container.innerHTML = filtered.length
-    ? filtered.map(createFaqCard).join("")
-    : `<div class="empty">FAQ tidak ditemukan.</div>`;
+if (filtered.length) {
+  container.innerHTML = filtered.map(createFaqCard).join("");
+} else {
+  showEmpty(
+    "faqContainer",
+    "FAQ tidak ditemukan",
+    "Coba gunakan kata kunci lain atau pilih kategori berbeda.",
+    "❓"
+  );
 }
 
+  
 function createFaqCard(item) {
   return `
     <details class="faq-item">
