@@ -53,6 +53,20 @@ function toTitleCase(text) {
     .join(" ");
 }
 
+
+function formatRupiah(value) {
+  if (value === null || value === undefined || value === "") return "-";
+
+  const number = Number(value);
+  if (Number.isNaN(number)) return "-";
+
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    maximumFractionDigits: 0
+  }).format(number);
+}
+
 function renderLineList(text, emptyText = "Belum tersedia.") {
   const items = String(text || "")
     .split("\n")
@@ -121,6 +135,20 @@ async function loadJurusanDetail() {
     return;
   }
 
+const { data: biayaPendidikan, error: biayaError } = await supabaseClient
+  .from("biaya_pendidikan")
+  .select("*")
+  .eq("jurusan_id", jurusan.id)
+  .order("tahun", { ascending: false })
+  .order("jenjang", { ascending: true })
+  .order("jalur", { ascending: true })
+  .order("jenis", { ascending: true })
+  .order("golongan", { ascending: true });
+
+if (biayaError) {
+  console.error("Gagal memuat biaya pendidikan:", biayaError.message);
+}
+  
   const statistik = await loadStatistikJurusan(id);
 
   detail.innerHTML = `
@@ -174,24 +202,7 @@ async function loadJurusanDetail() {
       <h2>Statistik Penerimaan</h2>
       ${renderStatistik(statistik)}
 
-      <div class="jurusan-ukt">
-        <h3>Biaya Pendidikan / UKT</h3>
-        <p class="jurusan-ukt-text">${jurusan.ukt || "Belum tersedia"}</p>
-      
-        <div class="info-note">
-          <strong>Catatan:</strong>
-          Informasi biaya pendidikan dapat berbeda berdasarkan jenjang dan jalur masuk, seperti SNBP/SNBT, Seleksi Mandiri, Kelas Internasional, RPL, Pascasarjana, dan Pendidikan Profesi. Data yang ditampilkan merupakan referensi Tahun Akademik 2026. Untuk informasi terbaru dan resmi, silakan cek situs PMB UPI.
-        </div>
-      
-        <a
-          href="https://pmb.upi.edu/biaya_pendidikan"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="btn secondary"
-        >
-          Cek Biaya Pendidikan Resmi UPI
-        </a>
-      </div>
+      ${renderBiayaPendidikanSection(biayaPendidikan || [])}
 
       <h2>Prospek Kerja</h2>
       ${renderChipLinks(jurusan.prospek_kerja)}
@@ -544,6 +555,144 @@ async function loadAutoMatchedJobs(jurusan, relatedJobList) {
     ${existingHTML.includes("Belum ada lowongan") ? "" : existingHTML}
   `;
 }
+
+function renderBiayaPendidikanSection(biayaList = []) {
+  if (!biayaList.length) {
+    return `
+      <section class="biaya-section">
+        <h2>Biaya Pendidikan</h2>
+        <p>Data biaya pendidikan belum tersedia.</p>
+        ${renderBiayaDisclaimer()}
+      </section>
+    `;
+  }
+
+  const jalurUrutan = [
+    { key: "snbp_snbt", label: "SNBP/SNBT" },
+    { key: "mandiri", label: "Seleksi Mandiri" },
+    { key: "internasional", label: "Kelas Internasional" },
+    { key: "rpl", label: "RPL" },
+    { key: "reguler", label: "Reguler" }
+  ];
+
+  const jalurTersedia = jalurUrutan.filter(jalur =>
+    biayaList.some(item => item.jalur === jalur.key)
+  );
+
+  return `
+    <section class="biaya-section">
+      <h2>Biaya Pendidikan</h2>
+
+      <div class="biaya-tabs">
+        ${jalurTersedia.map((jalur, index) => `
+          <button
+            type="button"
+            class="biaya-tab-btn ${index === 0 ? "active" : ""}"
+            onclick="showBiayaTab('${jalur.key}', this)"
+          >
+            ${jalur.label}
+          </button>
+        `).join("")}
+      </div>
+
+      ${jalurTersedia.map((jalur, index) => `
+        <div
+          class="biaya-tab-content ${index === 0 ? "active" : ""}"
+          id="biaya-${jalur.key}"
+        >
+          ${renderJalurBiayaTable(biayaList, jalur.key)}
+        </div>
+      `).join("")}
+
+      ${renderBiayaDisclaimer()}
+    </section>
+  `;
+}
+
+function renderJalurBiayaTable(biayaList, jalur) {
+  const items = biayaList.filter(item => item.jalur === jalur);
+
+  if (!items.length) {
+    return `<p class="empty">Data biaya untuk jalur ini belum tersedia.</p>`;
+  }
+
+  const uktItems = items.filter(item => item.jenis === "ukt");
+  const ipiItems = items.filter(item => item.jenis === "ipi");
+
+  return `
+    ${uktItems.length ? `
+      <h3>UKT</h3>
+      ${renderBiayaTable(uktItems, "UKT")}
+    ` : ""}
+
+    ${ipiItems.length ? `
+      <h3>IPI / Uang Pangkal</h3>
+      ${renderBiayaTable(ipiItems, "IPI")}
+    ` : ""}
+  `;
+}
+
+function renderBiayaTable(items, jenisLabel) {
+  const hasGolongan = items.some(item => item.golongan);
+
+  return `
+    <div class="table-responsive">
+      <table class="biaya-table">
+        <thead>
+          <tr>
+            ${hasGolongan ? "<th>Golongan</th>" : ""}
+            <th>${jenisLabel}</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${items.map(item => `
+            <tr>
+              ${hasGolongan ? `<td>Golongan ${item.golongan}</td>` : ""}
+              <td>${formatRupiah(item.nominal)}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+function renderBiayaDisclaimer() {
+  return `
+    <div class="info-note">
+      <strong>Catatan:</strong>
+      Informasi biaya pendidikan dapat berbeda berdasarkan jenjang dan jalur masuk,
+      seperti SNBP/SNBT, Seleksi Mandiri, Kelas Internasional, RPL, Pascasarjana,
+      dan Pendidikan Profesi. Data yang ditampilkan merupakan referensi Tahun Akademik 2026.
+      Untuk informasi terbaru dan resmi, silakan cek situs PMB UPI.
+    </div>
+
+    <a
+      href="https://pmb.upi.edu/biaya_pendidikan"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="btn secondary"
+    >
+      Cek Biaya Pendidikan Resmi UPI
+    </a>
+  `;
+}
+
+function showBiayaTab(jalur, button) {
+  document.querySelectorAll(".biaya-tab-content").forEach(content => {
+    content.classList.remove("active");
+  });
+
+  document.querySelectorAll(".biaya-tab-btn").forEach(btn => {
+    btn.classList.remove("active");
+  });
+
+  const target = document.getElementById(`biaya-${jalur}`);
+  if (target) target.classList.add("active");
+
+  if (button) button.classList.add("active");
+}
+
 
 function setupShareButtons() {
   const shareBtn = document.getElementById("shareWhatsapp");
