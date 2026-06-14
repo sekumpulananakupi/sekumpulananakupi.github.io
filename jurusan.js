@@ -9,7 +9,8 @@ const supabaseClient = supabase.createClient(
 let jurusanData = [];
 
 async function loadJurusan() {
-
+  showLoading("jurusanList", 6);
+  
   const { data } = await supabaseClient
     .from("jurusan")
     .select("*")
