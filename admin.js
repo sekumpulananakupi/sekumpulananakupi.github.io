@@ -1369,6 +1369,7 @@ function editJurusan(id) {
   qs("jurusanJenjang").value = item.jenjang || "";
   qs("jurusanDeskripsi").value = item.deskripsi || "";
   qs("jurusanAkreditasi").value = item.akreditasi || "";
+  qs("jurusanUkt").value = item.ukt || "";
   qs("jurusanWebsite").value = item.website_resmi || "";
   qs("jurusanMataKuliah").value = item.mata_kuliah || "";
   qs("jurusanProspekKerja").value = item.prospek_kerja || "";
