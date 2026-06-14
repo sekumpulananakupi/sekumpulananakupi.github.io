@@ -57,6 +57,16 @@ function makeSlug(text) {
     .replace(/-+/g, "-");
 }
 
+function formatRupiah(value) {
+  const number = Number(value || 0);
+
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    minimumFractionDigits: 0
+  }).format(number);
+}
+
 function initQuillEditors() {
   if (!window.Quill) {
     console.warn("Quill belum dimuat. Pastikan CDN Quill sudah ada di admin.html.");
@@ -1318,7 +1328,6 @@ function renderJurusanAdminList() {
           <p>
             Jenjang: ${item.jenjang || "-"} · 
             Akreditasi: ${item.akreditasi || "-"} · 
-            UKT: ${item.ukt || "-"}
           </p>
           <p>${stripHTML(item.deskripsi || "").slice(0, 80)}...</p>
         </div>
@@ -1344,7 +1353,6 @@ if (qs("jurusanForm")) {
       fakultas: qs("jurusanFakultas").value,
       jenjang: qs("jurusanJenjang").value,
       akreditasi: qs("jurusanAkreditasi").value,
-      ukt: qs("jurusanUkt").value,
       website_resmi: qs("jurusanWebsite").value,
       url_kurikulum: qs("jurusanUrlKurikulum").value,
       url_akreditasi: qs("jurusanUrlAkreditasi").value,
@@ -1378,7 +1386,6 @@ function editJurusan(id) {
   qs("jurusanJenjang").value = item.jenjang || "";
   qs("jurusanDeskripsi").value = item.deskripsi || "";
   qs("jurusanAkreditasi").value = item.akreditasi || "";
-  qs("jurusanUkt").value = item.ukt || "";
   qs("jurusanWebsite").value = item.website_resmi || "";
   qs("jurusanUrlKurikulum").value = item.url_kurikulum || "";
   qs("jurusanUrlAkreditasi").value = item.url_akreditasi || "";
