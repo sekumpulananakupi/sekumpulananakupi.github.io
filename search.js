@@ -48,6 +48,7 @@ function stripHTML(html) {
 }
 
 async function loadSearchData() {
+  showSimpleLoading("searchResults", "Menyiapkan data pencarian...");
   const { data: info } = await supabaseClient
     .from("informasi_kampus")
     .select("*");
