@@ -43,6 +43,8 @@ function showSimpleLoading(targetId, message = "Memuat data...") {
 }
 
 async function loadFaq() {
+  showSimpleLoading("faqContainer", "Memuat FAQ...");
+    
   const { data, error } = await supabaseClient
     .from("faq_kampus")
     .select("*")
