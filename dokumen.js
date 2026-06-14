@@ -122,11 +122,17 @@ function renderDokumen() {
     return matchSearch && matchKategori;
   });
 
-  container.innerHTML = filtered.length
-    ? filtered.map(createDokumenCard).join("")
-    : `<div class="empty">Belum ada dokumen.</div>`;
+if (filtered.length) {
+  container.innerHTML = filtered.map(createDokumenCard).join("");
+} else {
+  showEmpty(
+    "dokumenList",
+    "Dokumen tidak ditemukan",
+    "Coba gunakan kata kunci lain atau pilih kategori berbeda.",
+    "📄"
+  );
 }
-
+  
 function createDokumenCard(item) {
   return `
     <article class="item-card">
