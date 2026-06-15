@@ -1252,3 +1252,49 @@ nav a {
 .biaya-tab-btn.active{
   font-weight:700;
 }
+
+.admission-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.admission-summary-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 14px;
+}
+
+.admission-summary-card span {
+  display: block;
+  font-size: .85rem;
+  color: #64748b;
+  margin-bottom: 6px;
+}
+
+.admission-summary-card strong {
+  font-size: 1.25rem;
+}
+
+.admission-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 14px 0;
+}
+
+.chart-mode-btn {
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  padding: 9px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.chart-mode-btn.active {
+  background: #1d4ed8;
+  color: #fff;
+  border-color: #1d4ed8;
+}
