@@ -5,15 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Bandingkan Jurusan - SA UPI</title>
   <link rel="stylesheet" href="style.css" />
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZWLZ2952C1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
 
-  gtag('config', 'G-ZWLZ2952C1');
-</script>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZWLZ2952C1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-ZWLZ2952C1');
+  </script>
 </head>
 
 <body>
@@ -21,40 +21,51 @@
     <nav class="navbar container">
       <a href="index.html" class="brand">SA<span>UPI</span></a>
 
-      <button class="menu-toggle" id="menuToggle">☰</button>
+      <button class="menu-toggle" id="menuToggle" type="button" aria-label="Buka menu">☰</button>
       <ul class="nav-menu" id="navMenu">
-      <li><a href="index.html">Beranda</a></li>
-      <li><a href="jurusan.html">Jurusan</a></li>
-      <li><a href="lowongan.html">Lowongan</a></li>
-      <li><a href="dokumen.html">Dokumen</a></li>
-      <li><a href="faq.html">FAQ</a></li>
-      <li><a href="komunitas.html">Komunitas</a></li>
-      <li><a href="tentang.html">Tentang</a></li>
-      <li><a href="search.html">Cari</a></li>
+        <li><a href="index.html">Beranda</a></li>
+        <li><a href="jurusan.html">Jurusan</a></li>
+        <li><a href="lowongan.html">Lowongan</a></li>
+        <li><a href="dokumen.html">Dokumen</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+        <li><a href="komunitas.html">Komunitas</a></li>
+        <li><a href="tentang.html">Tentang</a></li>
+        <li><a href="search.html">Cari</a></li>
       </ul>
     </nav>
   </header>
 
   <main class="container">
-    <section class="section">
+    <section class="section compare-page-section">
       <div class="section-heading">
         <div>
           <p class="eyebrow">Komparasi</p>
           <h2>Bandingkan Jurusan</h2>
+          <p class="section-desc">
+            Pilih dua jurusan untuk membandingkan profil, akreditasi, statistik penerimaan, rasio persaingan, dan biaya pendidikan.
+          </p>
         </div>
       </div>
 
-      <div class="filter-panel">
-        <select id="jurusanA">
-          <option value="">Pilih Jurusan Pertama</option>
-        </select>
+      <div class="filter-panel compare-filter-panel">
+        <div class="filter-field">
+          <label for="jurusanA">Jurusan Pertama</label>
+          <select id="jurusanA">
+            <option value="">Memuat jurusan...</option>
+          </select>
+        </div>
 
-        <select id="jurusanB">
-          <option value="">Pilih Jurusan Kedua</option>
-        </select>
+        <div class="filter-field">
+          <label for="jurusanB">Jurusan Kedua</label>
+          <select id="jurusanB">
+            <option value="">Memuat jurusan...</option>
+          </select>
+        </div>
       </div>
 
-      <div id="compareResult"></div>
+      <div id="compareResult">
+        <div class="empty">Pilih dua jurusan untuk dibandingkan.</div>
+      </div>
     </section>
   </main>
 
