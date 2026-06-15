@@ -1729,3 +1729,32 @@ nav a {
     padding: 18px;
   }
 }
+
+.related-jurusan-section {
+  margin-top: 40px;
+}
+
+.related-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.related-jurusan-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow:
+    0 8px 20px rgba(0,0,0,0.06);
+}
+
+.related-jurusan-card h3 {
+  margin: 12px 0;
+}
+
+.related-jurusan-card p {
+  color: #64748b;
+  line-height: 1.6;
+}
