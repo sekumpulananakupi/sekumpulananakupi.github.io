@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>Generate Sitemap SA UPI</title>
+</head>
+<body>
+  <h1>Generate Sitemap</h1>
+  <button id="generateBtn">Generate Sitemap</button>
+  <pre id="output"></pre>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    const SUPABASE_URL = "https://rozfgvucyiwqqmmrmbph.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_KL8Jcb1hEzU-kAZiOMYWFg_hupftFmq";
+
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const SITE_URL = "https://USERNAME.github.io/NAMA-REPO";
+
+    function today() {
+      return new Date().toISOString().split("T")[0];
+    }
+
+    function urlItem(loc, priority = "0.8", changefreq = "weekly") {
+      return `
+  <url>
+    <loc>${loc}</loc>
+    <lastmod>${today()}</lastmod>
+    <changefreq>${changefreq}</changefreq>
+    <priority>${priority}</priority>
+  </url>`;
+    }
+
+    async function generateSitemap() {
+      const output = document.getElementById("output");
+
+      const urls = [];
+
+      urls.push(urlItem(`${SITE_URL}/index.html`, "1.0", "daily"));
+      urls.push(urlItem(`${SITE_URL}/jurusan.html`, "0.9", "weekly"));
+      urls.push(urlItem(`${SITE_URL}/bandingkan-jurusan.html`, "0.9", "weekly"));
+      urls.push(urlItem(`${SITE_URL}/lowongan.html`, "0.8", "daily"));
+      urls.push(urlItem(`${SITE_URL}/dokumen.html`, "0.7", "weekly"));
+      urls.push(urlItem(`${SITE_URL}/faq.html`, "0.8", "weekly"));
+      urls.push(urlItem(`${SITE_URL}/komunitas.html`, "0.6", "monthly"));
+      urls.push(urlItem(`${SITE_URL}/tentang.html`, "0.6", "monthly"));
+      urls.push(urlItem(`${SITE_URL}/search.html`, "0.6", "weekly"));
+
+      const { data: jurusan } = await supabaseClient
+        .from("jurusan")
+        .select("id");
+
+      (jurusan || []).forEach(item => {
+        urls.push(
+          urlItem(`${SITE_URL}/jurusan-detail.html?id=${item.id}`, "0.9", "weekly")
+        );
+      });
+
+      const tables = [
+        { name: "informasi_kampus", type: "info" },
+        { name: "wiki_kampus", type: "wiki" },
+        { name: "lowongan_kerja", type: "job" }
+      ];
+
+      for (const table of tables) {
+        const { data } = await supabaseClient
+          .from(table.name)
+          .select("id");
+
+        (data || []).forEach(item => {
+          urls.push(
+            urlItem(`${SITE_URL}/post.html?type=${table.type}&id=${item.id}`, "0.8", "weekly")
+          );
+        });
+      }
+
+      const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls.join("")}
+</urlset>`;
+
+      output.textContent = sitemap;
+    }
+
+    document.getElementById("generateBtn").addEventListener("click", generateSitemap);
+  </script>
+</body>
+</html>
