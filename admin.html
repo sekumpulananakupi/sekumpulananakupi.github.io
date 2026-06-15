@@ -51,6 +51,7 @@
             <button class="sidebar-link" data-page="jurusanPage">Data Jurusan</button>
             <button class="sidebar-link" data-page="statistikPage">Statistik Jurusan</button>
             <button class="sidebar-link" data-page="biayaPendidikanPage">Biaya Pendidikan</button>
+            <button class="sidebar-link" data-page="faqJurusanPage">FAQ Jurusan</button>
           </div>
 
           <div class="sidebar-group">
@@ -515,6 +516,34 @@
             <div class="grid-list" id="tagAdminList"></div>
           </section>
 
+          <section class="admin-page" id="faqJurusanPage">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">CRUD</p>
+                <h2>FAQ Jurusan</h2>
+              </div>
+            </div>
+          
+            <form id="faqJurusanForm" class="form-card">
+              <input type="hidden" id="faqJurusanId" />
+          
+              <label>Jurusan</label>
+              <select id="faqJurusanSelect" required></select>
+          
+              <input type="text" id="faqJurusanPertanyaan" placeholder="Pertanyaan" required />
+          
+              <textarea id="faqJurusanJawaban" placeholder="Jawaban" required></textarea>
+          
+              <input type="number" id="faqJurusanUrutan" placeholder="Urutan" value="0" />
+          
+              <div class="form-actions">
+                <button class="btn primary" type="submit">Simpan FAQ Jurusan</button>
+                <button class="btn ghost" type="button" onclick="clearFaqJurusanForm()">Batal</button>
+              </div>
+            </form>
+          
+            <div class="grid-list" id="faqJurusanList"></div>
+          </section>
         </section>
       </div>
     </div>
