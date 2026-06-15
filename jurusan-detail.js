@@ -615,50 +615,64 @@ function renderBiayaPendidikanSection(biayaList = []) {
 }
 
 function renderJalurBiayaTable(biayaList, jalur) {
+
   const items = biayaList.filter(item => item.jalur === jalur);
 
   if (!items.length) {
-    return `<p class="empty">Data biaya belum tersedia.</p>`;
+    return `<div class="empty">Data belum tersedia</div>`;
   }
 
-  const hasKelompok = items.some(i => i.kelompok);
-
   return `
-    <div class="table-responsive">
-      <table class="biaya-table">
-        <thead>
-          <tr>
-            ${hasKelompok ? "<th>Kelompok</th>" : ""}
-            ${items.some(i => i.status_mahasiswa) ? "<th>Status</th>" : ""}
-            ${items.some(i => i.ukt) ? "<th>UKT</th>" : ""}
-            ${items.some(i => i.ipi) ? "<th>IPI</th>" : ""}
-            ${items.some(i => i.uang_kuliah) ? "<th>Biaya</th>" : ""}
-          </tr>
-        </thead>
-        <tbody>
-          ${items.map(item => `
-            <tr>
-              ${hasKelompok ? `<td>${item.kelompok || "-"}</td>` : ""}
-              ${items.some(i => i.status_mahasiswa)
-                ? `<td>${item.status_mahasiswa || "-"}</td>`
-                : ""}
-              ${items.some(i => i.ukt)
-                ? `<td>${formatRupiah(item.ukt)}</td>`
-                : ""}
-              ${items.some(i => i.ipi)
-                ? `<td>${formatRupiah(item.ipi)}</td>`
-                : ""}
-              ${items.some(i => i.uang_kuliah)
-                ? `<td>${formatRupiah(item.uang_kuliah)}</td>`
-                : ""}
-            </tr>
-          `).join("")}
-        </tbody>
-      </table>
+    <div class="biaya-card-grid">
+      ${items.map(item => `
+        <div class="biaya-card">
+
+          ${
+            item.kelompok
+              ? `<div class="biaya-title">Kelompok ${item.kelompok}</div>`
+              : item.status_mahasiswa
+                ? `<div class="biaya-title">${item.status_mahasiswa}</div>`
+                : `<div class="biaya-title">${jalur}</div>`
+          }
+
+          ${
+            item.ukt
+              ? `
+                <div class="biaya-item">
+                  <span>UKT</span>
+                  <strong>${formatRupiah(item.ukt)}</strong>
+                </div>
+              `
+              : ""
+          }
+
+          ${
+            item.ipi
+              ? `
+                <div class="biaya-item">
+                  <span>IPI</span>
+                  <strong>${formatRupiah(item.ipi)}</strong>
+                </div>
+              `
+              : ""
+          }
+
+          ${
+            item.uang_kuliah
+              ? `
+                <div class="biaya-item">
+                  <span>Biaya</span>
+                  <strong>${formatRupiah(item.uang_kuliah)}</strong>
+                </div>
+              `
+              : ""
+          }
+
+        </div>
+      `).join("")}
     </div>
   `;
 }
-
 
 
 function renderBiayaDisclaimer() {
