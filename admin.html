@@ -292,15 +292,29 @@
                 <p class="eyebrow">Admin</p>
                 <h2>Biaya Pendidikan</h2>
               </div>
+              <input type="search" id="biayaPendidikanSearch" placeholder="Cari biaya..." />
             </div>
 
             <form id="biayaPendidikanForm" class="form-card">
               <input type="hidden" id="biayaId" />
 
-              <label>Jurusan</label>
-              <select id="biayaJurusanId" required>
-                <option value="">Pilih jurusan</option>
-              </select>
+              <label>Kode Prodi</label>
+              <input
+                type="text"
+                id="biayaKodeProdi"
+                placeholder="Contoh: D545"
+                required
+              />
+
+              <label>Nama Program Studi</label>
+              <input
+                type="text"
+                id="biayaNamaProdi"
+                list="biayaNamaProdiList"
+                placeholder="Contoh: Ilmu Komputer"
+                required
+              />
+              <datalist id="biayaNamaProdiList"></datalist>
 
               <label>Tahun</label>
               <input type="number" id="biayaTahun" value="2026" required />
@@ -309,6 +323,7 @@
               <select id="biayaJenjang" required>
                 <option value="">Pilih jenjang</option>
                 <option value="S1">S1</option>
+                <option value="D4">D4</option>
                 <option value="S2">S2</option>
                 <option value="S3">S3</option>
                 <option value="Profesi">Profesi</option>
@@ -317,44 +332,69 @@
               <label>Jalur</label>
               <select id="biayaJalur" required>
                 <option value="">Pilih jalur</option>
-                <option value="snbp_snbt">SNBP/SNBT</option>
-                <option value="mandiri">Seleksi Mandiri</option>
-                <option value="internasional">Kelas Internasional</option>
-                <option value="rpl">RPL</option>
-                <option value="reguler">Reguler</option>
+                <option value="SNBP/SNBT">SNBP/SNBT</option>
+                <option value="Mandiri">Seleksi Mandiri</option>
+                <option value="Kelas Internasional">Kelas Internasional</option>
+                <option value="RPL">RPL</option>
+                <option value="Reguler">Reguler</option>
+                <option value="Doktor by Research">Doktor by Research</option>
+                <option value="Profesi">Profesi</option>
               </select>
 
-              <label>Jenis Biaya</label>
-              <select id="biayaJenis" required>
-                <option value="">Pilih jenis</option>
-                <option value="ukt">UKT</option>
-                <option value="ipi">IPI / Uang Pangkal</option>
+              <label>Kelompok UKT/IPI</label>
+              <select id="biayaKelompok">
+                <option value="">Tanpa kelompok</option>
+                <option value="1">Kelompok 1</option>
+                <option value="2">Kelompok 2</option>
+                <option value="3">Kelompok 3</option>
+                <option value="4">Kelompok 4</option>
+                <option value="5">Kelompok 5</option>
+                <option value="6">Kelompok 6</option>
+                <option value="7">Kelompok 7</option>
+                <option value="8">Kelompok 8</option>
               </select>
 
-              <label>Golongan</label>
-              <select id="biayaGolongan">
-                <option value="">Tanpa golongan</option>
-                <option value="1">Golongan 1</option>
-                <option value="2">Golongan 2</option>
-                <option value="3">Golongan 3</option>
-                <option value="4">Golongan 4</option>
-                <option value="5">Golongan 5</option>
-                <option value="6">Golongan 6</option>
-                <option value="7">Golongan 7</option>
-                <option value="8">Golongan 8</option>
+              <label>Status Mahasiswa</label>
+              <select id="biayaStatusMahasiswa">
+                <option value="">Tidak perlu</option>
+                <option value="WNI">WNI</option>
+                <option value="WNA">WNA</option>
               </select>
 
-              <label>Nominal</label>
+              <label>UKT</label>
               <input
                 type="number"
-                id="biayaNominal"
+                id="biayaUkt"
                 min="0"
                 step="1000"
-                placeholder="Contoh: 5000000"
-                required
+                placeholder="Contoh: 500000"
               />
 
-              <small id="biayaNominalPreview">Rp0</small>
+              <label>IPI</label>
+              <input
+                type="number"
+                id="biayaIpi"
+                min="0"
+                step="1000"
+                placeholder="Contoh: 16340000"
+              />
+
+              <label>Uang Kuliah</label>
+              <input
+                type="number"
+                id="biayaUangKuliah"
+                min="0"
+                step="1000"
+                placeholder="Untuk S2/S3/Profesi, contoh: 10100000"
+              />
+
+              <label>Catatan</label>
+              <textarea
+                id="biayaCatatan"
+                placeholder="Opsional, misalnya biaya per semester atau khusus kampus daerah"
+              ></textarea>
+
+              <small id="biayaPreview">Rp0</small>
 
               <div class="form-actions">
                 <button type="submit" class="btn primary">Simpan</button>
