@@ -251,7 +251,14 @@ async function loadJurusanDetail() {
   }
 
   const statistik = await loadStatistikJurusan(id);
+   
+   updateSeoJurusan(
+  jurusan,
+  statistik,
+  Array.isArray(biayaPendidikan) ? biayaPendidikan : []
+);
 
+   
   detail.innerHTML = `
     <article class="post-card">
       <span class="pill">${escapeHTML(jurusan.fakultas || "UPI")}</span>
@@ -1239,6 +1246,75 @@ async function loadRelatedJurusan(currentJurusan) {
   `).join("");
 }
 
+
+/* =========================
+   SEO
+========================= */
+function updateSeoJurusan(jurusan, statistik = [], biayaList = []) {
+  const nama = jurusan.nama || "Jurusan UPI";
+  const fakultas = jurusan.fakultas || "Universitas Pendidikan Indonesia";
+  const jenjang = jurusan.jenjang || "";
+  const akreditasi = jurusan.akreditasi || "";
+
+  const latest = statistik
+    .slice()
+    .sort((a, b) => Number(b.tahun) - Number(a.tahun))[0];
+
+  const tahun = latest?.tahun || "terbaru";
+  const dayaTampung = latest?.daya_tampung || null;
+  const peminat = latest?.peminat || null;
+
+  const biayaValues = biayaList
+    .flatMap(item => [item.ukt, item.ipi, item.uang_kuliah])
+    .map(Number)
+    .filter(value => !Number.isNaN(value) && value > 0);
+
+  const minBiaya = biayaValues.length ? Math.min(...biayaValues) : null;
+  const maxBiaya = biayaValues.length ? Math.max(...biayaValues) : null;
+
+  const title = `${nama} UPI: Akreditasi, UKT, Daya Tampung, Peminat`;
+
+  let description = `Informasi ${nama} ${jenjang} UPI di ${fakultas}.`;
+
+  if (akreditasi) {
+    description += ` Akreditasi ${akreditasi}.`;
+  }
+
+  if (dayaTampung && peminat) {
+    description += ` Data penerimaan ${tahun}: daya tampung ${dayaTampung} kursi dan ${peminat} peminat.`;
+  }
+
+  if (minBiaya && maxBiaya) {
+    description += ` Biaya pendidikan mulai dari ${formatRupiah(minBiaya)} sampai ${formatRupiah(maxBiaya)}.`;
+  }
+
+  description += ` Lihat profil jurusan, kurikulum, statistik penerimaan, biaya kuliah, FAQ, dan prospek kerja.`;
+
+  document.title = title;
+
+  setMetaTag("description", description);
+  setMetaTag("og:title", title, "property");
+  setMetaTag("og:description", description, "property");
+  setMetaTag("og:type", "article", "property");
+  setMetaTag("og:url", window.location.href, "property");
+  setMetaTag("twitter:card", "summary_large_image");
+  setMetaTag("twitter:title", title);
+  setMetaTag("twitter:description", description);
+}
+
+function setMetaTag(name, content, attr = "name") {
+  if (!content) return;
+
+  let tag = document.querySelector(`meta[${attr}="${name}"]`);
+
+  if (!tag) {
+    tag = document.createElement("meta");
+    tag.setAttribute(attr, name);
+    document.head.appendChild(tag);
+  }
+
+  tag.setAttribute("content", content);
+}
 
 /* =========================
    INIT
