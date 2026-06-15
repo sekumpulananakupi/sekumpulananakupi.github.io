@@ -1678,41 +1678,47 @@ function clearTagForm() {
    CRUD BIAYA PENDIDIKAN
 ========================= */
 
-function getJalurLabel(jalur) {
-  const labels = {
+function normalizeJalurValue(jalur) {
+  const map = {
     snbp_snbt: "SNBP/SNBT",
-    mandiri: "Seleksi Mandiri",
+    mandiri: "Mandiri",
     internasional: "Kelas Internasional",
     rpl: "RPL",
-    reguler: "Reguler"
+    reguler: "Reguler",
+    dbr: "Doktor by Research",
+    profesi: "Profesi"
   };
 
-  return labels[jalur] || jalur || "-";
+  return map[jalur] || jalur || "-";
 }
 
-function getJenisLabel(jenis) {
-  const labels = {
-    ukt: "UKT",
-    ipi: "IPI / Uang Pangkal"
-  };
+function getBiayaAmountLabels(item) {
+  const parts = [];
 
-  return labels[jenis] || jenis || "-";
+  if (item.ukt !== null && item.ukt !== undefined && item.ukt !== "") {
+    parts.push(`UKT: <strong>${formatRupiah(item.ukt)}</strong>`);
+  }
+
+  if (item.ipi !== null && item.ipi !== undefined && item.ipi !== "") {
+    parts.push(`IPI: <strong>${formatRupiah(item.ipi)}</strong>`);
+  }
+
+  if (item.uang_kuliah !== null && item.uang_kuliah !== undefined && item.uang_kuliah !== "") {
+    parts.push(`Uang kuliah: <strong>${formatRupiah(item.uang_kuliah)}</strong>`);
+  }
+
+  return parts.length ? parts.join(" · ") : "Belum ada nominal";
 }
 
 async function loadBiayaPendidikanAdminData() {
   const { data, error } = await supabaseClient
     .from("biaya_pendidikan")
-    .select(`
-      *,
-      jurusan:jurusan_id (
-        nama
-      )
-    `)
+    .select("*")
     .order("tahun", { ascending: false })
     .order("jenjang", { ascending: true })
     .order("jalur", { ascending: true })
-    .order("jenis", { ascending: true })
-    .order("golongan", { ascending: true });
+    .order("nama_prodi", { ascending: true })
+    .order("kelompok", { ascending: true });
 
   if (error) {
     alert("Gagal memuat biaya pendidikan: " + error.message);
@@ -1727,19 +1733,27 @@ function renderBiayaPendidikanAdminList() {
   const list = qs("biayaPendidikanAdminList");
   if (!list) return;
 
-  list.innerHTML = biayaPendidikanData.length
-    ? biayaPendidikanData.map(item => `
+  const keyword = qs("biayaPendidikanSearch")?.value.toLowerCase() || "";
+
+  const filtered = biayaPendidikanData.filter(item =>
+    JSON.stringify(item).toLowerCase().includes(keyword)
+  );
+
+  list.innerHTML = filtered.length
+    ? filtered.map(item => `
       <article class="admin-list-item">
         <div>
-          <span class="pill">${item.tahun}</span>
-          <h3>${item.jurusan?.nama || "Jurusan tidak ditemukan"}</h3>
+          <span class="pill">${item.tahun || "-"}</span>
+          <h3>${item.nama_prodi || "Program studi belum diisi"}</h3>
           <p>
+            ${item.kode_prodi || "-"} ·
             ${item.jenjang || "-"} ·
-            ${getJalurLabel(item.jalur)} ·
-            ${getJenisLabel(item.jenis)} ·
-            ${item.golongan ? `Golongan ${item.golongan}` : "Tanpa golongan"} ·
-            <strong>${formatRupiah(item.nominal)}</strong>
+            ${normalizeJalurValue(item.jalur)}
+            ${item.kelompok ? ` · Kelompok ${item.kelompok}` : ""}
+            ${item.status_mahasiswa ? ` · ${item.status_mahasiswa}` : ""}
           </p>
+          <p>${getBiayaAmountLabels(item)}</p>
+          ${item.catatan ? `<p>${item.catatan}</p>` : ""}
         </div>
 
         <div class="card-actions">
@@ -1752,17 +1766,22 @@ function renderBiayaPendidikanAdminList() {
 }
 
 function populateBiayaJurusanOptions() {
-  const select = qs("biayaJurusanId");
-  if (!select) return;
+  const datalist = qs("biayaNamaProdiList");
+  if (!datalist) return;
 
-  select.innerHTML = `
-    <option value="">Pilih jurusan</option>
-    ${jurusanAdminData.map(jurusan => `
-      <option value="${jurusan.id}">
-        ${jurusan.nama}
-      </option>
-    `).join("")}
-  `;
+  datalist.innerHTML = jurusanAdminData.map(jurusan => `
+    <option value="${jurusan.nama || ""}"></option>
+  `).join("");
+}
+
+function getOptionalNumber(id) {
+  const value = qs(id)?.value;
+  return value === "" || value === null || value === undefined ? null : Number(value);
+}
+
+function getOptionalText(id) {
+  const value = qs(id)?.value?.trim();
+  return value ? value : null;
 }
 
 if (qs("biayaPendidikanForm")) {
@@ -1770,17 +1789,25 @@ if (qs("biayaPendidikanForm")) {
     event.preventDefault();
 
     const id = qs("biayaId").value;
-    const golonganValue = qs("biayaGolongan").value;
 
     const payload = {
-      jurusan_id: Number(qs("biayaJurusanId").value),
+      kode_prodi: qs("biayaKodeProdi").value.trim(),
+      nama_prodi: qs("biayaNamaProdi").value.trim(),
       tahun: Number(qs("biayaTahun").value),
       jenjang: qs("biayaJenjang").value,
       jalur: qs("biayaJalur").value,
-      jenis: qs("biayaJenis").value,
-      golongan: golonganValue ? Number(golonganValue) : null,
-      nominal: Number(qs("biayaNominal").value)
+      kelompok: getOptionalNumber("biayaKelompok"),
+      status_mahasiswa: getOptionalText("biayaStatusMahasiswa"),
+      ukt: getOptionalNumber("biayaUkt"),
+      ipi: getOptionalNumber("biayaIpi"),
+      uang_kuliah: getOptionalNumber("biayaUangKuliah"),
+      catatan: getOptionalText("biayaCatatan")
     };
+
+    if (!payload.ukt && !payload.ipi && !payload.uang_kuliah) {
+      alert("Isi minimal salah satu nominal: UKT, IPI, atau Uang Kuliah.");
+      return;
+    }
 
     const response = id
       ? await supabaseClient.from("biaya_pendidikan").update(payload).eq("id", id)
@@ -1801,15 +1828,19 @@ function editBiayaPendidikan(id) {
   if (!item) return;
 
   qs("biayaId").value = item.id;
-  qs("biayaJurusanId").value = item.jurusan_id;
-  qs("biayaTahun").value = item.tahun;
+  qs("biayaKodeProdi").value = item.kode_prodi || "";
+  qs("biayaNamaProdi").value = item.nama_prodi || "";
+  qs("biayaTahun").value = item.tahun || 2026;
   qs("biayaJenjang").value = item.jenjang || "";
-  qs("biayaJalur").value = item.jalur;
-  qs("biayaJenis").value = item.jenis;
-  qs("biayaGolongan").value = item.golongan || "";
-  qs("biayaNominal").value = item.nominal;
+  qs("biayaJalur").value = item.jalur || "";
+  qs("biayaKelompok").value = item.kelompok || "";
+  qs("biayaStatusMahasiswa").value = item.status_mahasiswa || "";
+  qs("biayaUkt").value = item.ukt ?? "";
+  qs("biayaIpi").value = item.ipi ?? "";
+  qs("biayaUangKuliah").value = item.uang_kuliah ?? "";
+  qs("biayaCatatan").value = item.catatan || "";
 
-  updateBiayaNominalPreview();
+  updateBiayaPreview();
 
   showAdminPage("biayaPendidikanPage");
 }
@@ -1836,20 +1867,32 @@ function clearBiayaPendidikanForm() {
   if (qs("biayaId")) qs("biayaId").value = "";
   if (qs("biayaTahun")) qs("biayaTahun").value = 2026;
 
-  updateBiayaNominalPreview();
+  updateBiayaPreview();
 }
 
-function updateBiayaNominalPreview() {
-  const input = qs("biayaNominal");
-  const preview = qs("biayaNominalPreview");
+function updateBiayaPreview() {
+  const preview = qs("biayaPreview");
+  if (!preview) return;
 
-  if (!input || !preview) return;
+  const ukt = getOptionalNumber("biayaUkt");
+  const ipi = getOptionalNumber("biayaIpi");
+  const uangKuliah = getOptionalNumber("biayaUangKuliah");
 
-  preview.textContent = formatRupiah(input.value || 0);
+  const parts = [];
+  if (ukt) parts.push(`UKT ${formatRupiah(ukt)}`);
+  if (ipi) parts.push(`IPI ${formatRupiah(ipi)}`);
+  if (uangKuliah) parts.push(`Uang Kuliah ${formatRupiah(uangKuliah)}`);
+
+  preview.textContent = parts.length ? parts.join(" · ") : "Rp0";
 }
 
-if (qs("biayaNominal")) {
-  qs("biayaNominal").addEventListener("input", updateBiayaNominalPreview);
+["biayaUkt", "biayaIpi", "biayaUangKuliah"].forEach(id => {
+  const input = qs(id);
+  if (input) input.addEventListener("input", updateBiayaPreview);
+});
+
+if (qs("biayaPendidikanSearch")) {
+  qs("biayaPendidikanSearch").addEventListener("input", renderBiayaPendidikanAdminList);
 }
 
 /* =========================
