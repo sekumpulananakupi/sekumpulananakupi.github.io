@@ -140,10 +140,8 @@ const { data: biayaPendidikan, error: biayaError } = await supabaseClient
   .select("*")
   .eq("jurusan_id", jurusan.id)
   .order("tahun", { ascending: false })
-  .order("jenjang", { ascending: true })
   .order("jalur", { ascending: true })
-  .order("jenis", { ascending: true })
-  .order("golongan", { ascending: true });
+  .order("kelompok", { ascending: true });
 
 if (biayaError) {
   console.error("Gagal memuat biaya pendidikan:", biayaError.message);
@@ -568,12 +566,14 @@ function renderBiayaPendidikanSection(biayaList = []) {
   }
 
   const jalurUrutan = [
-    { key: "snbp_snbt", label: "SNBP/SNBT" },
-    { key: "mandiri", label: "Seleksi Mandiri" },
-    { key: "internasional", label: "Kelas Internasional" },
-    { key: "rpl", label: "RPL" },
-    { key: "reguler", label: "Reguler" }
-  ];
+  { key: "SNBP/SNBT", label: "SNBP/SNBT" },
+  { key: "Mandiri", label: "Seleksi Mandiri" },
+  { key: "RPL", label: "RPL" },
+  { key: "Kelas Internasional", label: "Kelas Internasional" },
+  { key: "Reguler", label: "Reguler" },
+  { key: "DbR", label: "Doktor by Research" },
+  { key: "Profesi", label: "Profesi" }
+];
 
   const jalurTersedia = jalurUrutan.filter(jalur =>
     biayaList.some(item => item.jalur === jalur.key)
@@ -613,42 +613,39 @@ function renderJalurBiayaTable(biayaList, jalur) {
   const items = biayaList.filter(item => item.jalur === jalur);
 
   if (!items.length) {
-    return `<p class="empty">Data biaya untuk jalur ini belum tersedia.</p>`;
+    return `<p class="empty">Data biaya belum tersedia.</p>`;
   }
 
-  const uktItems = items.filter(item => item.jenis === "ukt");
-  const ipiItems = items.filter(item => item.jenis === "ipi");
-
-  return `
-    ${uktItems.length ? `
-      <h3>UKT</h3>
-      ${renderBiayaTable(uktItems, "UKT")}
-    ` : ""}
-
-    ${ipiItems.length ? `
-      <h3>IPI / Uang Pangkal</h3>
-      ${renderBiayaTable(ipiItems, "IPI")}
-    ` : ""}
-  `;
-}
-
-function renderBiayaTable(items, jenisLabel) {
-  const hasGolongan = items.some(item => item.golongan);
+  const hasKelompok = items.some(i => i.kelompok);
 
   return `
     <div class="table-responsive">
       <table class="biaya-table">
         <thead>
           <tr>
-            ${hasGolongan ? "<th>Golongan</th>" : ""}
-            <th>${jenisLabel}</th>
+            ${hasKelompok ? "<th>Kelompok</th>" : ""}
+            ${items.some(i => i.status_mahasiswa) ? "<th>Status</th>" : ""}
+            ${items.some(i => i.ukt) ? "<th>UKT</th>" : ""}
+            ${items.some(i => i.ipi) ? "<th>IPI</th>" : ""}
+            ${items.some(i => i.uang_kuliah) ? "<th>Biaya</th>" : ""}
           </tr>
         </thead>
         <tbody>
           ${items.map(item => `
             <tr>
-              ${hasGolongan ? `<td>Golongan ${item.golongan}</td>` : ""}
-              <td>${formatRupiah(item.nominal)}</td>
+              ${hasKelompok ? `<td>${item.kelompok || "-"}</td>` : ""}
+              ${items.some(i => i.status_mahasiswa)
+                ? `<td>${item.status_mahasiswa || "-"}</td>`
+                : ""}
+              ${items.some(i => i.ukt)
+                ? `<td>${formatRupiah(item.ukt)}</td>`
+                : ""}
+              ${items.some(i => i.ipi)
+                ? `<td>${formatRupiah(item.ipi)}</td>`
+                : ""}
+              ${items.some(i => i.uang_kuliah)
+                ? `<td>${formatRupiah(item.uang_kuliah)}</td>`
+                : ""}
             </tr>
           `).join("")}
         </tbody>
@@ -656,6 +653,8 @@ function renderBiayaTable(items, jenisLabel) {
     </div>
   `;
 }
+
+
 
 function renderBiayaDisclaimer() {
   return `
