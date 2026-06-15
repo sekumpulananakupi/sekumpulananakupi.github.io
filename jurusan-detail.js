@@ -2,7 +2,12 @@ const SUPABASE_URL = "https://rozfgvucyiwqqmmrmbph.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_KL8Jcb1hEzU-kAZiOMYWFg_hupftFmq";
 
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
 let admissionChart = null;
+
+/* =========================
+   HELPERS
+========================= */
 
 function showLoading(targetId, count = 3) {
   const target = document.getElementById(targetId);
@@ -25,7 +30,7 @@ function showSimpleLoading(targetId, message = "Memuat data...") {
   target.innerHTML = `
     <div class="loading-state">
       <div class="loading-spinner"></div>
-      ${message}
+      ${escapeHTML(message)}
     </div>
   `;
 }
@@ -53,6 +58,11 @@ function toTitleCase(text) {
     .join(" ");
 }
 
+function formatNumber(value) {
+  const number = Number(value);
+  if (Number.isNaN(number)) return "0";
+  return number.toLocaleString("id-ID");
+}
 
 function formatRupiah(value) {
   if (value === null || value === undefined || value === "") return "-";
@@ -105,17 +115,99 @@ function renderChipLinks(text) {
   `;
 }
 
+function makeSafeId(text) {
+  return String(text || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+/* =========================
+   STATISTIK HELPERS
+========================= */
+
+function getPersentaseKeterimaan(item) {
+  const dayaTampung = Number(item?.daya_tampung || 0);
+  const peminat = Number(item?.peminat || 0);
+
+  if (!dayaTampung || !peminat) return 0;
+
+  return (dayaTampung / peminat) * 100;
+}
+
+function formatPersentaseKeterimaan(item) {
+  return getPersentaseKeterimaan(item).toFixed(2);
+}
+
+function getRasioPersaingan(item) {
+  const dayaTampung = Number(item?.daya_tampung || 0);
+  const peminat = Number(item?.peminat || 0);
+
+  if (!dayaTampung || !peminat) return "-";
+
+  const rasio = peminat / dayaTampung;
+  return `1 : ${rasio.toFixed(1).replace(".", ",")}`;
+}
+
+function getTrendText(data) {
+  if (!Array.isArray(data) || data.length < 2) {
+    return "Belum cukup data untuk membaca tren.";
+  }
+
+  const latest = data[data.length - 1];
+  const previous = data[data.length - 2];
+
+  const latestPeminat = Number(latest.peminat || 0);
+  const previousPeminat = Number(previous.peminat || 0);
+
+  const latestRate = getPersentaseKeterimaan(latest);
+  const previousRate = getPersentaseKeterimaan(previous);
+
+  if (!previousPeminat) {
+    return "Tren belum bisa dihitung karena data tahun sebelumnya belum lengkap.";
+  }
+
+  const peminatChange = ((latestPeminat - previousPeminat) / previousPeminat) * 100;
+  const rateChange = latestRate - previousRate;
+
+  const peminatText = peminatChange > 0
+    ? `Peminat naik ${Math.abs(peminatChange).toFixed(1).replace(".", ",")}% dibanding ${previous.tahun}.`
+    : peminatChange < 0
+      ? `Peminat turun ${Math.abs(peminatChange).toFixed(1).replace(".", ",")}% dibanding ${previous.tahun}.`
+      : `Peminat relatif stabil dibanding ${previous.tahun}.`;
+
+  const persainganText = rateChange < 0
+    ? "Persaingan terlihat makin ketat."
+    : rateChange > 0
+      ? "Peluang keterimaan terlihat lebih longgar."
+      : "Tingkat keterimaan relatif stabil.";
+
+  return `${peminatText} ${persainganText}`;
+}
+
+function getLatestByJalur(statistik, jalur) {
+  const data = statistik
+    .filter(item => String(item.jalur || "").toUpperCase() === jalur)
+    .sort((a, b) => Number(a.tahun) - Number(b.tahun));
+
+  return data.length ? data[data.length - 1] : null;
+}
+
+/* =========================
+   LOAD DETAIL JURUSAN
+========================= */
+
 async function loadJurusanDetail() {
-  
   const params = new URLSearchParams(window.location.search);
   const id = params.get("id");
 
   const detail = document.getElementById("jurusanDetail");
-    showSimpleLoading("jurusanDetail", "Memuat detail jurusan...");
-    showLoading("relatedArticleList", 3);
-    showLoading("relatedJobList", 3);
   const relatedArticleList = document.getElementById("relatedArticleList");
   const relatedJobList = document.getElementById("relatedJobList");
+
+  showSimpleLoading("jurusanDetail", "Memuat detail jurusan...");
+  showLoading("relatedArticleList", 3);
+  showLoading("relatedJobList", 3);
 
   if (!detail) return;
 
@@ -131,32 +223,33 @@ async function loadJurusanDetail() {
     .single();
 
   if (error || !jurusan) {
+    console.error("Gagal memuat jurusan:", error?.message);
     detail.innerHTML = `<div class="empty">Gagal memuat jurusan.</div>`;
     return;
   }
 
-const { data: biayaPendidikan, error: biayaError } = await supabaseClient
-  .from("biaya_pendidikan")
-  .select("*")
-  .eq("jurusan_id", jurusan.id)
-  .order("tahun", { ascending: false })
-  .order("jalur", { ascending: true })
-  .order("kelompok", { ascending: true });
-  
-if (biayaError) {
-  console.error("Gagal memuat biaya pendidikan:", biayaError.message);
-}
+  const { data: biayaPendidikan, error: biayaError } = await supabaseClient
+    .from("biaya_pendidikan")
+    .select("*")
+    .eq("jurusan_id", jurusan.id)
+    .order("tahun", { ascending: false })
+    .order("jalur", { ascending: true })
+    .order("kelompok", { ascending: true });
 
-const { data: faqJurusan, error: faqError } = await supabaseClient
-  .from("faq_jurusan")
-  .select("*")
-  .eq("jurusan_id", jurusan.id)
-  .order("urutan", { ascending: true });
+  if (biayaError) {
+    console.error("Gagal memuat biaya pendidikan:", biayaError.message);
+  }
 
-if (faqError) {
-  console.error("Gagal memuat FAQ jurusan:", faqError.message);
-}
-  
+  const { data: faqJurusan, error: faqError } = await supabaseClient
+    .from("faq_jurusan")
+    .select("*")
+    .eq("jurusan_id", jurusan.id)
+    .order("urutan", { ascending: true });
+
+  if (faqError) {
+    console.error("Gagal memuat FAQ jurusan:", faqError.message);
+  }
+
   const statistik = await loadStatistikJurusan(id);
 
   detail.innerHTML = `
@@ -188,24 +281,25 @@ if (faqError) {
         </div>
       </div>
 
-      ${jurusan.website_resmi
-        ? `<a href="${escapeHTML(jurusan.website_resmi)}" target="_blank" class="btn ghost">Website Resmi</a>`
-        : ""}
+      ${jurusan.website_resmi ? `
+        <a href="${escapeHTML(jurusan.website_resmi)}" target="_blank" rel="noopener noreferrer" class="btn ghost">
+          Website Resmi
+        </a>
+      ` : ""}
 
-        <div class="program-links">
+      <div class="program-links">
         ${jurusan.url_kurikulum ? `
-          <a href="${jurusan.url_kurikulum}" target="_blank" class="btn-link">
+          <a href="${escapeHTML(jurusan.url_kurikulum)}" target="_blank" rel="noopener noreferrer" class="btn-link">
             📚 Lihat Kurikulum
           </a>
-        ` : ''}
-      
+        ` : ""}
+
         ${jurusan.url_akreditasi ? `
-          <a href="${jurusan.url_akreditasi}" target="_blank" class="btn-link">
+          <a href="${escapeHTML(jurusan.url_akreditasi)}" target="_blank" rel="noopener noreferrer" class="btn-link">
             📄 Lihat Akreditasi
           </a>
-        ` : ''}
+        ` : ""}
       </div>
-
 
       <h2>Statistik Penerimaan</h2>
       ${renderStatistik(statistik)}
@@ -214,58 +308,80 @@ if (faqError) {
 
       <h2>FAQ Jurusan</h2>
       ${renderFaqJurusan(faqJurusan || [])}
-      
+
       <h2>Prospek Kerja</h2>
       ${renderChipLinks(jurusan.prospek_kerja)}
 
       <div class="share-actions">
-      
         <button id="shareWhatsapp" class="btn primary">
           📤 Bagikan Jurusan
         </button>
-      
+
         <button id="copyLink" class="btn ghost">
           🔗 Salin Link
         </button>
-      
       </div>
+
       <a href="jurusan.html" class="btn ghost">← Kembali ke Daftar Jurusan</a>
     </article>
   `;
 
   setupShareButtons();
   setupAdmissionStatistik(statistik);
+
   await loadRelatedContent(id, relatedArticleList, relatedJobList);
   await loadAutoMatchedJobs(jurusan, relatedJobList);
 }
 
 async function loadStatistikJurusan(jurusanId) {
-  const { data } = await supabaseClient
+  const { data, error } = await supabaseClient
     .from("statistik_jurusan")
     .select("*")
     .eq("jurusan_id", jurusanId)
     .order("tahun", { ascending: false });
 
+  if (error) {
+    console.error("Gagal memuat statistik jurusan:", error.message);
+    return [];
+  }
+
   return data || [];
 }
 
+/* =========================
+   RENDER STATISTIK
+========================= */
+
 function renderStatistik(statistik) {
-  if (!statistik.length) {
+  if (!Array.isArray(statistik) || !statistik.length) {
     return `<div class="empty">Statistik jurusan belum tersedia.</div>`;
   }
 
   return `
     <section class="admission-section">
       <div class="admission-tabs">
-        <button class="admission-tab active" data-jalur="SNBP">SNBP</button>
-        <button class="admission-tab" data-jalur="SNBT">SNBT</button>
+        <button type="button" class="admission-tab active" data-jalur="SNBP">SNBP</button>
+        <button type="button" class="admission-tab" data-jalur="SNBT">SNBT</button>
       </div>
+
+      <div class="admission-compare" id="admissionCompare"></div>
 
       <div class="admission-summary" id="admissionSummary"></div>
 
+      <div class="admission-trend" id="admissionTrend"></div>
+
       <div class="admission-controls">
-        <button class="chart-mode-btn active" data-mode="jumlah">Daya Tampung & Peminat</button>
-        <button class="chart-mode-btn" data-mode="keketatan">Keketatan (%)</button>
+        <button type="button" class="chart-mode-btn active" data-mode="jumlah">
+          Daya Tampung & Peminat
+        </button>
+
+        <button type="button" class="chart-mode-btn" data-mode="persentase">
+          Persentase Keterimaan
+        </button>
+
+        <button type="button" class="chart-mode-btn" data-mode="rasio">
+          Rasio Persaingan
+        </button>
       </div>
 
       <div class="admission-card">
@@ -279,7 +395,8 @@ function renderStatistik(statistik) {
               <th>Tahun</th>
               <th>Daya Tampung</th>
               <th>Peminat</th>
-              <th>Keketatan</th>
+              <th>Keterimaan</th>
+              <th>Rasio</th>
             </tr>
           </thead>
           <tbody id="admissionTableBody"></tbody>
@@ -289,32 +406,68 @@ function renderStatistik(statistik) {
   `;
 }
 
-function persenKeterimaan(item) {
-  const dayaTampung = Number(item.daya_tampung);
-  const peminat = Number(item.peminat);
-
-  if (!peminat || peminat === 0) {
-    return "0.00";
-  }
-
-  return ((dayaTampung / peminat) * 100).toFixed(2);
-}
-
 function setupAdmissionStatistik(statistik) {
   const tabs = document.querySelectorAll(".admission-tab");
   const modeButtons = document.querySelectorAll(".chart-mode-btn");
   const tbody = document.getElementById("admissionTableBody");
   const canvas = document.getElementById("admissionChart");
   const summary = document.getElementById("admissionSummary");
+  const trend = document.getElementById("admissionTrend");
+  const compare = document.getElementById("admissionCompare");
 
   if (!tabs.length || !tbody || !canvas) return;
 
   let activeJalur = "SNBP";
   let activeMode = "jumlah";
 
+  renderCompare();
+
+  function renderCompare() {
+    if (!compare) return;
+
+    const latestSNBP = getLatestByJalur(statistik, "SNBP");
+    const latestSNBT = getLatestByJalur(statistik, "SNBT");
+
+    if (!latestSNBP && !latestSNBT) {
+      compare.innerHTML = "";
+      return;
+    }
+
+    compare.innerHTML = `
+      <div class="admission-compare-grid">
+        ${renderCompareCard("SNBP", latestSNBP)}
+        ${renderCompareCard("SNBT", latestSNBT)}
+      </div>
+    `;
+  }
+
+  function renderCompareCard(label, item) {
+    if (!item) {
+      return `
+        <div class="admission-compare-card">
+          <span>${label}</span>
+          <strong>Belum tersedia</strong>
+          <small>Data jalur ini belum ada.</small>
+        </div>
+      `;
+    }
+
+    return `
+      <div class="admission-compare-card">
+        <span>${label} ${escapeHTML(item.tahun)}</span>
+        <strong>${formatPersentaseKeterimaan(item)}%</strong>
+        <small>
+          ${formatNumber(item.peminat)} peminat /
+          ${formatNumber(item.daya_tampung)} kursi ·
+          Rasio ${getRasioPersaingan(item)}
+        </small>
+      </div>
+    `;
+  }
+
   function renderAdmission() {
     const data = statistik
-      .filter(item => String(item.jalur).toUpperCase() === activeJalur)
+      .filter(item => String(item.jalur || "").toUpperCase() === activeJalur)
       .sort((a, b) => Number(a.tahun) - Number(b.tahun));
 
     if (admissionChart) {
@@ -325,7 +478,7 @@ function setupAdmissionStatistik(statistik) {
     if (!data.length) {
       tbody.innerHTML = `
         <tr>
-          <td colspan="4" class="empty-statistik">
+          <td colspan="5" class="empty-statistik">
             Data ${activeJalur} belum tersedia.
           </td>
         </tr>
@@ -333,6 +486,10 @@ function setupAdmissionStatistik(statistik) {
 
       if (summary) {
         summary.innerHTML = `<div class="empty">Ringkasan belum tersedia.</div>`;
+      }
+
+      if (trend) {
+        trend.innerHTML = "";
       }
 
       return;
@@ -343,112 +500,168 @@ function setupAdmissionStatistik(statistik) {
     if (summary) {
       summary.innerHTML = `
         <div class="admission-summary-card">
-          <span>Tahun terbaru</span>
-          <strong>${latest.tahun}</strong>
+          <span>Tahun Terbaru</span>
+          <strong>${escapeHTML(latest.tahun)}</strong>
         </div>
 
         <div class="admission-summary-card">
           <span>Daya Tampung</span>
-          <strong>${latest.daya_tampung}</strong>
+          <strong>${formatNumber(latest.daya_tampung)}</strong>
         </div>
 
         <div class="admission-summary-card">
           <span>Peminat</span>
-          <strong>${latest.peminat}</strong>
+          <strong>${formatNumber(latest.peminat)}</strong>
         </div>
 
         <div class="admission-summary-card">
-          <span>Keketatan</span>
-          <strong>${persenKeterimaan(latest)}%</strong>
+          <span>Persentase Keterimaan</span>
+          <strong>${formatPersentaseKeterimaan(latest)}%</strong>
+        </div>
+
+        <div class="admission-summary-card">
+          <span>Rasio Persaingan</span>
+          <strong>${getRasioPersaingan(latest)}</strong>
+        </div>
+      `;
+    }
+
+    if (trend) {
+      trend.innerHTML = `
+        <div class="info-note">
+          <strong>Analisis Tren:</strong>
+          ${escapeHTML(getTrendText(data))}
         </div>
       `;
     }
 
     const labels = data.map(item => item.tahun);
-    const dayaTampung = data.map(item => Number(item.daya_tampung));
-    const peminat = data.map(item => Number(item.peminat));
-    const keketatan = data.map(item => Number(persenKeterimaan(item)));
-
-    const datasets = activeMode === "jumlah"
-      ? [
-          {
-            type: "bar",
-            label: "Daya Tampung",
-            data: dayaTampung,
-            yAxisID: "y"
-          },
-          {
-            type: "line",
-            label: "Peminat",
-            data: peminat,
-            yAxisID: "y",
-            tension: 0.35
-          }
-        ]
-      : [
-          {
-            type: "line",
-            label: "Keketatan (%)",
-            data: keketatan,
-            yAxisID: "y",
-            tension: 0.35
-          }
-        ];
-
-    admissionChart = new Chart(canvas, {
-      type: "bar",
-      data: {
-        labels,
-        datasets
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        interaction: {
-          mode: "index",
-          intersect: false
-        },
-        plugins: {
-          tooltip: {
-            callbacks: {
-              label: context => {
-                const label = context.dataset.label || "";
-                const value = context.raw;
-
-                if (label.includes("Keketatan")) {
-                  return `${label}: ${value}%`;
-                }
-
-                return `${label}: ${Number(value).toLocaleString("id-ID")}`;
-              }
-            }
-          }
-        },
-        scales: {
-          y: {
-            beginAtZero: true,
-            ticks: {
-              callback: value => activeMode === "keketatan"
-                ? `${value}%`
-                : Number(value).toLocaleString("id-ID")
-            }
-          }
-        }
-      }
+    const dayaTampung = data.map(item => Number(item.daya_tampung || 0));
+    const peminat = data.map(item => Number(item.peminat || 0));
+    const persentase = data.map(item => Number(formatPersentaseKeterimaan(item)));
+    const rasio = data.map(item => {
+      const dt = Number(item.daya_tampung || 0);
+      const pm = Number(item.peminat || 0);
+      return dt ? Number((pm / dt).toFixed(2)) : 0;
     });
+
+    const datasets = getDatasets(activeMode, dayaTampung, peminat, persentase, rasio);
+
+    if (typeof Chart === "undefined") {
+      canvas.parentElement.innerHTML = `
+        <div class="empty">
+          Chart.js belum terbaca. Pastikan script Chart.js sudah dipasang di HTML.
+        </div>
+      `;
+    } else {
+      admissionChart = new Chart(canvas, {
+        type: "bar",
+        data: {
+          labels,
+          datasets
+        },
+        options: getChartOptions(activeMode)
+      });
+    }
 
     tbody.innerHTML = data
       .slice()
       .sort((a, b) => Number(b.tahun) - Number(a.tahun))
       .map(item => `
         <tr>
-          <td>${item.tahun}</td>
-          <td>${Number(item.daya_tampung).toLocaleString("id-ID")} kursi</td>
-          <td>${Number(item.peminat).toLocaleString("id-ID")} peminat</td>
-          <td><strong>${persenKeterimaan(item)}%</strong></td>
+          <td>${escapeHTML(item.tahun)}</td>
+          <td>${formatNumber(item.daya_tampung)} kursi</td>
+          <td>${formatNumber(item.peminat)} peminat</td>
+          <td><strong>${formatPersentaseKeterimaan(item)}%</strong></td>
+          <td>${getRasioPersaingan(item)}</td>
         </tr>
       `)
       .join("");
+  }
+
+  function getDatasets(mode, dayaTampung, peminat, persentase, rasio) {
+    if (mode === "jumlah") {
+      return [
+        {
+          type: "bar",
+          label: "Daya Tampung",
+          data: dayaTampung,
+          yAxisID: "y"
+        },
+        {
+          type: "line",
+          label: "Peminat",
+          data: peminat,
+          yAxisID: "y",
+          tension: 0.35
+        }
+      ];
+    }
+
+    if (mode === "persentase") {
+      return [
+        {
+          type: "line",
+          label: "Persentase Keterimaan (%)",
+          data: persentase,
+          yAxisID: "y",
+          tension: 0.35
+        }
+      ];
+    }
+
+    return [
+      {
+        type: "line",
+        label: "Rasio Persaingan",
+        data: rasio,
+        yAxisID: "y",
+        tension: 0.35
+      }
+    ];
+  }
+
+  function getChartOptions(mode) {
+    return {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: {
+        mode: "index",
+        intersect: false
+      },
+      plugins: {
+        tooltip: {
+          callbacks: {
+            label: context => {
+              const label = context.dataset.label || "";
+              const value = Number(context.raw || 0);
+
+              if (mode === "persentase") {
+                return `${label}: ${value.toFixed(2)}%`;
+              }
+
+              if (mode === "rasio") {
+                return `${label}: 1 : ${value.toFixed(1).replace(".", ",")}`;
+              }
+
+              return `${label}: ${value.toLocaleString("id-ID")}`;
+            }
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            callback: value => {
+              if (mode === "persentase") return `${value}%`;
+              if (mode === "rasio") return `1 : ${String(value).replace(".", ",")}`;
+              return Number(value).toLocaleString("id-ID");
+            }
+          }
+        }
+      }
+    };
   }
 
   tabs.forEach(tab => {
@@ -456,7 +669,7 @@ function setupAdmissionStatistik(statistik) {
       tabs.forEach(item => item.classList.remove("active"));
       this.classList.add("active");
 
-      activeJalur = this.dataset.jalur;
+      activeJalur = String(this.dataset.jalur || "SNBP").toUpperCase();
       renderAdmission();
     });
   });
@@ -466,7 +679,7 @@ function setupAdmissionStatistik(statistik) {
       modeButtons.forEach(item => item.classList.remove("active"));
       this.classList.add("active");
 
-      activeMode = this.dataset.mode;
+      activeMode = this.dataset.mode || "jumlah";
       renderAdmission();
     });
   });
@@ -474,13 +687,21 @@ function setupAdmissionStatistik(statistik) {
   renderAdmission();
 }
 
+/* =========================
+   RELATED CONTENT
+========================= */
+
 async function loadRelatedContent(jurusanId, relatedArticleList, relatedJobList) {
   if (!relatedArticleList || !relatedJobList) return;
 
-  const { data: relasi } = await supabaseClient
+  const { data: relasi, error } = await supabaseClient
     .from("artikel_jurusan")
     .select("*")
     .eq("jurusan_id", jurusanId);
+
+  if (error) {
+    console.error("Gagal memuat relasi artikel jurusan:", error.message);
+  }
 
   if (!relasi || !relasi.length) {
     relatedArticleList.innerHTML = `<div class="empty">Belum ada artikel terkait.</div>`;
@@ -500,11 +721,16 @@ async function loadRelatedContent(jurusanId, relatedArticleList, relatedJobList)
 
     if (!table) continue;
 
-    const { data } = await supabaseClient
+    const { data, error: itemError } = await supabaseClient
       .from(table)
       .select("*")
       .eq("id", row.artikel_id)
       .single();
+
+    if (itemError) {
+      console.error(`Gagal memuat ${table}:`, itemError.message);
+      continue;
+    }
 
     if (!data) continue;
 
@@ -533,30 +759,44 @@ function createRelatedCard(item) {
   let title = "";
   let content = "";
   let label = "";
+  let href = "#";
 
   if (item.type === "info" || item.type === "wiki") {
     title = item.judul;
     content = item.isi;
     label = item.type === "info" ? "Info Kampus" : "Wiki Kampus";
+    href = `post.html?type=${encodeURIComponent(item.type)}&id=${encodeURIComponent(item.id)}`;
   }
 
   if (item.type === "job") {
-    title = item.posisi;
+    title = item.posisi || item.judul;
     content = item.deskripsi;
     label = item.perusahaan || "Lowongan";
+    href = `post.html?type=job&id=${encodeURIComponent(item.id)}`;
   }
 
   return `
-    <article class="item-card" ${item.type === "job" ? `data-job-id="${item.id}"` : ""}>
-      ${item.gambar ? `<img src="${escapeHTML(item.gambar)}" class="card-image" alt="${escapeHTML(title)}">` : ""}
+    <article class="item-card" ${item.type === "job" ? `data-job-id="${escapeHTML(item.id)}"` : ""}>
+      ${item.gambar ? `
+        <img src="${escapeHTML(item.gambar)}" class="card-image" alt="${escapeHTML(title)}">
+      ` : ""}
+
       <span class="pill">${escapeHTML(label)}</span>
-      ${item.matchLabel ? `<span class="pill tag-pill">${escapeHTML(item.matchLabel)}</span>` : ""}
+
+      ${item.matchLabel ? `
+        <span class="pill tag-pill">${escapeHTML(item.matchLabel)}</span>
+      ` : ""}
+
       <h3>${escapeHTML(title)}</h3>
       <p>${escapeHTML(stripHTML(content)).slice(0, 120)}...</p>
-      <a href="post.html?type=${item.type}&id=${item.id}" class="btn ghost">Baca Detail</a>
+      <a href="${href}" class="btn ghost">Baca Detail</a>
     </article>
   `;
 }
+
+/* =========================
+   AUTO MATCHED JOBS
+========================= */
 
 function getProspekList(jurusan) {
   return String(jurusan.prospek_kerja || "")
@@ -571,24 +811,38 @@ async function loadAutoMatchedJobs(jurusan, relatedJobList) {
   const prospekList = getProspekList(jurusan);
   if (!prospekList.length) return;
 
-  const { data: jobs } = await supabaseClient
+  const { data: jobs, error: jobsError } = await supabaseClient
     .from("lowongan_kerja")
     .select("*")
     .order("created_at", { ascending: false });
 
-  const { data: tagRows } = await supabaseClient
+  if (jobsError) {
+    console.error("Gagal memuat lowongan kerja:", jobsError.message);
+    return;
+  }
+
+  const { data: tagRows, error: tagRowsError } = await supabaseClient
     .from("artikel_tags")
     .select("artikel_id, tag_id")
     .eq("artikel_tipe", "job");
 
-  const { data: tags } = await supabaseClient
+  if (tagRowsError) {
+    console.error("Gagal memuat relasi tag lowongan:", tagRowsError.message);
+  }
+
+  const { data: tags, error: tagsError } = await supabaseClient
     .from("tags")
     .select("*");
+
+  if (tagsError) {
+    console.error("Gagal memuat tags:", tagsError.message);
+  }
 
   const matchedJobs = (jobs || [])
     .map(job => {
       const jobText = `
         ${job.posisi || ""}
+        ${job.judul || ""}
         ${job.perusahaan || ""}
         ${stripHTML(job.deskripsi || "")}
       `.toLowerCase();
@@ -602,7 +856,6 @@ async function loadAutoMatchedJobs(jurusan, relatedJobList) {
       const matchedProspek = prospekList.find(prospek => {
         const safeProspek = prospek.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
         const regex = new RegExp(`\\b${safeProspek}\\b`, "i");
-
         return regex.test(jobText) || regex.test(tagNames);
       });
 
@@ -622,7 +875,7 @@ async function loadAutoMatchedJobs(jurusan, relatedJobList) {
       .map(card => Number(card.dataset.jobId))
   );
 
-  const uniqueMatchedJobs = matchedJobs.filter(job => !existingJobIds.has(job.id));
+  const uniqueMatchedJobs = matchedJobs.filter(job => !existingJobIds.has(Number(job.id)));
   if (!uniqueMatchedJobs.length) return;
 
   const existingHTML = relatedJobList.innerHTML;
@@ -638,6 +891,10 @@ async function loadAutoMatchedJobs(jurusan, relatedJobList) {
   `;
 }
 
+/* =========================
+   BIAYA PENDIDIKAN
+========================= */
+
 function renderBiayaPendidikanSection(biayaList = []) {
   console.log("Jumlah biaya yang dirender:", biayaList.length, biayaList);
 
@@ -650,19 +907,30 @@ function renderBiayaPendidikanSection(biayaList = []) {
       </section>
     `;
   }
+
   const jalurUrutan = [
-  { key: "SNBP/SNBT", label: "SNBP/SNBT" },
-  { key: "Mandiri", label: "Seleksi Mandiri" },
-  { key: "RPL", label: "RPL" },
-  { key: "Kelas Internasional", label: "Kelas Internasional" },
-  { key: "Reguler", label: "Reguler" },
-  { key: "DbR", label: "Doktor by Research" },
-  { key: "Profesi", label: "Profesi" }
-];
+    { key: "SNBP/SNBT", label: "SNBP/SNBT" },
+    { key: "Mandiri", label: "Seleksi Mandiri" },
+    { key: "RPL", label: "RPL" },
+    { key: "Kelas Internasional", label: "Kelas Internasional" },
+    { key: "Reguler", label: "Reguler" },
+    { key: "DbR", label: "Doktor by Research" },
+    { key: "Profesi", label: "Profesi" }
+  ];
 
   const jalurTersedia = jalurUrutan.filter(jalur =>
     biayaList.some(item => item.jalur === jalur.key)
   );
+
+  if (!jalurTersedia.length) {
+    return `
+      <section class="biaya-section">
+        <h2>Biaya Pendidikan</h2>
+        <p>Data biaya pendidikan belum tersedia.</p>
+        ${renderBiayaDisclaimer()}
+      </section>
+    `;
+  }
 
   return `
     <section class="biaya-section">
@@ -673,9 +941,9 @@ function renderBiayaPendidikanSection(biayaList = []) {
           <button
             type="button"
             class="biaya-tab-btn ${index === 0 ? "active" : ""}"
-            onclick="showBiayaTab('${jalur.key}', this)"
+            data-biaya-tab="${escapeHTML(jalur.key)}"
           >
-            ${jalur.label}
+            ${escapeHTML(jalur.label)}
           </button>
         `).join("")}
       </div>
@@ -683,7 +951,7 @@ function renderBiayaPendidikanSection(biayaList = []) {
       ${jalurTersedia.map((jalur, index) => `
         <div
           class="biaya-tab-content ${index === 0 ? "active" : ""}"
-          id="biaya-${jalur.key}"
+          id="biaya-${makeSafeId(jalur.key)}"
         >
           ${renderJalurBiayaTable(biayaList, jalur.key)}
         </div>
@@ -695,24 +963,22 @@ function renderBiayaPendidikanSection(biayaList = []) {
 }
 
 function renderJalurBiayaTable(biayaList, jalur) {
-
   const items = biayaList.filter(item => item.jalur === jalur);
 
   if (!items.length) {
-    return `<div class="empty">Data belum tersedia</div>`;
+    return `<div class="empty">Data belum tersedia.</div>`;
   }
 
   return `
     <div class="biaya-card-grid">
       ${items.map(item => `
         <div class="biaya-card">
-
           ${
             item.kelompok
-              ? `<div class="biaya-title">Kelompok ${item.kelompok}</div>`
+              ? `<div class="biaya-title">Kelompok ${escapeHTML(item.kelompok)}</div>`
               : item.status_mahasiswa
-                ? `<div class="biaya-title">${item.status_mahasiswa}</div>`
-                : `<div class="biaya-title">${jalur}</div>`
+                ? `<div class="biaya-title">${escapeHTML(item.status_mahasiswa)}</div>`
+                : `<div class="biaya-title">${escapeHTML(jalur)}</div>`
           }
 
           ${
@@ -747,13 +1013,35 @@ function renderJalurBiayaTable(biayaList, jalur) {
               `
               : ""
           }
-
         </div>
       `).join("")}
     </div>
   `;
 }
 
+function setupBiayaTabs() {
+  const buttons = document.querySelectorAll(".biaya-tab-btn");
+
+  buttons.forEach(button => {
+    button.addEventListener("click", function () {
+      const jalur = this.dataset.biayaTab;
+      const targetId = `biaya-${makeSafeId(jalur)}`;
+
+      document.querySelectorAll(".biaya-tab-content").forEach(content => {
+        content.classList.remove("active");
+      });
+
+      document.querySelectorAll(".biaya-tab-btn").forEach(btn => {
+        btn.classList.remove("active");
+      });
+
+      const target = document.getElementById(targetId);
+      if (target) target.classList.add("active");
+
+      this.classList.add("active");
+    });
+  });
+}
 
 function renderBiayaDisclaimer() {
   return `
@@ -776,21 +1064,9 @@ function renderBiayaDisclaimer() {
   `;
 }
 
-function showBiayaTab(jalur, button) {
-  document.querySelectorAll(".biaya-tab-content").forEach(content => {
-    content.classList.remove("active");
-  });
-
-  document.querySelectorAll(".biaya-tab-btn").forEach(btn => {
-    btn.classList.remove("active");
-  });
-
-  const target = document.getElementById(`biaya-${jalur}`);
-  if (target) target.classList.add("active");
-
-  if (button) button.classList.add("active");
-}
-
+/* =========================
+   FAQ JURUSAN
+========================= */
 
 function renderFaqJurusan(items = []) {
   if (!items.length) {
@@ -811,6 +1087,10 @@ function renderFaqJurusan(items = []) {
   `;
 }
 
+/* =========================
+   SHARE BUTTONS
+========================= */
+
 function setupShareButtons() {
   const shareBtn = document.getElementById("shareWhatsapp");
   const copyBtn = document.getElementById("copyLink");
@@ -829,16 +1109,13 @@ function setupShareButtons() {
   if (copyBtn) {
     copyBtn.addEventListener("click", async () => {
       try {
-        await navigator.clipboard.writeText(
-          window.location.href
-        );
+        await navigator.clipboard.writeText(window.location.href);
 
         copyBtn.textContent = "✅ Link Tersalin";
 
         setTimeout(() => {
           copyBtn.textContent = "🔗 Salin Link";
         }, 2000);
-
       } catch {
         alert("Gagal menyalin link.");
       }
@@ -846,4 +1123,13 @@ function setupShareButtons() {
   }
 }
 
-loadJurusanDetail();
+/* =========================
+   INIT
+========================= */
+
+async function initJurusanDetailPage() {
+  await loadJurusanDetail();
+  setupBiayaTabs();
+}
+
+initJurusanDetailPage();
