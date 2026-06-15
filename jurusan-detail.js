@@ -142,13 +142,19 @@ const { data: biayaPendidikan, error: biayaError } = await supabaseClient
   .order("tahun", { ascending: false })
   .order("jalur", { ascending: true })
   .order("kelompok", { ascending: true });
-
-console.log("Jurusan:", jurusan);
-console.log("Biaya:", biayaPendidikan);
-console.log("Error biaya:", biayaError);
   
 if (biayaError) {
   console.error("Gagal memuat biaya pendidikan:", biayaError.message);
+}
+
+const { data: faqJurusan, error: faqError } = await supabaseClient
+  .from("faq_jurusan")
+  .select("*")
+  .eq("jurusan_id", jurusan.id)
+  .order("urutan", { ascending: true });
+
+if (faqError) {
+  console.error("Gagal memuat FAQ jurusan:", faqError.message);
 }
   
   const statistik = await loadStatistikJurusan(id);
@@ -206,6 +212,9 @@ if (biayaError) {
 
       ${renderBiayaPendidikanSection(Array.isArray(biayaPendidikan) ? biayaPendidikan : [])}
 
+      <h2>FAQ Jurusan</h2>
+      ${renderFaqJurusan(faqJurusan || [])}
+      
       <h2>Prospek Kerja</h2>
       ${renderChipLinks(jurusan.prospek_kerja)}
 
@@ -782,6 +791,25 @@ function showBiayaTab(jalur, button) {
   if (button) button.classList.add("active");
 }
 
+
+function renderFaqJurusan(items = []) {
+  if (!items.length) {
+    return `<div class="empty">FAQ jurusan belum tersedia.</div>`;
+  }
+
+  return `
+    <section class="faq-jurusan-section">
+      ${items.map(item => `
+        <details class="faq-jurusan-item">
+          <summary>${escapeHTML(item.pertanyaan)}</summary>
+          <div class="faq-jurusan-answer">
+            ${escapeHTML(item.jawaban).replace(/\n/g, "<br>")}
+          </div>
+        </details>
+      `).join("")}
+    </section>
+  `;
+}
 
 function setupShareButtons() {
   const shareBtn = document.getElementById("shareWhatsapp");
