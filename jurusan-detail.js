@@ -204,7 +204,7 @@ if (biayaError) {
       <h2>Statistik Penerimaan</h2>
       ${renderStatistik(statistik)}
 
-      ${renderBiayaPendidikanSection(biayaPendidikan || [])}
+      ${renderBiayaPendidikanSection(Array.isArray(biayaPendidikan) ? biayaPendidikan : [])}
 
       <h2>Prospek Kerja</h2>
       ${renderChipLinks(jurusan.prospek_kerja)}
@@ -559,7 +559,9 @@ async function loadAutoMatchedJobs(jurusan, relatedJobList) {
 }
 
 function renderBiayaPendidikanSection(biayaList = []) {
-  if (!biayaList.length) {
+  console.log("Jumlah biaya yang dirender:", biayaList.length, biayaList);
+
+  if (!Array.isArray(biayaList) || biayaList.length === 0) {
     return `
       <section class="biaya-section">
         <h2>Biaya Pendidikan</h2>
@@ -568,7 +570,6 @@ function renderBiayaPendidikanSection(biayaList = []) {
       </section>
     `;
   }
-
   const jalurUrutan = [
   { key: "SNBP/SNBT", label: "SNBP/SNBT" },
   { key: "Mandiri", label: "Seleksi Mandiri" },
