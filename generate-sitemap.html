@@ -23,16 +23,26 @@
       return new Date().toISOString().split("T")[0];
     }
 
-    function urlItem(loc, priority = "0.8", changefreq = "weekly") {
-      return `
+    function escapeXml(text) {
+  return String(text).replace(/[<>&'"]/g, char => ({
+    "<": "&lt;",
+    ">": "&gt;",
+    "&": "&amp;",
+    "'": "&apos;",
+    '"': "&quot;"
+  }[char]));
+}
+
+function urlItem(loc, priority = "0.8", changefreq = "weekly") {
+  return `
   <url>
-    <loc>${loc}</loc>
+    <loc>${escapeXml(loc)}</loc>
     <lastmod>${today()}</lastmod>
     <changefreq>${changefreq}</changefreq>
     <priority>${priority}</priority>
   </url>`;
-    }
-
+}
+    
     async function generateSitemap() {
       const output = document.getElementById("output");
 
