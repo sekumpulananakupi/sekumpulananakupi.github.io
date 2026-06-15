@@ -143,6 +143,10 @@ const { data: biayaPendidikan, error: biayaError } = await supabaseClient
   .order("jalur", { ascending: true })
   .order("kelompok", { ascending: true });
 
+console.log("Jurusan:", jurusan);
+console.log("Biaya:", biayaPendidikan);
+console.log("Error biaya:", biayaError);
+  
 if (biayaError) {
   console.error("Gagal memuat biaya pendidikan:", biayaError.message);
 }
