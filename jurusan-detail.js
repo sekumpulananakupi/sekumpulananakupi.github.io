@@ -260,6 +260,13 @@ async function loadJurusanDetail() {
 
    
   detail.innerHTML = `
+  <nav class="breadcrumb">
+  <a href="index.html">Beranda</a>
+  <span>›</span>
+  <a href="jurusan.html">Jurusan</a>
+  <span>›</span>
+  <span>${escapeHTML(jurusan.nama)}</span>
+   </nav>
     <article class="post-card">
       <span class="pill">${escapeHTML(jurusan.fakultas || "UPI")}</span>
       <h1>${escapeHTML(jurusan.nama)}</h1>
