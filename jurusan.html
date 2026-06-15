@@ -5,15 +5,100 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Jurusan UPI</title>
   <link rel="stylesheet" href="style.css">
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZWLZ2952C1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
 
-  gtag('config', 'G-ZWLZ2952C1');
-</script>
+  <!-- Tambahan styling khusus filter jurusan. Boleh dipindahkan ke style.css kalau mau. -->
+  <style>
+    .jurusan-controls {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(160px, 1fr));
+      gap: 12px;
+      margin: 18px 0 10px;
+      align-items: end;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .filter-group label {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-muted, #64748b);
+    }
+
+    .filter-select,
+    .section-heading input[type="search"] {
+      width: 100%;
+      min-height: 42px;
+      border: 1px solid var(--border, #e2e8f0);
+      border-radius: 12px;
+      padding: 0 12px;
+      background: #fff;
+      color: var(--text, #0f172a);
+      outline: none;
+    }
+
+    .filter-select:focus,
+    .section-heading input[type="search"]:focus {
+      border-color: var(--primary, #2563eb);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+
+    .jurusan-filter-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+      margin: 8px 0 20px;
+    }
+
+    .result-info {
+      margin: 0;
+      color: var(--text-muted, #64748b);
+      font-size: 0.95rem;
+    }
+
+    .item-card .card-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .acceptance-note {
+      font-size: 0.9rem;
+      color: var(--text-muted, #64748b);
+      margin-top: 8px;
+    }
+
+    @media (max-width: 900px) {
+      .jurusan-controls {
+        grid-template-columns: repeat(2, minmax(150px, 1fr));
+      }
+    }
+
+    @media (max-width: 560px) {
+      .section-heading {
+        gap: 14px;
+      }
+
+      .jurusan-controls {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZWLZ2952C1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-ZWLZ2952C1');
+  </script>
 </head>
 <body>
 
@@ -37,7 +122,49 @@
         type="search"
         id="jurusanSearch"
         placeholder="Cari jurusan..."
+        autocomplete="off"
       />
+    </div>
+
+    <div class="jurusan-controls">
+      <div class="filter-group">
+        <label for="filterFakultas">Fakultas</label>
+        <select id="filterFakultas" class="filter-select">
+          <option value="all">Semua fakultas</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="filterJenjang">Jenjang</label>
+        <select id="filterJenjang" class="filter-select">
+          <option value="all">Semua jenjang</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="filterAkreditasi">Akreditasi</label>
+        <select id="filterAkreditasi" class="filter-select">
+          <option value="all">Semua akreditasi</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="sortJurusan">Urutkan</label>
+        <select id="sortJurusan" class="filter-select">
+          <option value="az">Nama A-Z</option>
+          <option value="za">Nama Z-A</option>
+          <option value="ketat">Daya saing paling ketat</option>
+          <option value="longgar">Daya saing paling longgar</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="jurusan-filter-actions">
+      <p id="jurusanResultInfo" class="result-info">Memuat jurusan...</p>
+
+      <button type="button" id="resetFilterJurusan" class="btn secondary">
+        Reset filter
+      </button>
     </div>
 
     <div class="grid-list" id="jurusanList"></div>
