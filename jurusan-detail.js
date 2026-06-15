@@ -309,6 +309,16 @@ async function loadJurusanDetail() {
       <h2>FAQ Jurusan</h2>
       ${renderFaqJurusan(faqJurusan || [])}
 
+      <section class="related-jurusan-section">
+        <h2>Jurusan Mirip</h2>
+      
+        <div id="relatedJurusanList" class="related-grid">
+          <div class="loading-state">
+            Mencari jurusan yang mirip...
+          </div>
+        </div>
+      </section>
+
       <h2>Prospek Kerja</h2>
       ${renderChipLinks(jurusan.prospek_kerja)}
 
@@ -331,6 +341,7 @@ async function loadJurusanDetail() {
 
   await loadRelatedContent(id, relatedArticleList, relatedJobList);
   await loadAutoMatchedJobs(jurusan, relatedJobList);
+  await loadRelatedJurusan(jurusan);
 }
 
 async function loadStatistikJurusan(jurusanId) {
@@ -1122,6 +1133,112 @@ function setupShareButtons() {
     });
   }
 }
+
+/* =========================
+   JURUSAN RELATED
+========================= */
+
+
+async function loadRelatedJurusan(currentJurusan) {
+
+  const container =
+    document.getElementById("relatedJurusanList");
+
+  if (!container) return;
+
+  const { data: jurusanList } =
+    await supabaseClient
+      .from("jurusan")
+      .select("*");
+
+  if (!jurusanList?.length) {
+    container.innerHTML =
+      `<div class="empty">Belum ada jurusan lain.</div>`;
+    return;
+  }
+
+  const currentNama =
+    (currentJurusan.nama || "").toLowerCase();
+
+  const related = jurusanList
+    .filter(item => item.id !== currentJurusan.id)
+    .map(item => {
+
+      let score = 0;
+
+      if (
+        item.fakultas === currentJurusan.fakultas
+      ) {
+        score += 5;
+      }
+
+      if (
+        item.jenjang === currentJurusan.jenjang
+      ) {
+        score += 3;
+      }
+
+      const nama =
+        (item.nama || "").toLowerCase();
+
+      const keywords = currentNama
+        .replace(/\(.*?\)/g, "")
+        .split(" ")
+        .filter(word => word.length >= 4);
+
+      keywords.forEach(keyword => {
+        if (nama.includes(keyword)) {
+          score += 2;
+        }
+      });
+
+      return {
+        ...item,
+        score
+      };
+    })
+    .filter(item => item.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 4);
+
+  if (!related.length) {
+    container.innerHTML =
+      `<div class="empty">Belum ditemukan jurusan yang mirip.</div>`;
+    return;
+  }
+
+  container.innerHTML = related.map(item => `
+    <article class="related-jurusan-card">
+
+      <span class="pill">
+        ${escapeHTML(item.fakultas)}
+      </span>
+
+      <span class="pill">
+        ${escapeHTML(item.jenjang)}
+      </span>
+
+      <h3>
+        ${escapeHTML(item.nama)}
+      </h3>
+
+      <p>
+        ${escapeHTML(
+          stripHTML(item.deskripsi || "")
+        ).slice(0, 120)}...
+      </p>
+
+      <a
+        href="jurusan-detail.html?id=${item.id}"
+        class="btn ghost"
+      >
+        Lihat Jurusan
+      </a>
+
+    </article>
+  `).join("");
+}
+
 
 /* =========================
    INIT
