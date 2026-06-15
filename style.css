@@ -1323,3 +1323,237 @@ nav a {
   color: #475569;
   line-height: 1.7;
 }
+
+/* ===== Statistik Penerimaan Tambahan ===== */
+
+.admission-compare {
+  margin: 16px 0;
+}
+
+.admission-compare-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.admission-compare-card,
+.admission-summary-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.06);
+}
+
+.admission-compare-card span,
+.admission-summary-card span {
+  display: block;
+  font-size: 0.82rem;
+  color: #64748b;
+  margin-bottom: 6px;
+}
+
+.admission-compare-card strong,
+.admission-summary-card strong {
+  display: block;
+  font-size: 1.45rem;
+  line-height: 1.2;
+  color: #0f172a;
+}
+
+.admission-compare-card small {
+  display: block;
+  margin-top: 8px;
+  color: #64748b;
+  line-height: 1.5;
+}
+
+.admission-summary {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 14px;
+  margin: 16px 0;
+}
+
+.admission-trend {
+  margin: 14px 0 18px;
+}
+
+.admission-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 18px 0;
+}
+
+.chart-mode-btn {
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  color: #334155;
+  border-radius: 999px;
+  padding: 10px 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.chart-mode-btn:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.chart-mode-btn.active {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #2563eb;
+}
+
+.admission-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.admission-tab {
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  color: #334155;
+  border-radius: 999px;
+  padding: 10px 18px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.admission-tab:hover {
+  background: #f8fafc;
+}
+
+.admission-tab.active {
+  background: #0f172a;
+  color: #ffffff;
+  border-color: #0f172a;
+}
+
+.admission-card {
+  height: 360px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 22px;
+  padding: 18px;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.07);
+  margin: 16px 0;
+}
+
+.admission-table-wrap {
+  overflow-x: auto;
+  margin-top: 16px;
+}
+
+.admission-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #ffffff;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+}
+
+.admission-table th,
+.admission-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.admission-table th {
+  background: #f8fafc;
+  color: #475569;
+  font-size: 0.86rem;
+}
+
+.admission-table td {
+  color: #334155;
+}
+
+.empty-statistik {
+  text-align: center;
+  color: #64748b;
+  padding: 22px !important;
+}
+
+/* ===== Biaya Tabs Fix ===== */
+
+.biaya-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 14px 0 18px;
+}
+
+.biaya-tab-btn {
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  color: #334155;
+  border-radius: 999px;
+  padding: 10px 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.biaya-tab-btn:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.biaya-tab-btn.active {
+  background: #16a34a;
+  color: #ffffff;
+  border-color: #16a34a;
+}
+
+.biaya-tab-content {
+  display: none;
+}
+
+.biaya-tab-content.active {
+  display: block;
+}
+
+/* ===== Responsive ===== */
+
+@media (max-width: 900px) {
+  .admission-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .admission-compare-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .admission-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .admission-card {
+    height: 300px;
+    padding: 12px;
+  }
+
+  .admission-tab,
+  .chart-mode-btn,
+  .biaya-tab-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .admission-tabs,
+  .admission-controls,
+  .biaya-tabs {
+    flex-direction: column;
+  }
+}
