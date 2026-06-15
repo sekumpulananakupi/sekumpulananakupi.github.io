@@ -258,6 +258,11 @@ async function loadJurusanDetail() {
   Array.isArray(biayaPendidikan) ? biayaPendidikan : []
 );
 
+   updateStructuredDataJurusan(
+  jurusan,
+  statistik,
+  Array.isArray(biayaPendidikan) ? biayaPendidikan : []
+);
    
   detail.innerHTML = `
   <nav class="breadcrumb">
@@ -1321,6 +1326,90 @@ function setMetaTag(name, content, attr = "name") {
   }
 
   tag.setAttribute("content", content);
+}
+
+function updateStructuredDataJurusan(jurusan, statistik = [], biayaList = []) {
+  const oldSchema = document.getElementById("jurusanSchema");
+  if (oldSchema) oldSchema.remove();
+
+  const latest = statistik
+    .slice()
+    .sort((a, b) => Number(b.tahun) - Number(a.tahun))[0];
+
+  const biayaValues = biayaList
+    .flatMap(item => [item.ukt, item.ipi, item.uang_kuliah])
+    .map(Number)
+    .filter(value => !Number.isNaN(value) && value > 0);
+
+  const minBiaya = biayaValues.length ? Math.min(...biayaValues) : null;
+  const maxBiaya = biayaValues.length ? Math.max(...biayaValues) : null;
+
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "EducationalOccupationalProgram",
+    "name": `${jurusan.nama || "Jurusan UPI"}`,
+    "provider": {
+      "@type": "CollegeOrUniversity",
+      "name": "Universitas Pendidikan Indonesia",
+      "url": "https://www.upi.edu"
+    },
+    "educationalCredentialAwarded": jurusan.jenjang || undefined,
+    "description": stripHTML(jurusan.deskripsi || ""),
+    "url": window.location.href,
+    "programPrerequisites": "Lulusan SMA/SMK/MA/sederajat sesuai ketentuan penerimaan UPI",
+    "occupationalCategory": jurusan.prospek_kerja || undefined
+  };
+
+  if (jurusan.fakultas) {
+    schema.department = {
+      "@type": "EducationalOrganization",
+      "name": jurusan.fakultas
+    };
+  }
+
+  if (jurusan.akreditasi) {
+    schema.additionalProperty = [
+      {
+        "@type": "PropertyValue",
+        "name": "Akreditasi",
+        "value": jurusan.akreditasi
+      }
+    ];
+  }
+
+  if (latest) {
+    schema.maximumEnrollment = Number(latest.daya_tampung || 0) || undefined;
+
+    schema.additionalProperty = [
+      ...(schema.additionalProperty || []),
+      {
+        "@type": "PropertyValue",
+        "name": `Daya tampung ${latest.jalur || ""} ${latest.tahun || ""}`.trim(),
+        "value": String(latest.daya_tampung || "")
+      },
+      {
+        "@type": "PropertyValue",
+        "name": `Peminat ${latest.jalur || ""} ${latest.tahun || ""}`.trim(),
+        "value": String(latest.peminat || "")
+      }
+    ];
+  }
+
+  if (minBiaya && maxBiaya) {
+    schema.offers = {
+      "@type": "Offer",
+      "priceCurrency": "IDR",
+      "price": minBiaya,
+      "description": `Biaya pendidikan berkisar dari ${formatRupiah(minBiaya)} sampai ${formatRupiah(maxBiaya)}.`
+    };
+  }
+
+  const script = document.createElement("script");
+  script.type = "application/ld+json";
+  script.id = "jurusanSchema";
+  script.textContent = JSON.stringify(schema, null, 2);
+
+  document.head.appendChild(script);
 }
 
 /* =========================
