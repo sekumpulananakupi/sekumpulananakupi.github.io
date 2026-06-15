@@ -252,6 +252,13 @@ function renderStatistik(statistik) {
         <button class="admission-tab" data-jalur="SNBT">SNBT</button>
       </div>
 
+      <div class="admission-summary" id="admissionSummary"></div>
+
+      <div class="admission-controls">
+        <button class="chart-mode-btn active" data-mode="jumlah">Daya Tampung & Peminat</button>
+        <button class="chart-mode-btn" data-mode="keketatan">Keketatan (%)</button>
+      </div>
+
       <div class="admission-card">
         <canvas id="admissionChart"></canvas>
       </div>
@@ -286,14 +293,19 @@ function persenKeterimaan(item) {
 
 function setupAdmissionStatistik(statistik) {
   const tabs = document.querySelectorAll(".admission-tab");
+  const modeButtons = document.querySelectorAll(".chart-mode-btn");
   const tbody = document.getElementById("admissionTableBody");
   const canvas = document.getElementById("admissionChart");
+  const summary = document.getElementById("admissionSummary");
 
   if (!tabs.length || !tbody || !canvas) return;
 
-  function renderAdmission(jalur) {
+  let activeJalur = "SNBP";
+  let activeMode = "jumlah";
+
+  function renderAdmission() {
     const data = statistik
-      .filter(item => String(item.jalur).toUpperCase() === jalur)
+      .filter(item => String(item.jalur).toUpperCase() === activeJalur)
       .sort((a, b) => Number(a.tahun) - Number(b.tahun));
 
     if (admissionChart) {
@@ -305,22 +317,51 @@ function setupAdmissionStatistik(statistik) {
       tbody.innerHTML = `
         <tr>
           <td colspan="4" class="empty-statistik">
-            Data ${jalur} belum tersedia.
+            Data ${activeJalur} belum tersedia.
           </td>
         </tr>
       `;
+
+      if (summary) {
+        summary.innerHTML = `<div class="empty">Ringkasan belum tersedia.</div>`;
+      }
+
       return;
+    }
+
+    const latest = data[data.length - 1];
+
+    if (summary) {
+      summary.innerHTML = `
+        <div class="admission-summary-card">
+          <span>Tahun terbaru</span>
+          <strong>${latest.tahun}</strong>
+        </div>
+
+        <div class="admission-summary-card">
+          <span>Daya Tampung</span>
+          <strong>${latest.daya_tampung}</strong>
+        </div>
+
+        <div class="admission-summary-card">
+          <span>Peminat</span>
+          <strong>${latest.peminat}</strong>
+        </div>
+
+        <div class="admission-summary-card">
+          <span>Keketatan</span>
+          <strong>${persenKeterimaan(latest)}%</strong>
+        </div>
+      `;
     }
 
     const labels = data.map(item => item.tahun);
     const dayaTampung = data.map(item => Number(item.daya_tampung));
     const peminat = data.map(item => Number(item.peminat));
-    const persentase = data.map(item => Number(persenKeterimaan(item)));
+    const keketatan = data.map(item => Number(persenKeterimaan(item)));
 
-    admissionChart = new Chart(canvas, {
-      data: {
-        labels: labels,
-        datasets: [
+    const datasets = activeMode === "jumlah"
+      ? [
           {
             type: "bar",
             label: "Daya Tampung",
@@ -328,19 +369,28 @@ function setupAdmissionStatistik(statistik) {
             yAxisID: "y"
           },
           {
-            type: "bar",
+            type: "line",
             label: "Peminat",
             data: peminat,
-            yAxisID: "y"
-          },
-          {
-            type: "line",
-            label: "Keketatan (%)",
-            data: persentase,
-            yAxisID: "y1",
+            yAxisID: "y",
             tension: 0.35
           }
         ]
+      : [
+          {
+            type: "line",
+            label: "Keketatan (%)",
+            data: keketatan,
+            yAxisID: "y",
+            tension: 0.35
+          }
+        ];
+
+    admissionChart = new Chart(canvas, {
+      type: "bar",
+      data: {
+        labels,
+        datasets
       },
       options: {
         responsive: true,
@@ -349,19 +399,29 @@ function setupAdmissionStatistik(statistik) {
           mode: "index",
           intersect: false
         },
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: context => {
+                const label = context.dataset.label || "";
+                const value = context.raw;
+
+                if (label.includes("Keketatan")) {
+                  return `${label}: ${value}%`;
+                }
+
+                return `${label}: ${Number(value).toLocaleString("id-ID")}`;
+              }
+            }
+          }
+        },
         scales: {
           y: {
             beginAtZero: true,
-            position: "left"
-          },
-          y1: {
-            beginAtZero: true,
-            position: "right",
-            grid: {
-              drawOnChartArea: false
-            },
             ticks: {
-              callback: value => value + "%"
+              callback: value => activeMode === "keketatan"
+                ? `${value}%`
+                : Number(value).toLocaleString("id-ID")
             }
           }
         }
@@ -374,8 +434,8 @@ function setupAdmissionStatistik(statistik) {
       .map(item => `
         <tr>
           <td>${item.tahun}</td>
-          <td>${item.daya_tampung} kursi</td>
-          <td>${item.peminat} peminat</td>
+          <td>${Number(item.daya_tampung).toLocaleString("id-ID")} kursi</td>
+          <td>${Number(item.peminat).toLocaleString("id-ID")} peminat</td>
           <td><strong>${persenKeterimaan(item)}%</strong></td>
         </tr>
       `)
@@ -383,15 +443,26 @@ function setupAdmissionStatistik(statistik) {
   }
 
   tabs.forEach(tab => {
-    tab.addEventListener("click", function() {
+    tab.addEventListener("click", function () {
       tabs.forEach(item => item.classList.remove("active"));
       this.classList.add("active");
 
-      renderAdmission(this.dataset.jalur);
+      activeJalur = this.dataset.jalur;
+      renderAdmission();
     });
   });
 
-  renderAdmission("SNBP");
+  modeButtons.forEach(button => {
+    button.addEventListener("click", function () {
+      modeButtons.forEach(item => item.classList.remove("active"));
+      this.classList.add("active");
+
+      activeMode = this.dataset.mode;
+      renderAdmission();
+    });
+  });
+
+  renderAdmission();
 }
 
 async function loadRelatedContent(jurusanId, relatedArticleList, relatedJobList) {
