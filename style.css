@@ -1298,3 +1298,28 @@ nav a {
   color: #fff;
   border-color: #1d4ed8;
 }
+
+.faq-jurusan-section {
+  display: grid;
+  gap: 12px;
+  margin: 16px 0 28px;
+}
+
+.faq-jurusan-item {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.faq-jurusan-item summary {
+  cursor: pointer;
+  padding: 16px;
+  font-weight: 700;
+}
+
+.faq-jurusan-answer {
+  padding: 0 16px 16px;
+  color: #475569;
+  line-height: 1.7;
+}
