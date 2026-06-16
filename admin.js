@@ -69,6 +69,26 @@ function formatRupiah(value) {
   }).format(number);
 }
 
+function formatGaji(item) {
+  const min = item.gaji_min;
+  const max = item.gaji_max;
+  const note = item.gaji_keterangan;
+
+  if (min && max) {
+    return `${formatRupiah(min)} - ${formatRupiah(max)}`;
+  }
+
+  if (min && !max) {
+    return `Mulai ${formatRupiah(min)}`;
+  }
+
+  if (!min && max) {
+    return `Hingga ${formatRupiah(max)}`;
+  }
+
+  return note || "";
+}
+
 function getDeadlineStatus(deadline) {
   if (!deadline) return "";
 
@@ -97,6 +117,26 @@ function getDeadlineStatus(deadline) {
   }
 
   return `📅 ${diff} hari lagi`;
+}
+
+function isJobExpired(deadline) {
+  if (!deadline) return false;
+
+  const today = new Date();
+  const endDate = new Date(deadline);
+
+  today.setHours(0, 0, 0, 0);
+  endDate.setHours(0, 0, 0, 0);
+
+  return endDate < today;
+}
+
+function getEffectiveJobStatus(item) {
+  if (isJobExpired(item.deadline)) {
+    return "ditutup";
+  }
+
+  return item.status || "aktif";
 }
 
 function initQuillEditors() {
@@ -695,12 +735,21 @@ function createCard(type, item) {
   <article class="admin-list-item">
     <div>
       <span class="pill">${item.perusahaan || "Lowongan"}</span>
-      <span class="pill">${item.status || "aktif"}</span>
+      <span class="pill">${getEffectiveJobStatus(item)}</span>
       ${item.tipe_pekerjaan ? `<span class="pill">${item.tipe_pekerjaan}</span>` : ""}
+      ${item.jenjang_pendidikan ? `<span class="pill">${item.jenjang_pendidikan}</span>` : ""}
+      ${item.is_featured ? `<span class="pill">⭐ Pilihan</span>` : ""}
+      ${item.sumber ? `<span class="pill">${item.sumber}</span>` : ""}
 
       <h3>${item.posisi || "-"}</h3>
 
       <p>${stripHTML(item.deskripsi).slice(0, 100)}...</p>
+
+      ${
+  formatGaji(item)
+    ? `<p><strong>Gaji:</strong> ${formatGaji(item)}</p>`
+    : ""
+}
 
       ${
         item.deadline
@@ -764,9 +813,34 @@ function renderList(type, listId, searchId) {
   if (type === "wiki") data = wikiData;
   if (type === "job") data = jobData;
 
-  const filtered = data.filter(item =>
-    JSON.stringify(item).toLowerCase().includes(keyword)
-  );
+ let filtered = data.filter(item =>
+  JSON.stringify(item).toLowerCase().includes(keyword)
+);
+
+if (type === "job") {
+  const statusFilter = qs("jobStatusFilter")?.value || "all";
+  const salaryFilter = qs("jobSalaryFilter")?.value || "all";
+
+  if (statusFilter === "featured") {
+    filtered = filtered.filter(item => item.is_featured);
+  } else if (statusFilter !== "all") {
+    filtered = filtered.filter(item =>
+      getEffectiveJobStatus(item) === statusFilter
+    );
+  }
+
+  if (salaryFilter === "with_salary") {
+    filtered = filtered.filter(item =>
+      item.gaji_min || item.gaji_max || item.gaji_keterangan
+    );
+  }
+
+  if (salaryFilter === "without_salary") {
+    filtered = filtered.filter(item =>
+      !item.gaji_min && !item.gaji_max && !item.gaji_keterangan
+    );
+  }
+}
 
   const list = qs(listId);
   if (!list) return;
@@ -787,6 +861,14 @@ function updateDashboardStats() {
   if (qs("adminCountInfo")) qs("adminCountInfo").textContent = infoData.length;
   if (qs("adminCountWiki")) qs("adminCountWiki").textContent = wikiData.length;
   if (qs("adminCountJobs")) qs("adminCountJobs").textContent = jobData.length;
+  const jobAktif = jobData.filter(item => getEffectiveJobStatus(item) === "aktif").length;
+  const jobDraft = jobData.filter(item => getEffectiveJobStatus(item) === "draft").length;
+  const jobDitutup = jobData.filter(item => getEffectiveJobStatus(item) === "ditutup").length;
+  const jobFeatured = jobData.filter(item => item.is_featured).length;
+  if (qs("adminCountJobsActive")) qs("adminCountJobsActive").textContent = jobAktif;
+  if (qs("adminCountJobsDraft")) qs("adminCountJobsDraft").textContent = jobDraft;
+  if (qs("adminCountJobsClosed")) qs("adminCountJobsClosed").textContent = jobDitutup;
+  if (qs("adminCountJobsFeatured")) qs("adminCountJobsFeatured").textContent = jobFeatured;
   if (qs("adminCountJurusan")) qs("adminCountJurusan").textContent = jurusanAdminData.length || jurusanData.length;
   if (qs("adminCountDokumen")) qs("adminCountDokumen").textContent = dokumenData.length;
   if (qs("adminCountFaq")) qs("adminCountFaq").textContent = faqData.length;
@@ -935,6 +1017,12 @@ if (qs("jobForm")) {
      deadline: qs("jobDeadline").value || null,
      status: qs("jobStatus").value || "aktif",
      tipe_pekerjaan: qs("jobType").value || null,
+     jenjang_pendidikan: qs("jobEducation").value || null,
+     is_featured: qs("jobFeatured").checked,
+     sumber: qs("jobSource").value || null,
+     gaji_min: qs("jobSalaryMin").value ? Number(qs("jobSalaryMin").value) : null,
+     gaji_max: qs("jobSalaryMax").value ? Number(qs("jobSalaryMax").value) : null,
+     gaji_keterangan: qs("jobSalaryNote").value || null,
      deskripsi: getEditorHTML("job")
    };
 
@@ -1224,6 +1312,12 @@ async function editJob(id) {
   qs("jobDeadline").value = item.deadline || "";
   qs("jobStatus").value = item.status || "aktif";
   qs("jobType").value = item.tipe_pekerjaan || "";
+  qs("jobEducation").value = item.jenjang_pendidikan || "";
+  qs("jobFeatured").checked = !!item.is_featured;
+  qs("jobSource").value = item.sumber || "";
+  qs("jobSalaryMin").value = item.gaji_min || "";
+  qs("jobSalaryMax").value = item.gaji_max || "";
+  qs("jobSalaryNote").value = item.gaji_keterangan || "";
   setEditorHTML("job", item.deskripsi || "");
 
   await setSelectedRelations(
@@ -2135,6 +2229,13 @@ function initSidebarNavigation() {
   if (input) input.addEventListener("input", renderAll);
 });
 
+if (qs("jobStatusFilter")) {
+  qs("jobStatusFilter").addEventListener("change", renderAll);
+}
+
+if (qs("jobSalaryFilter")) {
+  qs("jobSalaryFilter").addEventListener("change", renderAll);
+}
 
 /* =========================
    START
