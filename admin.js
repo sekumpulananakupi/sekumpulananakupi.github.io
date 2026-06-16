@@ -507,7 +507,7 @@ function getSelectedValues(elementId) {
     .map(input => Number(input.value));
 }
 
-async function saveRelations(type, artikelId, kategoriIds, tagIds, jurusanIds) {
+async function saveRelations(type, artikelId, kategoriIds = [], tagIds = [], jurusanIds = []) {
   await supabaseClient
     .from("artikel_kategori")
     .delete()
@@ -1051,11 +1051,12 @@ if (qs("jobForm")) {
     const savedId = id ? Number(id) : response.data.id;
 
     await saveRelations(
-      "job",
-      savedId,
-      [],
-      getSelectedValues("jobJurusanMulti")
-    );
+  "job",
+  savedId,
+  [],
+  [],
+  getSelectedValues("jobJurusanMulti")
+);
 
     clearForm("job");
     await loadData();
@@ -1320,12 +1321,13 @@ async function editJob(id) {
   qs("jobSalaryNote").value = item.gaji_keterangan || "";
   setEditorHTML("job", item.deskripsi || "");
 
-  await setSelectedRelations(
-    "job",
-    id,
-    "",
-    "jobJurusanMulti"
-  );
+await setSelectedRelations(
+  "job",
+  id,
+  "",
+  "",
+  "jobJurusanMulti"
+);
 
   showAdminPage("jobPage");
 }
