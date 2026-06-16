@@ -362,7 +362,6 @@ async function loadMasterData() {
   fillCheckGroup("wikiKategoriMulti", kategoriWiki);
 
   fillCheckGroup("wikiTagMulti", tagData);
-  fillCheckGroup("jobTagMulti", tagData);
 
   fillCheckGroup("jobJurusanMulti", jurusanData);
 
@@ -697,6 +696,7 @@ function createCard(type, item) {
     <div>
       <span class="pill">${item.perusahaan || "Lowongan"}</span>
       <span class="pill">${item.status || "aktif"}</span>
+      ${item.tipe_pekerjaan ? `<span class="pill">${item.tipe_pekerjaan}</span>` : ""}
 
       <h3>${item.posisi || "-"}</h3>
 
@@ -934,6 +934,7 @@ if (qs("jobForm")) {
      link: qs("jobLink").value,
      deadline: qs("jobDeadline").value || null,
      status: qs("jobStatus").value || "aktif",
+     tipe_pekerjaan: qs("jobType").value || null,
      deskripsi: getEditorHTML("job")
    };
 
@@ -965,7 +966,6 @@ if (qs("jobForm")) {
       "job",
       savedId,
       [],
-      getSelectedValues("jobTagMulti"),
       getSelectedValues("jobJurusanMulti")
     );
 
@@ -1223,13 +1223,13 @@ async function editJob(id) {
   qs("jobLink").value = item.link || "";
   qs("jobDeadline").value = item.deadline || "";
   qs("jobStatus").value = item.status || "aktif";
+  qs("jobType").value = item.tipe_pekerjaan || "";
   setEditorHTML("job", item.deskripsi || "");
 
   await setSelectedRelations(
     "job",
     id,
     "",
-    "jobTagMulti",
     "jobJurusanMulti"
   );
 
@@ -1308,7 +1308,6 @@ function clearForm(type) {
   const relationIds = {
     info: ["infoKategoriMulti"],
     wiki: ["wikiKategoriMulti", "wikiTagMulti"],
-    job: ["jobTagMulti", "jobJurusanMulti"]
   };
 
   (relationIds[type] || []).forEach(containerId => {
