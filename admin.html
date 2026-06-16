@@ -119,6 +119,26 @@
                 <strong id="adminCountTag">0</strong>
                 <span>Tag</span>
               </div>
+
+              <div class="stat-card">
+                <span>Total Lowongan Aktif</span>
+                <strong id="adminCountJobsActive">0</strong>
+              </div>
+              
+              <div class="stat-card">
+                <span>Lowongan Draft</span>
+                <strong id="adminCountJobsDraft">0</strong>
+              </div>
+              
+              <div class="stat-card">
+                <span>Lowongan Ditutup</span>
+                <strong id="adminCountJobsClosed">0</strong>
+              </div>
+              
+              <div class="stat-card">
+                <span>Lowongan Pilihan</span>
+                <strong id="adminCountJobsFeatured">0</strong>
+              </div>
             </section>
           </section>
 
@@ -200,6 +220,21 @@
               <input type="text" id="jobCompany" placeholder="Perusahaan" required />
               <input type="text" id="jobLocation" placeholder="Lokasi" />
               <input type="url" id="jobLink" placeholder="Link pendaftaran" />
+              <div class="form-group">
+                <label>Sumber Lowongan</label>
+                <select id="jobSource">
+                  <option value="">Pilih sumber</option>
+                  <option value="LinkedIn">LinkedIn</option>
+                  <option value="Jobstreet">Jobstreet</option>
+                  <option value="Kalibrr">Telegram</option>
+                  <option value="Glints">Glints</option>
+                  <option value="Website Perusahaan">Website Perusahaan</option>
+                  <option value="Karir UPI">Karir UPI</option>
+                  <option value="Instagram">Instagram</option>
+                  <option value="Lainnya">Lainnya</option>
+                </select>
+              </div>
+              
               <label>Deadline Lowongan</label><input type="date" id="jobDeadline">
               <div class="form-group"
                 <label>Status Lowongan</label>
@@ -208,6 +243,13 @@
                   <option value="draft">Draft</option>
                   <option value="ditutup">Ditutup</option>
                 </select>
+              </div>
+
+              <div class="form-group checkbox-group">
+                <label>
+                  <input type="checkbox" id="jobFeatured">
+                  Jadikan lowongan pilihan
+                </label>
               </div>
 
               <div class="form-group">
@@ -223,6 +265,36 @@
                 </select>
               </div>
 
+              <div class="form-group">
+                <label>Minimal Jenjang Pendidikan</label>
+                <select id="jobEducation">
+                  <option value="">Pilih jenjang</option>
+                  <option value="SMA/SMK">SMA/SMK</option>
+                  <option value="D3">D3</option>
+                  <option value="D4">D4</option>
+                  <option value="S1">S1</option>
+                  <option value="S2">S2</option>
+                  <option value="S3">S3</option>
+                  <option value="Fresh Graduate">Fresh Graduate</option>
+                  <option value="Mahasiswa Aktif">Mahasiswa Aktif</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label>Gaji Minimum</label>
+                <input type="number" id="jobSalaryMin" placeholder="Contoh: 4000000">
+              </div>
+              
+              <div class="form-group">
+                <label>Gaji Maksimum</label>
+                <input type="number" id="jobSalaryMax" placeholder="Contoh: 6000000">
+              </div>
+              
+              <div class="form-group">
+                <label>Keterangan Gaji</label>
+                <input type="text" id="jobSalaryNote" placeholder="Contoh: Negotiable / UMK / Per proyek">
+              </div>
+              
               <label>Jurusan Terkait</label>
               <div id="jobJurusanMulti" class="checkbox-group"></div>
 
@@ -237,6 +309,22 @@
             </form>
 
             <div class="grid-list" id="jobList"></div>
+
+            <div class="filter-row">
+              <select id="jobStatusFilter">
+                <option value="all">Semua Status</option>
+                <option value="aktif">Aktif</option>
+                <option value="draft">Draft</option>
+                <option value="ditutup">Ditutup</option>
+                <option value="featured">Lowongan Pilihan</option>
+              </select>
+              
+              <select id="jobSalaryFilter">
+                <option value="all">Semua Gaji</option>
+                <option value="with_salary">Ada Gaji</option>
+                <option value="without_salary">Tanpa Gaji</option>
+              </select>
+            </div>
           </section>
 
           <section class="admin-page" id="dokumenPage">
