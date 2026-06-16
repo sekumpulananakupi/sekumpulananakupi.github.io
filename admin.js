@@ -69,6 +69,36 @@ function formatRupiah(value) {
   }).format(number);
 }
 
+function getDeadlineStatus(deadline) {
+  if (!deadline) return "";
+
+  const today = new Date();
+  const endDate = new Date(deadline);
+
+  today.setHours(0,0,0,0);
+  endDate.setHours(0,0,0,0);
+
+  const diff =
+    Math.ceil(
+      (endDate - today) /
+      (1000 * 60 * 60 * 24)
+    );
+
+  if (diff < 0) {
+    return "❌ Ditutup";
+  }
+
+  if (diff === 0) {
+    return "🔥 Ditutup Hari Ini";
+  }
+
+  if (diff <= 7) {
+    return `⏳ ${diff} hari lagi`;
+  }
+
+  return `📅 ${diff} hari lagi`;
+}
+
 function initQuillEditors() {
   if (!window.Quill) {
     console.warn("Quill belum dimuat. Pastikan CDN Quill sudah ada di admin.html.");
@@ -663,20 +693,28 @@ async function loadData() {
 function createCard(type, item) {
   if (type === "info") {
     return `
-      <article class="admin-list-item">
-        <div>
-          <span class="pill">Info Kampus</span>
-          <h3>${item.judul || "-"}</h3>
-          <p>${stripHTML(item.isi).slice(0, 100)}...</p>
-        </div>
+  <article class="admin-list-item">
+    <div>
+      <span class="pill">${item.perusahaan || "Lowongan"}</span>
 
-        <div class="card-actions">
-          <button class="btn ghost" onclick="editInfo(${item.id})">Edit</button>
-          <button class="btn danger" onclick="deleteItem('info', ${item.id})">Hapus</button>
-        </div>
-      </article>
-    `;
-  }
+      <h3>${item.posisi || "-"}</h3>
+
+      <p>${stripHTML(item.deskripsi).slice(0, 100)}...</p>
+
+      ${
+        item.deadline
+          ? `<small>${getDeadlineStatus(item.deadline)}</small>`
+          : ""
+      }
+    </div>
+
+    <div class="card-actions">
+      <button class="btn ghost" onclick="editJob(${item.id})">Edit</button>
+      <button class="btn danger" onclick="deleteItem('job', ${item.id})">Hapus</button>
+    </div>
+  </article>
+`;
+}
 
   if (type === "wiki") {
     return `
@@ -701,6 +739,12 @@ function createCard(type, item) {
         <span class="pill">${item.perusahaan || "Lowongan"}</span>
         <h3>${item.posisi || "-"}</h3>
         <p>${stripHTML(item.deskripsi).slice(0, 100)}...</p>
+
+${
+  item.deadline
+    ? `<small>Deadline: ${new Date(item.deadline).toLocaleDateString("id-ID")}</small>`
+    : ""
+}
       </div>
 
       <div class="card-actions">
@@ -887,6 +931,7 @@ if (qs("jobForm")) {
       perusahaan: qs("jobCompany").value,
       lokasi: qs("jobLocation").value,
       link: qs("jobLink").value,
+      deadline: qs("jobDeadline").value || null,
       deskripsi: getEditorHTML("job")
     };
 
@@ -1174,6 +1219,7 @@ async function editJob(id) {
   qs("jobCompany").value = item.perusahaan || "";
   qs("jobLocation").value = item.lokasi || "";
   qs("jobLink").value = item.link || "";
+  qs("jobDeadline").value = item.deadline || "";
   setEditorHTML("job", item.deskripsi || "");
 
   await setSelectedRelations(
