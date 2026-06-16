@@ -696,6 +696,7 @@ function createCard(type, item) {
   <article class="admin-list-item">
     <div>
       <span class="pill">${item.perusahaan || "Lowongan"}</span>
+      <span class="pill">${item.status || "aktif"}</span>
 
       <h3>${item.posisi || "-"}</h3>
 
@@ -926,14 +927,15 @@ if (qs("jobForm")) {
     const imageFile = qs("jobImage")?.files[0];
     const imageUrl = await uploadImage(imageFile);
 
-    const payload = {
-      posisi: qs("jobTitle").value,
-      perusahaan: qs("jobCompany").value,
-      lokasi: qs("jobLocation").value,
-      link: qs("jobLink").value,
-      deadline: qs("jobDeadline").value || null,
-      deskripsi: getEditorHTML("job")
-    };
+   const payload = {
+     posisi: qs("jobTitle").value,
+     perusahaan: qs("jobCompany").value,
+     lokasi: qs("jobLocation").value,
+     link: qs("jobLink").value,
+     deadline: qs("jobDeadline").value || null,
+     status: qs("jobStatus").value || "aktif",
+     deskripsi: getEditorHTML("job")
+   };
 
     if (imageUrl) payload.gambar = imageUrl;
 
@@ -1220,6 +1222,7 @@ async function editJob(id) {
   qs("jobLocation").value = item.lokasi || "";
   qs("jobLink").value = item.link || "";
   qs("jobDeadline").value = item.deadline || "";
+  qs("jobStatus").value = item.status || "aktif";
   setEditorHTML("job", item.deskripsi || "");
 
   await setSelectedRelations(
