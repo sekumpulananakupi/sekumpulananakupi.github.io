@@ -138,6 +138,7 @@ tagData = tagsResult.data || [];
 
 setCachedFilters();
 renderFilters();
+}
 
 function renderFilters() {
   const jurusanFilter = document.getElementById("jurusanFilter");
