@@ -3,29 +3,20 @@ const SUPABASE_ANON_KEY = "sb_publishable_KL8Jcb1hEzU-kAZiOMYWFg_hupftFmq";
 
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-/*
-  LOWONGAN OPTIMIZED
-  - Tidak lagi mengambil semua lowongan sekaligus
-  - Per halaman hanya 5 lowongan
-  - Query hanya kolom yang dipakai di card
-  - Search dilakukan di Supabase, bukan filter ribuan data di browser
-  - Filter jurusan/tag mengambil ID lowongan terkait dulu
-  - Gambar lazy loading
-  - Filter jurusan/tag dicache 5 menit
-*/
-
 const PAGE_SIZE = 5;
-const CACHE_TTL = 5 * 60 * 1000;
+const FILTER_CACHE_KEY = "saupi_lowongan_filters_v1";
+const FILTER_CACHE_TTL = 5 * 60 * 1000;
 
 let currentPage = 0;
-let totalJobs = 0;
+let isLoadingJobs = false;
+let hasMoreJobs = true;
+
 let activeJurusan = "all";
 let activeTag = "all";
-let currentKeyword = "";
+let activeKeyword = "";
 
 let jurusanData = [];
 let tagData = [];
-let isLoadingJobs = false;
 
 function escapeHTML(text) {
   return String(text || "").replace(/[&<>'"]/g, char => ({
@@ -43,43 +34,7 @@ function stripHTML(html) {
   return (div.textContent || div.innerText || "").trim();
 }
 
-function debounce(fn, delay = 350) {
-  let timer;
-  return (...args) => {
-    clearTimeout(timer);
-    timer = setTimeout(() => fn(...args), delay);
-  };
-}
-
-function getCache(key) {
-  try {
-    const raw = localStorage.getItem(key);
-    if (!raw) return null;
-
-    const parsed = JSON.parse(raw);
-    if (Date.now() - parsed.time > CACHE_TTL) {
-      localStorage.removeItem(key);
-      return null;
-    }
-
-    return parsed.data;
-  } catch {
-    return null;
-  }
-}
-
-function setCache(key, data) {
-  try {
-    localStorage.setItem(key, JSON.stringify({
-      time: Date.now(),
-      data
-    }));
-  } catch {
-    // Abaikan kalau storage penuh / tidak tersedia
-  }
-}
-
-function showLoading(targetId, count = 5) {
+function showLoading(targetId, count = 3) {
   const target = document.getElementById(targetId);
   if (!target) return;
 
@@ -93,65 +48,67 @@ function showLoading(targetId, count = 5) {
   `).join("");
 }
 
-function showEmpty(targetId, title, message, icon = "💼") {
+function showEmpty(targetId, title = "Lowongan tidak ditemukan", message = "Coba gunakan kata kunci, tag, atau jurusan lain.", icon = "💼") {
   const target = document.getElementById(targetId);
   if (!target) return;
 
   target.innerHTML = `
-    <div class="empty">
-      <div style="font-size:2rem;margin-bottom:.5rem;">${icon}</div>
-      <strong>${escapeHTML(title)}</strong>
+    <div class="empty-state">
+      <div class="empty-icon">${icon}</div>
+      <h3>${escapeHTML(title)}</h3>
       <p>${escapeHTML(message)}</p>
     </div>
   `;
 }
 
-function setButtonLoading(isLoading) {
-  const btn = document.getElementById("loadMoreJobs");
-  if (!btn) return;
-
-  btn.disabled = isLoading;
-  btn.textContent = isLoading ? "Memuat..." : "Muat Lowongan Lainnya";
+function debounce(fn, delay = 350) {
+  let timer;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn(...args), delay);
+  };
 }
 
-function renderLoadMoreButton() {
-  const wrapper = document.getElementById("jobPagination");
-  if (!wrapper) return;
+function getCachedFilters() {
+  try {
+    const raw = localStorage.getItem(FILTER_CACHE_KEY);
+    if (!raw) return null;
 
-  const loaded = Math.min((currentPage + 1) * PAGE_SIZE, totalJobs);
+    const parsed = JSON.parse(raw);
+    if (!parsed.savedAt || Date.now() - parsed.savedAt > FILTER_CACHE_TTL) {
+      localStorage.removeItem(FILTER_CACHE_KEY);
+      return null;
+    }
 
-  if (loaded >= totalJobs) {
-    wrapper.innerHTML = totalJobs
-      ? `<p class="muted">Semua lowongan sudah ditampilkan.</p>`
-      : "";
-    return;
+    return parsed;
+  } catch {
+    return null;
   }
-
-  wrapper.innerHTML = `
-    <button id="loadMoreJobs" class="btn ghost" type="button">
-      Muat Lowongan Lainnya
-    </button>
-    <p class="muted">Menampilkan ${loaded} dari ${totalJobs} lowongan.</p>
-  `;
-
-  document.getElementById("loadMoreJobs").addEventListener("click", () => {
-    currentPage += 1;
-    loadJobs({ append: true });
-  });
 }
 
-async function loadFilterData() {
-  const cachedJurusan = getCache("lowongan_jurusan_filter_v1");
-  const cachedTags = getCache("lowongan_tag_filter_v1");
+function setCachedFilters() {
+  try {
+    localStorage.setItem(FILTER_CACHE_KEY, JSON.stringify({
+      savedAt: Date.now(),
+      jurusanData,
+      tagData
+    }));
+  } catch {
+    // localStorage bisa gagal di mode private, abaikan saja.
+  }
+}
 
-  if (cachedJurusan && cachedTags) {
-    jurusanData = cachedJurusan;
-    tagData = cachedTags;
+async function loadFilters() {
+  const cached = getCachedFilters();
+
+  if (cached) {
+    jurusanData = cached.jurusanData || [];
+    tagData = cached.tagData || [];
     renderFilters();
     return;
   }
 
-  const [jurusanResult, tagResult] = await Promise.all([
+  const [jurusanResult, tagsResult] = await Promise.all([
     supabaseClient
       .from("jurusan")
       .select("id,nama")
@@ -164,11 +121,9 @@ async function loadFilterData() {
   ]);
 
   jurusanData = jurusanResult.data || [];
-  tagData = tagResult.data || [];
+  tagData = tagsResult.data || [];
 
-  setCache("lowongan_jurusan_filter_v1", jurusanData);
-  setCache("lowongan_tag_filter_v1", tagData);
-
+  setCachedFilters();
   renderFilters();
 }
 
@@ -197,160 +152,158 @@ function renderFilters() {
   }
 }
 
-async function getFilteredJobIds() {
-  let jurusanIds = null;
-  let tagIds = null;
-
-  if (activeJurusan !== "all") {
-    const { data } = await supabaseClient
-      .from("artikel_jurusan")
-      .select("artikel_id")
-      .eq("artikel_tipe", "job")
-      .eq("jurusan_id", activeJurusan);
-
-    jurusanIds = new Set((data || []).map(row => row.artikel_id));
-  }
-
-  if (activeTag !== "all") {
-    const { data } = await supabaseClient
-      .from("artikel_tags")
-      .select("artikel_id")
-      .eq("artikel_tipe", "job")
-      .eq("tag_id", activeTag);
-
-    tagIds = new Set((data || []).map(row => row.artikel_id));
-  }
-
-  if (!jurusanIds && !tagIds) return null;
-
-  let finalIds = [];
-
-  if (jurusanIds && tagIds) {
-    finalIds = [...jurusanIds].filter(id => tagIds.has(id));
-  } else if (jurusanIds) {
-    finalIds = [...jurusanIds];
-  } else if (tagIds) {
-    finalIds = [...tagIds];
-  }
-
-  return finalIds;
-}
-
-function buildJobsQuery(jobIds) {
-  const from = currentPage * PAGE_SIZE;
-  const to = from + PAGE_SIZE - 1;
-
-  let query = supabaseClient
-    .from("lowongan_kerja")
-    .select("id,posisi,perusahaan,lokasi,gambar,deskripsi,created_at", { count: "exact" })
-    .order("created_at", { ascending: false })
-    .range(from, to);
-
-  if (currentKeyword) {
-    const safeKeyword = currentKeyword.replaceAll("%", "").replaceAll(",", " ");
-    query = query.or(
-      `posisi.ilike.%${safeKeyword}%,perusahaan.ilike.%${safeKeyword}%,lokasi.ilike.%${safeKeyword}%,deskripsi.ilike.%${safeKeyword}%`
-    );
-  }
-
-  if (Array.isArray(jobIds)) {
-    if (!jobIds.length) return null;
-    query = query.in("id", jobIds);
-  }
-
-  return query;
-}
-
-async function loadJobs({ append = false } = {}) {
-  if (isLoadingJobs) return;
-  isLoadingJobs = true;
-
-  const list = document.getElementById("jobList");
-
-  if (!append) {
-    currentPage = 0;
-    showLoading("jobList", PAGE_SIZE);
-  } else {
-    setButtonLoading(true);
-  }
-
-  try {
-    const filteredJobIds = await getFilteredJobIds();
-    const query = buildJobsQuery(filteredJobIds);
-
-    if (!query) {
-      totalJobs = 0;
-      showEmpty(
-        "jobList",
-        "Lowongan tidak ditemukan",
-        "Coba gunakan kata kunci, tag, atau jurusan lain.",
-        "💼"
-      );
-      renderLoadMoreButton();
-      return;
-    }
-
-    const { data, error, count } = await query;
-
-    if (error) throw error;
-
-    totalJobs = count || 0;
-    const html = (data || []).map(createJobCard).join("");
-
-    if (append && list) {
-      list.insertAdjacentHTML("beforeend", html);
-    } else if (list) {
-      list.innerHTML = html || "";
-    }
-
-    if (!data?.length && !append) {
-      showEmpty(
-        "jobList",
-        "Lowongan tidak ditemukan",
-        "Coba gunakan kata kunci, tag, atau jurusan lain.",
-        "💼"
-      );
-    }
-
-    renderLoadMoreButton();
-  } catch (error) {
-    console.error("Gagal memuat lowongan:", error);
-    showEmpty(
-      "jobList",
-      "Gagal memuat lowongan",
-      "Coba refresh halaman atau cek koneksi Supabase.",
-      "⚠️"
-    );
-  } finally {
-    isLoadingJobs = false;
-    setButtonLoading(false);
-  }
-}
-
 function createJobCard(item) {
-  const excerpt = stripHTML(item.deskripsi).slice(0, 140);
-
   return `
     <article class="item-card">
-      ${item.gambar ? `
-        <img
-          src="${escapeHTML(item.gambar)}"
-          class="card-image"
-          alt="${escapeHTML(item.posisi)}"
-          loading="lazy"
-          decoding="async"
-        >
-      ` : ""}
+      ${item.gambar ? `<img src="${escapeHTML(item.gambar)}" class="card-image" alt="${escapeHTML(item.posisi)}" loading="lazy">` : ""}
 
       <span class="pill">${escapeHTML(item.perusahaan || "Lowongan")}</span>
       <span class="pill">${escapeHTML(item.lokasi || "Fleksibel")}</span>
 
       <h3>${escapeHTML(item.posisi)}</h3>
-      <p>${escapeHTML(excerpt)}${excerpt.length >= 140 ? "..." : ""}</p>
+      <p>${escapeHTML(stripHTML(item.deskripsi_ringkas || item.deskripsi || "")).slice(0, 140)}...</p>
 
       <a href="post.html?type=job&id=${item.id}" class="btn ghost">Lihat Detail</a>
     </article>
   `;
+}
+
+function getLoadMoreButton() {
+  let button = document.getElementById("loadMoreJobs");
+
+  if (!button) {
+    const list = document.getElementById("jobList");
+    if (!list) return null;
+
+    button = document.createElement("button");
+    button.id = "loadMoreJobs";
+    button.type = "button";
+    button.className = "btn primary";
+    button.textContent = "Muat Lagi";
+
+    button.addEventListener("click", () => {
+      loadJobs(false);
+    });
+
+    list.insertAdjacentElement("afterend", button);
+  }
+
+  return button;
+}
+
+function updateLoadMoreButton() {
+  const button = getLoadMoreButton();
+  if (!button) return;
+
+  button.style.display = hasMoreJobs ? "inline-flex" : "none";
+  button.disabled = isLoadingJobs;
+  button.textContent = isLoadingJobs ? "Memuat..." : "Muat Lagi";
+}
+
+async function loadJobs(reset = false) {
+  if (isLoadingJobs) return;
+
+  const jobList = document.getElementById("jobList");
+  if (!jobList) return;
+
+  isLoadingJobs = true;
+  updateLoadMoreButton();
+
+  if (reset) {
+    currentPage = 0;
+    hasMoreJobs = true;
+    showLoading("jobList", PAGE_SIZE);
+  }
+
+  const from = currentPage * PAGE_SIZE;
+  const to = from + PAGE_SIZE - 1;
+
+  let query = supabaseClient
+    .from("lowongan_kerja")
+    .select("id,posisi,perusahaan,lokasi,gambar,deskripsi,created_at")
+    .order("created_at", { ascending: false })
+    .range(from, to);
+
+  if (activeKeyword) {
+    query = query.or(
+      `posisi.ilike.%${activeKeyword}%,perusahaan.ilike.%${activeKeyword}%,lokasi.ilike.%${activeKeyword}%,deskripsi.ilike.%${activeKeyword}%`
+    );
+  }
+
+  if (activeJurusan !== "all") {
+    const { data: relasiJurusan } = await supabaseClient
+      .from("artikel_jurusan")
+      .select("artikel_id")
+      .eq("artikel_tipe", "job")
+      .eq("jurusan_id", activeJurusan);
+
+    const ids = (relasiJurusan || []).map(row => row.artikel_id);
+
+    if (!ids.length) {
+      if (reset) {
+        showEmpty("jobList");
+      }
+      hasMoreJobs = false;
+      isLoadingJobs = false;
+      updateLoadMoreButton();
+      return;
+    }
+
+    query = query.in("id", ids);
+  }
+
+  if (activeTag !== "all") {
+    const { data: relasiTag } = await supabaseClient
+      .from("artikel_tags")
+      .select("artikel_id")
+      .eq("artikel_tipe", "job")
+      .eq("tag_id", activeTag);
+
+    const ids = (relasiTag || []).map(row => row.artikel_id);
+
+    if (!ids.length) {
+      if (reset) {
+        showEmpty("jobList");
+      }
+      hasMoreJobs = false;
+      isLoadingJobs = false;
+      updateLoadMoreButton();
+      return;
+    }
+
+    query = query.in("id", ids);
+  }
+
+  const { data, error } = await query;
+
+  if (error) {
+    console.error("Gagal mengambil lowongan:", error);
+    if (reset) {
+      showEmpty("jobList", "Gagal memuat lowongan", "Coba refresh halaman atau periksa koneksi.", "⚠️");
+    }
+    hasMoreJobs = false;
+    isLoadingJobs = false;
+    updateLoadMoreButton();
+    return;
+  }
+
+  const jobs = data || [];
+
+  if (reset) {
+    jobList.innerHTML = "";
+  }
+
+  if (!jobs.length && reset) {
+    showEmpty("jobList");
+  } else if (jobs.length) {
+    jobList.insertAdjacentHTML("beforeend", jobs.map(createJobCard).join(""));
+  }
+
+  hasMoreJobs = jobs.length === PAGE_SIZE;
+  currentPage += 1;
+
+  isLoadingJobs = false;
+  updateLoadMoreButton();
 }
 
 function initEvents() {
@@ -358,43 +311,40 @@ function initEvents() {
   const jurusanFilter = document.getElementById("jurusanFilter");
   const tagFilter = document.getElementById("tagFilter");
 
+  const params = new URLSearchParams(window.location.search);
+  const keywordFromUrl = params.get("q");
+
+  if (searchInput && keywordFromUrl) {
+    searchInput.value = keywordFromUrl;
+    activeKeyword = keywordFromUrl.trim().toLowerCase();
+  }
+
   if (searchInput) {
-    const params = new URLSearchParams(window.location.search);
-    const keyword = params.get("q") || "";
-
-    searchInput.value = keyword;
-    currentKeyword = keyword.trim().toLowerCase();
-
     searchInput.addEventListener("input", debounce(event => {
-      currentKeyword = event.target.value.trim().toLowerCase();
-      loadJobs();
-    }, 350));
+      activeKeyword = event.target.value.trim().toLowerCase();
+      loadJobs(true);
+    }));
   }
 
   if (jurusanFilter) {
     jurusanFilter.addEventListener("change", event => {
       activeJurusan = event.target.value;
-      loadJobs();
+      loadJobs(true);
     });
   }
 
   if (tagFilter) {
     tagFilter.addEventListener("change", event => {
       activeTag = event.target.value;
-      loadJobs();
+      loadJobs(true);
     });
   }
 }
 
 async function initLowonganPage() {
-  showLoading("jobList", PAGE_SIZE);
-
   initEvents();
-
-  await Promise.all([
-    loadFilterData(),
-    loadJobs()
-  ]);
+  await loadFilters();
+  await loadJobs(true);
 }
 
 initLowonganPage();
