@@ -35,31 +35,41 @@
     </nav>
   </header>
 
-  <main class="container">
-    <section class="section">
-      <div class="section-heading">
-        <div>
-          <p class="eyebrow">Karier</p>
-          <h2>Lowongan Kerja</h2>
-        </div>
+<main class="container">
+  <section class="section">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">Karier</p>
+        <h2>Lowongan Kerja</h2>
       </div>
+    </div>
 
-      <div class="filter-panel">
-        <input type="search" id="jobSearch" placeholder="Cari posisi, perusahaan, atau lokasi..." />
+    <div class="filter-panel">
+      <input type="search" id="jobSearch" placeholder="Cari posisi, perusahaan, atau lokasi..." />
 
-        <select id="jurusanFilter">
-          <option value="all">Semua Jurusan</option>
-        </select>
+      <select id="jurusanFilter">
+        <option value="all">Semua Jurusan</option>
+      </select>
 
-        <select id="tagFilter">
-          <option value="all">Semua Tag</option>
-        </select>
-      </div>
+      <select id="tagFilter">
+        <option value="all">Semua Tag</option>
+      </select>
+    </div>
 
-      <div class="grid-list" id="jobList"></div>
-    </section>
-  </main>
+    <div class="results-meta">
+      <span id="jobCount"></span>
+    </div>
 
+    <div class="grid-list" id="jobList"></div>
+
+    <div class="load-more-wrapper">
+      <button id="loadMoreJobs" class="btn primary" style="display:none;">
+        Muat Lagi
+      </button>
+    </div>
+  </section>
+</main>
+  
   <footer class="footer">
     <div class="container">
       <p>© 2026 Sekumpulan Anak UPI. Dibuat untuk komunitas mahasiswa.</p>
