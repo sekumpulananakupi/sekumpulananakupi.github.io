@@ -126,25 +126,18 @@ async function loadFilters() {
     .eq("artikel_tipe", "job")
 ]);
 
-  jurusanCounts = {};
+jurusanCounts = {};
 
 (relasiJurusanResult.data || []).forEach(row => {
   jurusanCounts[row.jurusan_id] =
     (jurusanCounts[row.jurusan_id] || 0) + 1;
 });
 
-  const jurusanCounts = {};
+jurusanData = jurusanResult.data || [];
+tagData = tagsResult.data || [];
 
-(relasiJurusanResult.data || []).forEach(row => {
-  jurusanCounts[row.jurusan_id] = (jurusanCounts[row.jurusan_id] || 0) + 1;
-});
-
-  jurusanData = jurusanResult.data || [];
-  tagData = tagsResult.data || [];
-
-  setCachedFilters();
-  renderFilters();
-}
+setCachedFilters();
+renderFilters();
 
 function renderFilters() {
   const jurusanFilter = document.getElementById("jurusanFilter");
