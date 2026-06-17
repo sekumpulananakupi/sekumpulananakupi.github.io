@@ -108,17 +108,28 @@ async function loadFilters() {
     return;
   }
 
-  const [jurusanResult, tagsResult] = await Promise.all([
-    supabaseClient
-      .from("jurusan")
-      .select("id,nama")
-      .order("nama", { ascending: true }),
+  const [jurusanResult, tagsResult, relasiJurusanResult] = await Promise.all([
+  supabaseClient
+    .from("jurusan")
+    .select("id,nama")
+    .order("nama", { ascending: true }),
 
-    supabaseClient
-      .from("tags")
-      .select("id,nama")
-      .order("nama", { ascending: true })
-  ]);
+  supabaseClient
+    .from("tags")
+    .select("id,nama")
+    .order("nama", { ascending: true }),
+
+  supabaseClient
+    .from("artikel_jurusan")
+    .select("jurusan_id")
+    .eq("artikel_tipe", "job")
+]);
+
+  const jurusanCounts = {};
+
+(relasiJurusanResult.data || []).forEach(row => {
+  jurusanCounts[row.jurusan_id] = (jurusanCounts[row.jurusan_id] || 0) + 1;
+});
 
   jurusanData = jurusanResult.data || [];
   tagData = tagsResult.data || [];
@@ -132,11 +143,17 @@ function renderFilters() {
   const tagFilter = document.getElementById("tagFilter");
 
   if (jurusanFilter) {
-    jurusanFilter.innerHTML =
-      `<option value="all">Semua Jurusan</option>` +
-      jurusanData
-        .map(item => `<option value="${item.id}">${escapeHTML(item.nama)}</option>`)
-        .join("");
+jurusanFilter.innerHTML =
+  `<option value="all">Semua Jurusan</option>` +
+  jurusanData
+    .filter(item => (jurusanCounts[item.id] || 0) > 0)
+    .map(item => {
+      const count = jurusanCounts[item.id] || 0;
+      return `<option value="${item.id}">
+        ${escapeHTML(item.nama)} (${count})
+      </option>`;
+    })
+    .join("");
 
     jurusanFilter.value = activeJurusan;
   }
