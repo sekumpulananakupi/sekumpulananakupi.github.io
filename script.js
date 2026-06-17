@@ -2,8 +2,12 @@ const SUPABASE_URL = "https://rozfgvucyiwqqmmrmbph.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_KL8Jcb1hEzU-kAZiOMYWFg_hupftFmq";
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+const HOME_LIMIT = 5;
+const MINI_LIMIT = 4;
 
 let activeFilter = "all";
+let activeJobJurusan = "all";
+
 let infoData = [];
 let wikiData = [];
 let jobData = [];
@@ -13,48 +17,125 @@ let jurusanData = [];
 let artikelJurusanData = [];
 let dokumenData = [];
 let faqData = [];
-let activeJobJurusan = "all";
 
 async function loadData() {
-showLoading("latestList", 3);
-showLoading("latestJobList", 3);
-showLoading("infoList", 3);
-showLoading("wikiList", 3);
-showSimpleLoading("homeDokumenList", "Memuat dokumen...");
-showSimpleLoading("homeFaqList", "Memuat FAQ...");
-  const { data: info, error: infoError } = await supabaseClient.from("informasi_kampus").select("*").order("created_at", { ascending: false });
-  const { data: wiki, error: wikiError } = await supabaseClient.from("wiki_kampus").select("*").order("created_at", { ascending: false });
-  const { data: jobs, error: jobError } = await supabaseClient.from("lowongan_kerja").select("*").order("created_at", { ascending: false });
-  const { data: dokumen } = await supabaseClient.from("dokumen_kampus").select("*").order("created_at", { ascending: false }).limit(4);
-  const { data: faq } = await supabaseClient.from("faq_kampus").select("*").order("created_at", { ascending: false }).limit(4);
-  const { data: kategori } = await supabaseClient.from("kategori").select("*");
-  const { data: artikelKategori } = await supabaseClient.from("artikel_kategori").select("*");
-  const { data: jurusan } = await supabaseClient.from("jurusan").select("*").order("nama", { ascending: true });
-  const { data: artikelJurusan } = await supabaseClient.from("artikel_jurusan").select("*");
-  
-  
-  if (infoError || wikiError || jobError) {
-    console.error("Gagal mengambil data:", infoError || wikiError || jobError);
+  showLoading("latestList", 3);
+  showLoading("latestJobList", 3);
+  showLoading("infoList", 3);
+  showLoading("wikiList", 3);
+  showSimpleLoading("homeDokumenList", "Memuat dokumen...");
+  showSimpleLoading("homeFaqList", "Memuat FAQ...");
+
+  const [
+    infoResult,
+    wikiResult,
+    jobResult,
+    dokumenResult,
+    faqResult,
+    kategoriResult,
+    artikelKategoriResult,
+    jurusanResult,
+    artikelJurusanResult
+  ] = await Promise.all([
+    supabaseClient
+      .from("informasi_kampus")
+      .select("id, judul, kategori, isi, gambar, created_at")
+      .order("created_at", { ascending: false })
+      .limit(HOME_LIMIT),
+
+    supabaseClient
+      .from("wiki_kampus")
+      .select("id, judul, kategori, isi, gambar, created_at")
+      .order("created_at", { ascending: false })
+      .limit(HOME_LIMIT),
+
+    supabaseClient
+      .from("lowongan_kerja")
+      .select("id, posisi, perusahaan, lokasi, deskripsi, gambar, created_at")
+      .order("created_at", { ascending: false })
+      .limit(HOME_LIMIT),
+
+    supabaseClient
+      .from("dokumen_kampus")
+      .select("id, judul, kategori, link, created_at")
+      .order("created_at", { ascending: false })
+      .limit(MINI_LIMIT),
+
+    supabaseClient
+      .from("faq_kampus")
+      .select("id, pertanyaan, kategori, created_at")
+      .order("created_at", { ascending: false })
+      .limit(MINI_LIMIT),
+
+    supabaseClient
+      .from("kategori")
+      .select("id, nama"),
+
+    supabaseClient
+      .from("artikel_kategori")
+      .select("artikel_tipe, artikel_id, kategori_id"),
+
+    supabaseClient
+      .from("jurusan")
+      .select("id, nama")
+      .order("nama", { ascending: true }),
+
+    supabaseClient
+      .from("artikel_jurusan")
+      .select("artikel_tipe, artikel_id, jurusan_id")
+      .eq("artikel_tipe", "job")
+  ]);
+
+  const firstError = [
+    infoResult.error,
+    wikiResult.error,
+    jobResult.error,
+    dokumenResult.error,
+    faqResult.error,
+    kategoriResult.error,
+    artikelKategoriResult.error,
+    jurusanResult.error,
+    artikelJurusanResult.error
+  ].find(Boolean);
+
+  if (firstError) {
+    console.error("Gagal mengambil data:", firstError);
   }
 
-  infoData = info || [];
-  wikiData = wiki || [];
-  jobData = jobs || [];
-  kategoriData = kategori || [];
-  artikelKategoriData = artikelKategori || [];
-  jurusanData = jurusan || [];
-  artikelJurusanData = artikelJurusan || [];
-  dokumenData = dokumen || [];
-  faqData = faq || [];
+  infoData = infoResult.data || [];
+  wikiData = wikiResult.data || [];
+  jobData = jobResult.data || [];
+  dokumenData = dokumenResult.data || [];
+  faqData = faqResult.data || [];
+  kategoriData = kategoriResult.data || [];
+  artikelKategoriData = artikelKategoriResult.data || [];
+  jurusanData = jurusanResult.data || [];
+  artikelJurusanData = artikelJurusanResult.data || [];
 
   renderJurusanJobFilter();
-  renderHomeDokumen();
-  renderHomeFaq();
   renderAll();
 }
 
 function escapeHTML(text) {
-  return String(text || "").replace(/[&<>'"]/g, char => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", "'":"&#39;", '"':"&quot;" }[char]));
+  return String(text || "").replace(/[&<>'"]/g, char => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    "'": "&#39;",
+    '"': "&quot;"
+  }[char]));
+}
+
+function stripHTML(html) {
+  const div = document.createElement("div");
+  div.innerHTML = html || "";
+  return div.textContent || div.innerText || "";
+}
+
+function makeExcerpt(text, maxLength = 120) {
+  const clean = stripHTML(text).replace(/\s+/g, " ").trim();
+  if (!clean) return "";
+  return clean.length > maxLength ? `${clean.slice(0, maxLength)}...` : clean;
 }
 
 function showLoading(targetId, count = 3) {
@@ -78,7 +159,7 @@ function showSimpleLoading(targetId, message = "Memuat data...") {
   target.innerHTML = `
     <div class="loading-state">
       <div class="loading-spinner"></div>
-      ${message}
+      ${escapeHTML(message)}
     </div>
   `;
 }
@@ -90,7 +171,7 @@ function renderHomeDokumen() {
   list.innerHTML = dokumenData.length
     ? `<div class="home-mini-list">
         ${dokumenData.map(item => `
-          <a href="${escapeHTML(item.link)}" target="_blank" class="home-mini-item">
+          <a href="${escapeHTML(item.link)}" target="_blank" rel="noopener" class="home-mini-item">
             <strong>${escapeHTML(item.judul)}</strong>
             <span>${escapeHTML(item.kategori || "Dokumen")}</span>
           </a>
@@ -119,11 +200,11 @@ function createCard(type, item) {
   if (type === "info") {
     return `
       <article class="item-card">
-        ${item.gambar ? `<img src="${escapeHTML(item.gambar)}" class="card-image" alt="${escapeHTML(item.judul)}">` : ""}
+        ${item.gambar ? `<img src="${escapeHTML(item.gambar)}" class="card-image" alt="${escapeHTML(item.judul)}" loading="lazy">` : ""}
         ${renderKategoriPills("info", item.id)}
         <h3>${escapeHTML(item.judul)}</h3>
-        <p>${escapeHTML(stripHTML(item.isi)).slice(0, 120)}...</p>
-        <a class="btn ghost" href="post.html?type=info&id=${item.id}">Baca Selengkapnya</a>
+        <p>${escapeHTML(makeExcerpt(item.isi))}</p>
+        <a class="btn ghost" href="post.html?type=info&id=${encodeURIComponent(item.id)}">Baca Selengkapnya</a>
       </article>
     `;
   }
@@ -131,23 +212,23 @@ function createCard(type, item) {
   if (type === "wiki") {
     return `
       <article class="item-card">
-        ${item.gambar ? `<img src="${escapeHTML(item.gambar)}" class="card-image" alt="${escapeHTML(item.judul)}">` : ""}
-        <span class="pill">${escapeHTML(item.kategori || "Wiki")}</span>
+        ${item.gambar ? `<img src="${escapeHTML(item.gambar)}" class="card-image" alt="${escapeHTML(item.judul)}" loading="lazy">` : ""}
+        ${renderKategoriPills("wiki", item.id) || `<span class="pill">${escapeHTML(item.kategori || "Wiki")}</span>`}
         <h3>${escapeHTML(item.judul)}</h3>
-        <p>${escapeHTML(stripHTML(item.isi)).slice(0, 120)}...</p>
-        <a class="btn ghost" href="post.html?type=wiki&id=${item.id}">Baca Selengkapnya</a>
+        <p>${escapeHTML(makeExcerpt(item.isi))}</p>
+        <a class="btn ghost" href="post.html?type=wiki&id=${encodeURIComponent(item.id)}">Baca Selengkapnya</a>
       </article>
     `;
   }
 
   return `
     <article class="item-card">
-      ${item.gambar ? `<img src="${escapeHTML(item.gambar)}" class="card-image" alt="${escapeHTML(item.posisi)}">` : ""}
+      ${item.gambar ? `<img src="${escapeHTML(item.gambar)}" class="card-image" alt="${escapeHTML(item.posisi)}" loading="lazy">` : ""}
       <span class="pill">${escapeHTML(item.perusahaan)}</span>
       <span class="pill">${escapeHTML(item.lokasi || "Fleksibel")}</span>
       <h3>${escapeHTML(item.posisi)}</h3>
-      <p>${escapeHTML(stripHTML(item.deskripsi)).slice(0, 120)}...</p>
-      <a class="btn ghost" href="post.html?type=job&id=${item.id}">Lihat Detail</a>
+      <p>${escapeHTML(makeExcerpt(item.deskripsi))}</p>
+      <a class="btn ghost" href="post.html?type=job&id=${encodeURIComponent(item.id)}">Lihat Detail</a>
     </article>
   `;
 }
@@ -155,38 +236,40 @@ function createCard(type, item) {
 function createLatestCard(item) {
   return `
     <article class="item-card">
-      ${item.gambar ? `<img src="${escapeHTML(item.gambar)}" class="card-image" alt="${escapeHTML(item.title)}">` : ""}
-
+      ${item.gambar ? `<img src="${escapeHTML(item.gambar)}" class="card-image" alt="${escapeHTML(item.title)}" loading="lazy">` : ""}
       <span class="pill">${escapeHTML(item.label)}</span>
-
       <h3>${escapeHTML(item.title)}</h3>
-
-      <p>${escapeHTML(stripHTML(item.content)).slice(0, 120)}...</p>
-
-      <a class="btn ghost" href="post.html?type=${item.type}&id=${item.id}">
+      <p>${escapeHTML(makeExcerpt(item.content))}</p>
+      <a class="btn ghost" href="post.html?type=${encodeURIComponent(item.type)}&id=${encodeURIComponent(item.id)}">
         Baca Selengkapnya
       </a>
     </article>
   `;
 }
 
+function getSearchText(type, item) {
+  if (type === "info" || type === "wiki") {
+    return `${item.judul || ""} ${item.kategori || ""} ${stripHTML(item.isi || "")}`.toLowerCase();
+  }
+
+  return `${item.posisi || ""} ${item.perusahaan || ""} ${item.lokasi || ""} ${stripHTML(item.deskripsi || "")}`.toLowerCase();
+}
+
 function renderList(type, listId, searchId, data) {
-  const keyword = document.getElementById(searchId).value.toLowerCase();
+  const list = document.getElementById(listId);
+  const search = document.getElementById(searchId);
+  if (!list || !search) return;
+
+  const keyword = search.value.trim().toLowerCase();
 
   const filtered = data.filter(item => {
-    const text = JSON.stringify(item).toLowerCase();
-    const matchSearch = text.includes(keyword);
+    const matchSearch = !keyword || getSearchText(type, item).includes(keyword);
 
     let matchFilter = true;
-
     if (activeFilter !== "all") {
       if (type === "info" || type === "wiki") {
-        const kategoriNames = getArtikelKategori(type, item.id)
-          .map(nama => nama.toLowerCase());
-
-        matchFilter = kategoriNames.some(nama =>
-          nama.includes(activeFilter)
-        );
+        const kategoriNames = getArtikelKategori(type, item.id).map(nama => nama.toLowerCase());
+        matchFilter = kategoriNames.some(nama => nama.includes(activeFilter));
       }
 
       if (type === "job") {
@@ -194,22 +277,21 @@ function renderList(type, listId, searchId, data) {
       }
     }
 
-let matchJurusan = true;
+    let matchJurusan = true;
+    if (type === "job" && activeJobJurusan !== "all") {
+      matchJurusan = artikelJurusanData.some(row =>
+        row.artikel_tipe === "job" &&
+        String(row.artikel_id) === String(item.id) &&
+        String(row.jurusan_id) === String(activeJobJurusan)
+      );
+    }
 
-if (type === "job" && activeJobJurusan !== "all") {
-  matchJurusan = artikelJurusanData.some(row =>
-    row.artikel_tipe === "job" &&
-    row.artikel_id === item.id &&
-    String(row.jurusan_id) === String(activeJobJurusan)
-  );
-}
-    
     return matchSearch && matchFilter && matchJurusan;
   });
 
-  document.getElementById(listId).innerHTML = filtered.length
+  list.innerHTML = filtered.length
     ? filtered.map(item => createCard(type, item)).join("")
-    : '<div class="empty">Belum ada data.</div>';
+    : `<div class="empty">Belum ada data.</div>`;
 }
 
 function renderLatest() {
@@ -223,20 +305,18 @@ function renderLatest() {
       title: item.judul || "",
       content: item.isi || "",
       gambar: item.gambar || "",
-      label: item.kategori || "Info Kampus",
+      label: getArtikelKategori("info", item.id)[0] || item.kategori || "Info Kampus",
       created_at: item.created_at || ""
     })),
-
     ...wikiData.map(item => ({
       id: item.id,
       type: "wiki",
       title: item.judul || "",
       content: item.isi || "",
       gambar: item.gambar || "",
-      label: item.kategori || "Wiki Kampus",
+      label: getArtikelKategori("wiki", item.id)[0] || item.kategori || "Wiki Kampus",
       created_at: item.created_at || ""
     })),
-
     ...jobData.map(item => ({
       id: item.id,
       type: "job",
@@ -251,18 +331,29 @@ function renderLatest() {
   const latest = combined
     .filter(item => item.id)
     .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-    .slice(0, 6);
+    .slice(0, HOME_LIMIT);
 
   latestList.innerHTML = latest.length
     ? latest.map(item => createLatestCard(item)).join("")
-    : '<div class="empty">Belum ada artikel terbaru.</div>';
+    : `<div class="empty">Belum ada artikel terbaru.</div>`;
+}
+
+function renderLatestJobs() {
+  const list = document.getElementById("latestJobList");
+  if (!list) return;
+
+  const latestJobs = jobData.slice(0, HOME_LIMIT);
+
+  list.innerHTML = latestJobs.length
+    ? latestJobs.map(item => createCard("job", item)).join("")
+    : `<div class="empty">Belum ada lowongan terbaru.</div>`;
 }
 
 function renderAll() {
-  if (typeof renderLatest === "function") renderLatest();
-  if (typeof renderLatestJobs === "function") renderLatestJobs();
-  if (typeof renderHomeDokumen === "function") renderHomeDokumen();
-  if (typeof renderHomeFaq === "function") renderHomeFaq();
+  renderLatest();
+  renderLatestJobs();
+  renderHomeDokumen();
+  renderHomeFaq();
 
   if (document.getElementById("infoList")) {
     renderList("info", "infoList", "infoSearch", infoData);
@@ -276,83 +367,71 @@ function renderAll() {
     renderList("job", "jobList", "jobSearch", jobData);
   }
 
-  if (document.getElementById("countInfo")) {
-    document.getElementById("countInfo").textContent = infoData.length;
-  }
-
-  if (document.getElementById("countWiki")) {
-    document.getElementById("countWiki").textContent = wikiData.length;
-  }
-
-  if (document.getElementById("countJobs")) {
-    document.getElementById("countJobs").textContent = jobData.length;
-  }
-
-  if (document.getElementById("countJurusan")) {
-    document.getElementById("countJurusan").textContent = jurusanData.length;
-  }
-
-  if (document.getElementById("countDokumen")) {
-    document.getElementById("countDokumen").textContent = dokumenData.length;
-  }
-
-  if (document.getElementById("countFaq")) {
-    document.getElementById("countFaq").textContent = faqData.length;
-  }
+  setText("countInfo", infoData.length);
+  setText("countWiki", wikiData.length);
+  setText("countJobs", jobData.length);
+  setText("countJurusan", jurusanData.length);
+  setText("countDokumen", dokumenData.length);
+  setText("countFaq", faqData.length);
 }
 
-["infoSearch", "wikiSearch", "jobSearch"].forEach(id => {
-  const input = document.getElementById(id);
-  if (input) input.addEventListener("input", renderAll);
-});
+function setText(id, value) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = value;
+}
 
-/* FILTER KATEGORI */
+function debounce(fn, delay = 250) {
+  let timer;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn(...args), delay);
+  };
+}
+
+function initSearchInputs() {
+  const rerender = debounce(renderAll, 200);
+  ["infoSearch", "wikiSearch", "jobSearch"].forEach(id => {
+    const input = document.getElementById(id);
+    if (input) input.addEventListener("input", rerender);
+  });
+}
 
 function initFilterButtons() {
   document.querySelectorAll(".filter-btn").forEach(button => {
     button.addEventListener("click", () => {
-      document.querySelectorAll(".filter-btn").forEach(btn => {
-        btn.classList.remove("active");
-      });
-
+      document.querySelectorAll(".filter-btn").forEach(btn => btn.classList.remove("active"));
       button.classList.add("active");
-      activeFilter = button.dataset.filter;
-
+      activeFilter = button.dataset.filter || "all";
       renderAll();
     });
   });
 }
 
-const latestPrev = document.getElementById("latestPrev");
-const latestNext = document.getElementById("latestNext");
-const latestList = document.getElementById("latestList");
+function initLatestSlider() {
+  const latestPrev = document.getElementById("latestPrev");
+  const latestNext = document.getElementById("latestNext");
+  const latestList = document.getElementById("latestList");
 
-if (latestPrev && latestNext && latestList) {
+  if (!latestPrev || !latestNext || !latestList) return;
+
   latestPrev.addEventListener("click", () => {
-    latestList.scrollBy({
-      left: -320,
-      behavior: "smooth"
-    });
+    latestList.scrollBy({ left: -320, behavior: "smooth" });
   });
 
   latestNext.addEventListener("click", () => {
-    latestList.scrollBy({
-      left: 320,
-      behavior: "smooth"
-    });
+    latestList.scrollBy({ left: 320, behavior: "smooth" });
   });
 }
 
 function getArtikelKategori(type, artikelId) {
   return artikelKategoriData
-    .filter(row => row.artikel_tipe === type && row.artikel_id === artikelId)
-    .map(row => kategoriData.find(k => k.id === row.kategori_id)?.nama)
+    .filter(row => row.artikel_tipe === type && String(row.artikel_id) === String(artikelId))
+    .map(row => kategoriData.find(k => String(k.id) === String(row.kategori_id))?.nama)
     .filter(Boolean);
 }
 
 function renderKategoriPills(type, artikelId) {
   const kategori = getArtikelKategori(type, artikelId);
-
   if (!kategori.length) return "";
 
   return kategori
@@ -364,33 +443,19 @@ function renderJurusanJobFilter() {
   const select = document.getElementById("jobJurusanFilter");
   if (!select) return;
 
+  const currentValue = select.value || activeJobJurusan;
   select.innerHTML =
     `<option value="all">Semua Jurusan</option>` +
-    jurusanData
-      .map(item => `<option value="${item.id}">${escapeHTML(item.nama)}</option>`)
-      .join("");
+    jurusanData.map(item => `<option value="${escapeHTML(item.id)}">${escapeHTML(item.nama)}</option>`).join("");
 
-  select.addEventListener("change", () => {
+  select.value = currentValue;
+  select.onchange = () => {
     activeJobJurusan = select.value;
     renderAll();
-  });
+  };
 }
 
-function stripHTML(html) {
-  const div = document.createElement("div");
-  div.innerHTML = html || "";
-  return div.textContent || div.innerText || "";
-}
-
-function renderLatestJobs() {
-  const list = document.getElementById("latestJobList");
-  if (!list) return;
-
-  const latestJobs = jobData.slice(0, 3);
-
-  list.innerHTML = latestJobs.length
-    ? latestJobs.map(item => createCard("job", item)).join("")
-    : `<div class="empty">Belum ada lowongan terbaru.</div>`;
-}
-
+initSearchInputs();
+initFilterButtons();
+initLatestSlider();
 loadData();
