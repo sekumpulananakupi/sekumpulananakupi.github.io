@@ -108,33 +108,19 @@ async function loadFilters() {
   if (cached) {
     jurusanData = cached.jurusanData || [];
     tagData = cached.tagData || [];
-    jurusanCounts = cached.jurusanCounts || {};
     renderFilters();
     return;
   }
 
   const [jurusanResult, tagsResult, relasiJurusanResult] = await Promise.all([
-    supabaseClient
-      .from("jurusan")
-      .select("id,nama")
-      .order("nama", { ascending: true }),
-
-    supabaseClient
-      .from("tags")
-      .select("id,nama")
-      .order("nama", { ascending: true }),
-
-    supabaseClient
-      .from("artikel_jurusan")
-      .select("jurusan_id")
-      .eq("artikel_tipe", "job")
+    supabaseClient.from("jurusan").select("id,nama").order("nama", { ascending: true }),
+    supabaseClient.from("tags").select("id,nama").order("nama", { ascending: true }),
+    supabaseClient.from("artikel_jurusan").select("jurusan_id").eq("artikel_tipe", "job")
   ]);
 
   jurusanCounts = {};
-
   (relasiJurusanResult.data || []).forEach(row => {
-    jurusanCounts[row.jurusan_id] =
-      (jurusanCounts[row.jurusan_id] || 0) + 1;
+    jurusanCounts[row.jurusan_id] = (jurusanCounts[row.jurusan_id] || 0) + 1;
   });
 
   jurusanData = jurusanResult.data || [];
@@ -142,6 +128,35 @@ async function loadFilters() {
 
   setCachedFilters();
   renderFilters();
+} // WAJIB ADA: nutup loadFilters di sini
+
+function renderFilters() {
+  const jurusanFilter = document.getElementById("jurusanFilter");
+  const tagFilter = document.getElementById("tagFilter");
+
+  if (jurusanFilter) {
+    jurusanFilter.innerHTML =
+      `<option value="all">Semua Jurusan</option>` +
+      jurusanData
+        .filter(item => (jurusanCounts[item.id] || 0) > 0)
+        .map(item => {
+          const count = jurusanCounts[item.id] || 0;
+          return `<option value="${item.id}">${escapeHTML(item.nama)} (${count})</option>`;
+        })
+        .join("");
+
+    jurusanFilter.value = activeJurusan;
+  }
+
+  if (tagFilter) {
+    tagFilter.innerHTML =
+      `<option value="all">Semua Tag</option>` +
+      tagData
+        .map(item => `<option value="${item.id}">${escapeHTML(item.nama)}</option>`)
+        .join("");
+
+    tagFilter.value = activeTag;
+  }
 }
 
 function renderFilters() {
