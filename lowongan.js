@@ -17,6 +17,7 @@ let activeKeyword = "";
 
 let jurusanData = [];
 let tagData = [];
+let jurusanCounts = {};
 
 function escapeHTML(text) {
   return String(text || "").replace(/[&<>'"]/g, char => ({
@@ -124,6 +125,13 @@ async function loadFilters() {
     .select("jurusan_id")
     .eq("artikel_tipe", "job")
 ]);
+
+  jurusanCounts = {};
+
+(relasiJurusanResult.data || []).forEach(row => {
+  jurusanCounts[row.jurusan_id] =
+    (jurusanCounts[row.jurusan_id] || 0) + 1;
+});
 
   const jurusanCounts = {};
 
