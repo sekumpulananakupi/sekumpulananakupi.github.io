@@ -2,8 +2,41 @@ const SUPABASE_URL = "https://rozfgvucyiwqqmmrmbph.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_KL8Jcb1hEzU-kAZiOMYWFg_hupftFmq";
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-const HOME_LIMIT = 5;
+/*
+  SA UPI - script optimasi agresif
+  Fokus:
+  1. Konten awal 5 item per jenis.
+  2. Pagination / tombol muat lagi otomatis jika elemen tombol tersedia.
+  3. Query Supabase hanya ambil kolom yang dipakai.
+  4. Isi lengkap tetap aman untuk detail page, bukan untuk card/list.
+  5. Cache localStorage 5 menit agar pindah halaman / refresh terasa ringan.
+  6. FAQ dan dokumen dimuat setelah konten utama.
+*/
+
+const PAGE_SIZE = 5;
 const MINI_LIMIT = 4;
+const CACHE_TTL = 5 * 60 * 1000;
+
+const TABLE_CONFIG = {
+  info: {
+    table: "informasi_kampus",
+    columns: "id, judul, kategori, isi, gambar, created_at",
+    searchColumns: "judul, isi, kategori",
+    orderColumn: "created_at"
+  },
+  wiki: {
+    table: "wiki_kampus",
+    columns: "id, judul, kategori, isi, gambar, created_at",
+    searchColumns: "judul, isi, kategori",
+    orderColumn: "created_at"
+  },
+  job: {
+    table: "lowongan_kerja",
+    columns: "id, posisi, perusahaan, lokasi, deskripsi, gambar, created_at",
+    searchColumns: "posisi, perusahaan, lokasi, deskripsi",
+    orderColumn: "created_at"
+  }
+};
 
 let activeFilter = "all";
 let activeJobJurusan = "all";
@@ -18,102 +51,38 @@ let artikelJurusanData = [];
 let dokumenData = [];
 let faqData = [];
 
-async function loadData() {
-  showLoading("latestList", 3);
-  showLoading("latestJobList", 3);
-  showLoading("infoList", 3);
-  showLoading("wikiList", 3);
-  showSimpleLoading("homeDokumenList", "Memuat dokumen...");
-  showSimpleLoading("homeFaqList", "Memuat FAQ...");
+let pageState = {
+  info: { page: 0, hasMore: true, keyword: "" },
+  wiki: { page: 0, hasMore: true, keyword: "" },
+  job: { page: 0, hasMore: true, keyword: "" }
+};
 
-  const [
-    infoResult,
-    wikiResult,
-    jobResult,
-    dokumenResult,
-    faqResult,
-    kategoriResult,
-    artikelKategoriResult,
-    jurusanResult,
-    artikelJurusanResult
-  ] = await Promise.all([
-    supabaseClient
-      .from("informasi_kampus")
-      .select("id, judul, kategori, isi, gambar, created_at")
-      .order("created_at", { ascending: false })
-      .limit(HOME_LIMIT),
+function cacheKey(key) {
+  return `saupi_cache_${key}`;
+}
 
-    supabaseClient
-      .from("wiki_kampus")
-      .select("id, judul, kategori, isi, gambar, created_at")
-      .order("created_at", { ascending: false })
-      .limit(HOME_LIMIT),
-
-    supabaseClient
-      .from("lowongan_kerja")
-      .select("id, posisi, perusahaan, lokasi, deskripsi, gambar, created_at")
-      .order("created_at", { ascending: false })
-      .limit(HOME_LIMIT),
-
-    supabaseClient
-      .from("dokumen_kampus")
-      .select("id, judul, kategori, link, created_at")
-      .order("created_at", { ascending: false })
-      .limit(MINI_LIMIT),
-
-    supabaseClient
-      .from("faq_kampus")
-      .select("id, pertanyaan, kategori, created_at")
-      .order("created_at", { ascending: false })
-      .limit(MINI_LIMIT),
-
-    supabaseClient
-      .from("kategori")
-      .select("id, nama"),
-
-    supabaseClient
-      .from("artikel_kategori")
-      .select("artikel_tipe, artikel_id, kategori_id"),
-
-    supabaseClient
-      .from("jurusan")
-      .select("id, nama")
-      .order("nama", { ascending: true }),
-
-    supabaseClient
-      .from("artikel_jurusan")
-      .select("artikel_tipe, artikel_id, jurusan_id")
-      .eq("artikel_tipe", "job")
-  ]);
-
-  const firstError = [
-    infoResult.error,
-    wikiResult.error,
-    jobResult.error,
-    dokumenResult.error,
-    faqResult.error,
-    kategoriResult.error,
-    artikelKategoriResult.error,
-    jurusanResult.error,
-    artikelJurusanResult.error
-  ].find(Boolean);
-
-  if (firstError) {
-    console.error("Gagal mengambil data:", firstError);
+function getCache(key) {
+  try {
+    const raw = localStorage.getItem(cacheKey(key));
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (!parsed.time || Date.now() - parsed.time > CACHE_TTL) {
+      localStorage.removeItem(cacheKey(key));
+      return null;
+    }
+    return parsed.data;
+  } catch (error) {
+    console.warn("Cache gagal dibaca:", key, error);
+    return null;
   }
+}
 
-  infoData = infoResult.data || [];
-  wikiData = wikiResult.data || [];
-  jobData = jobResult.data || [];
-  dokumenData = dokumenResult.data || [];
-  faqData = faqResult.data || [];
-  kategoriData = kategoriResult.data || [];
-  artikelKategoriData = artikelKategoriResult.data || [];
-  jurusanData = jurusanResult.data || [];
-  artikelJurusanData = artikelJurusanResult.data || [];
-
-  renderJurusanJobFilter();
-  renderAll();
+function setCache(key, data) {
+  try {
+    localStorage.setItem(cacheKey(key), JSON.stringify({ time: Date.now(), data }));
+  } catch (error) {
+    console.warn("Cache gagal disimpan:", key, error);
+  }
 }
 
 function escapeHTML(text) {
@@ -138,10 +107,14 @@ function makeExcerpt(text, maxLength = 120) {
   return clean.length > maxLength ? `${clean.slice(0, maxLength)}...` : clean;
 }
 
+function setText(id, value) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = value;
+}
+
 function showLoading(targetId, count = 3) {
   const target = document.getElementById(targetId);
   if (!target) return;
-
   target.innerHTML = Array.from({ length: count }).map(() => `
     <article class="skeleton-card">
       <div class="skeleton-line title"></div>
@@ -155,7 +128,6 @@ function showLoading(targetId, count = 3) {
 function showSimpleLoading(targetId, message = "Memuat data...") {
   const target = document.getElementById(targetId);
   if (!target) return;
-
   target.innerHTML = `
     <div class="loading-state">
       <div class="loading-spinner"></div>
@@ -164,105 +136,183 @@ function showSimpleLoading(targetId, message = "Memuat data...") {
   `;
 }
 
-function renderHomeDokumen() {
-  const list = document.getElementById("homeDokumenList");
-  if (!list) return;
-
-  list.innerHTML = dokumenData.length
-    ? `<div class="home-mini-list">
-        ${dokumenData.map(item => `
-          <a href="${escapeHTML(item.link)}" target="_blank" rel="noopener" class="home-mini-item">
-            <strong>${escapeHTML(item.judul)}</strong>
-            <span>${escapeHTML(item.kategori || "Dokumen")}</span>
-          </a>
-        `).join("")}
-      </div>`
-    : `<div class="empty">Belum ada dokumen.</div>`;
+function debounce(fn, delay = 300) {
+  let timer;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn(...args), delay);
+  };
 }
 
-function renderHomeFaq() {
-  const list = document.getElementById("homeFaqList");
-  if (!list) return;
+async function fetchPaged(type, { append = false } = {}) {
+  const config = TABLE_CONFIG[type];
+  const state = pageState[type];
+  const from = state.page * PAGE_SIZE;
+  const to = from + PAGE_SIZE - 1;
+  const keyword = state.keyword.trim();
+  const cacheId = `${type}_${state.page}_${keyword}_${activeFilter}_${activeJobJurusan}`;
 
-  list.innerHTML = faqData.length
-    ? `<div class="home-mini-list">
-        ${faqData.map(item => `
-          <a href="faq.html" class="home-mini-item">
-            <strong>${escapeHTML(item.pertanyaan)}</strong>
-            <span>${escapeHTML(item.kategori || "FAQ")}</span>
-          </a>
-        `).join("")}
-      </div>`
-    : `<div class="empty">Belum ada FAQ.</div>`;
-}
-
-function createCard(type, item) {
-  if (type === "info") {
-    return `
-      <article class="item-card">
-        ${item.gambar ? `<img src="${escapeHTML(item.gambar)}" class="card-image" alt="${escapeHTML(item.judul)}" loading="lazy">` : ""}
-        ${renderKategoriPills("info", item.id)}
-        <h3>${escapeHTML(item.judul)}</h3>
-        <p>${escapeHTML(makeExcerpt(item.isi))}</p>
-        <a class="btn ghost" href="post.html?type=info&id=${encodeURIComponent(item.id)}">Baca Selengkapnya</a>
-      </article>
-    `;
+  const cached = getCache(cacheId);
+  if (cached) {
+    applyPagedData(type, cached, append);
+    return;
   }
 
-  if (type === "wiki") {
-    return `
-      <article class="item-card">
-        ${item.gambar ? `<img src="${escapeHTML(item.gambar)}" class="card-image" alt="${escapeHTML(item.judul)}" loading="lazy">` : ""}
-        ${renderKategoriPills("wiki", item.id) || `<span class="pill">${escapeHTML(item.kategori || "Wiki")}</span>`}
-        <h3>${escapeHTML(item.judul)}</h3>
-        <p>${escapeHTML(makeExcerpt(item.isi))}</p>
-        <a class="btn ghost" href="post.html?type=wiki&id=${encodeURIComponent(item.id)}">Baca Selengkapnya</a>
-      </article>
-    `;
+  let query = supabaseClient
+    .from(config.table)
+    .select(config.columns)
+    .order(config.orderColumn, { ascending: false })
+    .range(from, to);
+
+  if (keyword) {
+    const escapedKeyword = keyword.replace(/[%_]/g, "");
+    query = query.or(
+      config.searchColumns
+        .split(",")
+        .map(column => `${column.trim()}.ilike.%${escapedKeyword}%`)
+        .join(",")
+    );
   }
 
-  return `
-    <article class="item-card">
-      ${item.gambar ? `<img src="${escapeHTML(item.gambar)}" class="card-image" alt="${escapeHTML(item.posisi)}" loading="lazy">` : ""}
-      <span class="pill">${escapeHTML(item.perusahaan)}</span>
-      <span class="pill">${escapeHTML(item.lokasi || "Fleksibel")}</span>
-      <h3>${escapeHTML(item.posisi)}</h3>
-      <p>${escapeHTML(makeExcerpt(item.deskripsi))}</p>
-      <a class="btn ghost" href="post.html?type=job&id=${encodeURIComponent(item.id)}">Lihat Detail</a>
-    </article>
-  `;
+  const { data, error } = await query;
+  if (error) {
+    console.error(`Gagal mengambil ${type}:`, error);
+    applyPagedData(type, [], append);
+    return;
+  }
+
+  setCache(cacheId, data || []);
+  applyPagedData(type, data || [], append);
 }
 
-function createLatestCard(item) {
-  return `
-    <article class="item-card">
-      ${item.gambar ? `<img src="${escapeHTML(item.gambar)}" class="card-image" alt="${escapeHTML(item.title)}" loading="lazy">` : ""}
-      <span class="pill">${escapeHTML(item.label)}</span>
-      <h3>${escapeHTML(item.title)}</h3>
-      <p>${escapeHTML(makeExcerpt(item.content))}</p>
-      <a class="btn ghost" href="post.html?type=${encodeURIComponent(item.type)}&id=${encodeURIComponent(item.id)}">
-        Baca Selengkapnya
-      </a>
-    </article>
-  `;
+function applyPagedData(type, rows, append) {
+  if (type === "info") infoData = append ? mergeById(infoData, rows) : rows;
+  if (type === "wiki") wikiData = append ? mergeById(wikiData, rows) : rows;
+  if (type === "job") jobData = append ? mergeById(jobData, rows) : rows;
+
+  pageState[type].hasMore = rows.length === PAGE_SIZE;
+  renderAll();
+  updateLoadMoreButtons();
+}
+
+function mergeById(oldRows, newRows) {
+  const map = new Map();
+  [...oldRows, ...newRows].forEach(row => map.set(String(row.id), row));
+  return Array.from(map.values());
+}
+
+async function loadCoreData() {
+  showLoading("latestList", 3);
+  showLoading("latestJobList", 3);
+  showLoading("infoList", 3);
+  showLoading("wikiList", 3);
+  showLoading("jobList", 3);
+
+  const cachedCore = getCache("core_relations");
+  if (cachedCore) {
+    kategoriData = cachedCore.kategoriData || [];
+    artikelKategoriData = cachedCore.artikelKategoriData || [];
+    jurusanData = cachedCore.jurusanData || [];
+    artikelJurusanData = cachedCore.artikelJurusanData || [];
+  } else {
+    const [kategoriResult, artikelKategoriResult, jurusanResult, artikelJurusanResult] = await Promise.all([
+      supabaseClient.from("kategori").select("id, nama"),
+      supabaseClient.from("artikel_kategori").select("artikel_tipe, artikel_id, kategori_id"),
+      supabaseClient.from("jurusan").select("id, nama").order("nama", { ascending: true }),
+      supabaseClient.from("artikel_jurusan").select("artikel_tipe, artikel_id, jurusan_id")
+    ]);
+
+    const firstError = [
+      kategoriResult.error,
+      artikelKategoriResult.error,
+      jurusanResult.error,
+      artikelJurusanResult.error
+    ].find(Boolean);
+
+    if (firstError) console.error("Gagal mengambil data relasi:", firstError);
+
+    kategoriData = kategoriResult.data || [];
+    artikelKategoriData = artikelKategoriResult.data || [];
+    jurusanData = jurusanResult.data || [];
+    artikelJurusanData = artikelJurusanResult.data || [];
+
+    setCache("core_relations", { kategoriData, artikelKategoriData, jurusanData, artikelJurusanData });
+  }
+
+  renderJurusanJobFilter();
+
+  await Promise.all([
+    fetchPaged("info"),
+    fetchPaged("wiki"),
+    fetchPaged("job")
+  ]);
+
+  requestIdleCallbackSafe(loadDeferredData);
+}
+
+async function loadDeferredData() {
+  showSimpleLoading("homeDokumenList", "Memuat dokumen...");
+  showSimpleLoading("homeFaqList", "Memuat FAQ...");
+
+  const cachedMini = getCache("mini_home");
+  if (cachedMini) {
+    dokumenData = cachedMini.dokumenData || [];
+    faqData = cachedMini.faqData || [];
+    renderHomeDokumen();
+    renderHomeFaq();
+    return;
+  }
+
+  const [dokumenResult, faqResult] = await Promise.all([
+    supabaseClient
+      .from("dokumen_kampus")
+      .select("id, judul, kategori, link, created_at")
+      .order("created_at", { ascending: false })
+      .limit(MINI_LIMIT),
+    supabaseClient
+      .from("faq_kampus")
+      .select("id, pertanyaan, kategori, created_at")
+      .order("created_at", { ascending: false })
+      .limit(MINI_LIMIT)
+  ]);
+
+  if (dokumenResult.error || faqResult.error) {
+    console.error("Gagal mengambil dokumen/FAQ:", dokumenResult.error || faqResult.error);
+  }
+
+  dokumenData = dokumenResult.data || [];
+  faqData = faqResult.data || [];
+  setCache("mini_home", { dokumenData, faqData });
+  renderHomeDokumen();
+  renderHomeFaq();
+}
+
+function requestIdleCallbackSafe(callback) {
+  if ("requestIdleCallback" in window) {
+    window.requestIdleCallback(callback, { timeout: 1500 });
+  } else {
+    setTimeout(callback, 300);
+  }
+}
+
+function getDataByType(type) {
+  if (type === "info") return infoData;
+  if (type === "wiki") return wikiData;
+  if (type === "job") return jobData;
+  return [];
 }
 
 function getSearchText(type, item) {
   if (type === "info" || type === "wiki") {
     return `${item.judul || ""} ${item.kategori || ""} ${stripHTML(item.isi || "")}`.toLowerCase();
   }
-
   return `${item.posisi || ""} ${item.perusahaan || ""} ${item.lokasi || ""} ${stripHTML(item.deskripsi || "")}`.toLowerCase();
 }
 
-function renderList(type, listId, searchId, data) {
-  const list = document.getElementById(listId);
-  const search = document.getElementById(searchId);
-  if (!list || !search) return;
+function filterLocalData(type, data) {
+  const keyword = (document.getElementById(`${type}Search`)?.value || "").trim().toLowerCase();
 
-  const keyword = search.value.trim().toLowerCase();
-
-  const filtered = data.filter(item => {
+  return data.filter(item => {
     const matchSearch = !keyword || getSearchText(type, item).includes(keyword);
 
     let matchFilter = true;
@@ -271,10 +321,7 @@ function renderList(type, listId, searchId, data) {
         const kategoriNames = getArtikelKategori(type, item.id).map(nama => nama.toLowerCase());
         matchFilter = kategoriNames.some(nama => nama.includes(activeFilter));
       }
-
-      if (type === "job") {
-        matchFilter = activeFilter === "lowongan";
-      }
+      if (type === "job") matchFilter = activeFilter === "lowongan";
     }
 
     let matchJurusan = true;
@@ -288,10 +335,65 @@ function renderList(type, listId, searchId, data) {
 
     return matchSearch && matchFilter && matchJurusan;
   });
+}
 
+function renderList(type, listId) {
+  const list = document.getElementById(listId);
+  if (!list) return;
+
+  const filtered = filterLocalData(type, getDataByType(type));
   list.innerHTML = filtered.length
     ? filtered.map(item => createCard(type, item)).join("")
     : `<div class="empty">Belum ada data.</div>`;
+}
+
+function createCard(type, item) {
+  if (type === "info") {
+    return `
+      <article class="item-card">
+        ${item.gambar ? `<img src="${escapeHTML(item.gambar)}" class="card-image" alt="${escapeHTML(item.judul)}" loading="lazy" decoding="async">` : ""}
+        ${renderKategoriPills("info", item.id)}
+        <h3>${escapeHTML(item.judul)}</h3>
+        <p>${escapeHTML(makeExcerpt(item.isi))}</p>
+        <a class="btn ghost" href="post.html?type=info&id=${encodeURIComponent(item.id)}">Baca Selengkapnya</a>
+      </article>
+    `;
+  }
+
+  if (type === "wiki") {
+    return `
+      <article class="item-card">
+        ${item.gambar ? `<img src="${escapeHTML(item.gambar)}" class="card-image" alt="${escapeHTML(item.judul)}" loading="lazy" decoding="async">` : ""}
+        ${renderKategoriPills("wiki", item.id) || `<span class="pill">${escapeHTML(item.kategori || "Wiki")}</span>`}
+        <h3>${escapeHTML(item.judul)}</h3>
+        <p>${escapeHTML(makeExcerpt(item.isi))}</p>
+        <a class="btn ghost" href="post.html?type=wiki&id=${encodeURIComponent(item.id)}">Baca Selengkapnya</a>
+      </article>
+    `;
+  }
+
+  return `
+    <article class="item-card">
+      ${item.gambar ? `<img src="${escapeHTML(item.gambar)}" class="card-image" alt="${escapeHTML(item.posisi)}" loading="lazy" decoding="async">` : ""}
+      <span class="pill">${escapeHTML(item.perusahaan)}</span>
+      <span class="pill">${escapeHTML(item.lokasi || "Fleksibel")}</span>
+      <h3>${escapeHTML(item.posisi)}</h3>
+      <p>${escapeHTML(makeExcerpt(item.deskripsi))}</p>
+      <a class="btn ghost" href="post.html?type=job&id=${encodeURIComponent(item.id)}">Lihat Detail</a>
+    </article>
+  `;
+}
+
+function createLatestCard(item) {
+  return `
+    <article class="item-card">
+      ${item.gambar ? `<img src="${escapeHTML(item.gambar)}" class="card-image" alt="${escapeHTML(item.title)}" loading="lazy" decoding="async">` : ""}
+      <span class="pill">${escapeHTML(item.label)}</span>
+      <h3>${escapeHTML(item.title)}</h3>
+      <p>${escapeHTML(makeExcerpt(item.content))}</p>
+      <a class="btn ghost" href="post.html?type=${encodeURIComponent(item.type)}&id=${encodeURIComponent(item.id)}">Baca Selengkapnya</a>
+    </article>
+  `;
 }
 
 function renderLatest() {
@@ -331,7 +433,7 @@ function renderLatest() {
   const latest = combined
     .filter(item => item.id)
     .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-    .slice(0, HOME_LIMIT);
+    .slice(0, PAGE_SIZE);
 
   latestList.innerHTML = latest.length
     ? latest.map(item => createLatestCard(item)).join("")
@@ -341,12 +443,40 @@ function renderLatest() {
 function renderLatestJobs() {
   const list = document.getElementById("latestJobList");
   if (!list) return;
-
-  const latestJobs = jobData.slice(0, HOME_LIMIT);
-
+  const latestJobs = jobData.slice(0, PAGE_SIZE);
   list.innerHTML = latestJobs.length
     ? latestJobs.map(item => createCard("job", item)).join("")
     : `<div class="empty">Belum ada lowongan terbaru.</div>`;
+}
+
+function renderHomeDokumen() {
+  const list = document.getElementById("homeDokumenList");
+  if (!list) return;
+  list.innerHTML = dokumenData.length
+    ? `<div class="home-mini-list">
+        ${dokumenData.map(item => `
+          <a href="${escapeHTML(item.link)}" target="_blank" rel="noopener" class="home-mini-item">
+            <strong>${escapeHTML(item.judul)}</strong>
+            <span>${escapeHTML(item.kategori || "Dokumen")}</span>
+          </a>
+        `).join("")}
+      </div>`
+    : `<div class="empty">Belum ada dokumen.</div>`;
+}
+
+function renderHomeFaq() {
+  const list = document.getElementById("homeFaqList");
+  if (!list) return;
+  list.innerHTML = faqData.length
+    ? `<div class="home-mini-list">
+        ${faqData.map(item => `
+          <a href="faq.html" class="home-mini-item">
+            <strong>${escapeHTML(item.pertanyaan)}</strong>
+            <span>${escapeHTML(item.kategori || "FAQ")}</span>
+          </a>
+        `).join("")}
+      </div>`
+    : `<div class="empty">Belum ada FAQ.</div>`;
 }
 
 function renderAll() {
@@ -354,18 +484,9 @@ function renderAll() {
   renderLatestJobs();
   renderHomeDokumen();
   renderHomeFaq();
-
-  if (document.getElementById("infoList")) {
-    renderList("info", "infoList", "infoSearch", infoData);
-  }
-
-  if (document.getElementById("wikiList")) {
-    renderList("wiki", "wikiList", "wikiSearch", wikiData);
-  }
-
-  if (document.getElementById("jobList")) {
-    renderList("job", "jobList", "jobSearch", jobData);
-  }
+  renderList("info", "infoList");
+  renderList("wiki", "wikiList");
+  renderList("job", "jobList");
 
   setText("countInfo", infoData.length);
   setText("countWiki", wikiData.length);
@@ -375,24 +496,77 @@ function renderAll() {
   setText("countFaq", faqData.length);
 }
 
-function setText(id, value) {
-  const el = document.getElementById(id);
-  if (el) el.textContent = value;
+function getArtikelKategori(type, artikelId) {
+  return artikelKategoriData
+    .filter(row => row.artikel_tipe === type && String(row.artikel_id) === String(artikelId))
+    .map(row => kategoriData.find(k => String(k.id) === String(row.kategori_id))?.nama)
+    .filter(Boolean);
 }
 
-function debounce(fn, delay = 250) {
-  let timer;
-  return (...args) => {
-    clearTimeout(timer);
-    timer = setTimeout(() => fn(...args), delay);
+function renderKategoriPills(type, artikelId) {
+  const kategori = getArtikelKategori(type, artikelId);
+  if (!kategori.length) return "";
+  return kategori.map(item => `<span class="pill">${escapeHTML(item)}</span>`).join("");
+}
+
+function renderJurusanJobFilter() {
+  const select = document.getElementById("jobJurusanFilter");
+  if (!select) return;
+  const currentValue = select.value || activeJobJurusan;
+  select.innerHTML =
+    `<option value="all">Semua Jurusan</option>` +
+    jurusanData.map(item => `<option value="${escapeHTML(item.id)}">${escapeHTML(item.nama)}</option>`).join("");
+  select.value = currentValue;
+  select.onchange = () => {
+    activeJobJurusan = select.value;
+    resetAndFetch("job");
   };
 }
 
+function resetAndFetch(type) {
+  pageState[type].page = 0;
+  pageState[type].hasMore = true;
+  if (type === "info") infoData = [];
+  if (type === "wiki") wikiData = [];
+  if (type === "job") jobData = [];
+  showLoading(`${type}List`, 3);
+  fetchPaged(type, { append: false });
+}
+
+function loadMore(type) {
+  if (!pageState[type].hasMore) return;
+  pageState[type].page += 1;
+  fetchPaged(type, { append: true });
+}
+
+function updateLoadMoreButtons() {
+  ["info", "wiki", "job"].forEach(type => {
+    const button = document.getElementById(`${type}LoadMore`);
+    if (!button) return;
+    button.style.display = pageState[type].hasMore ? "inline-flex" : "none";
+    button.disabled = !pageState[type].hasMore;
+  });
+}
+
+function initLoadMoreButtons() {
+  ["info", "wiki", "job"].forEach(type => {
+    const button = document.getElementById(`${type}LoadMore`);
+    if (button) button.addEventListener("click", () => loadMore(type));
+  });
+}
+
 function initSearchInputs() {
-  const rerender = debounce(renderAll, 200);
+  const searchHandler = debounce(event => {
+    const id = event.target.id;
+    const type = id.replace("Search", "");
+    if (!TABLE_CONFIG[type]) return;
+    pageState[type].keyword = event.target.value.trim();
+    resetAndFetch(type);
+  }, 350);
+
   ["infoSearch", "wikiSearch", "jobSearch"].forEach(id => {
     const input = document.getElementById(id);
-    if (input) input.addEventListener("input", rerender);
+    if (input) input.addEventListener("input", searchHandler);
   });
 }
 
@@ -411,51 +585,22 @@ function initLatestSlider() {
   const latestPrev = document.getElementById("latestPrev");
   const latestNext = document.getElementById("latestNext");
   const latestList = document.getElementById("latestList");
-
   if (!latestPrev || !latestNext || !latestList) return;
 
   latestPrev.addEventListener("click", () => {
     latestList.scrollBy({ left: -320, behavior: "smooth" });
   });
-
   latestNext.addEventListener("click", () => {
     latestList.scrollBy({ left: 320, behavior: "smooth" });
   });
 }
 
-function getArtikelKategori(type, artikelId) {
-  return artikelKategoriData
-    .filter(row => row.artikel_tipe === type && String(row.artikel_id) === String(artikelId))
-    .map(row => kategoriData.find(k => String(k.id) === String(row.kategori_id))?.nama)
-    .filter(Boolean);
+function initApp() {
+  initSearchInputs();
+  initFilterButtons();
+  initLatestSlider();
+  initLoadMoreButtons();
+  loadCoreData();
 }
 
-function renderKategoriPills(type, artikelId) {
-  const kategori = getArtikelKategori(type, artikelId);
-  if (!kategori.length) return "";
-
-  return kategori
-    .map(item => `<span class="pill">${escapeHTML(item)}</span>`)
-    .join("");
-}
-
-function renderJurusanJobFilter() {
-  const select = document.getElementById("jobJurusanFilter");
-  if (!select) return;
-
-  const currentValue = select.value || activeJobJurusan;
-  select.innerHTML =
-    `<option value="all">Semua Jurusan</option>` +
-    jurusanData.map(item => `<option value="${escapeHTML(item.id)}">${escapeHTML(item.nama)}</option>`).join("");
-
-  select.value = currentValue;
-  select.onchange = () => {
-    activeJobJurusan = select.value;
-    renderAll();
-  };
-}
-
-initSearchInputs();
-initFilterButtons();
-initLatestSlider();
-loadData();
+initApp();
