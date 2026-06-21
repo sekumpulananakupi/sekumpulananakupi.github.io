@@ -1229,6 +1229,117 @@ function renderWebsiteHealthDashboard() {
     : `<div class="empty">Website sehat. Tidak ada masalah utama yang terdeteksi.</div>`;
 }
 
+function calculateJurusanCompleteness(item) {
+  let score = 0;
+  let maxScore = 100;
+
+  if (item.deskripsi) score += 20;
+  if (item.prospek_kerja) score += 15;
+
+  if (item.akreditasi) score += 10;
+  if (item.website_resmi) score += 10;
+  if (item.url_kurikulum) score += 10;
+  if (item.url_akreditasi) score += 5;
+
+  const hasStatistik = statistikData.some(
+    s => Number(s.jurusan_id) === Number(item.id)
+  );
+
+  if (hasStatistik) score += 15;
+
+  const hasBiaya = biayaPendidikanData.some(
+    b =>
+      b.nama_program_studi &&
+      b.nama_program_studi.toLowerCase() === item.nama.toLowerCase()
+  );
+
+  if (hasBiaya) score += 10;
+
+  const hasFaq = faqJurusanData.some(
+    f => Number(f.jurusan_id) === Number(item.id)
+  );
+
+  if (hasFaq) score += 5;
+
+  return Math.round((score / maxScore) * 100);
+}
+
+function renderJurusanCompletenessDashboard() {
+  const topContainer = qs("jurusanCompletenessTop");
+  const bottomContainer = qs("jurusanCompletenessBottom");
+
+  if (!topContainer || !bottomContainer) return;
+
+  const results = jurusanAdminData.map(item => ({
+    ...item,
+    completeness: calculateJurusanCompleteness(item)
+  }));
+
+  results.sort((a, b) => b.completeness - a.completeness);
+
+  const avg =
+    results.length
+      ? Math.round(
+          results.reduce(
+            (sum, item) => sum + item.completeness,
+            0
+          ) / results.length
+        )
+      : 0;
+
+  const completeCount =
+    results.filter(
+      item => item.completeness >= 90
+    ).length;
+
+  const incompleteCount =
+    results.filter(
+      item => item.completeness < 70
+    ).length;
+
+  qs("jurusanCompletenessAvg").textContent =
+    `${avg}%`;
+
+  qs("jurusanCompleteCount").textContent =
+    completeCount;
+
+  qs("jurusanIncompleteCount").textContent =
+    incompleteCount;
+
+  const topFive = results.slice(0, 5);
+
+  const bottomFive =
+    [...results]
+      .sort((a, b) => a.completeness - b.completeness)
+      .slice(0, 5);
+
+  topContainer.innerHTML = `
+    <article class="form-card">
+      <h3>🏆 Jurusan Terlengkap</h3>
+
+      ${topFive.map((item, index) => `
+        <p>
+          ${index + 1}. ${item.nama}
+          <strong>${item.completeness}%</strong>
+        </p>
+      `).join("")}
+    </article>
+  `;
+
+  bottomContainer.innerHTML = `
+    <article class="form-card">
+      <h3>⚠ Perlu Dilengkapi</h3>
+
+      ${bottomFive.map((item, index) => `
+        <p>
+          ${index + 1}. ${item.nama}
+          <strong>${item.completeness}%</strong>
+        </p>
+      `).join("")}
+    </article>
+  `;
+}
+
 function renderHealthSummary(criticalCount, warningCount, issues) {
   const container = qs("healthSummary");
   if (!container) return;
@@ -1358,6 +1469,7 @@ function renderAll() {
   updateDashboardStats();
   initHealthFilters();
   renderWebsiteHealthDashboard();
+  renderJurusanCompletenessDashboard();
 
   if (qs("infoList")) renderList("info", "infoList", "infoSearch");
   if (qs("wikiList")) renderList("wiki", "wikiList", "wikiSearch");
