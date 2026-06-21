@@ -910,6 +910,76 @@ function updateDashboardStats() {
 }
 }
 
+function renderJobAnalytics() {
+
+  const companyContainer = qs("jobTopCompanies");
+  const sourceContainer = qs("jobTopSources");
+  const typeContainer = qs("jobTopTypes");
+
+  if (!companyContainer) return;
+
+  const companyCounts = {};
+  const sourceCounts = {};
+  const typeCounts = {};
+
+  jobData.forEach(job => {
+
+    if (job.perusahaan) {
+      companyCounts[job.perusahaan] =
+        (companyCounts[job.perusahaan] || 0) + 1;
+    }
+
+    if (job.sumber) {
+      sourceCounts[job.sumber] =
+        (sourceCounts[job.sumber] || 0) + 1;
+    }
+
+    if (job.tipe_pekerjaan) {
+      typeCounts[job.tipe_pekerjaan] =
+        (typeCounts[job.tipe_pekerjaan] || 0) + 1;
+    }
+  });
+
+  const topCompanies =
+    Object.entries(companyCounts)
+      .sort((a,b) => b[1] - a[1])
+      .slice(0,5);
+
+  const topSources =
+    Object.entries(sourceCounts)
+      .sort((a,b) => b[1] - a[1])
+      .slice(0,5);
+
+  const topTypes =
+    Object.entries(typeCounts)
+      .sort((a,b) => b[1] - a[1])
+      .slice(0,5);
+
+  companyContainer.innerHTML =
+    topCompanies.length
+      ? topCompanies.map(
+          ([name,count], index) =>
+            `<p>${index+1}. ${name} <strong>${count}</strong></p>`
+        ).join("")
+      : "<p>Belum ada data.</p>";
+
+  sourceContainer.innerHTML =
+    topSources.length
+      ? topSources.map(
+          ([name,count], index) =>
+            `<p>${index+1}. ${name} <strong>${count}</strong></p>`
+        ).join("")
+      : "<p>Belum ada data.</p>";
+
+  typeContainer.innerHTML =
+    topTypes.length
+      ? topTypes.map(
+          ([name,count], index) =>
+            `<p>${index+1}. ${name} <strong>${count}</strong></p>`
+        ).join("")
+      : "<p>Belum ada data.</p>";
+}
+
 let latestHealthIssues = [];
 let latestHealthModuleStats = {};
 
@@ -1503,6 +1573,7 @@ function renderAll() {
   initHealthFilters();
   renderWebsiteHealthDashboard();
   renderJurusanCompletenessDashboard();
+  renderJobAnalytics();
 
   if (qs("infoList")) renderList("info", "infoList", "infoSearch");
   if (qs("wikiList")) renderList("wiki", "wikiList", "wikiSearch");
