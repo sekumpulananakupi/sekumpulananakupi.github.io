@@ -877,8 +877,217 @@ function updateDashboardStats() {
   if (qs("adminCountTotal")) qs("adminCountTotal").textContent = totalKonten;
 }
 
+function getTextLength(htmlOrText) {
+  return stripHTML(htmlOrText || "").length;
+}
+
+function addHealthIssue(list, level, title, description) {
+  list.push({ level, title, description });
+}
+
+function renderWebsiteHealthDashboard() {
+  const container = qs("websiteHealthList");
+  if (!container) return;
+
+  const issues = [];
+  let goodCount = 0;
+
+  // INFO KAMPUS
+  infoData.forEach(item => {
+    if (!item.gambar) {
+      addHealthIssue(
+        issues,
+        "warning",
+        `Info tanpa gambar: ${item.judul || "-"}`,
+        "Sebaiknya setiap info kampus memiliki gambar agar tampil lebih menarik."
+      );
+    }
+
+    if (getTextLength(item.isi) < 300) {
+      addHealthIssue(
+        issues,
+        "warning",
+        `Info terlalu pendek: ${item.judul || "-"}`,
+        "Isi informasi masih terlalu pendek. Idealnya minimal 300 karakter."
+      );
+    }
+
+    if (item.judul && getTextLength(item.isi) >= 300 && item.gambar) {
+      goodCount++;
+    }
+  });
+
+  // WIKI KAMPUS
+  wikiData.forEach(item => {
+    if (!item.gambar) {
+      addHealthIssue(
+        issues,
+        "warning",
+        `Wiki tanpa gambar: ${item.judul || "-"}`,
+        "Artikel wiki akan lebih kuat jika memiliki gambar utama."
+      );
+    }
+
+    if (getTextLength(item.isi) < 500) {
+      addHealthIssue(
+        issues,
+        "warning",
+        `Wiki terlalu pendek: ${item.judul || "-"}`,
+        "Artikel wiki sebaiknya lebih lengkap, minimal sekitar 500 karakter."
+      );
+    }
+
+    if (item.judul && getTextLength(item.isi) >= 500 && item.gambar) {
+      goodCount++;
+    }
+  });
+
+  // LOWONGAN
+  jobData.forEach(item => {
+    const effectiveStatus = getEffectiveJobStatus(item);
+
+    if (effectiveStatus === "ditutup" && item.status !== "ditutup") {
+      addHealthIssue(
+        issues,
+        "critical",
+        `Lowongan expired belum ditutup: ${item.posisi || "-"}`,
+        "Deadline sudah lewat, tetapi status asli belum ditutup."
+      );
+    }
+
+    if (!item.deadline) {
+      addHealthIssue(
+        issues,
+        "warning",
+        `Lowongan tanpa deadline: ${item.posisi || "-"}`,
+        "Deadline penting agar pengguna tahu batas pendaftaran."
+      );
+    }
+
+    if (!item.link) {
+      addHealthIssue(
+        issues,
+        "critical",
+        `Lowongan tanpa link daftar: ${item.posisi || "-"}`,
+        "Lowongan sebaiknya memiliki link pendaftaran."
+      );
+    }
+
+    if (item.posisi && item.perusahaan && item.link && item.deadline) {
+      goodCount++;
+    }
+  });
+
+  // JURUSAN
+  jurusanAdminData.forEach(item => {
+    const missingFields = [];
+
+    if (!item.deskripsi) missingFields.push("deskripsi");
+    if (!item.prospek_kerja) missingFields.push("prospek kerja");
+    if (!item.url_kurikulum) missingFields.push("kurikulum");
+    if (!item.url_akreditasi) missingFields.push("akreditasi");
+    if (!item.website_resmi) missingFields.push("website resmi");
+
+    if (missingFields.length >= 3) {
+      addHealthIssue(
+        issues,
+        "critical",
+        `Data jurusan kurang lengkap: ${item.nama || "-"}`,
+        `Field kosong: ${missingFields.join(", ")}.`
+      );
+    } else if (missingFields.length > 0) {
+      addHealthIssue(
+        issues,
+        "warning",
+        `Data jurusan perlu dilengkapi: ${item.nama || "-"}`,
+        `Field kosong: ${missingFields.join(", ")}.`
+      );
+    } else {
+      goodCount++;
+    }
+  });
+
+  // FAQ
+  faqData.forEach(item => {
+    if (!item.kategori) {
+      addHealthIssue(
+        issues,
+        "warning",
+        `FAQ tanpa kategori: ${item.pertanyaan || "-"}`,
+        "Kategori membantu pengguna menemukan FAQ dengan lebih mudah."
+      );
+    }
+
+    if (getTextLength(item.jawaban) < 80) {
+      addHealthIssue(
+        issues,
+        "warning",
+        `Jawaban FAQ terlalu pendek: ${item.pertanyaan || "-"}`,
+        "Jawaban FAQ sebaiknya cukup jelas dan tidak terlalu singkat."
+      );
+    }
+
+    if (item.pertanyaan && item.jawaban && item.kategori && getTextLength(item.jawaban) >= 80) {
+      goodCount++;
+    }
+  });
+
+  // DOKUMEN
+  dokumenData.forEach(item => {
+    if (!item.link) {
+      addHealthIssue(
+        issues,
+        "critical",
+        `Dokumen tanpa link: ${item.judul || "-"}`,
+        "Dokumen wajib memiliki link agar bisa dibuka pengguna."
+      );
+    }
+
+    if (!item.deskripsi) {
+      addHealthIssue(
+        issues,
+        "warning",
+        `Dokumen tanpa deskripsi: ${item.judul || "-"}`,
+        "Deskripsi membantu pengguna memahami isi dokumen."
+      );
+    }
+
+    if (item.judul && item.link && item.deskripsi) {
+      goodCount++;
+    }
+  });
+
+  const criticalCount = issues.filter(item => item.level === "critical").length;
+  const warningCount = issues.filter(item => item.level === "warning").length;
+
+  const totalChecks = goodCount + issues.length;
+  const score = totalChecks
+    ? Math.max(0, Math.round((goodCount / totalChecks) * 100))
+    : 100;
+
+  if (qs("healthScore")) qs("healthScore").textContent = `${score}%`;
+  if (qs("healthCritical")) qs("healthCritical").textContent = criticalCount;
+  if (qs("healthWarning")) qs("healthWarning").textContent = warningCount;
+  if (qs("healthGood")) qs("healthGood").textContent = goodCount;
+
+  container.innerHTML = issues.length
+    ? issues.map(item => `
+      <article class="admin-list-item">
+        <div>
+          <span class="pill">
+            ${item.level === "critical" ? "Penting" : "Peringatan"}
+          </span>
+          <h3>${item.title}</h3>
+          <p>${item.description}</p>
+        </div>
+      </article>
+    `).join("")
+    : `<div class="empty">Website sehat. Tidak ada masalah utama yang terdeteksi.</div>`;
+}
+
 function renderAll() {
   updateDashboardStats();
+  renderWebsiteHealthDashboard();
 
   if (qs("infoList")) renderList("info", "infoList", "infoSearch");
   if (qs("wikiList")) renderList("wiki", "wikiList", "wikiSearch");

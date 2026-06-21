@@ -1957,6 +1957,14 @@ nav a {
   font-size: 0.95rem;
 }
 
+.admin-health {
+  margin-top: 2rem;
+}
+
+.admin-health .admin-list-item {
+  border-left: 4px solid #f59e0b;
+}
+
 @media (max-width: 768px) {
   .compare-intro {
     padding: 18px;
