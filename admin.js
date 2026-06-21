@@ -139,6 +139,27 @@ function getEffectiveJobStatus(item) {
   return item.status || "aktif";
 }
 
+async function autoCloseExpiredJobs() {
+  const today = new Date()
+    .toISOString()
+    .split("T")[0];
+
+  const { error } = await supabaseClient
+    .from("lowongan_kerja")
+    .update({
+      status: "ditutup"
+    })
+    .lt("deadline", today)
+    .neq("status", "ditutup");
+
+  if (error) {
+    console.error(
+      "Auto close gagal:",
+      error
+    );
+  }
+}
+
 function initQuillEditors() {
   if (!window.Quill) {
     console.warn("Quill belum dimuat. Pastikan CDN Quill sudah ada di admin.html.");
@@ -312,6 +333,7 @@ function updateAdminUI() {
 }
 
 async function refreshAdminData() {
+  await autoCloseExpiredJobs();
   await loadMasterData();
   await loadData();
   await loadStatistikData();
