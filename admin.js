@@ -139,27 +139,6 @@ function getEffectiveJobStatus(item) {
   return item.status || "aktif";
 }
 
-async function autoCloseExpiredJobs() {
-  const today = new Date()
-    .toISOString()
-    .split("T")[0];
-
-  const { error } = await supabaseClient
-    .from("lowongan_kerja")
-    .update({
-      status: "ditutup"
-    })
-    .lt("deadline", today)
-    .neq("status", "ditutup");
-
-  if (error) {
-    console.error(
-      "Auto close gagal:",
-      error
-    );
-  }
-}
-
 function initQuillEditors() {
   if (!window.Quill) {
     console.warn("Quill belum dimuat. Pastikan CDN Quill sudah ada di admin.html.");
@@ -329,6 +308,35 @@ function updateAdminUI() {
     loginStatus.textContent = isAdmin
       ? "Login berhasil. Mode admin aktif."
       : "Belum login.";
+  }
+}
+
+let autoClosedJobsCount = 0;
+
+async function autoCloseExpiredJobs() {
+  const today = new Date().toISOString().split("T")[0];
+
+  const { data, error } = await supabaseClient
+    .from("lowongan_kerja")
+    .update({ status: "ditutup" })
+    .lt("deadline", today)
+    .neq("status", "ditutup")
+    .select("id, posisi, deadline, status");
+
+  if (error) {
+    console.error("Auto close lowongan gagal:", error);
+    autoClosedJobsCount = 0;
+    return;
+  }
+
+  autoClosedJobsCount = data ? data.length : 0;
+
+  if (qs("adminAutoClosedJobs")) {
+    qs("adminAutoClosedJobs").textContent = autoClosedJobsCount;
+  }
+
+  if (autoClosedJobsCount > 0) {
+    console.log(`${autoClosedJobsCount} lowongan expired otomatis ditutup.`);
   }
 }
 
@@ -897,6 +905,9 @@ function updateDashboardStats() {
   if (qs("adminCountKategori")) qs("adminCountKategori").textContent = kategoriAdminData.length || kategoriData.length;
   if (qs("adminCountTag")) qs("adminCountTag").textContent = tagAdminData.length || tagData.length;
   if (qs("adminCountTotal")) qs("adminCountTotal").textContent = totalKonten;
+  if (qs("adminAutoClosedJobs")) {
+  qs("adminAutoClosedJobs").textContent = autoClosedJobsCount || 0;
+}
 }
 
 let latestHealthIssues = [];
