@@ -881,6 +881,10 @@ function getTextLength(htmlOrText) {
   return stripHTML(htmlOrText || "").length;
 }
 
+function getTextLength(htmlOrText) {
+  return stripHTML(htmlOrText || "").length;
+}
+
 function addHealthIssue(list, level, module, title, description) {
   list.push({ level, module, title, description });
 }
@@ -894,50 +898,58 @@ function renderWebsiteHealthDashboard() {
 
   // INFO KAMPUS
   infoData.forEach(item => {
+    const isiLength = getTextLength(item.isi);
+
     if (!item.gambar) {
       addHealthIssue(
         issues,
         "warning",
+        "info",
         `Info tanpa gambar: ${item.judul || "-"}`,
         "Sebaiknya setiap info kampus memiliki gambar agar tampil lebih menarik."
       );
     }
 
-    if (getTextLength(item.isi) < 300) {
+    if (isiLength < 300) {
       addHealthIssue(
         issues,
         "warning",
+        "info",
         `Info terlalu pendek: ${item.judul || "-"}`,
         "Isi informasi masih terlalu pendek. Idealnya minimal 300 karakter."
       );
     }
 
-    if (item.judul && getTextLength(item.isi) >= 300 && item.gambar) {
+    if (item.judul && isiLength >= 300 && item.gambar) {
       goodCount++;
     }
   });
 
   // WIKI KAMPUS
   wikiData.forEach(item => {
+    const isiLength = getTextLength(item.isi);
+
     if (!item.gambar) {
       addHealthIssue(
         issues,
         "warning",
+        "wiki",
         `Wiki tanpa gambar: ${item.judul || "-"}`,
         "Artikel wiki akan lebih kuat jika memiliki gambar utama."
       );
     }
 
-    if (getTextLength(item.isi) < 500) {
+    if (isiLength < 500) {
       addHealthIssue(
         issues,
         "warning",
+        "wiki",
         `Wiki terlalu pendek: ${item.judul || "-"}`,
         "Artikel wiki sebaiknya lebih lengkap, minimal sekitar 500 karakter."
       );
     }
 
-    if (item.judul && getTextLength(item.isi) >= 500 && item.gambar) {
+    if (item.judul && isiLength >= 500 && item.gambar) {
       goodCount++;
     }
   });
@@ -950,6 +962,7 @@ function renderWebsiteHealthDashboard() {
       addHealthIssue(
         issues,
         "critical",
+        "job",
         `Lowongan expired belum ditutup: ${item.posisi || "-"}`,
         "Deadline sudah lewat, tetapi status asli belum ditutup."
       );
@@ -959,6 +972,7 @@ function renderWebsiteHealthDashboard() {
       addHealthIssue(
         issues,
         "warning",
+        "job",
         `Lowongan tanpa deadline: ${item.posisi || "-"}`,
         "Deadline penting agar pengguna tahu batas pendaftaran."
       );
@@ -968,6 +982,7 @@ function renderWebsiteHealthDashboard() {
       addHealthIssue(
         issues,
         "critical",
+        "job",
         `Lowongan tanpa link daftar: ${item.posisi || "-"}`,
         "Lowongan sebaiknya memiliki link pendaftaran."
       );
@@ -992,6 +1007,7 @@ function renderWebsiteHealthDashboard() {
       addHealthIssue(
         issues,
         "critical",
+        "jurusan",
         `Data jurusan kurang lengkap: ${item.nama || "-"}`,
         `Field kosong: ${missingFields.join(", ")}.`
       );
@@ -999,6 +1015,7 @@ function renderWebsiteHealthDashboard() {
       addHealthIssue(
         issues,
         "warning",
+        "jurusan",
         `Data jurusan perlu dilengkapi: ${item.nama || "-"}`,
         `Field kosong: ${missingFields.join(", ")}.`
       );
@@ -1009,25 +1026,29 @@ function renderWebsiteHealthDashboard() {
 
   // FAQ
   faqData.forEach(item => {
+    const jawabanLength = getTextLength(item.jawaban);
+
     if (!item.kategori) {
       addHealthIssue(
         issues,
         "warning",
+        "faq",
         `FAQ tanpa kategori: ${item.pertanyaan || "-"}`,
         "Kategori membantu pengguna menemukan FAQ dengan lebih mudah."
       );
     }
 
-    if (getTextLength(item.jawaban) < 80) {
+    if (jawabanLength < 80) {
       addHealthIssue(
         issues,
         "warning",
+        "faq",
         `Jawaban FAQ terlalu pendek: ${item.pertanyaan || "-"}`,
         "Jawaban FAQ sebaiknya cukup jelas dan tidak terlalu singkat."
       );
     }
 
-    if (item.pertanyaan && item.jawaban && item.kategori && getTextLength(item.jawaban) >= 80) {
+    if (item.pertanyaan && item.jawaban && item.kategori && jawabanLength >= 80) {
       goodCount++;
     }
   });
@@ -1038,6 +1059,7 @@ function renderWebsiteHealthDashboard() {
       addHealthIssue(
         issues,
         "critical",
+        "dokumen",
         `Dokumen tanpa link: ${item.judul || "-"}`,
         "Dokumen wajib memiliki link agar bisa dibuka pengguna."
       );
@@ -1047,6 +1069,7 @@ function renderWebsiteHealthDashboard() {
       addHealthIssue(
         issues,
         "warning",
+        "dokumen",
         `Dokumen tanpa deskripsi: ${item.judul || "-"}`,
         "Deskripsi membantu pengguna memahami isi dokumen."
       );
@@ -1073,7 +1096,7 @@ function renderWebsiteHealthDashboard() {
   const selectedLevel = qs("healthFilter")?.value || "all";
   const selectedModule = qs("healthModuleFilter")?.value || "all";
 
-  let visibleIssues = [...issues];
+  let visibleIssues = issues;
 
   if (selectedLevel !== "all") {
     visibleIssues = visibleIssues.filter(item => item.level === selectedLevel);
@@ -1084,30 +1107,51 @@ function renderWebsiteHealthDashboard() {
   }
 
   container.innerHTML = visibleIssues.length
-  ? visibleIssues.map(item => `
+    ? visibleIssues.map(item => `
       <article class="admin-list-item">
         <div>
-          <span class="pill">
-            ${item.level === "critical" ? "Penting" : "Peringatan"}
-          </span>
+          <span class="pill">${item.level === "critical" ? "Penting" : "Peringatan"}</span>
+          <span class="pill">${getHealthModuleLabel(item.module)}</span>
           <h3>${item.title}</h3>
           <p>${item.description}</p>
         </div>
       </article>
     `).join("")
     : `<div class="empty">Website sehat. Tidak ada masalah utama yang terdeteksi.</div>`;
+}
 
-    ["healthFilter", "healthModuleFilter"].forEach(id => {
-  const element = qs(id);
+function getHealthModuleLabel(module) {
+  const labels = {
+    info: "Info Kampus",
+    wiki: "Wiki Kampus",
+    job: "Lowongan",
+    jurusan: "Jurusan",
+    faq: "FAQ",
+    dokumen: "Dokumen"
+  };
 
-  if (element) {
-    element.addEventListener("change", renderWebsiteHealthDashboard);
-  }
-});
+  return labels[module] || "Lainnya";
+}
+
+let healthFilterInitialized = false;
+
+function initHealthFilters() {
+  if (healthFilterInitialized) return;
+
+  ["healthFilter", "healthModuleFilter"].forEach(id => {
+    const element = qs(id);
+
+    if (element) {
+      element.addEventListener("change", renderWebsiteHealthDashboard);
+    }
+  });
+
+  healthFilterInitialized = true;
 }
 
 function renderAll() {
   updateDashboardStats();
+  initHealthFilters();
   renderWebsiteHealthDashboard();
 
   if (qs("infoList")) renderList("info", "infoList", "infoSearch");
