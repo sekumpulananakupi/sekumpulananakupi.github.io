@@ -2110,3 +2110,42 @@ nav a {
     padding-right: 0.25rem;
   }
 }
+
+.hero-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.hero-stat {
+  background: rgba(255,255,255,0.12);
+  backdrop-filter: blur(8px);
+  border-radius: 16px;
+  padding: 14px 18px;
+  min-width: 120px;
+  text-align: center;
+}
+
+.hero-stat strong {
+  display: block;
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+.hero-stat span {
+  font-size: 0.85rem;
+  color: rgba(255,255,255,.85);
+}
+
+@media (max-width: 768px) {
+  .hero-stats {
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+  }
+
+  .hero-stat {
+    min-width: auto;
+  }
+}

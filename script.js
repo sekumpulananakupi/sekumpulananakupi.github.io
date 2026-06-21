@@ -595,12 +595,46 @@ function initLatestSlider() {
   });
 }
 
+async function loadHeroStats() {
+  const [
+    jurusanResult,
+    wikiResult,
+    faqResult,
+    jobResult
+  ] = await Promise.all([
+    supabaseClient
+      .from("jurusan")
+      .select("*", { count: "exact", head: true }),
+
+    supabaseClient
+      .from("wiki_kampus")
+      .select("*", { count: "exact", head: true }),
+
+    supabaseClient
+      .from("faq_kampus")
+      .select("*", { count: "exact", head: true }),
+
+    supabaseClient
+      .from("lowongan_kerja")
+      .select("*", { count: "exact", head: true })
+  ]);
+
+  setText("heroJurusanCount", jurusanResult.count || 0);
+  setText("heroWikiCount", wikiResult.count || 0);
+  setText("heroFaqCount", faqResult.count || 0);
+  setText("heroJobCount", jobResult.count || 0);
+}
+
 function initApp() {
   initSearchInputs();
   initFilterButtons();
   initLatestSlider();
   initLoadMoreButtons();
+
+  loadHeroStats();   // tambah ini
   loadCoreData();
 }
+
+
 
 initApp();
