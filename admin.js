@@ -881,8 +881,8 @@ function getTextLength(htmlOrText) {
   return stripHTML(htmlOrText || "").length;
 }
 
-function addHealthIssue(list, level, title, description) {
-  list.push({ level, title, description });
+function addHealthIssue(list, level, module, title, description) {
+  list.push({ level, module, title, description });
 }
 
 function renderWebsiteHealthDashboard() {
@@ -1070,8 +1070,21 @@ function renderWebsiteHealthDashboard() {
   if (qs("healthWarning")) qs("healthWarning").textContent = warningCount;
   if (qs("healthGood")) qs("healthGood").textContent = goodCount;
 
-  container.innerHTML = issues.length
-    ? issues.map(item => `
+  const selectedLevel = qs("healthFilter")?.value || "all";
+  const selectedModule = qs("healthModuleFilter")?.value || "all";
+
+  let visibleIssues = [...issues];
+
+  if (selectedLevel !== "all") {
+    visibleIssues = visibleIssues.filter(item => item.level === selectedLevel);
+  }
+
+  if (selectedModule !== "all") {
+    visibleIssues = visibleIssues.filter(item => item.module === selectedModule);
+  }
+
+  container.innerHTML = visibleIssues.length
+  ? visibleIssues.map(item => `
       <article class="admin-list-item">
         <div>
           <span class="pill">
@@ -1083,6 +1096,14 @@ function renderWebsiteHealthDashboard() {
       </article>
     `).join("")
     : `<div class="empty">Website sehat. Tidak ada masalah utama yang terdeteksi.</div>`;
+
+    ["healthFilter", "healthModuleFilter"].forEach(id => {
+  const element = qs(id);
+
+  if (element) {
+    element.addEventListener("change", renderWebsiteHealthDashboard);
+  }
+});
 }
 
 function renderAll() {
