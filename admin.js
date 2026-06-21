@@ -340,9 +340,23 @@ async function autoCloseExpiredJobs() {
   }
 }
 
+function getMonthLabel(dateString) {
+  if (!dateString) return "Tanpa tanggal";
+
+  const date = new Date(dateString);
+
+  if (isNaN(date.getTime())) return "Tanpa tanggal";
+
+  return date.toLocaleDateString("id-ID", {
+    month: "long",
+    year: "numeric"
+  });
+}
+
 async function refreshAdminData() {
   await autoCloseExpiredJobs();
   await loadMasterData();
+  await loadArtikelJurusanData();
   await loadData();
   await loadStatistikData();
   await loadJurusanAdminData();
@@ -911,73 +925,99 @@ function updateDashboardStats() {
 }
 
 function renderJobAnalytics() {
-
   const companyContainer = qs("jobTopCompanies");
   const sourceContainer = qs("jobTopSources");
   const typeContainer = qs("jobTopTypes");
+  const jurusanContainer = qs("jobTopJurusan");
+  const statusContainer = qs("jobStatusDistribution");
+  const monthlyTrendContainer = qs("jobMonthlyTrend");
 
   if (!companyContainer) return;
 
   const companyCounts = {};
   const sourceCounts = {};
   const typeCounts = {};
+  const statusCounts = {};
+  const jurusanCounts = {};
+  const monthlyCounts = {};
 
   jobData.forEach(job => {
-
     if (job.perusahaan) {
-      companyCounts[job.perusahaan] =
-        (companyCounts[job.perusahaan] || 0) + 1;
+      companyCounts[job.perusahaan] = (companyCounts[job.perusahaan] || 0) + 1;
     }
 
     if (job.sumber) {
-      sourceCounts[job.sumber] =
-        (sourceCounts[job.sumber] || 0) + 1;
+      sourceCounts[job.sumber] = (sourceCounts[job.sumber] || 0) + 1;
     }
 
     if (job.tipe_pekerjaan) {
-      typeCounts[job.tipe_pekerjaan] =
-        (typeCounts[job.tipe_pekerjaan] || 0) + 1;
+      typeCounts[job.tipe_pekerjaan] = (typeCounts[job.tipe_pekerjaan] || 0) + 1;
     }
+
+    const status = getEffectiveJobStatus(job);
+    statusCounts[status] = (statusCounts[status] || 0) + 1;
+
+    const monthLabel = getMonthLabel(job.created_at);
+    monthlyCounts[monthLabel] = (monthlyCounts[monthLabel] || 0) + 1;
   });
 
-  const topCompanies =
-    Object.entries(companyCounts)
-      .sort((a,b) => b[1] - a[1])
-      .slice(0,5);
+  jobData.forEach(job => {
+    const relatedRows = artikelJurusanData?.filter(row =>
+      row.artikel_tipe === "job" &&
+      Number(row.artikel_id) === Number(job.id)
+    ) || [];
 
-  const topSources =
-    Object.entries(sourceCounts)
-      .sort((a,b) => b[1] - a[1])
-      .slice(0,5);
+    relatedRows.forEach(row => {
+      const jurusan = jurusanData.find(j =>
+        Number(j.id) === Number(row.jurusan_id)
+      );
 
-  const topTypes =
-    Object.entries(typeCounts)
-      .sort((a,b) => b[1] - a[1])
-      .slice(0,5);
+      if (jurusan?.nama) {
+        jurusanCounts[jurusan.nama] = (jurusanCounts[jurusan.nama] || 0) + 1;
+      }
+    });
+  });
 
-  companyContainer.innerHTML =
-    topCompanies.length
-      ? topCompanies.map(
-          ([name,count], index) =>
-            `<p>${index+1}. ${name} <strong>${count}</strong></p>`
-        ).join("")
-      : "<p>Belum ada data.</p>";
+  renderTopList(companyContainer, companyCounts);
+  renderTopList(sourceContainer, sourceCounts);
+  renderTopList(typeContainer, typeCounts);
+  renderTopList(jurusanContainer, jurusanCounts);
+  renderTopList(statusContainer, statusCounts);
+  renderTopList(monthlyTrendContainer, monthlyCounts, 12);
+}
 
-  sourceContainer.innerHTML =
-    topSources.length
-      ? topSources.map(
-          ([name,count], index) =>
-            `<p>${index+1}. ${name} <strong>${count}</strong></p>`
-        ).join("")
-      : "<p>Belum ada data.</p>";
+function renderTopList(container, data, limit = 5) {
+  if (!container) return;
 
-  typeContainer.innerHTML =
-    topTypes.length
-      ? topTypes.map(
-          ([name,count], index) =>
-            `<p>${index+1}. ${name} <strong>${count}</strong></p>`
-        ).join("")
-      : "<p>Belum ada data.</p>";
+  const items = Object.entries(data)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, limit);
+
+  container.innerHTML = items.length
+    ? items.map(([name, count], index) => `
+      <p>
+        ${index + 1}. ${name}
+        <strong>${count}</strong>
+      </p>
+    `).join("")
+    : "<p>Belum ada data.</p>";
+}
+
+let artikelJurusanData = [];
+
+async function loadArtikelJurusanData() {
+  const { data, error } = await supabaseClient
+    .from("artikel_jurusan")
+    .select("*")
+    .eq("artikel_tipe", "job");
+
+  if (error) {
+    console.error("Gagal load relasi jurusan lowongan:", error);
+    artikelJurusanData = [];
+    return;
+  }
+
+  artikelJurusanData = data || [];
 }
 
 let latestHealthIssues = [];
