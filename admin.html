@@ -155,20 +155,6 @@
                 <strong id="healthScore">0%</strong>
                 <span>Skor Kesehatan</span>
               </div>
-              
-            <div class="form-actions">
-              <button class="btn ghost" type="button" onclick="exportWebsiteHealthAudit('csv')">
-                Export CSV
-              </button>
-                
-              <button class="btn ghost" type="button" onclick="exportWebsiteHealthAudit('json')">
-                Export JSON
-              </button>
-            </div>
-
-            <div id="healthSummary" class="form-card"></div>
-
-            <div id="healthModuleProgress" class="grid-list"></div>
 
               <div class="stat-card">
                 <strong id="healthCritical">0</strong>
@@ -186,7 +172,21 @@
               </div>
             </div>
 
-            <div class="filter-row">
+            <div class="health-actions">
+              <button class="btn ghost" type="button" onclick="exportWebsiteHealthAudit('csv')">
+                Export CSV
+              </button>
+
+              <button class="btn ghost" type="button" onclick="exportWebsiteHealthAudit('json')">
+                Export JSON
+              </button>
+            </div>
+
+            <div id="healthSummary" class="form-card health-summary"></div>
+
+            <div id="healthModuleProgress" class="health-module-progress"></div>
+
+            <div class="health-filter-row">
               <select id="healthFilter">
                 <option value="all">Semua Masalah</option>
                 <option value="critical">Penting</option>
@@ -206,7 +206,6 @@
 
             <div id="websiteHealthList" class="grid-list"></div>
           </section>
-
           <section class="admin-page" id="infoPage">
             <div class="section-heading">
               <div>
