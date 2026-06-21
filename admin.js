@@ -877,16 +877,54 @@ function updateDashboardStats() {
   if (qs("adminCountTotal")) qs("adminCountTotal").textContent = totalKonten;
 }
 
-function getTextLength(htmlOrText) {
-  return stripHTML(htmlOrText || "").length;
-}
+let latestHealthIssues = [];
+let latestHealthModuleStats = {};
 
 function getTextLength(htmlOrText) {
   return stripHTML(htmlOrText || "").length;
 }
 
-function addHealthIssue(list, level, module, title, description) {
-  list.push({ level, module, title, description });
+function addHealthIssue(list, level, module, title, description, editPage = "", editFunction = "") {
+  list.push({
+    level,
+    module,
+    title,
+    description,
+    editPage,
+    editFunction
+  });
+}
+
+function getHealthModuleLabel(module) {
+  const labels = {
+    info: "Info Kampus",
+    wiki: "Wiki Kampus",
+    job: "Lowongan",
+    jurusan: "Jurusan",
+    faq: "FAQ",
+    dokumen: "Dokumen"
+  };
+
+  return labels[module] || "Lainnya";
+}
+
+function initModuleStats() {
+  return {
+    info: { good: 0, issue: 0 },
+    wiki: { good: 0, issue: 0 },
+    job: { good: 0, issue: 0 },
+    jurusan: { good: 0, issue: 0 },
+    faq: { good: 0, issue: 0 },
+    dokumen: { good: 0, issue: 0 }
+  };
+}
+
+function countModuleIssue(stats, module) {
+  if (stats[module]) stats[module].issue++;
+}
+
+function countModuleGood(stats, module) {
+  if (stats[module]) stats[module].good++;
 }
 
 function renderWebsiteHealthDashboard() {
@@ -894,106 +932,137 @@ function renderWebsiteHealthDashboard() {
   if (!container) return;
 
   const issues = [];
+  const moduleStats = initModuleStats();
   let goodCount = 0;
 
-  // INFO KAMPUS
   infoData.forEach(item => {
     const isiLength = getTextLength(item.isi);
+    let isGood = true;
 
     if (!item.gambar) {
+      isGood = false;
+      countModuleIssue(moduleStats, "info");
       addHealthIssue(
         issues,
         "warning",
         "info",
         `Info tanpa gambar: ${item.judul || "-"}`,
-        "Sebaiknya setiap info kampus memiliki gambar agar tampil lebih menarik."
+        "Sebaiknya setiap info kampus memiliki gambar agar tampil lebih menarik.",
+        "infoPage",
+        `editInfo(${item.id})`
       );
     }
 
     if (isiLength < 300) {
+      isGood = false;
+      countModuleIssue(moduleStats, "info");
       addHealthIssue(
         issues,
         "warning",
         "info",
         `Info terlalu pendek: ${item.judul || "-"}`,
-        "Isi informasi masih terlalu pendek. Idealnya minimal 300 karakter."
+        "Isi informasi masih terlalu pendek. Idealnya minimal 300 karakter.",
+        "infoPage",
+        `editInfo(${item.id})`
       );
     }
 
-    if (item.judul && isiLength >= 300 && item.gambar) {
+    if (isGood) {
       goodCount++;
+      countModuleGood(moduleStats, "info");
     }
   });
 
-  // WIKI KAMPUS
   wikiData.forEach(item => {
     const isiLength = getTextLength(item.isi);
+    let isGood = true;
 
     if (!item.gambar) {
+      isGood = false;
+      countModuleIssue(moduleStats, "wiki");
       addHealthIssue(
         issues,
         "warning",
         "wiki",
         `Wiki tanpa gambar: ${item.judul || "-"}`,
-        "Artikel wiki akan lebih kuat jika memiliki gambar utama."
+        "Artikel wiki akan lebih kuat jika memiliki gambar utama.",
+        "wikiPage",
+        `editWiki(${item.id})`
       );
     }
 
     if (isiLength < 500) {
+      isGood = false;
+      countModuleIssue(moduleStats, "wiki");
       addHealthIssue(
         issues,
         "warning",
         "wiki",
         `Wiki terlalu pendek: ${item.judul || "-"}`,
-        "Artikel wiki sebaiknya lebih lengkap, minimal sekitar 500 karakter."
+        "Artikel wiki sebaiknya lebih lengkap, minimal sekitar 500 karakter.",
+        "wikiPage",
+        `editWiki(${item.id})`
       );
     }
 
-    if (item.judul && isiLength >= 500 && item.gambar) {
+    if (isGood) {
       goodCount++;
+      countModuleGood(moduleStats, "wiki");
     }
   });
 
-  // LOWONGAN
   jobData.forEach(item => {
     const effectiveStatus = getEffectiveJobStatus(item);
+    let isGood = true;
 
     if (effectiveStatus === "ditutup" && item.status !== "ditutup") {
+      isGood = false;
+      countModuleIssue(moduleStats, "job");
       addHealthIssue(
         issues,
         "critical",
         "job",
         `Lowongan expired belum ditutup: ${item.posisi || "-"}`,
-        "Deadline sudah lewat, tetapi status asli belum ditutup."
+        "Deadline sudah lewat, tetapi status asli belum ditutup.",
+        "jobPage",
+        `editJob(${item.id})`
       );
     }
 
     if (!item.deadline) {
+      isGood = false;
+      countModuleIssue(moduleStats, "job");
       addHealthIssue(
         issues,
         "warning",
         "job",
         `Lowongan tanpa deadline: ${item.posisi || "-"}`,
-        "Deadline penting agar pengguna tahu batas pendaftaran."
+        "Deadline penting agar pengguna tahu batas pendaftaran.",
+        "jobPage",
+        `editJob(${item.id})`
       );
     }
 
     if (!item.link) {
+      isGood = false;
+      countModuleIssue(moduleStats, "job");
       addHealthIssue(
         issues,
         "critical",
         "job",
         `Lowongan tanpa link daftar: ${item.posisi || "-"}`,
-        "Lowongan sebaiknya memiliki link pendaftaran."
+        "Lowongan sebaiknya memiliki link pendaftaran.",
+        "jobPage",
+        `editJob(${item.id})`
       );
     }
 
-    if (item.posisi && item.perusahaan && item.link && item.deadline) {
+    if (isGood) {
       goodCount++;
+      countModuleGood(moduleStats, "job");
     }
   });
 
-  // JURUSAN
   jurusanAdminData.forEach(item => {
     const missingFields = [];
 
@@ -1004,81 +1073,110 @@ function renderWebsiteHealthDashboard() {
     if (!item.website_resmi) missingFields.push("website resmi");
 
     if (missingFields.length >= 3) {
+      countModuleIssue(moduleStats, "jurusan");
       addHealthIssue(
         issues,
         "critical",
         "jurusan",
         `Data jurusan kurang lengkap: ${item.nama || "-"}`,
-        `Field kosong: ${missingFields.join(", ")}.`
+        `Field kosong: ${missingFields.join(", ")}.`,
+        "jurusanPage",
+        `editJurusan(${item.id})`
       );
     } else if (missingFields.length > 0) {
+      countModuleIssue(moduleStats, "jurusan");
       addHealthIssue(
         issues,
         "warning",
         "jurusan",
         `Data jurusan perlu dilengkapi: ${item.nama || "-"}`,
-        `Field kosong: ${missingFields.join(", ")}.`
+        `Field kosong: ${missingFields.join(", ")}.`,
+        "jurusanPage",
+        `editJurusan(${item.id})`
       );
     } else {
       goodCount++;
+      countModuleGood(moduleStats, "jurusan");
     }
   });
 
-  // FAQ
   faqData.forEach(item => {
     const jawabanLength = getTextLength(item.jawaban);
+    let isGood = true;
 
     if (!item.kategori) {
+      isGood = false;
+      countModuleIssue(moduleStats, "faq");
       addHealthIssue(
         issues,
         "warning",
         "faq",
         `FAQ tanpa kategori: ${item.pertanyaan || "-"}`,
-        "Kategori membantu pengguna menemukan FAQ dengan lebih mudah."
+        "Kategori membantu pengguna menemukan FAQ dengan lebih mudah.",
+        "faqPage",
+        `editFaq(${item.id})`
       );
     }
 
     if (jawabanLength < 80) {
+      isGood = false;
+      countModuleIssue(moduleStats, "faq");
       addHealthIssue(
         issues,
         "warning",
         "faq",
         `Jawaban FAQ terlalu pendek: ${item.pertanyaan || "-"}`,
-        "Jawaban FAQ sebaiknya cukup jelas dan tidak terlalu singkat."
+        "Jawaban FAQ sebaiknya cukup jelas dan tidak terlalu singkat.",
+        "faqPage",
+        `editFaq(${item.id})`
       );
     }
 
-    if (item.pertanyaan && item.jawaban && item.kategori && jawabanLength >= 80) {
+    if (isGood) {
       goodCount++;
+      countModuleGood(moduleStats, "faq");
     }
   });
 
-  // DOKUMEN
   dokumenData.forEach(item => {
+    let isGood = true;
+
     if (!item.link) {
+      isGood = false;
+      countModuleIssue(moduleStats, "dokumen");
       addHealthIssue(
         issues,
         "critical",
         "dokumen",
         `Dokumen tanpa link: ${item.judul || "-"}`,
-        "Dokumen wajib memiliki link agar bisa dibuka pengguna."
+        "Dokumen wajib memiliki link agar bisa dibuka pengguna.",
+        "dokumenPage",
+        `editDokumen(${item.id})`
       );
     }
 
     if (!item.deskripsi) {
+      isGood = false;
+      countModuleIssue(moduleStats, "dokumen");
       addHealthIssue(
         issues,
         "warning",
         "dokumen",
         `Dokumen tanpa deskripsi: ${item.judul || "-"}`,
-        "Deskripsi membantu pengguna memahami isi dokumen."
+        "Deskripsi membantu pengguna memahami isi dokumen.",
+        "dokumenPage",
+        `editDokumen(${item.id})`
       );
     }
 
-    if (item.judul && item.link && item.deskripsi) {
+    if (isGood) {
       goodCount++;
+      countModuleGood(moduleStats, "dokumen");
     }
   });
+
+  latestHealthIssues = issues;
+  latestHealthModuleStats = moduleStats;
 
   const criticalCount = issues.filter(item => item.level === "critical").length;
   const warningCount = issues.filter(item => item.level === "warning").length;
@@ -1092,6 +1190,9 @@ function renderWebsiteHealthDashboard() {
   if (qs("healthCritical")) qs("healthCritical").textContent = criticalCount;
   if (qs("healthWarning")) qs("healthWarning").textContent = warningCount;
   if (qs("healthGood")) qs("healthGood").textContent = goodCount;
+
+  renderHealthSummary(criticalCount, warningCount, issues);
+  renderHealthModuleProgress(moduleStats);
 
   const selectedLevel = qs("healthFilter")?.value || "all";
   const selectedModule = qs("healthModuleFilter")?.value || "all";
@@ -1115,22 +1216,126 @@ function renderWebsiteHealthDashboard() {
           <h3>${item.title}</h3>
           <p>${item.description}</p>
         </div>
+
+        <div class="card-actions">
+          ${
+            item.editFunction
+              ? `<button class="btn ghost" type="button" onclick="${item.editFunction}">Edit</button>`
+              : ""
+          }
+        </div>
       </article>
     `).join("")
     : `<div class="empty">Website sehat. Tidak ada masalah utama yang terdeteksi.</div>`;
 }
 
-function getHealthModuleLabel(module) {
-  const labels = {
-    info: "Info Kampus",
-    wiki: "Wiki Kampus",
-    job: "Lowongan",
-    jurusan: "Jurusan",
-    faq: "FAQ",
-    dokumen: "Dokumen"
-  };
+function renderHealthSummary(criticalCount, warningCount, issues) {
+  const container = qs("healthSummary");
+  if (!container) return;
 
-  return labels[module] || "Lainnya";
+  const topIssues = issues.slice(0, 5);
+
+  container.innerHTML = `
+    <h3>Ringkasan Prioritas</h3>
+    <p>
+      🔥 ${criticalCount} masalah penting · 
+      ⚠️ ${warningCount} peringatan
+    </p>
+
+    ${
+      topIssues.length
+        ? `
+          <ol>
+            ${topIssues.map(item => `
+              <li>
+                <strong>${getHealthModuleLabel(item.module)}:</strong>
+                ${item.title}
+              </li>
+            `).join("")}
+          </ol>
+        `
+        : `<p>Semua modul utama dalam kondisi baik.</p>`
+    }
+  `;
+}
+
+function renderHealthModuleProgress(moduleStats) {
+  const container = qs("healthModuleProgress");
+  if (!container) return;
+
+  container.innerHTML = Object.keys(moduleStats).map(module => {
+    const item = moduleStats[module];
+    const total = item.good + item.issue;
+    const score = total ? Math.round((item.good / total) * 100) : 100;
+
+    return `
+      <article class="admin-list-item">
+        <div>
+          <span class="pill">${getHealthModuleLabel(module)}</span>
+          <h3>${score}%</h3>
+          <p>${item.good} baik · ${item.issue} masalah</p>
+
+          <div class="health-progress">
+            <div class="health-progress-bar" style="width:${score}%"></div>
+          </div>
+        </div>
+      </article>
+    `;
+  }).join("");
+}
+
+function exportWebsiteHealthAudit(type = "csv") {
+  const data = latestHealthIssues || [];
+
+  if (!data.length) {
+    alert("Tidak ada masalah kesehatan website untuk diekspor.");
+    return;
+  }
+
+  if (type === "json") {
+    const blob = new Blob(
+      [JSON.stringify(data, null, 2)],
+      { type: "application/json" }
+    );
+
+    downloadHealthFile(blob, "audit-kesehatan-website.json");
+    return;
+  }
+
+  const headers = [
+    "level",
+    "module",
+    "title",
+    "description"
+  ];
+
+  const rows = data.map(item => [
+    item.level,
+    getHealthModuleLabel(item.module),
+    item.title,
+    item.description
+  ]);
+
+  const csv = [
+    headers.join(","),
+    ...rows.map(row =>
+      row.map(value => `"${String(value || "").replace(/"/g, '""')}"`).join(",")
+    )
+  ].join("\n");
+
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+  downloadHealthFile(blob, "audit-kesehatan-website.csv");
+}
+
+function downloadHealthFile(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+
+  link.href = url;
+  link.download = filename;
+  link.click();
+
+  URL.revokeObjectURL(url);
 }
 
 let healthFilterInitialized = false;

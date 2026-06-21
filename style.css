@@ -1957,14 +1957,6 @@ nav a {
   font-size: 0.95rem;
 }
 
-.admin-health {
-  margin-top: 2rem;
-}
-
-.admin-health .admin-list-item {
-  border-left: 4px solid #f59e0b;
-}
-
 @media (max-width: 768px) {
   .compare-intro {
     padding: 18px;
@@ -1977,4 +1969,27 @@ nav a {
   .compare-intro h2 {
     font-size: 1.35rem;
   }
+}
+
+.admin-health {
+  margin-top: 2rem;
+}
+
+.admin-health .admin-list-item {
+  border-left: 4px solid #f59e0b;
+}
+
+.health-progress {
+  width: 100%;
+  height: 8px;
+  margin-top: 0.75rem;
+  border-radius: 999px;
+  overflow: hidden;
+  background: #e5e7eb;
+}
+
+.health-progress-bar {
+  height: 100%;
+  border-radius: 999px;
+  background: #16a34a;
 }
