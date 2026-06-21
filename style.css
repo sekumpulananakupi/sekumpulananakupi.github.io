@@ -2077,3 +2077,36 @@ nav a {
     width: 100%;
   }
 }
+
+.health-scroll-box {
+  max-height: 420px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+  margin-top: 1rem;
+  border-radius: 1rem;
+}
+
+.health-scroll-box::-webkit-scrollbar {
+  width: 8px;
+}
+
+.health-scroll-box::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 999px;
+}
+
+.health-scroll-box::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 999px;
+}
+
+.health-scroll-box::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+@media (max-width: 640px) {
+  .health-scroll-box {
+    max-height: 360px;
+    padding-right: 0.25rem;
+  }
+}
