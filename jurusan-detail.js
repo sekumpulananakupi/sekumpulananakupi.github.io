@@ -263,7 +263,11 @@ async function loadJurusanDetail() {
   statistik,
   Array.isArray(biayaPendidikan) ? biayaPendidikan : []
 );
-   
+  
+  updateBreadcrumbSchemaJurusan(jurusan);
+  
+  updateFaqSchemaJurusan(faqJurusan || []);
+
   detail.innerHTML = `
   <nav class="breadcrumb">
   <a href="index.html">Beranda</a>
@@ -1407,6 +1411,70 @@ function updateStructuredDataJurusan(jurusan, statistik = [], biayaList = []) {
   const script = document.createElement("script");
   script.type = "application/ld+json";
   script.id = "jurusanSchema";
+  script.textContent = JSON.stringify(schema, null, 2);
+
+  document.head.appendChild(script);
+}
+
+function updateBreadcrumbSchemaJurusan(jurusan) {
+  const oldSchema = document.getElementById("breadcrumbSchema");
+  if (oldSchema) oldSchema.remove();
+
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Beranda",
+        "item": `${window.location.origin}/index.html`
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Jurusan",
+        "item": `${window.location.origin}/jurusan.html`
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": jurusan.nama || "Detail Jurusan",
+        "item": window.location.href
+      }
+    ]
+  };
+
+  const script = document.createElement("script");
+  script.type = "application/ld+json";
+  script.id = "breadcrumbSchema";
+  script.textContent = JSON.stringify(schema, null, 2);
+
+  document.head.appendChild(script);
+}
+
+function updateFaqSchemaJurusan(faqItems = []) {
+  const oldSchema = document.getElementById("faqSchema");
+  if (oldSchema) oldSchema.remove();
+
+  if (!Array.isArray(faqItems) || !faqItems.length) return;
+
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": faqItems.map(item => ({
+      "@type": "Question",
+      "name": item.pertanyaan || "",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": stripHTML(item.jawaban || "")
+      }
+    }))
+  };
+
+  const script = document.createElement("script");
+  script.type = "application/ld+json";
+  script.id = "faqSchema";
   script.textContent = JSON.stringify(schema, null, 2);
 
   document.head.appendChild(script);
