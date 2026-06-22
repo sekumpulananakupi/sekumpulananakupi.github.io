@@ -115,6 +115,10 @@ function renderChipLinks(text) {
   `;
 }
 
+function renderCocokUntukSiapa(text) {
+  return renderLineList(text, "Data kecocokan jurusan belum tersedia.");
+}
+
 function makeSafeId(text) {
   return String(text || "")
     .toLowerCase()
@@ -265,7 +269,7 @@ async function loadJurusanDetail() {
 );
   
   updateBreadcrumbSchemaJurusan(jurusan);
-  
+
   updateFaqSchemaJurusan(faqJurusan || []);
 
   detail.innerHTML = `
@@ -285,6 +289,9 @@ async function loadJurusanDetail() {
       <div class="post-content">
         ${escapeHTML(jurusan.deskripsi || "Deskripsi jurusan belum tersedia.").replace(/\n/g, "<br>")}
       </div>
+
+      <h2>Cocok Untuk Siapa?</h2>
+      ${renderCocokUntukSiapa(jurusan.cocok_untuk)}
 
       <h2>Informasi Program Studi</h2>
       <div class="jurusan-info-grid">
