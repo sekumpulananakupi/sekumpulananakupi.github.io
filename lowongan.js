@@ -4,12 +4,14 @@ const SUPABASE_ANON_KEY = "sb_publishable_KL8Jcb1hEzU-kAZiOMYWFg_hupftFmq";
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const PAGE_SIZE = 5;
-const FILTER_CACHE_KEY = "saupi_lowongan_filters_v1";
+const FILTER_CACHE_KEY = "saupi_lowongan_filters_v2";
 const FILTER_CACHE_TTL = 5 * 60 * 1000;
 
 let currentPage = 0;
 let isLoadingJobs = false;
 let hasMoreJobs = true;
+let totalLoadedJobs = 0;
+let totalMatchedJobs = 0;
 
 let activeJurusan = "all";
 let activeTag = "all";
@@ -92,7 +94,8 @@ function setCachedFilters() {
     localStorage.setItem(FILTER_CACHE_KEY, JSON.stringify({
       savedAt: Date.now(),
       jurusanData,
-      tagData
+      tagData,
+      jurusanCounts
     }));
   } catch {
     // localStorage bisa gagal di mode private, abaikan saja.
@@ -110,34 +113,50 @@ async function loadFilters() {
   }
 
   const [jurusanResult, tagsResult, relasiJurusanResult] = await Promise.all([
-  supabaseClient
-    .from("jurusan")
-    .select("id,nama")
-    .order("nama", { ascending: true }),
+    supabaseClient.from("jurusan").select("id,nama").order("nama", { ascending: true }),
+    supabaseClient.from("tags").select("id,nama").order("nama", { ascending: true }),
+    supabaseClient.from("artikel_jurusan").select("jurusan_id").eq("artikel_tipe", "job")
+  ]);
 
-  supabaseClient
-    .from("tags")
-    .select("id,nama")
-    .order("nama", { ascending: true }),
+  jurusanCounts = {};
+  (relasiJurusanResult.data || []).forEach(row => {
+    jurusanCounts[row.jurusan_id] = (jurusanCounts[row.jurusan_id] || 0) + 1;
+  });
 
-  supabaseClient
-    .from("artikel_jurusan")
-    .select("jurusan_id")
-    .eq("artikel_tipe", "job")
-]);
+  jurusanData = jurusanResult.data || [];
+  tagData = tagsResult.data || [];
 
-jurusanCounts = {};
+  setCachedFilters();
+  renderFilters();
+} // WAJIB ADA: nutup loadFilters di sini
 
-(relasiJurusanResult.data || []).forEach(row => {
-  jurusanCounts[row.jurusan_id] =
-    (jurusanCounts[row.jurusan_id] || 0) + 1;
-});
+function renderFilters() {
+  const jurusanFilter = document.getElementById("jurusanFilter");
+  const tagFilter = document.getElementById("tagFilter");
 
-jurusanData = jurusanResult.data || [];
-tagData = tagsResult.data || [];
+  if (jurusanFilter) {
+    jurusanFilter.innerHTML =
+      `<option value="all">Semua Jurusan</option>` +
+      jurusanData
+        .filter(item => (jurusanCounts[item.id] || 0) > 0)
+        .map(item => {
+          const count = jurusanCounts[item.id] || 0;
+          return `<option value="${item.id}">${escapeHTML(item.nama)} (${count})</option>`;
+        })
+        .join("");
 
-setCachedFilters();
-renderFilters();
+    jurusanFilter.value = activeJurusan;
+  }
+
+  if (tagFilter) {
+    tagFilter.innerHTML =
+      `<option value="all">Semua Tag</option>` +
+      tagData
+        .map(item => `<option value="${item.id}">${escapeHTML(item.nama)}</option>`)
+        .join("");
+
+    tagFilter.value = activeTag;
+  }
 }
 
 function renderFilters() {
@@ -145,17 +164,16 @@ function renderFilters() {
   const tagFilter = document.getElementById("tagFilter");
 
   if (jurusanFilter) {
-jurusanFilter.innerHTML =
-  `<option value="all">Semua Jurusan</option>` +
-  jurusanData
-    .filter(item => (jurusanCounts[item.id] || 0) > 0)
-    .map(item => {
-      const count = jurusanCounts[item.id] || 0;
-      return `<option value="${item.id}">
-        ${escapeHTML(item.nama)} (${count})
-      </option>`;
-    })
-    .join("");
+    const jurusanOptions = jurusanData
+      .filter(item => (jurusanCounts[item.id] || 0) > 0)
+      .map(item => {
+        const count = jurusanCounts[item.id] || 0;
+        return `<option value="${item.id}">${escapeHTML(item.nama)} (${count})</option>`;
+      })
+      .join("");
+
+    jurusanFilter.innerHTML =
+      `<option value="all">Semua Jurusan</option>` + jurusanOptions;
 
     jurusanFilter.value = activeJurusan;
   }
@@ -187,27 +205,20 @@ function createJobCard(item) {
   `;
 }
 
-function getLoadMoreButton() {
-  let button = document.getElementById("loadMoreJobs");
+function updateJobCount() {
+  const el = document.getElementById("jobCount");
+  if (!el) return;
 
-  if (!button) {
-    const list = document.getElementById("jobList");
-    if (!list) return null;
-
-    button = document.createElement("button");
-    button.id = "loadMoreJobs";
-    button.type = "button";
-    button.className = "btn primary";
-    button.textContent = "Muat Lagi";
-
-    button.addEventListener("click", () => {
-      loadJobs(false);
-    });
-
-    list.insertAdjacentElement("afterend", button);
+  if (!totalMatchedJobs) {
+    el.textContent = "";
+    return;
   }
 
-  return button;
+  el.textContent = `Menampilkan ${totalLoadedJobs} dari ${totalMatchedJobs} lowongan`;
+}
+
+function getLoadMoreButton() {
+  return document.getElementById("loadMoreJobs");
 }
 
 function updateLoadMoreButton() {
@@ -217,6 +228,21 @@ function updateLoadMoreButton() {
   button.style.display = hasMoreJobs ? "inline-flex" : "none";
   button.disabled = isLoadingJobs;
   button.textContent = isLoadingJobs ? "Memuat..." : "Muat Lagi";
+}
+
+async function getRelatedJobIds(tableName, columnName, value) {
+  const { data, error } = await supabaseClient
+    .from(tableName)
+    .select("artikel_id")
+    .eq("artikel_tipe", "job")
+    .eq(columnName, value);
+
+  if (error) {
+    console.error(`Gagal mengambil relasi dari ${tableName}:`, error);
+    return [];
+  }
+
+  return (data || []).map(row => row.artikel_id);
 }
 
 async function loadJobs(reset = false) {
@@ -231,7 +257,32 @@ async function loadJobs(reset = false) {
   if (reset) {
     currentPage = 0;
     hasMoreJobs = true;
+    totalLoadedJobs = 0;
+    totalMatchedJobs = 0;
     showLoading("jobList", PAGE_SIZE);
+    updateJobCount();
+  }
+
+  let allowedIds = null;
+
+  if (activeJurusan !== "all") {
+    allowedIds = await getRelatedJobIds("artikel_jurusan", "jurusan_id", activeJurusan);
+  }
+
+  if (activeTag !== "all") {
+    const tagIds = await getRelatedJobIds("artikel_tags", "tag_id", activeTag);
+    allowedIds = allowedIds === null
+      ? tagIds
+      : allowedIds.filter(id => tagIds.includes(id));
+  }
+
+  if (allowedIds !== null && !allowedIds.length) {
+    if (reset) showEmpty("jobList");
+    hasMoreJobs = false;
+    isLoadingJobs = false;
+    updateLoadMoreButton();
+    updateJobCount();
+    return;
   }
 
   const from = currentPage * PAGE_SIZE;
@@ -239,61 +290,22 @@ async function loadJobs(reset = false) {
 
   let query = supabaseClient
     .from("lowongan_kerja")
-    .select("id,posisi,perusahaan,lokasi,gambar,deskripsi,created_at")
+    .select("id,posisi,perusahaan,lokasi,gambar,deskripsi,created_at", { count: "exact" })
     .order("created_at", { ascending: false })
     .range(from, to);
 
   if (activeKeyword) {
+    const safeKeyword = activeKeyword.replaceAll(",", " ");
     query = query.or(
-      `posisi.ilike.%${activeKeyword}%,perusahaan.ilike.%${activeKeyword}%,lokasi.ilike.%${activeKeyword}%,deskripsi.ilike.%${activeKeyword}%`
+      `posisi.ilike.%${safeKeyword}%,perusahaan.ilike.%${safeKeyword}%,lokasi.ilike.%${safeKeyword}%,deskripsi.ilike.%${safeKeyword}%`
     );
   }
 
-  if (activeJurusan !== "all") {
-    const { data: relasiJurusan } = await supabaseClient
-      .from("artikel_jurusan")
-      .select("artikel_id")
-      .eq("artikel_tipe", "job")
-      .eq("jurusan_id", activeJurusan);
-
-    const ids = (relasiJurusan || []).map(row => row.artikel_id);
-
-    if (!ids.length) {
-      if (reset) {
-        showEmpty("jobList");
-      }
-      hasMoreJobs = false;
-      isLoadingJobs = false;
-      updateLoadMoreButton();
-      return;
-    }
-
-    query = query.in("id", ids);
+  if (allowedIds !== null) {
+    query = query.in("id", allowedIds);
   }
 
-  if (activeTag !== "all") {
-    const { data: relasiTag } = await supabaseClient
-      .from("artikel_tags")
-      .select("artikel_id")
-      .eq("artikel_tipe", "job")
-      .eq("tag_id", activeTag);
-
-    const ids = (relasiTag || []).map(row => row.artikel_id);
-
-    if (!ids.length) {
-      if (reset) {
-        showEmpty("jobList");
-      }
-      hasMoreJobs = false;
-      isLoadingJobs = false;
-      updateLoadMoreButton();
-      return;
-    }
-
-    query = query.in("id", ids);
-  }
-
-  const { data, error } = await query;
+  const { data, error, count } = await query;
 
   if (error) {
     console.error("Gagal mengambil lowongan:", error);
@@ -303,6 +315,7 @@ async function loadJobs(reset = false) {
     hasMoreJobs = false;
     isLoadingJobs = false;
     updateLoadMoreButton();
+    updateJobCount();
     return;
   }
 
@@ -318,11 +331,14 @@ async function loadJobs(reset = false) {
     jobList.insertAdjacentHTML("beforeend", jobs.map(createJobCard).join(""));
   }
 
-  hasMoreJobs = jobs.length === PAGE_SIZE;
+  totalMatchedJobs = count || 0;
+  totalLoadedJobs += jobs.length;
+  hasMoreJobs = totalLoadedJobs < totalMatchedJobs;
   currentPage += 1;
 
   isLoadingJobs = false;
   updateLoadMoreButton();
+  updateJobCount();
 }
 
 function initEvents() {
