@@ -205,8 +205,9 @@ async function loadData() {
 
   fillSelect("jurusanA");
   fillSelect("jurusanB");
+  applyCompareParamsFromURL();
 
-  if (result) {
+  if (result && !document.getElementById("jurusanA")?.value) {
     result.innerHTML = `<div class="empty">Pilih dua jurusan untuk dibandingkan.</div>`;
   }
 }
@@ -224,6 +225,28 @@ function fillSelect(id) {
         </option>
       `)
       .join("");
+}
+
+function applyCompareParamsFromURL() {
+  const params = new URLSearchParams(window.location.search);
+  const jurusan1 = params.get("jurusan1");
+  const jurusan2 = params.get("jurusan2");
+
+  const selectA = document.getElementById("jurusanA");
+  const selectB = document.getElementById("jurusanB");
+
+  if (selectA && jurusan1) selectA.value = jurusan1;
+  if (selectB && jurusan2) selectB.value = jurusan2;
+
+  if (jurusan1 && jurusan2) {
+    renderCompare();
+    return;
+  }
+
+  const result = document.getElementById("compareResult");
+  if (result && jurusan1 && !jurusan2) {
+    result.innerHTML = `<div class="empty">Jurusan pertama sudah dipilih. Silakan pilih jurusan kedua untuk dibandingkan.</div>`;
+  }
 }
 
 /* =========================
