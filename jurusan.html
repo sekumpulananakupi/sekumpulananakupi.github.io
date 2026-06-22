@@ -87,6 +87,12 @@
       text-align: center;
     }
 
+    .jurusan-action-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
     @media (max-width: 900px) {
       .jurusan-controls {
         grid-template-columns: repeat(2, minmax(150px, 1fr));
@@ -187,9 +193,15 @@
     <div class="jurusan-filter-actions">
       <p id="jurusanResultInfo" class="result-info">Memuat jurusan...</p>
 
-      <button type="button" id="resetFilterJurusan" class="btn secondary">
-        Reset filter
-      </button>
+      <div class="jurusan-action-buttons">
+        <button type="button" id="resetCompareJurusan" class="btn secondary">
+          Reset bandingkan
+        </button>
+
+        <button type="button" id="resetFilterJurusan" class="btn secondary">
+          Reset filter
+        </button>
+      </div>
     </div>
 
     <div class="grid-list" id="jurusanList"></div>

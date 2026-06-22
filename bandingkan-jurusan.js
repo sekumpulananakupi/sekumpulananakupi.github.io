@@ -268,6 +268,10 @@ function renderCompare() {
     return;
   }
 
+  if (idA && idB) {
+  localStorage.removeItem("compareFirstJurusan");
+  }
+
   if (idA === idB) {
     result.innerHTML = `<div class="empty">Pilih dua jurusan yang berbeda.</div>`;
     return;

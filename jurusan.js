@@ -318,6 +318,24 @@ function escapeHTML(text) {
   }[char]));
 }
 
+function getCompareURL(jurusanId) {
+  const currentId = String(jurusanId);
+  const savedId = localStorage.getItem("compareFirstJurusan");
+
+  if (savedId && savedId !== currentId) {
+    localStorage.removeItem("compareFirstJurusan");
+    return `bandingkan-jurusan.html?jurusan1=${encodeURIComponent(savedId)}&jurusan2=${encodeURIComponent(currentId)}`;
+  }
+
+  localStorage.setItem("compareFirstJurusan", currentId);
+  return `bandingkan-jurusan.html?jurusan1=${encodeURIComponent(currentId)}`;
+}
+
+function handleCompareClick(event, jurusanId) {
+  event.preventDefault();
+  window.location.href = getCompareURL(jurusanId);
+}
+
 function createCard(item) {
   const prospekSingkat = item.prospek_kerja
     ? item.prospek_kerja.split("\n").slice(0, 3).join(", ")
@@ -355,7 +373,11 @@ function createCard(item) {
           Lihat Detail
         </a>
 
-        <a href="bandingkan-jurusan.html?jurusan1=${encodeURIComponent(item.id)}" class="btn secondary">
+        <a 
+          href="bandingkan-jurusan.html?jurusan1=${encodeURIComponent(item.id)}"
+          class="btn secondary"
+          onclick="handleCompareClick(event, '${escapeHTML(item.id)}')"
+        >
           Bandingkan
         </a>
       </div>
@@ -370,6 +392,10 @@ function initJurusanPage() {
   document.getElementById("filterAkreditasi")?.addEventListener("change", () => renderJurusan(true));
   document.getElementById("sortJurusan")?.addEventListener("change", () => renderJurusan(true));
   document.getElementById("resetFilterJurusan")?.addEventListener("click", resetFilterJurusan);
+  document.getElementById("resetCompareJurusan")?.addEventListener("click", () => {
+    localStorage.removeItem("compareFirstJurusan");
+    alert("Pilihan bandingkan sudah direset.");
+  });
 
   loadJurusan();
 }
