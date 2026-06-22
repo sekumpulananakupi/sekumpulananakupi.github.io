@@ -1,5 +1,5 @@
 const SUPABASE_URL = "https://rozfgvucyiwqqmmrmbph.supabase.co";
-const SUPABASE_ANON_KEY = "ISI_ANON_KEY_KAMU";
+const SUPABASE_ANON_KEY = "sb_publishable_KL8Jcb1hEzU-kAZiOMYWFg_hupftFmq";
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 let jurusanData = [];
