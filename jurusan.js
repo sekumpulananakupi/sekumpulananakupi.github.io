@@ -308,6 +308,12 @@ function formatPercent(value) {
   });
 }
 
+function formatCompactNumber(value) {
+  const number = Number(value);
+  if (Number.isNaN(number) || number <= 0) return "-";
+  return number.toLocaleString("id-ID");
+}
+
 function escapeHTML(text) {
   return String(text || "").replace(/[&<>'"]/g, char => ({
     "&": "&amp;",
@@ -363,8 +369,27 @@ function createCard(item) {
       <p><strong>Prospek:</strong> ${escapeHTML(prospekSingkat)}</p>
 
       ${
-        percentText
-          ? `<p class="acceptance-note"><strong>Estimasi keterimaan:</strong> ${percentText}% berdasarkan statistik tahun ${escapeHTML(stat.tahun)}.</p>`
+        stat
+          ? `
+            <div class="jurusan-stat-grid">
+              <div>
+                <span>Daya Tampung</span>
+                <strong>${formatCompactNumber(stat.dayaTampung)}</strong>
+              </div>
+              <div>
+                <span>Peminat</span>
+                <strong>${formatCompactNumber(stat.peminat)}</strong>
+              </div>
+              <div>
+                <span>Keterimaan</span>
+                <strong>${percentText ? `${percentText}%` : "-"}</strong>
+              </div>
+            </div>
+
+            <p class="acceptance-note">
+              Berdasarkan statistik tahun ${escapeHTML(stat.tahun)}.
+            </p>
+          `
           : ""
       }
 
