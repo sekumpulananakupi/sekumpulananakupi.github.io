@@ -247,7 +247,7 @@ async function loadCoreData() {
     fetchPaged("job")
   ]);
 
-  requestIdleCallbackSafe(loadDeferredData);
+  setTimeout(loadDeferredData, 100);
 }
 
 async function loadDeferredData() {
