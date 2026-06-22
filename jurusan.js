@@ -373,21 +373,21 @@ function createCard(item) {
           ? `
             <div class="jurusan-stat-grid">
               <div>
-                <span>Daya Tampung</span>
+                <span>Total Daya Tampung</span>
                 <strong>${formatCompactNumber(stat.dayaTampung)}</strong>
               </div>
               <div>
-                <span>Peminat</span>
+                <span>Total Peminat</span>
                 <strong>${formatCompactNumber(stat.peminat)}</strong>
               </div>
               <div>
-                <span>Keterimaan</span>
+                <span>Estimasi Keterimaan</span>
                 <strong>${percentText ? `${percentText}%` : "-"}</strong>
               </div>
             </div>
 
             <p class="acceptance-note">
-              Berdasarkan statistik tahun ${escapeHTML(stat.tahun)}.
+              Data dihitung dari gabungan SNBP dan SNBT tahun ${escapeHTML(stat.tahun)}. Jalur Mandiri tidak termasuk.
             </p>
           `
           : ""
