@@ -74,6 +74,15 @@ function renderDokumenKategoriFilter() {
   const select = document.getElementById("dokumenKategoriFilter");
   if (!select) return;
 
+  const kategoriCounts = {};
+
+  dokumenData.forEach(item => {
+    if (!item.kategori) return;
+
+    kategoriCounts[item.kategori] =
+      (kategoriCounts[item.kategori] || 0) + 1;
+  });
+
   const kategoriList = [...new Set(
     dokumenData
       .map(item => item.kategori)
@@ -160,18 +169,26 @@ function renderDokumenCategoryChips() {
   const container = document.getElementById("dokumenCategoryChips");
   if (!container) return;
 
-  const kategoriList = [...new Set(
-    dokumenData
-      .map(item => item.kategori)
-      .filter(Boolean)
-  )];
+  const kategoriCounts = {};
+
+  dokumenData.forEach(item => {
+    if (!item.kategori) return;
+
+    kategoriCounts[item.kategori] =
+      (kategoriCounts[item.kategori] || 0) + 1;
+  });
 
   container.innerHTML =
-    `<button class="category-chip active" data-kategori="all">Semua</button>` +
-    kategoriList
-      .map(item => `
-        <button class="category-chip" data-kategori="${escapeHTML(item)}">
-          ${escapeHTML(item)}
+    `<button class="category-chip active" data-kategori="all">
+      Semua (${dokumenData.length})
+    </button>` +
+    Object.entries(kategoriCounts)
+      .map(([kategori, count]) => `
+        <button
+          class="category-chip"
+          data-kategori="${escapeHTML(kategori)}"
+        >
+          ${escapeHTML(kategori)} (${count})
         </button>
       `)
       .join("");
