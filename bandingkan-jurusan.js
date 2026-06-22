@@ -459,6 +459,24 @@ function renderList(text) {
   `;
 }
 
+function resetCompareJurusan() {
+  localStorage.removeItem("compareFirstJurusan");
+
+  const selectA = document.getElementById("jurusanA");
+  const selectB = document.getElementById("jurusanB");
+  const result = document.getElementById("compareResult");
+
+  if (selectA) selectA.value = "";
+  if (selectB) selectB.value = "";
+
+  if (result) {
+    result.innerHTML = `<div class="empty">Pilih dua jurusan untuk dibandingkan.</div>`;
+  }
+
+  const cleanURL = window.location.pathname;
+  window.history.replaceState({}, "", cleanURL);
+}
+
 /* =========================
    INIT
 ========================= */
@@ -466,9 +484,11 @@ function renderList(text) {
 function setupEvents() {
   const jurusanA = document.getElementById("jurusanA");
   const jurusanB = document.getElementById("jurusanB");
+  const resetButton = document.getElementById("resetCompareJurusan");
 
   if (jurusanA) jurusanA.addEventListener("change", renderCompare);
   if (jurusanB) jurusanB.addEventListener("change", renderCompare);
+  if (resetButton) resetButton.addEventListener("click", resetCompareJurusan);
 }
 
 setupEvents();
