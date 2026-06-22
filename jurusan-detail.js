@@ -311,6 +311,11 @@ async function loadJurusanDetail() {
         </div>
       </div>
 
+      <div class="stat-card">
+        <span>Gelar Lulusan</span>
+        <strong>${escapeHTML(jurusan.gelar || "-")}</strong>
+      </div>
+      
       ${jurusan.website_resmi ? `
         <a href="${escapeHTML(jurusan.website_resmi)}" target="_blank" rel="noopener noreferrer" class="btn ghost">
           Website Resmi
