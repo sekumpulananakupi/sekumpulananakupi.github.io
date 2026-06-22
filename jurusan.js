@@ -350,9 +350,15 @@ function createCard(item) {
           : ""
       }
 
-      <a href="jurusan-detail.html?id=${encodeURIComponent(item.id)}" class="btn primary">
-        Lihat Detail
-      </a>
+      <div class="card-actions">
+        <a href="jurusan-detail.html?id=${encodeURIComponent(item.id)}" class="btn primary">
+          Lihat Detail
+        </a>
+
+        <a href="bandingkan-jurusan.html?jurusan1=${encodeURIComponent(item.id)}" class="btn secondary">
+          Bandingkan
+        </a>
+      </div>
     </article>
   `;
 }
