@@ -154,3 +154,13 @@
   box-shadow: none;
   cursor: default;
 }
+
+.nav-menu a.active {
+  color: var(--blue);
+  font-weight: 900;
+}
+
+.nav-menu a.active::after {
+  width: 100%;
+}
+
