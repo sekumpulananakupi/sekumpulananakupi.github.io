@@ -2167,9 +2167,18 @@ nav a {
   }
 }
 
+
 /* =========================
    HALAMAN MAHASISWA BARU
 ========================= */
+.maba-page {
+  background: #f4f7fb;
+  color: #172033;
+}
+
+.maba-page a {
+  color: inherit;
+}
 
 .maba-hero {
   padding: 72px 20px 48px;
@@ -2178,9 +2187,8 @@ nav a {
 }
 
 .maba-container {
-  max-width: 1180px;
+  width: min(1180px, 92%);
   margin: 0 auto;
-  padding: 0 20px;
 }
 
 .maba-badge {
@@ -2202,37 +2210,44 @@ nav a {
 }
 
 .maba-hero p {
-  max-width: 720px;
+  max-width: 760px;
   font-size: 18px;
   color: #475569;
   line-height: 1.7;
-  margin-bottom: 28px;
+  margin: 0 0 28px;
 }
 
-.maba-actions {
+.maba-actions,
+.maba-section-action {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
 }
 
+.maba-section-action {
+  margin-top: 20px;
+}
+
 .maba-btn {
-  display: inline-flex;
+  position: static !important;
+  width: fit-content !important;
+  display: inline-flex !important;
   align-items: center;
   justify-content: center;
   padding: 12px 18px;
   border-radius: 14px;
   border: 1px solid #cbd5e1;
   background: #ffffff;
-  color: #0f172a;
-  font-weight: 700;
-  text-decoration: none;
+  color: #0f172a !important;
+  font-weight: 800;
+  text-decoration: none !important;
   cursor: pointer;
-  transition: 0.2s;
+  transition: 0.2s ease;
 }
 
 .maba-btn.primary {
   background: #2563eb;
-  color: white;
+  color: #ffffff !important;
   border-color: #2563eb;
 }
 
@@ -2256,33 +2271,47 @@ nav a {
 .maba-heading h2 {
   font-size: 30px;
   color: #0f172a;
-  margin-bottom: 8px;
+  margin: 0 0 8px;
 }
 
 .maba-heading p {
   color: #64748b;
   line-height: 1.7;
   max-width: 760px;
+  margin: 0;
 }
 
-.maba-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 16px;
+.maba-grid,
+#mabaWikiList,
+#mabaDokumenList,
+#mabaKomunitasList {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 16px !important;
+  align-items: stretch;
 }
 
-.maba-card {
-  background: white;
+.maba-card,
+.maba-card-link {
+  position: static !important;
+  display: block !important;
+  width: auto !important;
+  height: auto !important;
+  min-height: 150px;
+  background: #ffffff;
   border: 1px solid #e5e7eb;
   border-radius: 20px;
   padding: 20px;
   box-shadow: 0 8px 20px rgba(15, 23, 42, 0.04);
+  color: inherit;
+  text-decoration: none !important;
 }
 
 .maba-card h3 {
   margin: 0 0 8px;
   color: #0f172a;
   font-size: 18px;
+  line-height: 1.35;
 }
 
 .maba-card p {
@@ -2292,18 +2321,20 @@ nav a {
   font-size: 14px;
 }
 
-.quick-card {
+.quick-card,
+.maba-card-link {
   cursor: pointer;
-  transition: 0.2s;
+  transition: 0.2s ease;
 }
 
-.quick-card:hover {
+.quick-card:hover,
+.maba-card-link:hover {
   border-color: #2563eb;
   transform: translateY(-3px);
 }
 
 .progress-box {
-  background: white;
+  background: #ffffff;
   border: 1px solid #e5e7eb;
   border-radius: 24px;
   padding: 24px;
@@ -2331,7 +2362,7 @@ nav a {
   width: 0%;
   background: #2563eb;
   border-radius: 999px;
-  transition: 0.3s;
+  transition: 0.3s ease;
 }
 
 .checklist {
@@ -2344,7 +2375,7 @@ nav a {
   display: flex;
   gap: 10px;
   align-items: flex-start;
-  background: white;
+  background: #ffffff;
   border: 1px solid #e5e7eb;
   border-radius: 16px;
   padding: 14px;
@@ -2354,6 +2385,7 @@ nav a {
 .check-item input {
   margin-top: 3px;
   transform: scale(1.15);
+  accent-color: #2563eb;
 }
 
 .check-item span {
@@ -2378,7 +2410,7 @@ nav a {
   height: 44px;
   border-radius: 50%;
   background: #2563eb;
-  color: white;
+  color: #ffffff;
   display: grid;
   place-items: center;
   font-weight: 800;
@@ -2390,16 +2422,19 @@ nav a {
 }
 
 .accordion-item {
-  background: white;
+  background: #ffffff;
   border: 1px solid #e5e7eb;
   border-radius: 18px;
   overflow: hidden;
+  box-shadow: none;
+  padding: 0;
+  margin: 0;
 }
 
 .accordion-btn {
   width: 100%;
   border: 0;
-  background: white;
+  background: #ffffff;
   padding: 18px 20px;
   text-align: left;
   font-weight: 800;
@@ -2429,11 +2464,12 @@ nav a {
   border-radius: 14px;
   margin-bottom: 16px;
   font-size: 15px;
+  background: #ffffff;
 }
 
 .maba-footer-cta {
   background: #0f172a;
-  color: white;
+  color: #ffffff;
   border-radius: 28px;
   padding: 32px;
   display: flex;
@@ -2445,7 +2481,7 @@ nav a {
 
 .maba-footer-cta h2 {
   margin: 0 0 8px;
-  color: white;
+  color: #ffffff;
 }
 
 .maba-footer-cta p {
@@ -2453,9 +2489,19 @@ nav a {
   color: #cbd5e1;
 }
 
+.maba-loading,
+.maba-empty {
+  grid-column: 1 / -1;
+  min-height: auto;
+  color: #64748b;
+}
+
 @media (max-width: 900px) {
-  .maba-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .maba-grid,
+  #mabaWikiList,
+  #mabaDokumenList,
+  #mabaKomunitasList {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   }
 
   .checklist {
@@ -2464,67 +2510,28 @@ nav a {
 }
 
 @media (max-width: 600px) {
-  .maba-grid {
-    grid-template-columns: 1fr;
+  .maba-grid,
+  #mabaWikiList,
+  #mabaDokumenList,
+  #mabaKomunitasList {
+    grid-template-columns: 1fr !important;
   }
 
   .maba-section {
     padding: 40px 0;
   }
 
-  .maba-card {
+  .maba-card,
+  .maba-card-link {
     padding: 18px;
   }
-}
 
-.maba-card-link {
-  display: block;
-  color: inherit;
-  text-decoration: none;
-  transition: 0.2s;
-}
-
-.maba-card-link:hover {
-  border-color: #2563eb;
-  transform: translateY(-3px);
-}
-
-/* FIX LAYOUT MABA */
-body .maba-grid {
-  display: grid !important;
-  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-  gap: 16px !important;
-  align-items: stretch;
-}
-
-body .maba-card,
-body .maba-card-link {
-  display: block !important;
-  width: auto !important;
-  height: auto !important;
-  position: static !important;
-  text-decoration: none;
-}
-
-body .maba-btn {
-  position: static !important;
-  width: fit-content !important;
-  margin: 0 !important;
-}
-
-body .maba-card-link:hover {
-  border-color: #2563eb;
-  transform: translateY(-3px);
-}
-
-@media (max-width: 900px) {
-  body .maba-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  .timeline-item {
+    grid-template-columns: 40px 1fr;
   }
-}
 
-@media (max-width: 600px) {
-  body .maba-grid {
-    grid-template-columns: 1fr !important;
+  .timeline-number {
+    width: 38px;
+    height: 38px;
   }
 }
