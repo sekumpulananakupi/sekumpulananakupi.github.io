@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dokumen Kampus - SA UPI</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>Kategori - SA UPI</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
   <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZWLZ2952C1"></script>
 <script>
@@ -36,36 +36,20 @@
   </header>
 
   <main class="container">
-  <section class="section">
+    <section class="section">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow" id="pageType">Kategori</p>
+          <h2 id="pageTitle">Memuat...</h2>
+        </div>
 
-    <div class="section-heading">
-      <div>
-        <p class="eyebrow">Referensi</p>
-        <h2>Dokumen Penting Kampus</h2>
+        <input type="search" id="contentSearch" placeholder="Cari konten..." />
       </div>
 
-      <div class="filter-inline">
+      <div class="grid-list" id="contentList"></div>
+    </section>
+  </main>
 
-        <input
-          type="search"
-          id="dokumenSearch"
-          placeholder="Cari dokumen..."
-        />
-
-        <select id="dokumenKategoriFilter">
-          <option value="all">Semua Kategori</option>
-        </select>
-
-      </div>
-
-    </div>
-
-    <div class="category-chip-bar" id="dokumenCategoryChips"></div>
-    <div class="grid-list" id="dokumenList"></div>
-
-  </section>
-</main>
-  
   <footer class="footer">
     <div class="container">
       <p>© 2026 Sekumpulan Anak UPI. Dibuat untuk komunitas mahasiswa.</p>
@@ -73,8 +57,7 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="utils.js"></script>
-  <script src="dokumen.js"></script>
-  <script src="menu.js"></script>
+  <script src="../modules/kategori/kategori.js"></script>
+  <script src="../assets/js/menu.js"></script>
 </body>
 </html>
