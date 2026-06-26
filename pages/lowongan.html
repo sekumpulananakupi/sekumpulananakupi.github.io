@@ -18,21 +18,7 @@
 
 <body>
   <header class="site-header">
-    <nav class="navbar container">
-      <a href="../index.html" class="brand">SA<span>UPI</span></a>
-
-      <button class="menu-toggle" id="menuToggle">☰</button>
-     <ul class="nav-menu" id="navMenu">
-  <li><a href="../index.html">Beranda</a></li>
-  <li><a href="../pages/jurusan.html">Jurusan</a></li>
-  <li><a href="../pages/lowongan.html">Lowongan</a></li>
-  <li><a href="../pages/dokumen.html">Dokumen</a></li>
-  <li><a href="../pages/faq.html">FAQ</a></li>
-  <li><a href="../pages/komunitas.html">Komunitas</a></li>
-  <li><a href="../pages/tentang.html">Tentang</a></li>
-  <li><a href="../pages/search.html">Cari</a></li>
-</ul>
-    </nav>
+    <div data-component="navbar"></div>
   </header>
 
 <main class="container">
@@ -71,12 +57,11 @@
 </main>
   
   <footer class="footer">
-    <div class="container">
-      <p>© 2026 Sekumpulan Anak UPI. Dibuat untuk komunitas mahasiswa.</p>
-    </div>
+    <div data-component="footer"></div>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/components.js"></script>
   <script src="../assets/js/utils.js"></script>
   <script src="../modules/lowongan/lowongan.js"></script>
   <script src="../assets/js/menu.js"></script>
