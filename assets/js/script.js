@@ -32,8 +32,8 @@ const TABLE_CONFIG = {
   },
   job: {
     table: "lowongan_kerja",
-    columns: "id, posisi, perusahaan, lokasi, deskripsi, gambar, created_at",
-    searchColumns: "posisi, perusahaan, lokasi, deskripsi",
+    columns: "id, posisi, perusahaan, lokasi, gambar, created_at",
+    searchColumns: "posisi, perusahaan, lokasi",
     orderColumn: "created_at"
   }
 };
@@ -378,7 +378,7 @@ function createCard(type, item) {
       <span class="pill">${escapeHTML(item.perusahaan)}</span>
       <span class="pill">${escapeHTML(item.lokasi || "Fleksibel")}</span>
       <h3>${escapeHTML(item.posisi)}</h3>
-      <p>${escapeHTML(makeExcerpt(item.deskripsi))}</p>
+      <p>${escapeHTML(item.lokasi || "Detail lowongan tersedia di halaman detail.")}</p>
       <a class="btn ghost" href="../pages/post.html?type=job&id=${encodeURIComponent(item.id)}">Lihat Detail</a>
     </article>
   `;
@@ -423,7 +423,7 @@ function renderLatest() {
       id: item.id,
       type: "job",
       title: item.posisi || "",
-      content: item.deskripsi || "",
+      content: item.lokasi || "Lowongan kerja terbaru.",
       gambar: item.gambar || "",
       label: item.perusahaan || "Lowongan",
       created_at: item.created_at || ""
@@ -596,33 +596,35 @@ function initLatestSlider() {
 }
 
 async function loadHeroStats() {
-  const [
-    jurusanResult,
-    wikiResult,
-    faqResult,
-    jobResult
-  ] = await Promise.all([
-    supabaseClient
-      .from("jurusan")
-      .select("*", { count: "exact", head: true }),
+  const cached = getCache("hero_stats_v1");
+  if (cached) {
+    setText("heroJurusanCount", cached.jurusan || 0);
+    setText("heroWikiCount", cached.wiki || 0);
+    setText("heroFaqCount", cached.faq || 0);
+    setText("heroJobCount", cached.job || 0);
+    return;
+  }
 
-    supabaseClient
-      .from("wiki_kampus")
-      .select("*", { count: "exact", head: true }),
-
-    supabaseClient
-      .from("faq_kampus")
-      .select("*", { count: "exact", head: true }),
-
-    supabaseClient
-      .from("lowongan_kerja")
-      .select("*", { count: "exact", head: true })
+  const [jurusanResult, wikiResult, faqResult, jobResult] = await Promise.all([
+    supabaseClient.from("jurusan").select("id", { count: "exact", head: true }),
+    supabaseClient.from("wiki_kampus").select("id", { count: "exact", head: true }),
+    supabaseClient.from("faq_kampus").select("id", { count: "exact", head: true }),
+    supabaseClient.from("lowongan_kerja").select("id", { count: "exact", head: true })
   ]);
 
-  setText("heroJurusanCount", jurusanResult.count || 0);
-  setText("heroWikiCount", wikiResult.count || 0);
-  setText("heroFaqCount", faqResult.count || 0);
-  setText("heroJobCount", jobResult.count || 0);
+  const stats = {
+    jurusan: jurusanResult.count || 0,
+    wiki: wikiResult.count || 0,
+    faq: faqResult.count || 0,
+    job: jobResult.count || 0
+  };
+
+  setCache("hero_stats_v1", stats);
+
+  setText("heroJurusanCount", stats.jurusan);
+  setText("heroWikiCount", stats.wiki);
+  setText("heroFaqCount", stats.faq);
+  setText("heroJobCount", stats.job);
 }
 
 function initApp() {

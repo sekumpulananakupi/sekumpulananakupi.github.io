@@ -37,3 +37,9 @@ function setActiveMenu() {
     }
   });
 }
+
+async function getComponent(path) {
+  const res = await fetch(path);
+  if (!res.ok) throw new Error(`Gagal load ${path}`);
+  return await res.text();
+}

@@ -220,11 +220,38 @@ async function loadJurusanDetail() {
     return;
   }
 
-  const { data: jurusan, error } = await supabaseClient
+const jurusanCacheKey = `jurusan_detail_${id}_v1`;
+let jurusan = getCache(jurusanCacheKey, 1440);
+
+let error = null;
+
+if (!jurusan) {
+  const result = await supabaseClient
     .from("jurusan")
-    .select("*")
+    .select(`
+      id,
+      nama,
+      fakultas,
+      jenjang,
+      akreditasi,
+      deskripsi,
+      cocok_untuk,
+      gelar,
+      website_resmi,
+      url_kurikulum,
+      url_akreditasi,
+      prospek_kerja
+    `)
     .eq("id", id)
     .single();
+
+  jurusan = result.data;
+  error = result.error;
+
+  if (jurusan) {
+    setCache(jurusanCacheKey, jurusan);
+  }
+}
 
   if (error || !jurusan) {
     console.error("Gagal memuat jurusan:", error?.message);
@@ -234,7 +261,7 @@ async function loadJurusanDetail() {
 
   const { data: biayaPendidikan, error: biayaError } = await supabaseClient
     .from("biaya_pendidikan")
-    .select("*")
+    .select("tahun, jalur, kelompok, status_mahasiswa, ukt, ipi, uang_kuliah")
     .eq("jurusan_id", jurusan.id)
     .order("tahun", { ascending: false })
     .order("jalur", { ascending: true })
@@ -244,9 +271,9 @@ async function loadJurusanDetail() {
     console.error("Gagal memuat biaya pendidikan:", biayaError.message);
   }
 
-  const { data: faqJurusan, error: faqError } = await supabaseClient
+const { data: faqJurusan, error: faqError } = await supabaseClient
     .from("faq_jurusan")
-    .select("*")
+    .select("pertanyaan, jawaban, urutan")
     .eq("jurusan_id", jurusan.id)
     .order("urutan", { ascending: true });
 
@@ -380,9 +407,14 @@ async function loadJurusanDetail() {
 }
 
 async function loadStatistikJurusan(jurusanId) {
+  const cacheKey = `statistik_jurusan_detail_${jurusanId}_v1`;
+  const cached = getCache(cacheKey, 1440);
+
+  if (cached) return cached;
+
   const { data, error } = await supabaseClient
     .from("statistik_jurusan")
-    .select("*")
+    .select("tahun, jalur, daya_tampung, peminat")
     .eq("jurusan_id", jurusanId)
     .order("tahun", { ascending: false });
 
@@ -391,6 +423,7 @@ async function loadStatistikJurusan(jurusanId) {
     return [];
   }
 
+  setCache(cacheKey, data || []);
   return data || [];
 }
 
@@ -740,9 +773,18 @@ function setupAdmissionStatistik(statistik) {
 async function loadRelatedContent(jurusanId, relatedArticleList, relatedJobList) {
   if (!relatedArticleList || !relatedJobList) return;
 
+  const cacheKey = `related_content_jurusan_${jurusanId}_v1`;
+  const cached = getCache(cacheKey, 1440);
+
+  if (cached) {
+    relatedArticleList.innerHTML = cached.articlesHTML;
+    relatedJobList.innerHTML = cached.jobsHTML;
+    return;
+  }
+
   const { data: relasi, error } = await supabaseClient
     .from("artikel_jurusan")
-    .select("*")
+    .select("artikel_id, artikel_tipe")
     .eq("jurusan_id", jurusanId);
 
   if (error) {
@@ -752,45 +794,78 @@ async function loadRelatedContent(jurusanId, relatedArticleList, relatedJobList)
   if (!relasi || !relasi.length) {
     relatedArticleList.innerHTML = `<div class="empty">Belum ada artikel terkait.</div>`;
     relatedJobList.innerHTML = `<div class="empty">Belum ada lowongan terkait.</div>`;
+
+    setCache(cacheKey, {
+      articlesHTML: relatedArticleList.innerHTML,
+      jobsHTML: relatedJobList.innerHTML
+    });
+
     return;
   }
 
-  const articles = [];
-  const jobs = [];
+  const infoIds = relasi
+    .filter(row => row.artikel_tipe === "info")
+    .map(row => row.artikel_id);
 
-  for (const row of relasi) {
-    let table = "";
+  const wikiIds = relasi
+    .filter(row => row.artikel_tipe === "wiki")
+    .map(row => row.artikel_id);
 
-    if (row.artikel_tipe === "info") table = "informasi_kampus";
-    if (row.artikel_tipe === "wiki") table = "wiki_kampus";
-    if (row.artikel_tipe === "job") table = "lowongan_kerja";
+  const jobIds = relasi
+    .filter(row => row.artikel_tipe === "job")
+    .map(row => row.artikel_id);
 
-    if (!table) continue;
+  const [infoResult, wikiResult, jobResult] = await Promise.all([
+    infoIds.length
+      ? supabaseClient
+          .from("informasi_kampus")
+          .select("id, judul, isi, gambar")
+          .in("id", infoIds)
+      : Promise.resolve({ data: [], error: null }),
 
-    const { data, error: itemError } = await supabaseClient
-      .from(table)
-      .select("*")
-      .eq("id", row.artikel_id)
-      .single();
+    wikiIds.length
+      ? supabaseClient
+          .from("wiki_kampus")
+          .select("id, judul, isi, gambar")
+          .in("id", wikiIds)
+      : Promise.resolve({ data: [], error: null }),
 
-    if (itemError) {
-      console.error(`Gagal memuat ${table}:`, itemError.message);
-      continue;
-    }
+    jobIds.length
+      ? supabaseClient
+          .from("lowongan_kerja")
+          .select("id, posisi, perusahaan, deskripsi, gambar")
+          .in("id", jobIds)
+      : Promise.resolve({ data: [], error: null })
+  ]);
 
-    if (!data) continue;
-
-    const item = {
-      ...data,
-      type: row.artikel_tipe
-    };
-
-    if (row.artikel_tipe === "job") {
-      jobs.push(item);
-    } else {
-      articles.push(item);
-    }
+  if (infoResult.error) {
+    console.error("Gagal memuat artikel info terkait:", infoResult.error.message);
   }
+
+  if (wikiResult.error) {
+    console.error("Gagal memuat wiki terkait:", wikiResult.error.message);
+  }
+
+  if (jobResult.error) {
+    console.error("Gagal memuat lowongan terkait:", jobResult.error.message);
+  }
+
+  const articles = [
+    ...(infoResult.data || []).map(item => ({
+      ...item,
+      type: "info"
+    })),
+
+    ...(wikiResult.data || []).map(item => ({
+      ...item,
+      type: "wiki"
+    }))
+  ];
+
+  const jobs = (jobResult.data || []).map(item => ({
+    ...item,
+    type: "job"
+  }));
 
   relatedArticleList.innerHTML = articles.length
     ? articles.map(createRelatedCard).join("")
@@ -799,6 +874,11 @@ async function loadRelatedContent(jurusanId, relatedArticleList, relatedJobList)
   relatedJobList.innerHTML = jobs.length
     ? jobs.map(createRelatedCard).join("")
     : `<div class="empty">Belum ada lowongan terkait.</div>`;
+
+  setCache(cacheKey, {
+    articlesHTML: relatedArticleList.innerHTML,
+    jobsHTML: relatedJobList.innerHTML
+  });
 }
 
 function createRelatedCard(item) {
@@ -815,7 +895,7 @@ function createRelatedCard(item) {
   }
 
   if (item.type === "job") {
-    title = item.posisi || item.judul;
+    title = item.posisi;
     content = item.deskripsi;
     label = item.perusahaan || "Lowongan";
     href = `../pages/post.html?type=job&id=${encodeURIComponent(item.id)}`;
@@ -857,64 +937,66 @@ async function loadAutoMatchedJobs(jurusan, relatedJobList) {
   const prospekList = getProspekList(jurusan);
   if (!prospekList.length) return;
 
-  const { data: jobs, error: jobsError } = await supabaseClient
-    .from("lowongan_kerja")
-    .select("*")
-    .order("created_at", { ascending: false });
+  const cacheKey = `auto_jobs_jurusan_${jurusan.id}_v2`;
+  const cached = getCache(cacheKey, 720);
 
-  if (jobsError) {
-    console.error("Gagal memuat lowongan kerja:", jobsError.message);
+  if (cached) {
+    renderAutoMatchedJobs(cached, relatedJobList);
     return;
   }
 
-  const { data: tagRows, error: tagRowsError } = await supabaseClient
-    .from("artikel_tags")
-    .select("artikel_id, tag_id")
-    .eq("artikel_tipe", "job");
+  const searchTerms = prospekList
+    .slice(0, 6)
+    .map(term => term.replace(/[%_]/g, "").trim())
+    .filter(Boolean);
 
-  if (tagRowsError) {
-    console.error("Gagal memuat relasi tag lowongan:", tagRowsError.message);
-  }
+  if (!searchTerms.length) return;
 
-  const { data: tags, error: tagsError } = await supabaseClient
-    .from("tags")
-    .select("*");
+  const orQuery = searchTerms
+    .map(term => {
+      const safe = term.replace(/[(),]/g, " ");
+      return `posisi.ilike.%${safe}%,perusahaan.ilike.%${safe}%,deskripsi.ilike.%${safe}%`;
+    })
+    .join(",");
 
-  if (tagsError) {
-    console.error("Gagal memuat tags:", tagsError.message);
+  const { data: jobs, error: jobsError } = await supabaseClient
+    .from("lowongan_kerja")
+    .select("id, posisi, perusahaan, deskripsi, gambar, created_at")
+    .or(orQuery)
+    .order("created_at", { ascending: false })
+    .limit(8);
+
+  if (jobsError) {
+    console.error("Gagal memuat lowongan kerja otomatis:", jobsError.message);
+    return;
   }
 
   const matchedJobs = (jobs || [])
     .map(job => {
       const jobText = `
         ${job.posisi || ""}
-        ${job.judul || ""}
         ${job.perusahaan || ""}
         ${stripHTML(job.deskripsi || "")}
       `.toLowerCase();
 
-      const tagNames = (tagRows || [])
-        .filter(row => row.artikel_id === job.id)
-        .map(row => (tags || []).find(tag => tag.id === row.tag_id)?.nama || "")
-        .join(" ")
-        .toLowerCase();
-
-      const matchedProspek = prospekList.find(prospek => {
-        const safeProspek = prospek.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-        const regex = new RegExp(`\\b${safeProspek}\\b`, "i");
-        return regex.test(jobText) || regex.test(tagNames);
-      });
+      const matchedProspek = prospekList.find(prospek => jobText.includes(prospek));
 
       if (!matchedProspek) return null;
 
       return {
         ...job,
+        type: "job",
         matchedProspek
       };
     })
     .filter(Boolean);
 
-  if (!matchedJobs.length) return;
+  setCache(cacheKey, matchedJobs);
+  renderAutoMatchedJobs(matchedJobs, relatedJobList);
+}
+
+function renderAutoMatchedJobs(matchedJobs, relatedJobList) {
+  if (!matchedJobs || !matchedJobs.length || !relatedJobList) return;
 
   const existingJobIds = new Set(
     Array.from(relatedJobList.querySelectorAll("[data-job-id]"))
@@ -1183,8 +1265,8 @@ async function loadRelatedJurusan(currentJurusan) {
 
   const { data: jurusanList } =
     await supabaseClient
-      .from("jurusan")
-      .select("*");
+     .from("jurusan")
+     .select("id, nama, fakultas, jenjang");
 
   if (!jurusanList?.length) {
     container.innerHTML =
@@ -1256,12 +1338,6 @@ async function loadRelatedJurusan(currentJurusan) {
       <h3>
         ${escapeHTML(item.nama)}
       </h3>
-
-      <p>
-        ${escapeHTML(
-          stripHTML(item.deskripsi || "")
-        ).slice(0, 120)}...
-      </p>
 
       <a
         href="../pages/jurusan-detail.html?id=${item.id}"

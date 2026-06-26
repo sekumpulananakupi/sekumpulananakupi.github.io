@@ -21,13 +21,41 @@ const FILTER_DEFAULTS = {
 async function loadJurusan() {
   showLoading("jurusanList", 6);
 
-  const { data, error } = await supabaseClient
-    .from("jurusan")
-    .select("*")
-    .order("nama");
+  const cachedJurusan = getCache("jurusan_list_v1", 1440);
+  const cachedStatistik = getCache("statistik_jurusan_list_v1", 1440);
 
-  if (error) {
-    console.error("Gagal memuat jurusan:", error);
+  if (cachedJurusan && cachedStatistik) {
+    jurusanData = cachedJurusan;
+    statistikData = cachedStatistik;
+    acceptanceMap = buildAcceptanceMap(statistikData);
+
+    setupFilterOptions();
+    applyFiltersFromURL();
+    renderJurusan(false);
+    return;
+  }
+
+  const [jurusanResult, statistikResult] = await Promise.all([
+    supabaseClient
+      .from("jurusan")
+      .select(`
+        id,
+        nama,
+        fakultas,
+        jenjang,
+        akreditasi,
+        deskripsi,
+        prospek_kerja
+      `)
+      .order("nama"),
+
+    supabaseClient
+      .from("statistik_jurusan")
+      .select("jurusan_id, tahun, jalur, daya_tampung, peminat")
+  ]);
+
+  if (jurusanResult.error) {
+    console.error("Gagal memuat jurusan:", jurusanResult.error);
     document.getElementById("jurusanList").innerHTML = `
       <div class="empty">Gagal memuat data jurusan.</div>
     `;
@@ -35,29 +63,24 @@ async function loadJurusan() {
     return;
   }
 
-  jurusanData = data || [];
+  jurusanData = jurusanResult.data || [];
+  statistikData = statistikResult.data || [];
 
-  await loadStatistikJurusan();
+  if (statistikResult.error) {
+    console.warn("Statistik jurusan tidak bisa dimuat. Sorting daya saing tetap aman, tapi tidak aktif.", statistikResult.error);
+    statistikData = [];
+  }
+
+  acceptanceMap = buildAcceptanceMap(statistikData);
+
+  setCache("jurusan_list_v1", jurusanData);
+  setCache("statistik_jurusan_list_v1", statistikData);
+
   setupFilterOptions();
   applyFiltersFromURL();
   renderJurusan(false);
 }
 
-async function loadStatistikJurusan() {
-  const { data, error } = await supabaseClient
-    .from("statistik_jurusan")
-    .select("jurusan_id, tahun, jalur, daya_tampung, peminat");
-
-  if (error) {
-    console.warn("Statistik jurusan tidak bisa dimuat. Sorting daya saing tetap aman, tapi tidak aktif.", error);
-    statistikData = [];
-    acceptanceMap = new Map();
-    return;
-  }
-
-  statistikData = data || [];
-  acceptanceMap = buildAcceptanceMap(statistikData);
-}
 
 function buildAcceptanceMap(rows) {
   const latestYearByJurusan = new Map();

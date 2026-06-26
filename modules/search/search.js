@@ -4,20 +4,7 @@ const SUPABASE_ANON_KEY = "sb_publishable_KL8Jcb1hEzU-kAZiOMYWFg_hupftFmq";
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 let allData = [];
-
-function showLoading(targetId, count = 3) {
-  const target = document.getElementById(targetId);
-  if (!target) return;
-
-  target.innerHTML = Array.from({ length: count }).map(() => `
-    <article class="skeleton-card">
-      <div class="skeleton-line title"></div>
-      <div class="skeleton-line"></div>
-      <div class="skeleton-line"></div>
-      <div class="skeleton-line short"></div>
-    </article>
-  `).join("");
-}
+let searchTimer = null;
 
 function showSimpleLoading(targetId, message = "Memuat data...") {
   const target = document.getElementById(targetId);
@@ -26,7 +13,7 @@ function showSimpleLoading(targetId, message = "Memuat data...") {
   target.innerHTML = `
     <div class="loading-state">
       <div class="loading-spinner"></div>
-      ${message}
+      ${escapeHTML(message)}
     </div>
   `;
 }
@@ -47,53 +34,146 @@ function stripHTML(html) {
   return div.textContent || div.innerText || "";
 }
 
+function normalizeSearchText(text) {
+  return String(text || "")
+    .toLowerCase()
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function makeSearchItem({
+  type,
+  label,
+  title,
+  content,
+  image = "",
+  url
+}) {
+  const cleanContent = stripHTML(content || "");
+
+  return {
+    type,
+    label,
+    title: title || "-",
+    content: cleanContent,
+    image,
+    url,
+    searchText: normalizeSearchText(`
+      ${type}
+      ${label}
+      ${title || ""}
+      ${cleanContent}
+    `)
+  };
+}
+
 async function loadSearchData() {
-  showSimpleLoading("searchResults", "Menyiapkan data pencarian...");
-  const { data: info } = await supabaseClient
-    .from("informasi_kampus")
-    .select("*");
+  const searchResults = document.getElementById("searchResults");
+  const searchInput = document.getElementById("globalSearch");
 
-  const { data: wiki } = await supabaseClient
-    .from("wiki_kampus")
-    .select("*");
+  if (!searchResults || !searchInput) return;
 
-  const { data: jobs } = await supabaseClient
-    .from("lowongan_kerja")
-    .select("*");
+  applyKeywordFromURL();
 
-  const { data: jurusan } = await supabaseClient
-    .from("jurusan")
-    .select("*");
+  if (searchInput.value.trim()) {
+    renderSearchResults();
+  } else {
+    searchResults.innerHTML = `<div class="empty">Ketik kata kunci untuk mencari.</div>`;
+  }
+}
 
-  allData = [
-    ...(info || []).map(item => ({
+function applyKeywordFromURL() {
+  const params = new URLSearchParams(window.location.search);
+  const keyword = params.get("q");
+  const searchInput = document.getElementById("globalSearch");
+
+  if (keyword && searchInput) {
+    searchInput.value = keyword;
+  }
+}
+
+async function renderSearchResults() {
+  const searchInput = document.getElementById("globalSearch");
+  const results = document.getElementById("searchResults");
+
+  if (!searchInput || !results) return;
+
+  const keyword = normalizeSearchText(searchInput.value);
+
+  if (!keyword) {
+    results.innerHTML = `<div class="empty">Ketik kata kunci untuk mencari.</div>`;
+    updateSearchURL("");
+    return;
+  }
+
+  showSimpleLoading("searchResults", "Mencari data...");
+
+  const cacheKey = `global_search_result_${keyword}_v1`;
+  const cached = getCache(cacheKey, 720);
+
+  if (cached) {
+    results.innerHTML = cached;
+    updateSearchURL(keyword);
+    return;
+  }
+
+  const safeKeyword = keyword.replace(/[%,()]/g, " ").trim();
+
+  const [infoResult, wikiResult, jobsResult, jurusanResult] = await Promise.all([
+    supabaseClient
+      .from("informasi_kampus")
+      .select("id, judul, isi, gambar")
+      .or(`judul.ilike.%${safeKeyword}%`)
+      .limit(8),
+
+    supabaseClient
+      .from("wiki_kampus")
+      .select("id, judul, isi, gambar")
+      .or(`judul.ilike.%${safeKeyword}%`)
+      .limit(8),
+
+    supabaseClient
+      .from("lowongan_kerja")
+      .select("id, posisi, perusahaan, deskripsi, gambar")
+      .or(`posisi.ilike.%${safeKeyword}%,perusahaan.ilike.%${safeKeyword}%`)
+      .limit(8),
+
+    supabaseClient
+      .from("jurusan")
+      .select("id, nama, fakultas, deskripsi, prospek_kerja")
+      .or(`nama.ilike.%${safeKeyword}%,fakultas.ilike.%${safeKeyword}%`)
+      .limit(8)
+  ]);
+
+  const searchItems = [
+    ...(infoResult.data || []).map(item => makeSearchItem({
       type: "info",
       label: "Info Kampus",
       title: item.judul,
-      content: stripHTML(item.isi),
+      content: item.isi,
       image: item.gambar,
       url: `../pages/post.html?type=info&id=${item.id}`
     })),
 
-    ...(wiki || []).map(item => ({
+    ...(wikiResult.data || []).map(item => makeSearchItem({
       type: "wiki",
       label: "Wiki Kampus",
       title: item.judul,
-      content: stripHTML(item.isi),
+      content: item.isi,
       image: item.gambar,
       url: `../pages/post.html?type=wiki&id=${item.id}`
     })),
 
-    ...(jobs || []).map(item => ({
+    ...(jobsResult.data || []).map(item => makeSearchItem({
       type: "job",
-      label: "Lowongan",
+      label: item.perusahaan || "Lowongan",
       title: item.posisi,
-      content: stripHTML(item.deskripsi),
+      content: item.deskripsi,
       image: item.gambar,
       url: `../pages/post.html?type=job&id=${item.id}`
     })),
 
-    ...(jurusan || []).map(item => ({
+    ...(jurusanResult.data || []).map(item => makeSearchItem({
       type: "jurusan",
       label: item.fakultas || "Jurusan",
       title: item.nama,
@@ -102,33 +182,13 @@ async function loadSearchData() {
       url: `../pages/jurusan-detail.html?id=${item.id}`
     }))
   ];
-  
-  const params = new URLSearchParams(window.location.search);
-  const keyword = params.get("q");
 
-  if (keyword) {
-    document.getElementById("globalSearch").value = keyword;
-  }
-  
-  renderSearchResults();
-}
-
-function renderSearchResults() {
-  const keyword = document.getElementById("globalSearch").value.toLowerCase();
-  const results = document.getElementById("searchResults");
-
-  if (!keyword) {
-    results.innerHTML = `<div class="empty">Ketik kata kunci untuk mencari.</div>`;
-    return;
-  }
-
-  const filtered = allData.filter(item =>
-    JSON.stringify(item).toLowerCase().includes(keyword)
-  );
-
-  results.innerHTML = filtered.length
-    ? filtered.map(createResultCard).join("")
+  results.innerHTML = searchItems.length
+    ? searchItems.map(createResultCard).join("")
     : `<div class="empty">Tidak ada hasil ditemukan.</div>`;
+
+  setCache(cacheKey, results.innerHTML);
+  updateSearchURL(keyword);
 }
 
 function createResultCard(item) {
@@ -147,6 +207,29 @@ function createResultCard(item) {
   `;
 }
 
-document.getElementById("globalSearch").addEventListener("input", renderSearchResults);
+function updateSearchURL(keyword) {
+  const params = new URLSearchParams();
+
+  if (keyword) {
+    params.set("q", keyword);
+  }
+
+  const query = params.toString();
+  const newURL = query
+    ? `${window.location.pathname}?${query}`
+    : window.location.pathname;
+
+  window.history.replaceState({}, "", newURL);
+}
+
+function handleSearchInput() {
+  clearTimeout(searchTimer);
+
+  searchTimer = setTimeout(() => {
+    renderSearchResults();
+  }, 500);
+}
+
+document.getElementById("globalSearch")?.addEventListener("input", handleSearchInput);
 
 loadSearchData();
