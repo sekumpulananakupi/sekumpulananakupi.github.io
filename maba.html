@@ -85,6 +85,11 @@
             <h3>❓ FAQ Maba</h3>
             <p>Jawaban cepat untuk pertanyaan umum mahasiswa baru.</p>
           </div>
+
+          <div class="maba-card quick-card" data-target="#artikel-maba">
+            <h3>📚 Artikel Maba</h3>
+            <p>Baca panduan penting sebelum mulai kuliah.</p>
+          </div>
         </div>
       </div>
     </section>
@@ -279,7 +284,7 @@
           <p>Untuk versi awal, tombol ini diarahkan ke halaman dokumen. Nanti bisa dibuat otomatis berdasarkan kategori Maba.</p>
         </div>
 
-        <div class="maba-grid">
+        <div class="maba-grid" id="mabaDokumenList"></div>
           <div class="maba-card">
             <h3>Pedoman Akademik</h3>
             <p>Panduan aturan akademik mahasiswa.</p>
@@ -311,13 +316,64 @@
           <p>Temukan komunitas jurusan, fakultas, UKM, organisasi, dan ruang belajar.</p>
         </div>
 
-        <div class="maba-card">
-          <h3>Ingin cari komunitas?</h3>
-          <p style="margin-bottom:16px;">Buka direktori komunitas SA-UPI untuk melihat komunitas yang tersedia.</p>
-          <a href="komunitas.html" class="maba-btn primary">Buka Komunitas</a>
+        <div class="maba-grid" id="mabaKomunitasList">
+        <a href="komunitas.html" class="maba-card maba-card-link">
+            <h3>Komunitas Jurusan</h3>
+            <p>Cari grup atau komunitas berdasarkan jurusan.</p>
+        </a>
+
+        <a href="komunitas.html" class="maba-card maba-card-link">
+            <h3>UKM</h3>
+            <p>Temukan unit kegiatan mahasiswa yang sesuai minatmu.</p>
+        </a>
+
+        <a href="komunitas.html" class="maba-card maba-card-link">
+            <h3>Komunitas Belajar</h3>
+            <p>Tempat belajar bareng dan berbagi informasi akademik.</p>
+        </a>
+
+        <a href="komunitas.html" class="maba-card maba-card-link">
+            <h3>Direktori Komunitas</h3>
+            <p>Buka daftar lengkap komunitas di SA-UPI.</p>
+        </a>
         </div>
       </div>
     </section>
+
+<section id="artikel-maba" class="maba-section alt">
+  <div class="maba-container">
+    <div class="maba-heading">
+      <h2>Artikel Penting untuk Maba</h2>
+      <p>Kumpulan bacaan awal yang cocok untuk mahasiswa baru.</p>
+    </div>
+
+    <div class="maba-grid" id="mabaWikiList"></div>
+      <a href="wiki.html" class="maba-card maba-card-link">
+        <h3>7 Langkah Maba UPI</h3>
+        <p>Panduan awal setelah dinyatakan diterima sebagai mahasiswa baru.</p>
+      </a>
+
+      <a href="wiki.html" class="maba-card maba-card-link">
+        <h3>Kamus Istilah Kuliah</h3>
+        <p>Kenali istilah seperti KRS, SKS, dosen wali, IP, IPK, dan lainnya.</p>
+      </a>
+
+      <a href="wiki.html" class="maba-card maba-card-link">
+        <h3>Etika Menghubungi Dosen</h3>
+        <p>Contoh chat yang sopan dan aman untuk komunikasi akademik.</p>
+      </a>
+
+      <a href="wiki.html" class="maba-card maba-card-link">
+        <h3>Cara Backup Data Kuliah</h3>
+        <p>Tips menyimpan file penting supaya tidak hilang saat kuliah.</p>
+      </a>
+    </div>
+
+    <div style="margin-top:20px;">
+      <a href="wiki.html" class="maba-btn primary">Buka Wiki UPI</a>
+    </div>
+  </div>
+</section>
 
     <section id="faq" class="maba-section">
       <div class="maba-container">
@@ -384,6 +440,7 @@
     </section>
   </main>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="maba.js"></script>
 </body>
 </html>
