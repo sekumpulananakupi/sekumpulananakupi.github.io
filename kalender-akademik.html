@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Kalender Akademik UPI 2026/2027 - SA UPI</title>
+  <meta name="description" content="Kalender Akademik Universitas Pendidikan Indonesia Tahun Akademik 2026/2027, meliputi jadwal registrasi, perkuliahan, ujian, cuti akademik, semester antara, dan wisuda." />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header class="site-header">
+    <nav class="navbar">
+      <a href="index.html" class="logo">SA UPI</a>
+
+      <div class="nav-links">
+        <a href="index.html">Beranda</a>
+        <a href="jurusan.html">Jurusan</a>
+        <a href="biaya.html">Biaya</a>
+        <a href="kalender-akademik.html" class="active">Kalender Akademik</a>
+        <a href="faq.html">FAQ</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="calendar-page">
+
+    <section class="calendar-hero">
+      <div class="container">
+        <span class="eyebrow">Kalender Akademik</span>
+
+        <h1>Kalender Akademik UPI 2026/2027</h1>
+
+        <p>
+          Ringkasan jadwal penting akademik UPI mulai dari penerimaan mahasiswa,
+          registrasi, perkuliahan, ujian, cuti akademik, semester antara, hingga wisuda.
+        </p>
+
+        <div class="calendar-source">
+          Sumber: SK Rektor UPI Nomor 162/UN40/PK.01/2026 tentang Kalender Akademik UPI Tahun Akademik 2026/2027.
+        </div>
+      </div>
+    </section>
+
+    <section class="next-event-section">
+      <div class="container">
+        <div id="nextEventCard" class="next-event-card"></div>
+      </div>
+    </section>
+
+    <section class="calendar-month-section">
+      <div class="container">
+
+        <div class="calendar-month-header">
+          <button id="prevMonth" type="button">◀</button>
+          <h2 id="monthTitle">Juli 2026</h2>
+          <button id="nextMonth" type="button">▶</button>
+        </div>
+
+        <div class="month-weekdays">
+          <div>Sen</div>
+          <div>Sel</div>
+          <div>Rab</div>
+          <div>Kam</div>
+          <div>Jum</div>
+          <div>Sab</div>
+          <div>Min</div>
+        </div>
+
+        <div class="month-grid" id="monthGrid"></div>
+
+      </div>
+    </section>
+
+    <section class="calendar-section">
+      <div class="container">
+
+        <div class="section-heading">
+          <div>
+            <h2>Daftar Kalender Akademik</h2>
+            <p>Pilih kategori untuk melihat jadwal yang kamu butuhkan.</p>
+          </div>
+        </div>
+
+        <div class="calendar-controls">
+          <input
+            type="search"
+            id="calendarSearch"
+            placeholder="Cari kegiatan, contoh: UTS, UKT, SNBT, wisuda..."
+          />
+
+          <select id="calendarCategory">
+            <option value="semua">Semua Kategori</option>
+            <option value="Penerimaan Mahasiswa">Penerimaan Mahasiswa</option>
+            <option value="Registrasi">Registrasi</option>
+            <option value="Perkuliahan">Perkuliahan</option>
+            <option value="Ujian dan Nilai">Ujian dan Nilai</option>
+            <option value="Cuti Akademik">Cuti Akademik</option>
+            <option value="Semester Antara">Semester Antara</option>
+            <option value="Wisuda">Wisuda</option>
+          </select>
+
+          <select id="calendarSemester">
+            <option value="semua">Semua Semester</option>
+            <option value="Ganjil">Ganjil</option>
+            <option value="Genap">Genap</option>
+            <option value="Semester Antara">Semester Antara</option>
+            <option value="Umum">Umum</option>
+          </select>
+        </div>
+
+        <label class="calendar-toggle">
+          <input type="checkbox" id="hidePast" checked />
+          Sembunyikan agenda yang sudah selesai
+        </label>
+
+        <div id="calendarCount" class="calendar-count"></div>
+
+        <div id="calendarList" class="calendar-list"></div>
+
+        <div id="calendarPagination" class="calendar-pagination"></div>
+
+      </div>
+    </section>
+
+    <section class="calendar-note">
+      <div class="container">
+        <div class="note-box">
+          <h2>Catatan</h2>
+
+          <p>
+            Halaman ini adalah ringkasan informatif untuk memudahkan mahasiswa membaca jadwal.
+            Untuk kebutuhan resmi, tetap rujuk dokumen kalender akademik UPI yang diterbitkan universitas.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <div id="calendarModal" class="calendar-modal">
+      <div class="calendar-modal-content">
+        <button id="closeCalendarModal" type="button">✕</button>
+        <h2 id="modalTitle"></h2>
+        <div id="modalBody"></div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="site-footer">
+    <p>&copy; 2026 SA UPI. Dibuat untuk membantu mahasiswa dan calon mahasiswa UPI.</p>
+  </footer>
+
+  <script src="kalender-data.js"></script>
+  <script src="kalender-utils.js"></script>
+  <script src="kalender-list.js"></script>
+  <script src="kalender-next.js"></script>
+  <script src="kalender-month.js"></script>
+
+</body>
+</html>

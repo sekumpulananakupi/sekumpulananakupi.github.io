@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Website Sedang Maintenance</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(37, 99, 235, 0.18), transparent 35%),
+        linear-gradient(135deg, #0f172a, #1e293b);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .maintenance-card {
+      width: 100%;
+      max-width: 680px;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 28px;
+      padding: 42px 28px;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
+      backdrop-filter: blur(14px);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(250, 204, 21, 0.15);
+      color: #fde68a;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 24px;
+    }
+
+    .icon {
+      font-size: 64px;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      font-size: clamp(32px, 6vw, 54px);
+      line-height: 1.05;
+      margin-bottom: 16px;
+      letter-spacing: -1.5px;
+    }
+
+    p {
+      color: #cbd5e1;
+      font-size: 17px;
+      line-height: 1.7;
+      max-width: 540px;
+      margin: 0 auto 28px;
+    }
+
+    .info-box {
+      background: rgba(15, 23, 42, 0.55);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 18px;
+      padding: 18px;
+      color: #e2e8f0;
+      font-size: 15px;
+      line-height: 1.6;
+      margin-bottom: 28px;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      text-decoration: none;
+      padding: 12px 18px;
+      border-radius: 14px;
+      font-weight: 700;
+      transition: 0.2s ease;
+    }
+
+    .btn-primary {
+      background: #facc15;
+      color: #1e293b;
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      opacity: 0.9;
+    }
+
+    footer {
+      margin-top: 28px;
+      font-size: 13px;
+      color: #94a3b8;
+    }
+
+    @media (max-width: 480px) {
+      .maintenance-card {
+        padding: 34px 20px;
+        border-radius: 22px;
+      }
+
+      .icon {
+        font-size: 52px;
+      }
+
+      p {
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="maintenance-card">
+    <div class="badge">⚙️ Maintenance Mode</div>
+
+    <div class="icon">🚧</div>
+
+    <h1>Website Sedang Dalam Perbaikan</h1>
+
+    <p>
+      Saat ini website sedang kami rapikan dan tingkatkan agar informasi yang tersedia
+      lebih cepat, nyaman, dan mudah diakses.
+    </p>
+
+    <div class="info-box">
+      Silakan kembali beberapa saat lagi. Terima kasih sudah bersabar dan mendukung
+      pengembangan Sekumpulan Anak UPI.
+    </div>
+
+    <div class="actions">
+      <!-- <a href="https://www.instagram.com/sekumpulananakupi" class="btn btn-primary">
+        Cek Update Instagram
+      </a> -->
+      <a href="mailto:sekumpulananakupi@gmail.com" class="btn btn-secondary">
+        Hubungi Admin
+      </a>
+    </div>
+
+    <footer>
+      © 2026 Sekumpulan Anak UPI
+    </footer>
+  </main>
+</body>
+</html>

@@ -211,10 +211,183 @@ async function loadDynamicMabaContent() {
   ]);
 }
 
+let mabaCalendarData = [];
+let activeCalendarCategory = "Semua";
+
+function formatTanggalIndonesia(dateString) {
+  if (!dateString) return "-";
+
+  const date = new Date(dateString + "T00:00:00");
+
+  return date.toLocaleDateString("id-ID", {
+    day: "numeric",
+    month: "short",
+    year: "numeric"
+  });
+}
+
+function getDayNumber(dateString) {
+  const date = new Date(dateString + "T00:00:00");
+  return date.getDate();
+}
+
+function getMonthYear(dateString) {
+  const date = new Date(dateString + "T00:00:00");
+
+  return date.toLocaleDateString("id-ID", {
+    month: "short",
+    year: "numeric"
+  });
+}
+
+function getCountdownLabel(startDateString, endDateString) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const start = new Date(startDateString + "T00:00:00");
+  const end = endDateString
+    ? new Date(endDateString + "T00:00:00")
+    : start;
+
+  const diffStart = Math.ceil((start - today) / (1000 * 60 * 60 * 24));
+
+  if (today >= start && today <= end) return "Hari ini";
+  if (diffStart === 1) return "Besok";
+  if (diffStart > 1) return `${diffStart} hari lagi`;
+  return "Selesai";
+}
+
+function renderCalendarFilters(data) {
+  const filterContainer = document.getElementById("mabaCalendarFilter");
+  if (!filterContainer) return;
+
+  const categories = ["Semua", ...new Set(data.map(item => item.kategori || "Umum"))];
+
+  filterContainer.innerHTML = categories.map(category => `
+    <button class="${category === activeCalendarCategory ? "active" : ""}" data-category="${category}">
+      ${category}
+    </button>
+  `).join("");
+
+  filterContainer.querySelectorAll("button").forEach(button => {
+    button.addEventListener("click", () => {
+      activeCalendarCategory = button.dataset.category;
+      renderCalendarFilters(mabaCalendarData);
+      renderMabaCalendar();
+    });
+  });
+}
+
+function renderMabaCalendar() {
+  const container = document.getElementById("mabaCalendarList");
+  const searchInput = document.getElementById("mabaCalendarSearch");
+
+  if (!container) return;
+
+  const keyword = searchInput ? searchInput.value.toLowerCase().trim() : "";
+
+  let filtered = [...mabaCalendarData];
+
+  if (activeCalendarCategory !== "Semua") {
+    filtered = filtered.filter(item => (item.kategori || "Umum") === activeCalendarCategory);
+  }
+
+  if (keyword) {
+    filtered = filtered.filter(item => {
+      const text = [
+        item.judul,
+        item.deskripsi,
+        item.kategori,
+        item.status
+      ].join(" ").toLowerCase();
+
+      return text.includes(keyword);
+    });
+  }
+
+  if (filtered.length === 0) {
+    container.innerHTML = `
+      <div class="maba-card">
+        <h3>Agenda tidak ditemukan</h3>
+        <p>Coba gunakan kata kunci atau kategori lain.</p>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = filtered.map(item => {
+    const tanggal = item.tanggal_selesai
+      ? `${formatTanggalIndonesia(item.tanggal_mulai)} - ${formatTanggalIndonesia(item.tanggal_selesai)}`
+      : formatTanggalIndonesia(item.tanggal_mulai);
+
+    const link = item.link
+      ? `<a href="${item.link}" class="maba-btn">Detail</a>`
+      : "";
+
+    return `
+      <article class="maba-calendar-card" data-category="${item.kategori || "Umum"}">
+        <div class="maba-calendar-date">
+          <strong>${getDayNumber(item.tanggal_mulai)}</strong>
+          <span>${getMonthYear(item.tanggal_mulai)}</span>
+        </div>
+
+        <div class="maba-calendar-content">
+          <h3>${item.judul}</h3>
+          <p>${item.deskripsi || "Belum ada deskripsi."}</p>
+
+          <div class="maba-calendar-meta">
+            <span class="maba-calendar-pill">${item.kategori || "Umum"}</span>
+            <span class="maba-calendar-pill">${tanggal}</span>
+          </div>
+        </div>
+
+        <div class="maba-calendar-countdown">
+          ${getCountdownLabel(item.tanggal_mulai, item.tanggal_selesai)}
+          <div style="margin-top:10px;">${link}</div>
+        </div>
+      </article>
+    `;
+  }).join("");
+}
+
+async function loadMabaCalendar() {
+  const container = document.getElementById("mabaCalendarList");
+  if (!container || !supabaseClient) return;
+
+  const { data, error } = await supabaseClient
+    .from("kalender_maba")
+    .select("judul, deskripsi, tanggal_mulai, tanggal_selesai, kategori, status, link, urutan")
+    .eq("status", "Aktif")
+    .order("tanggal_mulai", { ascending: true })
+    .order("urutan", { ascending: true });
+
+  if (error || !data || data.length === 0) {
+    container.innerHTML = `
+      <div class="maba-card">
+        <h3>Kalender belum tersedia</h3>
+        <p>Agenda mahasiswa baru belum ditambahkan.</p>
+      </div>
+    `;
+    return;
+  }
+
+  mabaCalendarData = data;
+  renderCalendarFilters(data);
+  renderMabaCalendar();
+
+  const searchInput = document.getElementById("mabaCalendarSearch");
+
+  if (searchInput) {
+    searchInput.addEventListener("input", renderMabaCalendar);
+  }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   initChecklist();
   initQuickScroll();
   initAccordion();
   initFaqSearch();
-  loadDynamicMabaContent();
+  /*loadDynamicMabaContent();*/
+  loadMabaCalendar();
 });
+
