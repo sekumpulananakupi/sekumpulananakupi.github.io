@@ -3311,3 +3311,233 @@ nav a {
   color: white;
   border-color: #0f766e;
 }
+
+.modern-header {
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.modern-navbar {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modern-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  font-weight: 900;
+  color: #0f172a;
+}
+
+.logo-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: #0f766e;
+  color: white;
+  font-weight: 900;
+}
+
+.logo-text {
+  font-size: 1.1rem;
+}
+
+.modern-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.modern-nav-links a {
+  text-decoration: none;
+  color: #334155;
+  font-weight: 800;
+  padding: 10px 14px;
+  border-radius: 999px;
+  transition: 0.2s ease;
+}
+
+.modern-nav-links a:hover {
+  background: #f1f5f9;
+  color: #0f766e;
+}
+
+.modern-nav-links a.active {
+  background: #0f766e;
+  color: white;
+}
+
+.calendar-hero-modern {
+  padding: 80px 0 70px;
+  background:
+    radial-gradient(circle at top right, rgba(20, 184, 166, 0.35), transparent 35%),
+    linear-gradient(135deg, #064e3b, #0f766e);
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.calendar-hero-modern::after {
+  content: "📅";
+  position: absolute;
+  right: 8%;
+  top: 18%;
+  font-size: 12rem;
+  opacity: 0.08;
+}
+
+.calendar-hero-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 0.8fr;
+  gap: 30px;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+.calendar-hero-content h1 {
+  margin: 14px 0;
+  font-size: clamp(2.2rem, 5vw, 4rem);
+  line-height: 1.05;
+}
+
+.calendar-hero-content p {
+  max-width: 760px;
+  color: #ecfeff;
+  font-size: 1.05rem;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+  flex-wrap: wrap;
+}
+
+.hero-btn {
+  display: inline-flex;
+  text-decoration: none;
+  padding: 12px 18px;
+  border-radius: 999px;
+  font-weight: 900;
+}
+
+.hero-btn.primary {
+  background: white;
+  color: #0f766e;
+}
+
+.hero-btn.secondary {
+  background: rgba(255,255,255,0.14);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.25);
+}
+
+.calendar-hero-panel {
+  background: rgba(255,255,255,0.14);
+  border: 1px solid rgba(255,255,255,0.2);
+  backdrop-filter: blur(12px);
+  border-radius: 28px;
+  padding: 24px;
+}
+
+.hero-panel-label {
+  font-weight: 900;
+  color: #ccfbf1;
+}
+
+.hero-stat-main {
+  margin: 18px 0;
+}
+
+.hero-stat-main span {
+  display: block;
+  font-size: 3.5rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.hero-stat-main p {
+  margin: 6px 0 0;
+  color: #ecfeff;
+}
+
+.hero-mini-stats {
+  display: grid;
+  gap: 12px;
+}
+
+.hero-mini-stats div {
+  background: rgba(255,255,255,0.12);
+  border-radius: 16px;
+  padding: 14px;
+}
+
+.hero-mini-stats strong {
+  display: block;
+  font-size: 1.2rem;
+}
+
+.hero-mini-stats span {
+  color: #d1fae5;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 860px) {
+  .modern-navbar {
+    align-items: flex-start;
+    gap: 14px;
+    flex-direction: column;
+  }
+
+  .modern-nav-links {
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+
+  .modern-nav-links a {
+    white-space: nowrap;
+  }
+
+  .calendar-hero-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+html {
+  scroll-padding-top: 95px;
+}
+
+.calendar-hero-modern {
+  padding-top: 95px;
+  padding-bottom: 85px;
+}
+
+.next-event-section {
+  margin-top: 0;
+  padding-top: 34px;
+}
+
+.next-event-card {
+  position: relative;
+  z-index: 2;
+}
+
+.calendar-month-section,
+.calendar-section {
+  scroll-margin-top: 105px;
+}

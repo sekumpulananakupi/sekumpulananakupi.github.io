@@ -11,38 +11,78 @@
 </head>
 <body>
 
-  <header class="site-header">
-    <nav class="navbar">
-      <a href="index.html" class="logo">SA UPI</a>
+  <header class="site-header modern-header">
+  <nav class="navbar modern-navbar">
+    <a href="index.html" class="logo modern-logo">
+      <span class="logo-mark">SA</span>
+      <span class="logo-text">UPI</span>
+    </a>
 
-      <div class="nav-links">
-        <a href="index.html">Beranda</a>
-        <a href="jurusan.html">Jurusan</a>
-        <a href="biaya.html">Biaya</a>
-        <a href="kalender-akademik.html" class="active">Kalender Akademik</a>
-        <a href="faq.html">FAQ</a>
-      </div>
-    </nav>
-  </header>
+    <div class="nav-links modern-nav-links">
+      <a href="index.html">Beranda</a>
+      <a href="jurusan.html">Jurusan</a>
+      <a href="biaya.html">Biaya</a>
+      <a href="kalender-akademik.html" class="active">Kalender Akademik</a>
+      <a href="faq.html">FAQ</a>
+    </div>
+  </nav>
+</header>
 
   <main class="calendar-page">
 
-    <section class="calendar-hero">
-      <div class="container">
-        <span class="eyebrow">Kalender Akademik</span>
+<section class="calendar-hero calendar-hero-modern">
+  <div class="container">
+    <div class="calendar-hero-grid">
+
+      <div class="calendar-hero-content">
+        <span class="eyebrow">📅 Kalender Akademik</span>
 
         <h1>Kalender Akademik UPI 2026/2027</h1>
 
         <p>
-          Ringkasan jadwal penting akademik UPI mulai dari penerimaan mahasiswa,
-          registrasi, perkuliahan, ujian, cuti akademik, semester antara, hingga wisuda.
+          Semua jadwal penting UPI dalam satu halaman: penerimaan mahasiswa,
+          registrasi, perkuliahan, ujian, cuti akademik, semester antara, dan wisuda.
         </p>
 
+        <div class="hero-actions">
+          <a href="#calendarList" class="hero-btn primary">Lihat Agenda</a>
+          <a href="#kalenderBulanan" class="hero-btn secondary">Kalender Bulanan</a>
+        </div>
+
         <div class="calendar-source">
-          Sumber: SK Rektor UPI Nomor 162/UN40/PK.01/2026 tentang Kalender Akademik UPI Tahun Akademik 2026/2027.
+          Sumber: SK Rektor UPI Nomor 162/UN40/PK.01/2026.
         </div>
       </div>
-    </section>
+
+      <div class="calendar-hero-panel">
+        <div class="hero-panel-label">Ringkasan</div>
+
+        <div class="hero-stat-main">
+          <span>121</span>
+          <p>Agenda Akademik</p>
+        </div>
+
+        <div class="hero-mini-stats">
+          <div>
+            <strong>7</strong>
+            <span>Kategori</span>
+          </div>
+
+          <div>
+            <strong>2</strong>
+            <span>Semester</span>
+          </div>
+
+          <div>
+            <strong>2026–2027</strong>
+            <span>Periode</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
 
     <section class="next-event-section">
       <div class="container">
@@ -50,7 +90,7 @@
       </div>
     </section>
 
-    <section class="calendar-month-section">
+<section class="calendar-month-section" id="kalenderBulanan">
       <div class="container">
 
         <div class="calendar-month-header">
