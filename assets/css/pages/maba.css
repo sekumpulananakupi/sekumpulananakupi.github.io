@@ -1,0 +1,549 @@
+/* maba.css - hasil pecahan dari style.css */
+
+/* =========================
+   HALAMAN MAHASISWA BARU
+========================= */
+.maba-page {
+  background: #f4f7fb;
+  color: #172033;
+}
+
+
+
+.maba-page a {
+  color: inherit;
+}
+
+
+
+.maba-hero {
+  padding: 72px 20px 48px;
+  background: linear-gradient(135deg, #eef5ff, #ffffff);
+  border-bottom: 1px solid #e5e7eb;
+}
+
+
+
+.maba-container {
+  width: min(1180px, 92%);
+  margin: 0 auto;
+}
+
+
+
+.maba-badge {
+  display: inline-flex;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: #e0edff;
+  color: #1d4ed8;
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+
+
+.maba-hero h1 {
+  font-size: clamp(32px, 5vw, 56px);
+  line-height: 1.1;
+  margin: 0 0 16px;
+  color: #0f172a;
+}
+
+
+
+.maba-hero p {
+  max-width: 760px;
+  font-size: 18px;
+  color: #475569;
+  line-height: 1.7;
+  margin: 0 0 28px;
+}
+
+
+
+.maba-actions,
+.maba-section-action {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+
+
+.maba-section-action {
+  margin-top: 20px;
+}
+
+
+
+.maba-btn {
+  position: static !important;
+  width: fit-content !important;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 18px;
+  border-radius: 14px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #0f172a !important;
+  font-weight: 800;
+  text-decoration: none !important;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+
+
+.maba-btn.primary {
+  background: #2563eb;
+  color: #ffffff !important;
+  border-color: #2563eb;
+}
+
+
+
+.maba-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+}
+
+
+
+.maba-section {
+  padding: 56px 0;
+}
+
+
+
+.maba-section.alt {
+  background: #f8fafc;
+}
+
+
+
+.maba-heading {
+  margin-bottom: 24px;
+}
+
+
+
+.maba-heading h2 {
+  font-size: 30px;
+  color: #0f172a;
+  margin: 0 0 8px;
+}
+
+
+
+.maba-heading p {
+  color: #64748b;
+  line-height: 1.7;
+  max-width: 760px;
+  margin: 0;
+}
+
+
+
+.maba-grid,
+#mabaWikiList,
+#mabaDokumenList,
+#mabaKomunitasList {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 16px !important;
+  align-items: stretch;
+}
+
+
+
+.maba-card,
+.maba-card-link {
+  position: static !important;
+  display: block !important;
+  width: auto !important;
+  height: auto !important;
+  min-height: 150px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.04);
+  color: inherit;
+  text-decoration: none !important;
+}
+
+
+
+.maba-card h3 {
+  margin: 0 0 8px;
+  color: #0f172a;
+  font-size: 18px;
+  line-height: 1.35;
+}
+
+
+
+.maba-card p {
+  color: #64748b;
+  line-height: 1.6;
+  margin: 0;
+  font-size: 14px;
+}
+
+
+
+.quick-card,
+.maba-card-link {
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+
+
+.quick-card:hover,
+.maba-card-link:hover {
+  border-color: #2563eb;
+  transform: translateY(-3px);
+}
+
+
+
+.checklist {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+
+
+.timeline {
+  display: grid;
+  gap: 14px;
+}
+
+
+
+.timeline-item {
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  gap: 14px;
+  align-items: start;
+}
+
+
+
+.timeline-number {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #2563eb;
+  color: #ffffff;
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+}
+
+
+
+.accordion {
+  display: grid;
+  gap: 12px;
+}
+
+
+
+.accordion-item {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: none;
+  padding: 0;
+  margin: 0;
+}
+
+
+
+.accordion-btn {
+  width: 100%;
+  border: 0;
+  background: #ffffff;
+  padding: 18px 20px;
+  text-align: left;
+  font-weight: 800;
+  color: #0f172a;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  font-size: 16px;
+}
+
+
+
+.accordion-content {
+  display: none;
+  padding: 0 20px 20px;
+  color: #475569;
+  line-height: 1.7;
+}
+
+
+
+.accordion-item.active .accordion-content {
+  display: block;
+}
+
+
+
+.maba-footer-cta {
+  background: #0f172a;
+  color: #ffffff;
+  border-radius: 28px;
+  padding: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+
+
+.maba-footer-cta h2 {
+  margin: 0 0 8px;
+  color: #ffffff;
+}
+
+
+
+.maba-footer-cta p {
+  margin: 0;
+  color: #cbd5e1;
+}
+
+
+
+.maba-loading,
+.maba-empty {
+  grid-column: 1 / -1;
+  min-height: auto;
+  color: #64748b;
+}
+
+
+
+@media (max-width: 900px) {
+  .maba-grid,
+  #mabaWikiList,
+  #mabaDokumenList,
+  #mabaKomunitasList {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .checklist {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+
+@media (max-width: 600px) {
+  .maba-grid,
+  #mabaWikiList,
+  #mabaDokumenList,
+  #mabaKomunitasList {
+    grid-template-columns: 1fr !important;
+  }
+
+  .maba-section {
+    padding: 40px 0;
+  }
+
+  .maba-card,
+  .maba-card-link {
+    padding: 18px;
+  }
+
+  .timeline-item {
+    grid-template-columns: 40px 1fr;
+  }
+
+  .timeline-number {
+    width: 38px;
+    height: 38px;
+  }
+}
+
+
+
+/* =========================
+   KALENDER MABA
+========================= */
+
+.maba-calendar-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 16px 0 22px;
+}
+
+
+
+.maba-calendar-filter button {
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #0f172a;
+  padding: 10px 14px;
+  border-radius: 999px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+
+
+.maba-calendar-filter button:hover,
+.maba-calendar-filter button.active {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #2563eb;
+}
+
+
+
+.maba-calendar-grid {
+  display: grid;
+  gap: 14px;
+}
+
+
+
+.maba-calendar-card {
+  display: grid;
+  grid-template-columns: 120px 1fr auto;
+  gap: 16px;
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-left: 6px solid #2563eb;
+  border-radius: 20px;
+  padding: 18px;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+}
+
+
+
+.maba-calendar-date {
+  text-align: center;
+  padding: 12px;
+  border-radius: 16px;
+  background: #f8fafc;
+}
+
+
+
+.maba-calendar-date strong {
+  display: block;
+  font-size: 26px;
+  color: #0f172a;
+  line-height: 1;
+}
+
+
+
+.maba-calendar-date span {
+  display: block;
+  margin-top: 6px;
+  color: #64748b;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+
+
+.maba-calendar-content h3 {
+  margin: 0 0 6px;
+  color: #0f172a;
+}
+
+
+
+.maba-calendar-content p {
+  margin: 0;
+  color: #64748b;
+  line-height: 1.6;
+}
+
+
+
+.maba-calendar-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+
+
+.maba-calendar-pill {
+  display: inline-flex;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: #eef2ff;
+  color: #1d4ed8;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+
+
+.maba-calendar-countdown {
+  min-width: 120px;
+  text-align: center;
+  font-weight: 900;
+  color: #2563eb;
+}
+
+
+
+.maba-calendar-card[data-category="Keuangan"] {
+  border-left-color: #16a34a;
+}
+
+
+
+.maba-calendar-card[data-category="PKKMB"] {
+  border-left-color: #f97316;
+}
+
+
+
+.maba-calendar-card[data-category="Beasiswa"] {
+  border-left-color: #9333ea;
+}
+
+
+
+.maba-calendar-card[data-category="Deadline"] {
+  border-left-color: #dc2626;
+}
+
+
+
+@media (max-width: 768px) {
+  .maba-calendar-card {
+    grid-template-columns: 1fr;
+  }
+
+  .maba-calendar-date {
+    text-align: left;
+  }
+
+  .maba-calendar-countdown {
+    text-align: left;
+  }
+}

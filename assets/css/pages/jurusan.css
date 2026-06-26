@@ -1,0 +1,616 @@
+/* jurusan.css - hasil pecahan dari style.css */
+
+.jurusan-pill {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+
+
+.statistik-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin: 24px 0;
+}
+
+
+
+@media (max-width: 768px) {
+  .statistik-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+
+.jurusan-info-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin: 24px 0;
+}
+
+
+
+@media (max-width: 768px) {
+  .jurusan-info-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+
+.prospek-chip-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 16px 0 24px;
+}
+
+
+
+.prospek-chip {
+  text-decoration: none;
+}
+
+
+
+.program-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+
+
+.jurusan-ukt-text {
+  white-space: pre-line;
+  line-height: 1.7;
+}
+
+
+
+.admission-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+
+
+.admission-tab {
+  border: 1px solid #bfdbfe;
+  background: #fff;
+  color: #2563eb;
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+
+
+.admission-tab.active {
+  background: #2563eb;
+  color: #fff;
+}
+
+
+
+.admission-card {
+  height: 360px;
+  background: #fff;
+  border-radius: 18px;
+  padding: 20px;
+  margin-bottom: 18px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+}
+
+
+
+.admission-table-wrap {
+  overflow-x: auto;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+}
+
+
+
+.admission-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 520px;
+}
+
+
+
+.admission-table th,
+.admission-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+}
+
+
+
+.admission-table th {
+  background: #f8fafc;
+  color: #334155;
+}
+
+
+
+.empty-statistik {
+  text-align: center;
+  color: #64748b;
+}
+
+
+
+.biaya-section {
+  margin-top: 32px;
+}
+
+
+
+.biaya-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 16px 0;
+}
+
+
+
+.biaya-tab-btn {
+  border: 1px solid #dbe3ef;
+  background: #ffffff;
+  color: #1f2937;
+  padding: 9px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+
+
+.biaya-tab-btn:hover {
+  background: #eff6ff;
+  border-color: #2563eb;
+}
+
+
+
+.biaya-tab-btn.active {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #2563eb;
+}
+
+
+
+.biaya-tab-content {
+  display: none;
+  margin-top: 16px;
+}
+
+
+
+.biaya-tab-content.active {
+  display: block;
+}
+
+
+
+.biaya-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+
+
+.biaya-table th,
+.biaya-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+}
+
+
+
+.biaya-table th {
+  background: #f8fafc;
+  color: #0f172a;
+  font-weight: 700;
+}
+
+
+
+.biaya-table td {
+  color: #1f2937;
+}
+
+
+
+.biaya-card-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:16px;
+  margin-top:16px;
+}
+
+
+
+.biaya-card{
+  background:#fff;
+  border:1px solid #e5e7eb;
+  border-radius:16px;
+  padding:18px;
+  box-shadow:0 2px 10px rgba(0,0,0,.05);
+}
+
+
+
+.biaya-title{
+  font-size:1.05rem;
+  font-weight:700;
+  margin-bottom:12px;
+}
+
+
+
+.biaya-item{
+  display:flex;
+  justify-content:space-between;
+  margin-top:8px;
+}
+
+
+
+.biaya-item strong{
+  color:#2563eb;
+}
+
+
+
+.biaya-tabs{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-bottom:20px;
+}
+
+
+
+.biaya-tab-btn{
+  border:none;
+  padding:10px 16px;
+  border-radius:999px;
+  cursor:pointer;
+}
+
+
+
+.biaya-tab-btn.active{
+  font-weight:700;
+}
+
+
+
+.admission-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin: 16px 0;
+}
+
+
+
+.admission-summary-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 14px;
+}
+
+
+
+.admission-summary-card span {
+  display: block;
+  font-size: .85rem;
+  color: #64748b;
+  margin-bottom: 6px;
+}
+
+
+
+.admission-summary-card strong {
+  font-size: 1.25rem;
+}
+
+
+
+.admission-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 14px 0;
+}
+
+
+
+.faq-jurusan-section {
+  display: grid;
+  gap: 12px;
+  margin: 16px 0 28px;
+}
+
+
+
+.faq-jurusan-item {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+
+
+.faq-jurusan-item summary {
+  cursor: pointer;
+  padding: 16px;
+  font-weight: 700;
+}
+
+
+
+.faq-jurusan-answer {
+  padding: 0 16px 16px;
+  color: #475569;
+  line-height: 1.7;
+}
+
+
+
+/* ===== Statistik Penerimaan Tambahan ===== */
+
+.admission-compare {
+  margin: 16px 0;
+}
+
+
+
+.admission-summary {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 14px;
+  margin: 16px 0;
+}
+
+
+
+.admission-trend {
+  margin: 14px 0 18px;
+}
+
+
+
+.admission-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 18px 0;
+}
+
+
+
+.admission-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+
+
+.admission-tab {
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  color: #334155;
+  border-radius: 999px;
+  padding: 10px 18px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+
+
+.admission-tab:hover {
+  background: #f8fafc;
+}
+
+
+
+.admission-tab.active {
+  background: #0f172a;
+  color: #ffffff;
+  border-color: #0f172a;
+}
+
+
+
+.admission-card {
+  height: 360px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 22px;
+  padding: 18px;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.07);
+  margin: 16px 0;
+}
+
+
+
+.admission-table-wrap {
+  overflow-x: auto;
+  margin-top: 16px;
+}
+
+
+
+.admission-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #ffffff;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+}
+
+
+
+.admission-table th,
+.admission-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+  white-space: nowrap;
+}
+
+
+
+.admission-table th {
+  background: #f8fafc;
+  color: #475569;
+  font-size: 0.86rem;
+}
+
+
+
+.admission-table td {
+  color: #334155;
+}
+
+
+
+.empty-statistik {
+  text-align: center;
+  color: #64748b;
+  padding: 22px !important;
+}
+
+
+
+/* ===== Biaya Tabs Fix ===== */
+
+.biaya-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 14px 0 18px;
+}
+
+
+
+.biaya-tab-btn {
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  color: #334155;
+  border-radius: 999px;
+  padding: 10px 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+
+
+.biaya-tab-btn:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+
+
+.biaya-tab-btn.active {
+  background: #16a34a;
+  color: #ffffff;
+  border-color: #16a34a;
+}
+
+
+
+.biaya-tab-content {
+  display: none;
+}
+
+
+
+.biaya-tab-content.active {
+  display: block;
+}
+
+
+
+@media (max-width: 560px) {
+  .admission-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .admission-card {
+    height: 300px;
+    padding: 12px;
+  }
+
+  .admission-tab,
+  .chart-mode-btn,
+  .biaya-tab-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .admission-tabs,
+  .admission-controls,
+  .biaya-tabs {
+    flex-direction: column;
+  }
+}
+
+
+
+.breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin: 22px 0;
+  font-size: 0.9rem;
+  color: #64748b;
+}
+
+
+
+.breadcrumb a {
+  color: #2563eb;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+
+
+.breadcrumb a:hover {
+  text-decoration: underline;
+}
+
+
+
+.breadcrumb span:last-child {
+  color: #0f172a;
+  font-weight: 800;
+}

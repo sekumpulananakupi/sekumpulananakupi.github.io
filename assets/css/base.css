@@ -1,0 +1,30 @@
+/* base.css - hasil pecahan dari style.css */
+
+:root { --blue:#163b73; --gold:#f5b940; --bg:#f4f7fb; --text:#172033; --muted:#667085; --white:#fff; --danger:#c0392b; }
+
+
+*{box-sizing:border-box}
+
+ body{margin:0;font-family:Arial, sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+
+.container{width:min(1120px,92%);margin:auto}
+
+
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}

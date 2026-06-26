@@ -1,0 +1,118 @@
+/* post.css - hasil pecahan dari style.css */
+
+.post-detail {
+  padding: 40px 0;
+}
+
+
+
+.post-card {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 32px;
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.08);
+}
+
+
+
+.post-card h1 {
+  font-size: 40px;
+  line-height: 1.2;
+  margin: 16px 0 8px;
+}
+
+
+
+.post-date {
+  color: #64748b;
+  margin-bottom: 24px;
+}
+
+
+
+.post-image {
+  width: 100%;
+  max-height: 420px;
+  object-fit: cover;
+  border-radius: 20px;
+  margin-bottom: 24px;
+}
+
+
+
+.post-content {
+  font-size: 18px;
+  line-height: 1.8;
+  color: #334155;
+  margin: 24px 0;
+}
+
+
+
+.post-meta-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 18px 0 24px;
+}
+
+
+
+.tag-pill {
+  background: #ecfeff;
+  color: #0369a1;
+}
+
+
+
+.post-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 16px;
+  margin: 18px 0;
+  display: block;
+}
+
+
+
+.post-content iframe {
+  max-width: 100%;
+}
+
+
+
+.post-content ul,
+.post-content ol {
+  padding-left: 24px;
+}
+
+
+
+.post-content blockquote {
+  border-left: 4px solid #1d4ed8;
+  padding-left: 16px;
+  color: #475569;
+  margin: 20px 0;
+}
+
+
+
+.post-content img {
+  max-width: 680px;
+  width: 100%;
+  max-height: 420px;
+  object-fit: contain;
+  margin: 20px auto;
+  display: block;
+  border-radius: 16px;
+}
+
+
+
+.share-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+  margin-bottom: 24px;
+}

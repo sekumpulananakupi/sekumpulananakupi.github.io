@@ -1,0 +1,198 @@
+/* homepage.css - hasil pecahan dari style.css */
+
+.slider-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+
+
+.latest-slider {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 10px 4px 24px;
+}
+
+
+
+.latest-slider .item-card {
+  min-width: 300px;
+  max-width: 300px;
+  flex: 0 0 auto;
+}
+
+
+
+.slider-btn {
+  border: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  background: #1d4ed8;
+  color: white;
+  font-size: 28px;
+  cursor: pointer;
+}
+
+
+
+.latest-slider::-webkit-scrollbar {
+  height: 8px;
+}
+
+
+
+.latest-slider::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 999px;
+}
+
+
+
+@media (max-width: 768px) {
+  .slider-btn {
+    display: none;
+  }
+
+  .latest-slider .item-card {
+    min-width: 260px;
+  }
+}
+
+
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+
+
+.feature-card {
+  background: #ffffff;
+  border-radius: 22px;
+  padding: 24px;
+  text-decoration: none;
+  color: #0f172a;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+  transition: 0.2s ease;
+}
+
+
+
+.feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
+}
+
+
+
+.feature-card span {
+  font-size: 34px;
+  display: block;
+  margin-bottom: 12px;
+}
+
+
+
+.feature-card h3 {
+  margin: 0 0 8px;
+  color: #163b73;
+}
+
+
+
+.feature-card p {
+  margin: 0;
+  color: #64748b;
+}
+
+
+
+@media (max-width: 900px) {
+  .feature-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+
+
+@media (max-width: 600px) {
+  .feature-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+
+.homepage-two-column {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+
+
+.home-mini-list {
+  display: grid;
+  gap: 12px;
+}
+
+
+
+.home-mini-item {
+  display: block;
+  background: #f8fafc;
+  padding: 14px 16px;
+  border-radius: 14px;
+  text-decoration: none;
+  color: #0f172a;
+}
+
+
+
+.home-mini-item strong {
+  display: block;
+  color: #163b73;
+}
+
+
+
+.home-mini-item span {
+  color: #64748b;
+  font-size: 14px;
+}
+
+
+
+@media (max-width: 768px) {
+  .homepage-two-column {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+
+.hero-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+
+
+@media (max-width: 768px) {
+  .hero-stats {
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+  }
+
+  .hero-stat {
+    min-width: auto;
+  }
+}
