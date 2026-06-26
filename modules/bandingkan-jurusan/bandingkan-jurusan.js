@@ -339,7 +339,7 @@ function renderJurusanHero(item, biaya) {
         </div>
       </div>
 
-      <a href="jurusan-detail.html?id=${encodeURIComponent(item.id)}" class="btn ghost">
+      <a href="../pages/jurusan-detail.html?id=${encodeURIComponent(item.id)}" class="btn ghost">
         Lihat Detail
       </a>
     </article>

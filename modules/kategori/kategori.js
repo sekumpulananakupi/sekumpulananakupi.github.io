@@ -171,7 +171,7 @@ function createContentCard(item) {
 
       <p>${escapeHTML(content || "").slice(0, 140)}...</p>
 
-      <a href="post.html?type=${item.type}&id=${item.id}" class="btn ghost">
+      <a href="../pages/post.html?type=${item.type}&id=${item.id}" class="btn ghost">
         Baca Detail
       </a>
     </article>

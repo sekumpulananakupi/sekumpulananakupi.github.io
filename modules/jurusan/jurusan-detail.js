@@ -107,7 +107,7 @@ function renderChipLinks(text) {
   return `
     <div class="prospek-chip-group">
       ${items.map(item => `
-        <a class="pill prospek-chip" href="lowongan.html?q=${encodeURIComponent(item)}">
+        <a class="pill prospek-chip" href="../pages/lowongan.html?q=${encodeURIComponent(item)}">
           ${escapeHTML(item)}
         </a>
       `).join("")}
@@ -274,9 +274,9 @@ async function loadJurusanDetail() {
 
   detail.innerHTML = `
   <nav class="breadcrumb">
-  <a href="index.html">Beranda</a>
+  <a href="../index.html">Beranda</a>
   <span>›</span>
-  <a href="jurusan.html">Jurusan</a>
+  <a href="../pages/jurusan.html">Jurusan</a>
   <span>›</span>
   <span>${escapeHTML(jurusan.nama)}</span>
    </nav>
@@ -367,7 +367,7 @@ async function loadJurusanDetail() {
         </button>
       </div>
 
-      <a href="jurusan.html" class="btn ghost">← Kembali ke Daftar Jurusan</a>
+      <a href="../pages/jurusan.html" class="btn ghost">← Kembali ke Daftar Jurusan</a>
     </article>
   `;
 
@@ -811,14 +811,14 @@ function createRelatedCard(item) {
     title = item.judul;
     content = item.isi;
     label = item.type === "info" ? "Info Kampus" : "Wiki Kampus";
-    href = `post.html?type=${encodeURIComponent(item.type)}&id=${encodeURIComponent(item.id)}`;
+    href = `../pages/post.html?type=${encodeURIComponent(item.type)}&id=${encodeURIComponent(item.id)}`;
   }
 
   if (item.type === "job") {
     title = item.posisi || item.judul;
     content = item.deskripsi;
     label = item.perusahaan || "Lowongan";
-    href = `post.html?type=job&id=${encodeURIComponent(item.id)}`;
+    href = `../pages/post.html?type=job&id=${encodeURIComponent(item.id)}`;
   }
 
   return `
@@ -1264,7 +1264,7 @@ async function loadRelatedJurusan(currentJurusan) {
       </p>
 
       <a
-        href="jurusan-detail.html?id=${item.id}"
+        href="../pages/jurusan-detail.html?id=${item.id}"
         class="btn ghost"
       >
         Lihat Jurusan
@@ -1440,13 +1440,13 @@ function updateBreadcrumbSchemaJurusan(jurusan) {
         "@type": "ListItem",
         "position": 1,
         "name": "Beranda",
-        "item": `${window.location.origin}/index.html`
+        "item": `${window.location.origin}/../index.html`
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "Jurusan",
-        "item": `${window.location.origin}/jurusan.html`
+        "item": `${window.location.origin}/../pages/jurusan.html`
       },
       {
         "@type": "ListItem",

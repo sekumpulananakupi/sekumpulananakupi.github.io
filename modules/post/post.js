@@ -44,7 +44,7 @@ async function loadPost() {
       <div class="empty">
         Artikel tidak ditemukan.
         <br><br>
-        <a href="index.html" class="btn ghost">Kembali</a>
+        <a href="../index.html" class="btn ghost">Kembali</a>
       </div>
     `;
     return;
@@ -72,7 +72,7 @@ async function loadPost() {
       <div class="empty">
         Gagal memuat artikel.
         <br><br>
-        <a href="index.html" class="btn ghost">Kembali</a>
+        <a href="../index.html" class="btn ghost">Kembali</a>
       </div>
     `;
     return;
@@ -134,7 +134,7 @@ async function loadPost() {
 </div>
 
       <br><br>
-      <a href="index.html" class="btn ghost">← Kembali ke Beranda</a>
+      <a href="../index.html" class="btn ghost">← Kembali ke Beranda</a>
     </article>
   `;
   setupShareButtons();

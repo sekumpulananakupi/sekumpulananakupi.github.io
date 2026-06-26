@@ -330,11 +330,11 @@ function getCompareURL(jurusanId) {
 
   if (savedId && savedId !== currentId) {
     localStorage.removeItem("compareFirstJurusan");
-    return `bandingkan-jurusan.html?jurusan1=${encodeURIComponent(savedId)}&jurusan2=${encodeURIComponent(currentId)}`;
+    return `../pages/bandingkan-jurusan.html?jurusan1=${encodeURIComponent(savedId)}&jurusan2=${encodeURIComponent(currentId)}`;
   }
 
   localStorage.setItem("compareFirstJurusan", currentId);
-  return `bandingkan-jurusan.html?jurusan1=${encodeURIComponent(currentId)}`;
+  return `../pages/bandingkan-jurusan.html?jurusan1=${encodeURIComponent(currentId)}`;
 }
 
 function handleCompareClick(event, jurusanId) {
@@ -394,12 +394,12 @@ function createCard(item) {
       }
 
       <div class="card-actions">
-        <a href="jurusan-detail.html?id=${encodeURIComponent(item.id)}" class="btn primary">
+        <a href="../pages/jurusan-detail.html?id=${encodeURIComponent(item.id)}" class="btn primary">
           Lihat Detail
         </a>
 
         <a 
-          href="bandingkan-jurusan.html?jurusan1=${encodeURIComponent(item.id)}"
+          href="../pages/bandingkan-jurusan.html?jurusan1=${encodeURIComponent(item.id)}"
           class="btn secondary"
           onclick="handleCompareClick(event, '${escapeHTML(item.id)}')"
         >

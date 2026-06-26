@@ -72,7 +72,7 @@ async function loadSearchData() {
       title: item.judul,
       content: stripHTML(item.isi),
       image: item.gambar,
-      url: `post.html?type=info&id=${item.id}`
+      url: `../pages/post.html?type=info&id=${item.id}`
     })),
 
     ...(wiki || []).map(item => ({
@@ -81,7 +81,7 @@ async function loadSearchData() {
       title: item.judul,
       content: stripHTML(item.isi),
       image: item.gambar,
-      url: `post.html?type=wiki&id=${item.id}`
+      url: `../pages/post.html?type=wiki&id=${item.id}`
     })),
 
     ...(jobs || []).map(item => ({
@@ -90,7 +90,7 @@ async function loadSearchData() {
       title: item.posisi,
       content: stripHTML(item.deskripsi),
       image: item.gambar,
-      url: `post.html?type=job&id=${item.id}`
+      url: `../pages/post.html?type=job&id=${item.id}`
     })),
 
     ...(jurusan || []).map(item => ({
@@ -99,7 +99,7 @@ async function loadSearchData() {
       title: item.nama,
       content: `${item.deskripsi || ""} ${item.prospek_kerja || ""}`,
       image: "",
-      url: `jurusan-detail.html?id=${item.id}`
+      url: `../pages/jurusan-detail.html?id=${item.id}`
     }))
   ];
   

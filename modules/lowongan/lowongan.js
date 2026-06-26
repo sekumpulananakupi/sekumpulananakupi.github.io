@@ -200,7 +200,7 @@ function createJobCard(item) {
       <h3>${escapeHTML(item.posisi)}</h3>
       <p>${escapeHTML(stripHTML(item.deskripsi_ringkas || item.deskripsi || "")).slice(0, 140)}...</p>
 
-      <a href="post.html?type=job&id=${item.id}" class="btn ghost">Lihat Detail</a>
+      <a href="../pages/post.html?type=job&id=${item.id}" class="btn ghost">Lihat Detail</a>
     </article>
   `;
 }

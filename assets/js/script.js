@@ -355,7 +355,7 @@ function createCard(type, item) {
         ${renderKategoriPills("info", item.id)}
         <h3>${escapeHTML(item.judul)}</h3>
         <p>${escapeHTML(makeExcerpt(item.isi))}</p>
-        <a class="btn ghost" href="post.html?type=info&id=${encodeURIComponent(item.id)}">Baca Selengkapnya</a>
+        <a class="btn ghost" href="../pages/post.html?type=info&id=${encodeURIComponent(item.id)}">Baca Selengkapnya</a>
       </article>
     `;
   }
@@ -367,7 +367,7 @@ function createCard(type, item) {
         ${renderKategoriPills("wiki", item.id) || `<span class="pill">${escapeHTML(item.kategori || "Wiki")}</span>`}
         <h3>${escapeHTML(item.judul)}</h3>
         <p>${escapeHTML(makeExcerpt(item.isi))}</p>
-        <a class="btn ghost" href="post.html?type=wiki&id=${encodeURIComponent(item.id)}">Baca Selengkapnya</a>
+        <a class="btn ghost" href="../pages/post.html?type=wiki&id=${encodeURIComponent(item.id)}">Baca Selengkapnya</a>
       </article>
     `;
   }
@@ -379,7 +379,7 @@ function createCard(type, item) {
       <span class="pill">${escapeHTML(item.lokasi || "Fleksibel")}</span>
       <h3>${escapeHTML(item.posisi)}</h3>
       <p>${escapeHTML(makeExcerpt(item.deskripsi))}</p>
-      <a class="btn ghost" href="post.html?type=job&id=${encodeURIComponent(item.id)}">Lihat Detail</a>
+      <a class="btn ghost" href="../pages/post.html?type=job&id=${encodeURIComponent(item.id)}">Lihat Detail</a>
     </article>
   `;
 }
@@ -391,7 +391,7 @@ function createLatestCard(item) {
       <span class="pill">${escapeHTML(item.label)}</span>
       <h3>${escapeHTML(item.title)}</h3>
       <p>${escapeHTML(makeExcerpt(item.content))}</p>
-      <a class="btn ghost" href="post.html?type=${encodeURIComponent(item.type)}&id=${encodeURIComponent(item.id)}">Baca Selengkapnya</a>
+      <a class="btn ghost" href="../pages/post.html?type=${encodeURIComponent(item.type)}&id=${encodeURIComponent(item.id)}">Baca Selengkapnya</a>
     </article>
   `;
 }
@@ -470,7 +470,7 @@ function renderHomeFaq() {
   list.innerHTML = faqData.length
     ? `<div class="home-mini-list">
         ${faqData.map(item => `
-          <a href="faq.html" class="home-mini-item">
+          <a href="../pages/faq.html" class="home-mini-item">
             <strong>${escapeHTML(item.pertanyaan)}</strong>
             <span>${escapeHTML(item.kategori || "FAQ")}</span>
           </a>
