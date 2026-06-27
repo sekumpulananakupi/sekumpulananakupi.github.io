@@ -37,6 +37,17 @@ function showError(targetId, message = "Gagal memuat data.") {
 }
 
 let faqData = [];
+function prepareFaqSearch() {
+  faqData = faqData.map(item => ({
+    ...item,
+    searchText: `
+      ${item.pertanyaan || ""}
+      ${item.jawaban || ""}
+      ${item.kategori || ""}
+    `.toLowerCase()
+  }));
+}
+
 let activeFaqKategori = "all";
 
 function escapeHTML(text) {
@@ -52,10 +63,23 @@ function escapeHTML(text) {
 async function loadFaq() {
   showSimpleLoading("faqContainer", "Memuat FAQ...");
 
+  const cacheKey = "faq_kampus_v2";
+  const cached = getCache(cacheKey, 720);
+
+  if (cached) {
+    faqData = cached;
+    prepareFaqSearch();
+    renderFaqKategoriFilter();
+    renderFaqCategoryChips();
+    renderFaq();
+    return;
+  }
+
   const { data, error } = await supabaseClient
     .from("faq_kampus")
-    .select("*")
-    .order("created_at", { ascending: false });
+    .select("pertanyaan, jawaban, kategori")
+    .order("kategori")
+    .order("pertanyaan");
 
   if (error) {
     console.error("Gagal mengambil FAQ:", error);
@@ -64,6 +88,10 @@ async function loadFaq() {
   }
 
   faqData = data || [];
+
+  prepareFaqSearch();
+
+  setCache(cacheKey, faqData);
 
   renderFaqKategoriFilter();
   renderFaqCategoryChips();
@@ -111,9 +139,7 @@ function renderFaq() {
     : "";
 
   const filtered = faqData.filter(item => {
-    const matchSearch = JSON.stringify(item)
-      .toLowerCase()
-      .includes(keyword);
+    const matchSearch = item.searchText.includes(keyword);
 
     const matchKategori =
       activeFaqKategori === "all" ||
@@ -153,7 +179,15 @@ function createFaqCard(item) {
 const faqSearch = document.getElementById("faqSearch");
 
 if (faqSearch) {
-  faqSearch.addEventListener("input", renderFaq);
+  let faqTimer;
+
+faqSearch.addEventListener("input", () => {
+  clearTimeout(faqTimer);
+
+  faqTimer = setTimeout(() => {
+    renderFaq();
+  }, 250);
+});
 }
 
 function renderFaqCategoryChips() {

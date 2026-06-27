@@ -91,11 +91,6 @@
               </div>
 
               <div class="stat-card">
-                <strong id="adminAutoClosedJobs">0</strong>
-                <span>Auto Ditutup</span>
-              </div>
-
-              <div class="stat-card">
                 <strong id="adminCountTotal">0</strong>
                 <span>Total Konten</span>
               </div>
@@ -124,167 +119,7 @@
                 <strong id="adminCountTag">0</strong>
                 <span>Tag</span>
               </div>
-
-              <div class="stat-card">
-                <span>Total Lowongan Aktif</span>
-                <strong id="adminCountJobsActive">0</strong>
-              </div>
-              
-              <div class="stat-card">
-                <span>Lowongan Draft</span>
-                <strong id="adminCountJobsDraft">0</strong>
-              </div>
-              
-              <div class="stat-card">
-                <span>Lowongan Ditutup</span>
-                <strong id="adminCountJobsClosed">0</strong>
-              </div>
-              
-              <div class="stat-card">
-                <span>Lowongan Pilihan</span>
-                <strong id="adminCountJobsFeatured">0</strong>
-              </div>
-            </section>
-          </section>
-
-          <section class="admin-job-analytics">
-            <div class="section-heading">
-              <div>
-                <p class="eyebrow">Analitik</p>
-                <h2>Statistik Lowongan</h2>
-              </div>
-            </div>
-
-            <div class="grid-list">
-              <div class="form-card">
-                <h3>🏢 Top Perusahaan</h3>
-                <div id="jobTopCompanies"></div>
-              </div>
-
-              <div class="form-card">
-                <h3>🌐 Top Sumber</h3>
-                <div id="jobTopSources"></div>
-              </div>
-
-              <div class="form-card">
-                <h3>💼 Top Tipe Pekerjaan</h3>
-                <div id="jobTopTypes"></div>
-              </div>
-
-              <div class="form-card">
-                <h3>🎓 Top Jurusan Terkait</h3>
-                <div id="jobTopJurusan"></div>
-              </div>
-
-              <div class="form-card">
-                <h3>📈 Tren Lowongan Bulanan</h3>
-                <div id="jobMonthlyTrend"></div>
-              </div>
-
-              <div class="form-card">
-                <h3>📌 Distribusi Status</h3>
-                <div id="jobStatusDistribution"></div>
-              </div>
-            </div>
-          </section>
-
-          <section class="admin-health">
-            <div class="section-heading">
-              <div>
-                <p class="eyebrow">Audit</p>
-                <h2>Kesehatan Website</h2>
-              </div>
-            </div>
-
-            <div class="admin-stats">
-              <div class="stat-card">
-                <strong id="healthScore">0%</strong>
-                <span>Skor Kesehatan</span>
-              </div>
-
-              <div class="stat-card">
-                <strong id="healthCritical">0</strong>
-                <span>Masalah Penting</span>
-              </div>
-
-              <div class="stat-card">
-                <strong id="healthWarning">0</strong>
-                <span>Peringatan</span>
-              </div>
-
-              <div class="stat-card">
-                <strong id="healthGood">0</strong>
-                <span>Bagus</span>
-              </div>
-            </div>
-
-            <div class="health-actions">
-              <button class="btn ghost" type="button" onclick="exportWebsiteHealthAudit('csv')">
-                Export CSV
-              </button>
-
-              <button class="btn ghost" type="button" onclick="exportWebsiteHealthAudit('json')">
-                Export JSON
-              </button>
-            </div>
-
-            <div id="healthSummary" class="form-card health-summary"></div>
-
-            <div id="healthModuleProgress" class="health-module-progress"></div>
-
-            <div class="health-filter-row">
-              <select id="healthFilter">
-                <option value="all">Semua Masalah</option>
-                <option value="critical">Penting</option>
-                <option value="warning">Peringatan</option>
-              </select>
-
-              <select id="healthModuleFilter">
-                <option value="all">Semua Modul</option>
-                <option value="info">Info Kampus</option>
-                <option value="wiki">Wiki Kampus</option>
-                <option value="job">Lowongan</option>
-                <option value="jurusan">Jurusan</option>
-                <option value="faq">FAQ</option>
-                <option value="dokumen">Dokumen</option>
-              </select>
-            </div>
-
-            <div class="health-scroll-box">
-              <div id="websiteHealthList" class="grid-list"></div>
-            </div>
-          </section>
-
-          <section class="admin-completeness">
-            <div class="section-heading">
-              <div>
-                <p class="eyebrow">Audit</p>
-                <h2>Kelengkapan Jurusan</h2>
-              </div>
-            </div>
-
-            <div class="admin-stats">
-              <div class="stat-card">
-                <strong id="jurusanCompletenessAvg">0%</strong>
-                <span>Rata-rata Kelengkapan</span>
-              </div>
-
-              <div class="stat-card">
-                <strong id="jurusanCompleteCount">0</strong>
-                <span>Lengkap (90%+)</span>
-              </div>
-
-              <div class="stat-card">
-                <strong id="jurusanIncompleteCount">0</strong>
-                <span>Perlu Dilengkapi</span>
-              </div>
-            </div>
-
-            <div class="grid-list" id="jurusanCompletenessTop"></div>
-
-            <div class="grid-list" id="jurusanCompletenessBottom"></div>
-          </section>
-          
+  
           <section class="admin-page" id="infoPage">
             <div class="section-heading">
               <div>
@@ -379,7 +214,7 @@
               </div>
               
               <label>Deadline Lowongan</label><input type="date" id="jobDeadline">
-              <div class="form-group"
+              <div class="form-group">
                 <label>Status Lowongan</label>
                 <select id="jobStatus">
                   <option value="aktif">Aktif</option>
@@ -801,7 +636,27 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.js"></script>
-  <script src="../modules/admin/admin.js"></script>
+  <script src="../modules/admin/00-config-state.js"></script>
+  <script src="../modules/admin/01-helpers-editors.js"></script>
+  <script src="../modules/admin/02-draft-autosave.js"></script>
+  <script src="../modules/admin/03-auth-login.js"></script>
+  <script src="../modules/admin/04-master-relations.js"></script>
+  <script src="../modules/admin/05-upload-image.js"></script>
+  <script src="../modules/admin/06-load-content.js"></script>
+  <script src="../modules/admin/07-render-dashboard-health.js"></script>
+  <script src="../modules/admin/08-crud-info.js"></script>
+  <script src="../modules/admin/09-crud-wiki.js"></script>
+  <script src="../modules/admin/10-crud-lowongan.js"></script>
+  <script src="../modules/admin/11-crud-dokumen.js"></script>
+  <script src="../modules/admin/12-crud-faq.js"></script>
+  <script src="../modules/admin/13-edit-data.js"></script>
+  <script src="../modules/admin/14-delete-clear.js"></script>
+  <script src="../modules/admin/15-statistik-jurusan.js"></script>
+  <script src="../modules/admin/16-data-jurusan.js"></script>
+  <script src="../modules/admin/17-taxonomy.js"></script>
+  <script src="../modules/admin/18-biaya-pendidikan.js"></script>
+  <script src="../modules/admin/19-faq-jurusan.js"></script>
+  <script src="../modules/admin/20-navigation-search-start.js"></script>
   <script src="../assets/js/menu.js"></script>
 </body>
 </html>

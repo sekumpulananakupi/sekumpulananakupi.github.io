@@ -6,6 +6,20 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 let contentData = [];
 
+function prepareSearch() {
+  contentData = contentData.map(item => ({
+    ...item,
+    searchText: `
+      ${item.judul || ""}
+      ${item.posisi || ""}
+      ${item.isi || ""}
+      ${item.deskripsi || ""}
+      ${item.kategori || ""}
+      ${item.perusahaan || ""}
+    `.toLowerCase()
+  }));
+}
+
 function showLoading(targetId, count = 3) {
   const target = document.getElementById(targetId);
   if (!target) return;
@@ -82,7 +96,7 @@ async function loadPage() {
 
   const { data: master } = await supabaseClient
     .from(masterTable)
-    .select("*")
+    .select("id,nama")
     .eq("id", id)
     .single();
 
@@ -95,7 +109,7 @@ async function loadPage() {
 
   const { data: relasi } = await supabaseClient
     .from(relationTable)
-    .select("*")
+.select("artikel_id,artikel_tipe")
     .eq(relationColumn, id);
 
   if (!relasi || !relasi.length) {
@@ -103,30 +117,67 @@ async function loadPage() {
     return;
   }
 
-  const items = [];
+  const infoIds = relasi
+  .filter(r => r.artikel_tipe === "info")
+  .map(r => r.artikel_id);
 
-  for (const row of relasi) {
-    let table = "";
+const wikiIds = relasi
+  .filter(r => r.artikel_tipe === "wiki")
+  .map(r => r.artikel_id);
 
-    if (row.artikel_tipe === "info") table = "informasi_kampus";
-    if (row.artikel_tipe === "wiki") table = "wiki_kampus";
-    if (row.artikel_tipe === "job") table = "lowongan_kerja";
+const jobIds = relasi
+  .filter(r => r.artikel_tipe === "job")
+  .map(r => r.artikel_id);
 
-    if (!table) continue;
+const [
+  infoResult,
+  wikiResult,
+  jobResult
+] = await Promise.all([
 
-    const { data } = await supabaseClient
-      .from(table)
-      .select("*")
-      .eq("id", row.artikel_id)
-      .single();
+  infoIds.length
+    ? supabaseClient
+        .from("informasi_kampus")
+        .select("id,judul,isi,gambar,kategori")
+        .in("id", infoIds)
+    : Promise.resolve({ data: [] }),
 
-    if (data) {
-      items.push({
-        ...data,
-        type: row.artikel_tipe
-      });
-    }
-  }
+  wikiIds.length
+    ? supabaseClient
+        .from("wiki_kampus")
+        .select("id,judul,isi,gambar,kategori")
+        .in("id", wikiIds)
+    : Promise.resolve({ data: [] }),
+
+  jobIds.length
+    ? supabaseClient
+        .from("lowongan_kerja")
+        .select("id,posisi,perusahaan,deskripsi,gambar")
+        .in("id", jobIds)
+    : Promise.resolve({ data: [] })
+
+]);
+
+contentData = [
+
+  ...(infoResult.data || []).map(i => ({
+    ...i,
+    type: "info"
+  })),
+
+  ...(wikiResult.data || []).map(i => ({
+    ...i,
+    type: "wiki"
+  })),
+
+  ...(jobResult.data || []).map(i => ({
+    ...i,
+    type: "job"
+  }))
+
+];
+
+prepareSearch();
 
   contentData = items;
   renderContent();
@@ -136,7 +187,7 @@ function renderContent() {
   const keyword = document.getElementById("contentSearch").value.toLowerCase();
 
   const filtered = contentData.filter(item =>
-    JSON.stringify(item).toLowerCase().includes(keyword)
+    item.searchText.toLowerCase().includes(keyword)
   );
 
   document.getElementById("contentList").innerHTML = filtered.length

@@ -166,42 +166,92 @@ function compareLowerBetter(valueA, valueB, labelA, labelB, suffix = "") {
 
 async function loadData() {
   const result = document.getElementById("compareResult");
+
   if (result) {
     result.innerHTML = `<div class="empty">Memuat data jurusan...</div>`;
   }
 
-  const [jurusanResponse, statistikResponse, biayaResponse] = await Promise.all([
+  const cacheKey = "compare_jurusan_v2";
+  const cached = getCache(cacheKey, 1440);
+
+  if (cached) {
+    jurusanData = cached.jurusanData;
+    statistikData = cached.statistikData;
+    biayaData = cached.biayaData;
+
+    fillSelect("jurusanA");
+    fillSelect("jurusanB");
+    applyCompareParamsFromURL();
+
+    if (result && !document.getElementById("jurusanA")?.value) {
+      result.innerHTML = `<div class="empty">Pilih dua jurusan untuk dibandingkan.</div>`;
+    }
+
+    return;
+  }
+
+  const [
+    jurusanResponse,
+    statistikResponse,
+    biayaResponse
+  ] = await Promise.all([
+
     supabaseClient
       .from("jurusan")
-      .select("*")
-      .order("nama", { ascending: true }),
+      .select(`
+        id,
+        nama,
+        fakultas,
+        jenjang,
+        deskripsi,
+        akreditasi,
+        website_resmi,
+        url_kurikulum,
+        url_akreditasi,
+        prospek_kerja
+      `)
+      .order("nama"),
 
     supabaseClient
       .from("statistik_jurusan")
-      .select("*")
+      .select(`
+        jurusan_id,
+        tahun,
+        jalur,
+        daya_tampung,
+        peminat
+      `)
       .order("tahun", { ascending: false }),
 
     supabaseClient
       .from("biaya_pendidikan")
-      .select("*")
-      .order("tahun", { ascending: false })
+      .select(`
+        jurusan_id,
+        jalur,
+        ukt,
+        uang_kuliah,
+        ipi
+      `)
   ]);
 
-  if (jurusanResponse.error) {
-    console.error("Gagal memuat jurusan:", jurusanResponse.error.message);
-  }
+  if (jurusanResponse.error)
+    console.error(jurusanResponse.error);
 
-  if (statistikResponse.error) {
-    console.error("Gagal memuat statistik:", statistikResponse.error.message);
-  }
+  if (statistikResponse.error)
+    console.error(statistikResponse.error);
 
-  if (biayaResponse.error) {
-    console.error("Gagal memuat biaya pendidikan:", biayaResponse.error.message);
-  }
+  if (biayaResponse.error)
+    console.error(biayaResponse.error);
 
   jurusanData = jurusanResponse.data || [];
   statistikData = statistikResponse.data || [];
   biayaData = biayaResponse.data || [];
+
+  setCache(cacheKey, {
+    jurusanData,
+    statistikData,
+    biayaData
+  });
 
   fillSelect("jurusanA");
   fillSelect("jurusanB");

@@ -37,6 +37,18 @@ function showError(targetId, message = "Gagal memuat data.") {
 }
 
 let dokumenData = [];
+
+function prepareDokumenSearch() {
+  dokumenData = dokumenData.map(item => ({
+    ...item,
+    searchText: `
+      ${item.judul || ""}
+      ${item.deskripsi || ""}
+      ${item.kategori || ""}
+    `.toLowerCase()
+  }));
+}
+
 let activeDokumenKategori = "all";
 
 function escapeHTML(text) {
@@ -52,10 +64,23 @@ function escapeHTML(text) {
 async function loadDokumen() {
   showLoading("dokumenList", 6);
 
+  const cacheKey = "dokumen_kampus_v2";
+  const cached = getCache(cacheKey, 720);
+
+  if (cached) {
+    dokumenData = cached;
+    prepareDokumenSearch();
+    renderDokumenKategoriFilter();
+    renderDokumenCategoryChips();
+    renderDokumen();
+    return;
+  }
+
   const { data, error } = await supabaseClient
     .from("dokumen_kampus")
-    .select("*")
-    .order("created_at", { ascending: false });
+    .select("judul, deskripsi, kategori, link")
+    .order("kategori")
+    .order("judul");
 
   if (error) {
     console.error("Gagal mengambil dokumen:", error);
@@ -64,6 +89,10 @@ async function loadDokumen() {
   }
 
   dokumenData = data || [];
+
+  prepareDokumenSearch();
+
+  setCache(cacheKey, dokumenData);
 
   renderDokumenKategoriFilter();
   renderDokumenCategoryChips();
@@ -120,9 +149,7 @@ function renderDokumen() {
     : "";
 
   const filtered = dokumenData.filter(item => {
-    const matchSearch = JSON.stringify(item)
-      .toLowerCase()
-      .includes(keyword);
+    const matchSearch = item.searchText.includes(keyword);
 
     const matchKategori =
       activeDokumenKategori === "all" ||
@@ -162,7 +189,15 @@ function createDokumenCard(item) {
 const dokumenSearch = document.getElementById("dokumenSearch");
 
 if (dokumenSearch) {
-  dokumenSearch.addEventListener("input", renderDokumen);
+  let dokumenTimer;
+
+dokumenSearch.addEventListener("input", () => {
+  clearTimeout(dokumenTimer);
+
+  dokumenTimer = setTimeout(() => {
+    renderDokumen();
+  }, 250);
+});
 }
 
 function renderDokumenCategoryChips() {

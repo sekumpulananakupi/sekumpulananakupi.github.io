@@ -355,76 +355,20 @@ function getMonthLabel(dateString) {
 
 async function refreshAdminData() {
   await autoCloseExpiredJobs();
-  await loadDashboardData();
+  await loadMasterData();
+  await loadArtikelJurusanData();
+  await loadData();
+  await loadStatistikData();
+  await loadJurusanAdminData();
+  populateFaqJurusanOptions();
+  await loadFaqJurusanData();
+  populateBiayaJurusanOptions();
+  await loadBiayaPendidikanAdminData();
+  await loadTaxonomyAdminData();
+  await loadDokumenData();
+  await loadFaqData();
 
-  renderDashboardOnly();
-}
-
-async function loadDashboardData() {
-  const [
-    infoCount,
-    wikiCount,
-    jobCount,
-    jurusanCount,
-    dokumenCount,
-    faqCount,
-    kategoriCount,
-    tagCount
-  ] = await Promise.all([
-    getTableCount("informasi_kampus"),
-    getTableCount("wiki_kampus"),
-    getTableCount("lowongan_kerja"),
-    getTableCount("jurusan"),
-    getTableCount("dokumen_kampus"),
-    getTableCount("faq_kampus"),
-    getTableCount("kategori"),
-    getTableCount("tags")
-  ]);
-
-  setDashboardCount("adminCountInfo", infoCount);
-  setDashboardCount("adminCountWiki", wikiCount);
-  setDashboardCount("adminCountJobs", jobCount);
-  setDashboardCount("adminCountJurusan", jurusanCount);
-  setDashboardCount("adminCountDokumen", dokumenCount);
-  setDashboardCount("adminCountFaq", faqCount);
-  setDashboardCount("adminCountKategori", kategoriCount);
-  setDashboardCount("adminCountTag", tagCount);
-
-  const totalKonten =
-    infoCount +
-    wikiCount +
-    jobCount +
-    dokumenCount +
-    faqCount;
-
-  setDashboardCount("adminCountTotal", totalKonten);
-}
-
-async function getTableCount(tableName) {
-  const { count, error } = await supabaseClient
-    .from(tableName)
-    .select("id", {
-      count: "exact",
-      head: true
-    });
-
-  if (error) {
-    console.error(`Gagal menghitung ${tableName}:`, error.message);
-    return 0;
-  }
-
-  return count || 0;
-}
-
-function setDashboardCount(id, value) {
-  const element = qs(id);
-  if (element) element.textContent = value;
-}
-
-function renderDashboardOnly() {
-  if (qs("adminAutoClosedJobs")) {
-    qs("adminAutoClosedJobs").textContent = autoClosedJobsCount || 0;
-  }
+  renderAll();
 }
 
 if (qs("loginBtn")) {
