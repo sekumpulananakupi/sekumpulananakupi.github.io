@@ -4,89 +4,6 @@ const kalenderAkademik = [
   // =========================
 
   {
-    kegiatan: "Pendaftaran Kelas Mahasiswa Internasional",
-    kategori: "Penerimaan Mahasiswa",
-    semester: "Ganjil",
-    tanggal: "5 Januari–2 Februari 2026",
-    mulai: "2026-01-05",
-    selesai: "2026-02-02",
-    deskripsi: "Pendaftaran seleksi kelas mahasiswa internasional UPI."
-  },
-  {
-    kegiatan: "Pelaksanaan Tes Kelas Mahasiswa Internasional",
-    kategori: "Penerimaan Mahasiswa",
-    semester: "Ganjil",
-    tanggal: "3–18 Februari 2026",
-    mulai: "2026-02-03",
-    selesai: "2026-02-18",
-    deskripsi: "Pelaksanaan tes seleksi kelas mahasiswa internasional."
-  },
-  {
-    kegiatan: "Pengumuman Kelulusan Kelas Mahasiswa Internasional",
-    kategori: "Penerimaan Mahasiswa",
-    semester: "Ganjil",
-    tanggal: "31 Maret 2026",
-    mulai: "2026-03-31",
-    selesai: "2026-03-31",
-    deskripsi: "Pengumuman kelulusan kelas mahasiswa internasional."
-  },
-
-  {
-    kegiatan: "Pendaftaran Mahasiswa Asing",
-    kategori: "Penerimaan Mahasiswa",
-    semester: "Ganjil",
-    tanggal: "1 Maret–19 Mei 2026",
-    mulai: "2026-03-01",
-    selesai: "2026-05-19",
-    deskripsi: "Pendaftaran seleksi mahasiswa asing UPI."
-  },
-  {
-    kegiatan: "Pelaksanaan Seleksi Mahasiswa Asing",
-    kategori: "Penerimaan Mahasiswa",
-    semester: "Ganjil",
-    tanggal: "20 Mei–29 Juni 2026",
-    mulai: "2026-05-20",
-    selesai: "2026-06-29",
-    deskripsi: "Pelaksanaan seleksi mahasiswa asing."
-  },
-  {
-    kegiatan: "Pengumuman Kelulusan Mahasiswa Asing",
-    kategori: "Penerimaan Mahasiswa",
-    semester: "Ganjil",
-    tanggal: "30 Juni–4 Juli 2026",
-    mulai: "2026-06-30",
-    selesai: "2026-07-04",
-    deskripsi: "Pengumuman kelulusan mahasiswa asing."
-  },
-  {
-    kegiatan: "Pengurusan Visa Mahasiswa Asing",
-    kategori: "Penerimaan Mahasiswa",
-    semester: "Ganjil",
-    tanggal: "5 Juli–10 Agustus 2026",
-    mulai: "2026-07-05",
-    selesai: "2026-08-10",
-    deskripsi: "Masa pengurusan visa mahasiswa asing."
-  },
-  {
-    kegiatan: "Kedatangan Mahasiswa Asing",
-    kategori: "Penerimaan Mahasiswa",
-    semester: "Ganjil",
-    tanggal: "11–17 Agustus 2026",
-    mulai: "2026-08-11",
-    selesai: "2026-08-17",
-    deskripsi: "Periode kedatangan mahasiswa asing ke UPI."
-  },
-
-  {
-    kegiatan: "Pengisian PDSS SNBP",
-    kategori: "Penerimaan Mahasiswa",
-    semester: "Ganjil",
-    tanggal: "5 Januari–2 Februari 2026",
-    mulai: "2026-01-05",
-    selesai: "2026-02-02",
-    deskripsi: "Pengisian PDSS untuk Seleksi Nasional Berdasarkan Prestasi."
-  },
-  {
     kegiatan: "Pendaftaran SNBP",
     kategori: "Penerimaan Mahasiswa",
     semester: "Ganjil",
@@ -104,7 +21,6 @@ const kalenderAkademik = [
     selesai: "2026-03-31",
     deskripsi: "Pengumuman kelulusan SNBP."
   },
-
   {
     kegiatan: "Pendaftaran SNBT",
     kategori: "Penerimaan Mahasiswa",
@@ -413,15 +329,6 @@ const kalenderAkademik = [
     deskripsi: "Verifikasi data mahasiswa baru jalur Seleksi Mandiri."
   },
   {
-    kegiatan: "Penyelarasan Kurikulum dan CQI",
-    kategori: "Registrasi",
-    semester: "Ganjil",
-    tanggal: "1–30 Juni 2026",
-    mulai: "2026-06-01",
-    selesai: "2026-06-30",
-    deskripsi: "Kegiatan penyelarasan kurikulum dan Continuous Quality Improvement."
-  },
-  {
     kegiatan: "Pengisian IRS dan Perwalian Semester Ganjil",
     kategori: "Registrasi",
     semester: "Ganjil",
@@ -518,123 +425,6 @@ const kalenderAkademik = [
     deskripsi: "Hari pertama perkuliahan semester ganjil 2026/2027."
   },
   {
-    kegiatan: "Persiapan dan Pendataan Awal P3K Semester Ganjil",
-    kategori: "Perkuliahan",
-    semester: "Ganjil",
-    tanggal: "21 Juli–22 Agustus 2026",
-    mulai: "2026-07-21",
-    selesai: "2026-08-22",
-    deskripsi: "Persiapan dan pendataan awal Program Penguatan Profesional Kependidikan."
-  },
-  {
-    kegiatan: "Pendaftaran dan Booking Online P3K Semester Ganjil",
-    kategori: "Perkuliahan",
-    semester: "Ganjil",
-    tanggal: "28–29 Agustus 2026",
-    mulai: "2026-08-28",
-    selesai: "2026-08-29",
-    deskripsi: "Pendaftaran dan booking online P3K semester ganjil."
-  },
-  {
-    kegiatan: "Pembekalan Peserta P3K oleh Fakultas/Kampus UPI di Daerah Semester Ganjil",
-    kategori: "Perkuliahan",
-    semester: "Ganjil",
-    tanggal: "1–2 September 2026",
-    mulai: "2026-09-01",
-    selesai: "2026-09-02",
-    deskripsi: "Pembekalan peserta P3K oleh fakultas atau Kampus UPI di Daerah."
-  },
-  {
-    kegiatan: "Pembekalan Ketua Kelompok P3K Semester Ganjil",
-    kategori: "Perkuliahan",
-    semester: "Ganjil",
-    tanggal: "4 September 2026",
-    mulai: "2026-09-04",
-    selesai: "2026-09-04",
-    deskripsi: "Pembekalan ketua kelompok P3K oleh Divisi Profesi Bidang Kependidikan."
-  },
-  {
-    kegiatan: "Pelaksanaan P3K Semester Ganjil",
-    kategori: "Perkuliahan",
-    semester: "Ganjil",
-    tanggal: "15 September–26 Desember 2026",
-    mulai: "2026-09-15",
-    selesai: "2026-12-26",
-    deskripsi: "Pelaksanaan Program Penguatan Profesional Kependidikan semester ganjil."
-  },
-  {
-    kegiatan: "Penilaian P3K Semester Ganjil",
-    kategori: "Perkuliahan",
-    semester: "Ganjil",
-    tanggal: "1–11 Desember 2026",
-    mulai: "2026-12-01",
-    selesai: "2026-12-11",
-    deskripsi: "Penilaian P3K melalui aplikasi https://sippp.upi.edu/."
-  },
-  {
-    kegiatan: "Persiapan dan Pendaftaran P3Kh Semester Ganjil",
-    kategori: "Perkuliahan",
-    semester: "Ganjil",
-    tanggal: "20 Juli–21 Agustus 2026",
-    mulai: "2026-07-20",
-    selesai: "2026-08-21",
-    deskripsi: "Persiapan dan pendaftaran Program Penguatan Profesional Bidang Keahlian."
-  },
-  {
-    kegiatan: "Penempatan P3Kh Semester Ganjil",
-    kategori: "Perkuliahan",
-    semester: "Ganjil",
-    tanggal: "24–31 Agustus 2026",
-    mulai: "2026-08-24",
-    selesai: "2026-08-31",
-    deskripsi: "Penempatan peserta P3Kh semester ganjil."
-  },
-  {
-    kegiatan: "Pembekalan P3Kh Semester Ganjil",
-    kategori: "Perkuliahan",
-    semester: "Ganjil",
-    tanggal: "2–4 September 2026",
-    mulai: "2026-09-02",
-    selesai: "2026-09-04",
-    deskripsi: "Pembekalan P3Kh oleh fakultas atau Kampus UPI di Daerah."
-  },
-  {
-    kegiatan: "Pelaksanaan P3Kh Semester Ganjil",
-    kategori: "Perkuliahan",
-    semester: "Ganjil",
-    tanggal: "7 September 2026–11 Januari 2027",
-    mulai: "2026-09-07",
-    selesai: "2027-01-11",
-    deskripsi: "Pelaksanaan Program Penguatan Profesional Bidang Keahlian semester ganjil."
-  },
-  {
-    kegiatan: "Penilaian P3Kh Semester Ganjil",
-    kategori: "Perkuliahan",
-    semester: "Ganjil",
-    tanggal: "1–11 Desember 2026",
-    mulai: "2026-12-01",
-    selesai: "2026-12-11",
-    deskripsi: "Penilaian P3Kh melalui aplikasi https://sippp.upi.edu/."
-  },
-  {
-    kegiatan: "Persiapan KKN Tematik/P2MB",
-    kategori: "Perkuliahan",
-    semester: "Ganjil",
-    tanggal: "7–30 September 2026",
-    mulai: "2026-09-07",
-    selesai: "2026-09-30",
-    deskripsi: "Persiapan KKN Tematik, KKN Kebangsaan, KKN Internasional, atau P2MB."
-  },
-  {
-    kegiatan: "Pelaksanaan KKN Tematik/P2MB",
-    kategori: "Perkuliahan",
-    semester: "Ganjil",
-    tanggal: "1 Oktober–4 Desember 2026",
-    mulai: "2026-10-01",
-    selesai: "2026-12-04",
-    deskripsi: "Pelaksanaan KKN Tematik atau Program Pemberdayaan Masyarakat Berkelanjutan."
-  },
-  {
     kegiatan: "Akhir Perkuliahan Semester Ganjil",
     kategori: "Perkuliahan",
     semester: "Ganjil",
@@ -652,105 +442,6 @@ const kalenderAkademik = [
     mulai: "2027-01-25",
     selesai: "2027-01-25",
     deskripsi: "Hari pertama perkuliahan semester genap 2026/2027."
-  },
-  {
-    kegiatan: "Persiapan dan Pendataan Awal P3K Semester Genap",
-    kategori: "Perkuliahan",
-    semester: "Genap",
-    tanggal: "4–29 Januari 2027",
-    mulai: "2027-01-04",
-    selesai: "2027-01-29",
-    deskripsi: "Persiapan dan pendataan awal P3K semester genap."
-  },
-  {
-    kegiatan: "Pendaftaran dan Booking Online P3K Semester Genap",
-    kategori: "Perkuliahan",
-    semester: "Genap",
-    tanggal: "3–4 Februari 2027",
-    mulai: "2027-02-03",
-    selesai: "2027-02-04",
-    deskripsi: "Pendaftaran dan booking online P3K semester genap."
-  },
-  {
-    kegiatan: "Pembekalan Peserta P3K Semester Genap",
-    kategori: "Perkuliahan",
-    semester: "Genap",
-    tanggal: "5 Februari 2027",
-    mulai: "2027-02-05",
-    selesai: "2027-02-05",
-    deskripsi: "Pembekalan peserta P3K oleh fakultas atau Kampus UPI di Daerah."
-  },
-  {
-    kegiatan: "Pembekalan Ketua Kelompok P3K Semester Genap",
-    kategori: "Perkuliahan",
-    semester: "Genap",
-    tanggal: "9 Februari 2027",
-    mulai: "2027-02-09",
-    selesai: "2027-02-09",
-    deskripsi: "Pembekalan ketua kelompok P3K oleh Divisi Profesi Bidang Kependidikan."
-  },
-  {
-    kegiatan: "Pelaksanaan P3K Semester Genap",
-    kategori: "Perkuliahan",
-    semester: "Genap",
-    tanggal: "22 Februari–16 Juni 2027",
-    mulai: "2027-02-22",
-    selesai: "2027-06-16",
-    deskripsi: "Pelaksanaan P3K semester genap."
-  },
-  {
-    kegiatan: "Penilaian P3K Semester Genap",
-    kategori: "Perkuliahan",
-    semester: "Genap",
-    tanggal: "10–14 Mei 2027",
-    mulai: "2027-05-10",
-    selesai: "2027-05-14",
-    deskripsi: "Penilaian P3K melalui aplikasi https://sippp.upi.edu/."
-  },
-  {
-    kegiatan: "Persiapan dan Pendaftaran P3Kh Semester Genap",
-    kategori: "Perkuliahan",
-    semester: "Genap",
-    tanggal: "4–29 Januari 2027",
-    mulai: "2027-01-04",
-    selesai: "2027-01-29",
-    deskripsi: "Persiapan dan pendaftaran P3Kh semester genap."
-  },
-  {
-    kegiatan: "Penempatan P3Kh Semester Genap",
-    kategori: "Perkuliahan",
-    semester: "Genap",
-    tanggal: "1–5 Februari 2027",
-    mulai: "2027-02-01",
-    selesai: "2027-02-05",
-    deskripsi: "Penempatan peserta P3Kh semester genap."
-  },
-  {
-    kegiatan: "Pembekalan P3Kh Semester Genap",
-    kategori: "Perkuliahan",
-    semester: "Genap",
-    tanggal: "8–12 Februari 2027",
-    mulai: "2027-02-08",
-    selesai: "2027-02-12",
-    deskripsi: "Pembekalan P3Kh oleh fakultas atau Kampus UPI di Daerah."
-  },
-  {
-    kegiatan: "Pelaksanaan P3Kh Semester Genap",
-    kategori: "Perkuliahan",
-    semester: "Genap",
-    tanggal: "18 Februari–18 Juni 2027",
-    mulai: "2027-02-18",
-    selesai: "2027-06-18",
-    deskripsi: "Pelaksanaan P3Kh semester genap."
-  },
-  {
-    kegiatan: "Penilaian P3Kh Semester Genap",
-    kategori: "Perkuliahan",
-    semester: "Genap",
-    tanggal: "10–14 Mei 2027",
-    mulai: "2027-05-10",
-    selesai: "2027-05-14",
-    deskripsi: "Penilaian P3Kh melalui aplikasi https://sippp.upi.edu/."
   },
   {
     kegiatan: "Akhir Perkuliahan Semester Genap",
@@ -865,15 +556,6 @@ const kalenderAkademik = [
     mulai: "2027-05-15",
     selesai: "2027-05-28",
     deskripsi: "Pemasukan nilai hasil ujian ulang semester genap."
-  },
-  {
-    kegiatan: "Pemasukan Nilai P3K dan P3Kh Semester Genap",
-    kategori: "Ujian dan Nilai",
-    semester: "Genap",
-    tanggal: "15–25 Mei 2027",
-    mulai: "2027-05-15",
-    selesai: "2027-05-25",
-    deskripsi: "Pemasukan nilai P3K dan P3Kh semester genap."
   },
 
   // =========================
@@ -1097,33 +779,6 @@ const kalenderAkademik = [
     mulai: "2026-12-08",
     selesai: "2026-12-09",
     deskripsi: "Pelaksanaan wisuda gelombang V tahun 2026."
-  },
-  {
-    kegiatan: "Pengukuhan Guru Besar April 2026",
-    kategori: "Wisuda",
-    semester: "Umum",
-    tanggal: "April 2026",
-    mulai: "2026-04-01",
-    selesai: "2026-04-30",
-    deskripsi: "Periode pengukuhan guru besar bulan April 2026."
-  },
-  {
-    kegiatan: "Pengukuhan Guru Besar Juli 2026",
-    kategori: "Wisuda",
-    semester: "Umum",
-    tanggal: "Juli 2026",
-    mulai: "2026-07-01",
-    selesai: "2026-07-31",
-    deskripsi: "Periode pengukuhan guru besar bulan Juli 2026."
-  },
-  {
-    kegiatan: "Pengukuhan Guru Besar November 2026",
-    kategori: "Wisuda",
-    semester: "Umum",
-    tanggal: "November 2026",
-    mulai: "2026-11-01",
-    selesai: "2026-11-30",
-    deskripsi: "Periode pengukuhan guru besar bulan November 2026."
   },
   {
     kegiatan: "Dies Natalis UPI",
