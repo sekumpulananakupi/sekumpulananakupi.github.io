@@ -23,7 +23,7 @@ async function loadInfoData() {
 async function loadWikiData() {
   const { data, error } = await supabaseClient
     .from("wiki_kampus")
-    .select("id, judul, kategori, isi, gambar, created_at")
+    .select("id, judul, kategori, gambar, created_at")
     .order("created_at", { ascending: false });
 
   if (error) {
@@ -49,7 +49,6 @@ async function loadJobData({ append = false } = {}) {
       posisi,
       perusahaan,
       lokasi,
-      deskripsi,
       gambar,
       link,
       deadline,

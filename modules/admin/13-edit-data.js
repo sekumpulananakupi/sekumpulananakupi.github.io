@@ -22,8 +22,20 @@ async function editInfo(id) {
 }
 
 async function editWiki(id) {
-  const item = wikiData.find(row => row.id === id);
-  if (!item) return;
+  let item = wikiData.find(row => Number(row.id) === Number(id));
+
+  const { data, error } = await supabaseClient
+    .from("wiki_kampus")
+    .select("id, judul, isi")
+    .eq("id", id)
+    .single();
+
+  if (error || !data) {
+    alert("Gagal memuat detail wiki.");
+    return;
+  }
+
+  item = { ...item, ...data };
 
   qs("wikiId").value = item.id;
   qs("wikiTitle").value = item.judul || "";
@@ -41,8 +53,36 @@ async function editWiki(id) {
 }
 
 async function editJob(id) {
-  const item = jobData.find(row => row.id === id);
-  if (!item) return;
+  let item = jobData.find(row => Number(row.id) === Number(id));
+
+  const { data, error } = await supabaseClient
+    .from("lowongan_kerja")
+    .select(`
+      id,
+      posisi,
+      perusahaan,
+      lokasi,
+      link,
+      deadline,
+      status,
+      tipe_pekerjaan,
+      jenjang_pendidikan,
+      is_featured,
+      sumber,
+      gaji_min,
+      gaji_max,
+      gaji_keterangan,
+      deskripsi
+    `)
+    .eq("id", id)
+    .single();
+
+  if (error || !data) {
+    alert("Gagal memuat detail lowongan.");
+    return;
+  }
+
+  item = { ...item, ...data };
 
   qs("jobId").value = item.id;
   qs("jobTitle").value = item.posisi || "";
@@ -60,13 +100,13 @@ async function editJob(id) {
   qs("jobSalaryNote").value = item.gaji_keterangan || "";
   setEditorHTML("job", item.deskripsi || "");
 
-await setSelectedRelations(
-  "job",
-  id,
-  "",
-  "",
-  "jobJurusanMulti"
-);
+  await setSelectedRelations(
+    "job",
+    id,
+    "",
+    "",
+    "jobJurusanMulti"
+  );
 
   showAdminPage("jobPage");
 }
