@@ -876,3 +876,645 @@ body { background: linear-gradient(180deg, #f8fbff 0%, #ffffff 42%, #f8fafc 100%
     white-space: nowrap;
   }
 }
+
+
+/* FIX MOBILE DETAIL JURUSAN */
+@media (max-width: 768px) {
+  html,
+  body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  .container,
+  main.container {
+    width: 100%;
+    max-width: 100%;
+    padding-left: 14px;
+    padding-right: 14px;
+    box-sizing: border-box;
+  }
+
+  .jurusan-hero,
+  .jurusan-summary-grid,
+  .content-grid,
+  .detail-card,
+  .post-card,
+  .biaya-section,
+  .admission-section {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .jurusan-summary-grid,
+  .content-grid,
+  .jurusan-info-grid,
+  .biaya-card-grid,
+  .admission-summary,
+  .admission-compare-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .detail-card,
+  .post-card {
+    padding: 18px;
+    border-radius: 18px;
+  }
+
+  .post-content,
+  .detail-card p,
+  .post-card p,
+  .faq-jurusan-answer,
+  .info-note {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    word-break: normal;
+    line-height: 1.75;
+  }
+
+  .post-card h1 {
+    font-size: 28px;
+    line-height: 1.15;
+  }
+
+  .post-card h2,
+  .detail-card h2 {
+    font-size: 21px;
+    line-height: 1.25;
+  }
+
+  .program-links,
+  .share-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .program-links a,
+  .share-actions .btn,
+  .btn {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .admission-table-wrap {
+    overflow-x: auto;
+    max-width: 100%;
+  }
+
+  .admission-table {
+    min-width: 620px;
+  }
+
+  .admission-card {
+    height: 280px;
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .prospek-chip-group {
+    display: flex;
+    overflow-x: auto;
+    gap: 10px;
+    padding-bottom: 6px;
+  }
+
+  .prospek-chip {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
+  .section-heading,
+  .section-heading > div {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .grid-list,
+  .related-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* HARD FIX MOBILE OVERFLOW */
+@media (max-width: 768px) {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    min-width: 0;
+  }
+
+  html,
+  body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: clip;
+  }
+
+  body {
+    position: relative;
+  }
+
+  main,
+  .container,
+  main.container,
+  .post-detail,
+  #jurusanDetail,
+  .post-card,
+  .detail-card,
+  .section,
+  .section-heading,
+  .section-heading > div,
+  .jurusan-hero,
+  .jurusan-summary-grid,
+  .content-grid,
+  .jurusan-info-grid,
+  .biaya-section,
+  .admission-section,
+  .faq-jurusan-section,
+  .related-jurusan-section {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  .container,
+  main.container {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+
+  .post-card,
+  .detail-card,
+  .biaya-section,
+  .admission-section {
+    padding: 16px !important;
+    border-radius: 18px !important;
+    overflow: hidden !important;
+  }
+
+  .jurusan-summary-grid,
+  .content-grid,
+  .jurusan-info-grid,
+  .admission-summary,
+  .admission-compare-grid,
+  .biaya-card-grid,
+  .related-grid,
+  .grid-list {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .post-content,
+  .post-content *,
+  .post-card p,
+  .post-card div,
+  .detail-card p,
+  .detail-card div,
+  .faq-jurusan-answer,
+  .info-note,
+  .stat-card,
+  .biaya-card {
+    max-width: 100% !important;
+    overflow-wrap: anywhere !important;
+    word-break: break-word !important;
+  }
+
+  h1, h2, h3, p, span, strong, a, li {
+    overflow-wrap: anywhere !important;
+    word-break: break-word !important;
+  }
+
+  img,
+  canvas,
+  iframe,
+  video,
+  svg {
+    max-width: 100% !important;
+    height: auto;
+  }
+
+  .admission-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 260px !important;
+    overflow: hidden !important;
+  }
+
+  .admission-table-wrap,
+  .biaya-tabs,
+  .admission-tabs,
+  .admission-controls,
+  .prospek-chip-group,
+  .program-links,
+  .share-actions {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+  }
+
+  .admission-table {
+    min-width: 560px !important;
+  }
+
+  .btn,
+  .btn-link,
+  .program-links a,
+  .share-actions button {
+    max-width: 100% !important;
+    white-space: normal !important;
+  }
+}
+
+/* FIX 3 BUG MOBILE: anchor nav, statistik tabs, biaya tabs */
+@media (max-width: 768px) {
+  .detail-anchor-nav,
+  .jurusan-anchor-nav,
+  .sticky-nav,
+  .section-nav {
+    display: flex !important;
+    gap: 8px !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    white-space: nowrap !important;
+    padding: 10px !important;
+    scroll-snap-type: x mandatory;
+  }
+
+  .detail-anchor-nav a,
+  .jurusan-anchor-nav a,
+  .sticky-nav a,
+  .section-nav a {
+    flex: 0 0 auto !important;
+    display: inline-flex !important;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 12px !important;
+    border-radius: 999px !important;
+    font-size: 13px !important;
+    font-weight: 800 !important;
+    line-height: 1 !important;
+    background: #f1f5f9 !important;
+    color: #0f172a !important;
+    text-decoration: none !important;
+    scroll-snap-align: start;
+  }
+
+  .admission-tabs,
+  .biaya-tabs {
+    display: flex !important;
+    gap: 8px !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    white-space: nowrap !important;
+    padding: 4px 2px 10px !important;
+    margin-bottom: 14px !important;
+  }
+
+  .admission-tab,
+  .chart-mode-btn,
+  .biaya-tab-btn {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    flex: 0 0 auto !important;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    width: auto !important;
+    min-width: max-content !important;
+    max-width: none !important;
+    height: auto !important;
+    padding: 9px 12px !important;
+    border: 1px solid #dbe3ef !important;
+    border-radius: 999px !important;
+    background: #f8fafc !important;
+    color: #0f172a !important;
+    font-size: 12px !important;
+    font-weight: 800 !important;
+    line-height: 1 !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+    cursor: pointer;
+  }
+
+  .admission-tab.active,
+  .chart-mode-btn.active,
+  .biaya-tab-btn.active {
+    background: #0b4fb3 !important;
+    border-color: #0b4fb3 !important;
+    color: #fff !important;
+  }
+
+  .admission-controls {
+    display: flex !important;
+    gap: 8px !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    padding-bottom: 8px !important;
+  }
+
+  .admission-tabs::-webkit-scrollbar,
+  .admission-controls::-webkit-scrollbar,
+  .biaya-tabs::-webkit-scrollbar,
+  .detail-anchor-nav::-webkit-scrollbar,
+  .jurusan-anchor-nav::-webkit-scrollbar,
+  .sticky-nav::-webkit-scrollbar,
+  .section-nav::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* FINAL FIX: nav section mobile tidak numpuk */
+@media (max-width: 768px) {
+  .detail-section-nav,
+  .detail-anchor-nav,
+  .jurusan-anchor-nav,
+  .sticky-nav,
+  .section-nav,
+  .page-tabs,
+  .anchor-tabs {
+    width: 100% !important;
+    max-width: 100% !important;
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    gap: 8px !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    padding: 10px !important;
+    white-space: nowrap !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .detail-section-nav > *,
+  .detail-anchor-nav > *,
+  .jurusan-anchor-nav > *,
+  .sticky-nav > *,
+  .section-nav > *,
+  .page-tabs > *,
+  .anchor-tabs > * {
+    flex: 0 0 auto !important;
+    width: auto !important;
+    min-width: max-content !important;
+    max-width: none !important;
+    white-space: nowrap !important;
+  }
+
+  .detail-section-nav a,
+  .detail-anchor-nav a,
+  .jurusan-anchor-nav a,
+  .sticky-nav a,
+  .section-nav a,
+  .page-tabs a,
+  .anchor-tabs a {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    padding: 9px 12px !important;
+    border-radius: 999px !important;
+    background: #f1f5f9 !important;
+    color: #0f172a !important;
+    font-size: 12px !important;
+    font-weight: 800 !important;
+    line-height: 1 !important;
+    text-decoration: none !important;
+  }
+
+  .detail-section-nav i,
+  .detail-anchor-nav i,
+  .jurusan-anchor-nav i,
+  .sticky-nav i,
+  .section-nav i,
+  .page-tabs i,
+  .anchor-tabs i {
+    font-size: 12px !important;
+    flex: 0 0 auto !important;
+  }
+
+  .detail-section-nav::-webkit-scrollbar,
+  .detail-anchor-nav::-webkit-scrollbar,
+  .jurusan-anchor-nav::-webkit-scrollbar,
+  .sticky-nav::-webkit-scrollbar,
+  .section-nav::-webkit-scrollbar,
+  .page-tabs::-webkit-scrollbar,
+  .anchor-tabs::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.mobile-section-select {
+  display: none;
+}
+
+.desktop-section-nav {
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+  border-radius: 18px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+}
+
+.desktop-section-nav a {
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: #f1f5f9;
+  color: #0f172a;
+  font-size: 13px;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+@media (max-width: 768px) {
+  .desktop-section-nav {
+    display: none !important;
+  }
+
+  .mobile-section-select {
+    display: block;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 18px;
+    padding: 14px;
+    margin: 14px 0;
+  }
+
+  .mobile-section-select label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 12px;
+    font-weight: 800;
+    color: #64748b;
+  }
+
+  .mobile-section-select select {
+    width: 100%;
+    min-height: 44px;
+    border: 1px solid #dbe3ef;
+    border-radius: 14px;
+    padding: 0 14px;
+    background: #f8fafc;
+    color: #0f172a;
+    font-size: 14px;
+    font-weight: 800;
+    outline: none;
+  }
+}
+
+.mobile-detail-nav{
+    display:none;
+}
+
+@media (max-width:768px){
+
+.mobile-detail-nav{
+
+    position:fixed;
+    left:12px;
+    right:12px;
+    bottom:12px;
+
+    z-index:999;
+
+    display:flex;
+    justify-content:space-around;
+    align-items:center;
+
+    padding:10px;
+
+    background:rgba(255,255,255,.92);
+
+    backdrop-filter:blur(16px);
+
+    border:1px solid #e5e7eb;
+
+    border-radius:22px;
+
+    box-shadow:
+    0 10px 35px rgba(0,0,0,.15);
+
+}
+
+.mobile-detail-nav a{
+
+    display:flex;
+    flex-direction:column;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:4px;
+
+    text-decoration:none;
+
+    color:#475569;
+
+    font-size:11px;
+
+    font-weight:700;
+
+    flex:1;
+
+}
+
+.mobile-detail-nav i{
+
+    font-size:18px;
+
+}
+
+.mobile-detail-nav a:hover{
+
+    color:#2563eb;
+
+}
+
+body{
+
+    padding-bottom:95px;
+
+}
+
+.desktop-section-nav{
+
+    display:none;
+
+}
+
+}
+
+.mobile-detail-nav {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .desktop-section-nav,
+  .mobile-section-select {
+    display: none !important;
+  }
+
+  .mobile-detail-nav {
+    position: fixed;
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    z-index: 9999;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 9px 8px;
+    border-radius: 22px;
+
+    background: rgba(255, 255, 255, 0.94);
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 18px 45px rgba(15, 23, 42, 0.18);
+    backdrop-filter: blur(16px);
+  }
+
+  .mobile-detail-nav a {
+    flex: 1;
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+
+    padding: 7px 4px;
+    border-radius: 16px;
+
+    color: #64748b;
+    text-decoration: none;
+    font-size: 10.5px;
+    font-weight: 800;
+    line-height: 1;
+  }
+
+  .mobile-detail-nav i {
+    font-size: 16px;
+  }
+
+  .mobile-detail-nav a.active {
+    background: #eaf2ff;
+    color: #0b4fb3;
+  }
+
+  body {
+    padding-bottom: 92px;
+  }
+}

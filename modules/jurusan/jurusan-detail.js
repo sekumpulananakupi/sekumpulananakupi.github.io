@@ -169,6 +169,76 @@ function setupDetailNav() {
   });
 }
 
+function setupMobileDetailNav() {
+  const navLinks = document.querySelectorAll(".mobile-detail-nav a");
+
+  if (!navLinks.length) return;
+
+  navLinks.forEach(link => {
+    link.addEventListener("click", function (e) {
+      e.preventDefault();
+
+      const target = document.querySelector(this.getAttribute("href"));
+
+      if (!target) return;
+
+      target.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+
+      navLinks.forEach(item => item.classList.remove("active"));
+      this.classList.add("active");
+    });
+  });
+
+  const sections = ["profil", "statistik", "biaya", "faq", "prospek", "mirip"]
+    .map(id => document.getElementById(id))
+    .filter(Boolean);
+
+  window.addEventListener("scroll", () => {
+    let currentId = "";
+
+    sections.forEach(section => {
+      const rect = section.getBoundingClientRect();
+
+      if (rect.top <= 160) {
+        currentId = section.id;
+      }
+    });
+
+    if (!currentId) return;
+
+    navLinks.forEach(link => {
+      link.classList.toggle(
+        "active",
+        link.getAttribute("href") === `#${currentId}`
+      );
+    });
+  });
+}
+
+function setupSectionJump() {
+
+  const sectionJump = document.getElementById("sectionJump");
+
+  if (!sectionJump) return;
+
+  sectionJump.addEventListener("change", function () {
+
+    const target = document.querySelector(this.value);
+
+    if (!target) return;
+
+    target.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+
+  });
+
+}
+
 function makeSafeId(text) {
   return String(text || "")
     .toLowerCase()
@@ -412,14 +482,26 @@ const { data: faqJurusan, error: faqError } = await supabaseClient
         </aside>
       </section>
 
-      <nav class="detail-jump-nav" aria-label="Navigasi detail jurusan">
-        <a href="#profil"><i class="fa-regular fa-file-lines"></i> Profil</a>
-        <a href="#statistik"><i class="fa-solid fa-chart-line"></i> Statistik</a>
-        <a href="#biaya"><i class="fa-regular fa-credit-card"></i> Biaya</a>
-        <a href="#faq"><i class="fa-regular fa-circle-question"></i> FAQ</a>
-        <a href="#prospek"><i class="fa-solid fa-briefcase"></i> Prospek</a>
-        <a href="#mirip"><i class="fa-solid fa-code-compare"></i> Jurusan Mirip</a>
-      </nav>
+      <div class="mobile-section-select">
+  <label for="sectionJump">Lompat ke bagian</label>
+  <select id="sectionJump">
+    <option value="#profil">Profil Jurusan</option>
+    <option value="#statistik">Statistik Penerimaan</option>
+    <option value="#biaya">Biaya Pendidikan</option>
+    <option value="#faq">FAQ Jurusan</option>
+    <option value="#prospek">Prospek Kerja</option>
+    <option value="#jurusan-mirip">Jurusan Mirip</option>
+  </select>
+</div>
+
+<nav class="desktop-section-nav">
+  <a href="#profil">Profil</a>
+  <a href="#statistik">Statistik</a>
+  <a href="#biaya">Biaya</a>
+  <a href="#faq">FAQ</a>
+  <a href="#prospek">Prospek</a>
+  <a href="#jurusan-mirip">Mirip</a>
+</nav>
 
       <section class="quick-facts-card">
         <div>
@@ -545,12 +627,59 @@ const { data: faqJurusan, error: faqError } = await supabaseClient
           <a href="../pages/jurusan.html" class="btn ghost">← Daftar Jurusan</a>
         </div>
       </section>
+      <nav class="mobile-detail-nav">
+  <a href="#profil">
+    <i class="fa-solid fa-user"></i>
+    <span>Profil</span>
+  </a>
+
+  <a href="#statistik">
+    <i class="fa-solid fa-chart-line"></i>
+    <span>Stat</span>
+  </a>
+
+  <a href="#biaya">
+    <i class="fa-solid fa-wallet"></i>
+    <span>Biaya</span>
+  </a>
+
+  <a href="#faq">
+    <i class="fa-solid fa-circle-question"></i>
+    <span>FAQ</span>
+  </a>
+
+  <a href="#prospek">
+    <i class="fa-solid fa-briefcase"></i>
+    <span>Karier</span>
+  </a>
+
+  <a href="#mirip">
+    <i class="fa-solid fa-code-compare"></i>
+    <span>Mirip</span>
+  </a>
+</nav>
     </article>
   `;
 
-  setupShareButtons();
-  setupDetailNav();
-  setupAdmissionStatistik(statistik);
+setupShareButtons();
+setupDetailNav();
+setupMobileDetailNav();
+setupAdmissionStatistik(statistik);
+
+document.querySelectorAll(".mobile-detail-nav a").forEach(link => {
+  link.addEventListener("click", function (e) {
+    e.preventDefault();
+
+    const target = document.querySelector(this.getAttribute("href"));
+
+    if (target) {
+      target.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    }
+  });
+});
 
   await loadRelatedContent(id, relatedArticleList, relatedJobList);
   await loadAutoMatchedJobs(jurusan, relatedJobList);
@@ -1718,6 +1847,7 @@ function updateFaqSchemaJurusan(faqItems = []) {
 
   document.head.appendChild(script);
 }
+
 
 /* =========================
    INIT
