@@ -1,20 +1,22 @@
 function initMenu() {
-  const menuToggle = document.getElementById("menuToggle");
-  const navMenu = document.getElementById("navMenu");
+    const menuToggle = document.getElementById("menuToggle");
+    const navMenu = document.getElementById("navMenu");
 
-  if (!menuToggle || !navMenu) return;
+    if (!menuToggle || !navMenu) return;
 
-  menuToggle.addEventListener("click", () => {
-    navMenu.classList.toggle("show");
-  });
+    // Hindari memasang listener dua kali
+    if (menuToggle.dataset.initialized) return;
+    menuToggle.dataset.initialized = "true";
+
+    menuToggle.addEventListener("click", () => {
+        navMenu.classList.toggle("show");
+    });
 }
 
-document.addEventListener("DOMContentLoaded", initMenu);
-window.addEventListener("load", initMenu);
-
 fetch("../components/navbar.html")
-  .then(res => res.text())
-  .then(data => {
-    document.getElementById("navbar").innerHTML = data;
-    initMenu();
-  });
+    .then(res => res.text())
+    .then(html => {
+        document.getElementById("navbar").innerHTML = html;
+        initMenu();
+    })
+    .catch(console.error);
