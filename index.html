@@ -3,20 +3,27 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>Sekumpulan Anak UPI</title>
+
   <link rel="stylesheet" href="assets/css/style.css" />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+  />
+
   <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZWLZ2952C1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZWLZ2952C1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
 
-  gtag('config', 'G-ZWLZ2952C1');
-</script>
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    function gtag() {
+      dataLayer.push(arguments);
+    }
 
+    gtag("js", new Date());
+    gtag("config", "G-ZWLZ2952C1");
+  </script>
 </head>
 
 <body>
@@ -25,11 +32,13 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
   </header>
 
   <main>
+    <!-- Hero -->
     <section class="hero" id="beranda">
       <div class="container hero-grid">
         <div>
           <p class="eyebrow">Komunitas Mahasiswa</p>
           <h1>Sekumpulan Anak UPI</h1>
+
           <p class="hero-text">
             Portal komunitas untuk berbagi informasi kampus, pengetahuan seputar UPI,
             dan peluang kerja untuk mahasiswa serta alumni.
@@ -71,121 +80,132 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
           />
           <button class="btn primary" type="submit">Cari</button>
         </form>
-      </div>    
+      </div>
     </section>
 
-<section class="section container" id="fitur-utama">
-  <div class="section-heading">
-    <div>
-      <p class="eyebrow">Akses Cepat</p>
-      <h2>Butuh Apa Hari Ini?</h2>
-    </div>
-  </div>
-
-  <div class="feature-grid">
-    <a href="pages/jurusan.html" class="feature-card">
-      <span>🎓</span>
-      <h3>Jurusan UPI</h3>
-      <p>Lihat profil jurusan, daya tampung, peminat, dan prospek kerja.</p>
-    </a>
-
-    <a href="pages/lowongan.html" class="feature-card">
-      <span>💼</span>
-      <h3>Lowongan Kerja</h3>
-      <p>Cari lowongan yang cocok dengan jurusan dan prospek kariermu.</p>
-    </a>
-
-    <a href="pages/dokumen.html" class="feature-card">
-      <span>📄</span>
-      <h3>Dokumen Kampus</h3>
-      <p>Temukan kalender akademik, panduan KRS, UKT, dan dokumen penting.</p>
-    </a>
-
-    <a href="pages/faq.html" class="feature-card">
-      <span>❓</span>
-      <h3>FAQ Kampus</h3>
-      <p>Jawaban cepat untuk pertanyaan umum seputar kehidupan kampus.</p>
-    </a>
-
-    <a href="pages/bandingkan-jurusan.html" class="feature-card">
-      <span>⚖️</span>
-      <h3>Bandingkan Jurusan</h3>
-      <p>Bandingkan akreditasi, statistik penerimaan, dan prospek kerja.</p>
-    </a>
-
-    <a href="pages/komunitas.html" class="feature-card">
-      <span>👥</span>
-      <h3>Komunitas</h3>
-      <p>Gabung komunitas untuk berbagi info dan diskusi seputar UPI.</p>
-    </a>
-  </div>
-</section>
-
-<section class="section container" id="bantuan-kampus">
-  <div class="section-heading">
-    <div>
-      <p class="eyebrow">Bantuan Kampus</p>
-      <h2>Dokumen & FAQ</h2>
-    </div>
-  </div>
-
-  <div class="homepage-two-column">
-    <div class="post-card">
+    <!-- Akses Cepat -->
+    <section class="section container" id="fitur-utama">
       <div class="section-heading">
         <div>
-          <p class="eyebrow">Dokumen</p>
-          <h2>Dokumen Penting</h2>
+          <p class="eyebrow">Akses Cepat</p>
+          <h2>Butuh Apa Hari Ini?</h2>
         </div>
-        <a href="pages/dokumen.html" class="btn ghost">Lihat Semua</a>
       </div>
 
-      <div id="homeDokumenList"></div>
-    </div>
+      <div class="feature-grid">
+        <a href="pages/jurusan.html" class="feature-card">
+          <span>🎓</span>
+          <h3>Jurusan UPI</h3>
+          <p>Lihat profil jurusan, daya tampung, peminat, dan prospek kerja.</p>
+        </a>
 
-    <div class="post-card">
+        <a href="pages/lowongan.html" class="feature-card">
+          <span>💼</span>
+          <h3>Lowongan Kerja</h3>
+          <p>Cari lowongan yang cocok dengan jurusan dan prospek kariermu.</p>
+        </a>
+
+        <a href="pages/dokumen.html" class="feature-card">
+          <span>📄</span>
+          <h3>Dokumen Kampus</h3>
+          <p>Temukan kalender akademik, panduan KRS, UKT, dan dokumen penting.</p>
+        </a>
+
+        <a href="pages/faq.html" class="feature-card">
+          <span>❓</span>
+          <h3>FAQ Kampus</h3>
+          <p>Jawaban cepat untuk pertanyaan umum seputar kehidupan kampus.</p>
+        </a>
+
+        <a href="pages/bandingkan-jurusan.html" class="feature-card">
+          <span>⚖️</span>
+          <h3>Bandingkan Jurusan</h3>
+          <p>Bandingkan akreditasi, statistik penerimaan, dan prospek kerja.</p>
+        </a>
+
+        <a href="pages/komunitas.html" class="feature-card">
+          <span>👥</span>
+          <h3>Komunitas</h3>
+          <p>Gabung komunitas untuk berbagi info dan diskusi seputar UPI.</p>
+        </a>
+      </div>
+    </section>
+
+    <!-- Dokumen & FAQ -->
+    <section class="section container" id="bantuan-kampus">
       <div class="section-heading">
         <div>
-          <p class="eyebrow">FAQ</p>
-          <h2>Pertanyaan Umum</h2>
+          <p class="eyebrow">Bantuan Kampus</p>
+          <h2>Dokumen & FAQ</h2>
         </div>
-        <a href="pages/faq.html" class="btn ghost">Lihat Semua</a>
       </div>
 
-      <div id="homeFaqList"></div>
-    </div>
-  </div>
-</section>
-    
-<section class="section container" id="terbaru">
-  <div class="section-heading">
-    <div>
-      <p class="eyebrow">Terbaru</p>
-      <h2>Artikel Terbaru</h2>
-    </div>
-  </div>
+      <div class="homepage-two-column">
+        <div class="post-card">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Dokumen</p>
+              <h2>Dokumen Penting</h2>
+            </div>
 
-  <div class="slider-wrapper">
-  <button class="slider-btn" id="latestPrev">‹</button>
+            <a href="pages/dokumen.html" class="btn ghost">Lihat Semua</a>
+          </div>
 
-  <div class="latest-slider" id="latestList"></div>
+          <div id="homeDokumenList"></div>
+        </div>
 
-  <button class="slider-btn" id="latestNext">›</button>
-  </div>
-</section>
+        <div class="post-card">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">FAQ</p>
+              <h2>Pertanyaan Umum</h2>
+            </div>
 
-<section class="section container" id="lowongan-terbaru">
-  <div class="section-heading">
-    <div>
-      <p class="eyebrow">Karier</p>
-      <h2>Lowongan Terbaru</h2>
-    </div>
+            <a href="pages/faq.html" class="btn ghost">Lihat Semua</a>
+          </div>
 
-    <a href="pages/lowongan.html" class="btn ghost">Lihat Semua</a>
-  </div>
+          <div id="homeFaqList"></div>
+        </div>
+      </div>
+    </section>
 
-  <div class="grid-list" id="latestJobList"></div>
-</section>
-  
+    <!-- Artikel Terbaru -->
+    <section class="section container" id="terbaru">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Terbaru</p>
+          <h2>Artikel Terbaru</h2>
+        </div>
+      </div>
+
+      <div class="slider-wrapper">
+        <button class="slider-btn" id="latestPrev" type="button" aria-label="Artikel sebelumnya">
+          ‹
+        </button>
+
+        <div class="latest-slider" id="latestList"></div>
+
+        <button class="slider-btn" id="latestNext" type="button" aria-label="Artikel berikutnya">
+          ›
+        </button>
+      </div>
+    </section>
+
+    <!-- Lowongan Terbaru -->
+    <section class="section container" id="lowongan-terbaru">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Karier</p>
+          <h2>Lowongan Terbaru</h2>
+        </div>
+
+        <a href="pages/lowongan.html" class="btn ghost">Lihat Semua</a>
+      </div>
+
+      <div class="grid-list" id="latestJobList"></div>
+    </section>
+
+    <!-- Informasi Kampus -->
     <section class="section container" id="kampus">
       <div class="section-heading">
         <div>
@@ -199,6 +219,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
       <div class="grid-list" id="infoList"></div>
     </section>
 
+    <!-- Wiki Kampus -->
     <section class="section container" id="wiki">
       <div class="section-heading">
         <div>
@@ -212,49 +233,49 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
       <div class="grid-list" id="wikiList"></div>
     </section>
 
-<section class="section container" id="eksplor-saupi">
-  <div class="section-heading">
-    <div>
-      <p class="eyebrow">Eksplor SA-UPI</p>
-      <h2>Mau Mulai dari Mana?</h2>
-    </div>
-  </div>
-
-  <div class="explore-grid">
-    <div class="post-card explore-card">
-      <p class="eyebrow">Program Studi</p>
-      <h2>Jelajahi Jurusan UPI</h2>
-      <p>
-        Lihat profil jurusan, akreditasi, daya tampung, mata kuliah,
-        prospek kerja, dan informasi penerimaan.
-      </p>
-
-      <div class="hero-actions">
-        <a href="pages/jurusan.html" class="btn primary">Lihat Jurusan</a>
-        <a href="pages/bandingkan-jurusan.html" class="btn ghost">Bandingkan Jurusan</a>
+    <!-- Eksplor SA-UPI -->
+    <section class="section container" id="eksplor-saupi">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Eksplor SA-UPI</p>
+          <h2>Mau Mulai dari Mana?</h2>
+        </div>
       </div>
-    </div>
 
-    <div class="post-card explore-card">
-      <p class="eyebrow">Komunitas</p>
-      <h2>Gabung Sekumpulan Anak UPI</h2>
-      <p>
-        Ikut berdiskusi, berbagi informasi kampus, bertanya seputar UPI,
-        dan terhubung dengan mahasiswa serta alumni.
-      </p>
+      <div class="explore-grid">
+        <div class="post-card explore-card">
+          <p class="eyebrow">Program Studi</p>
+          <h2>Jelajahi Jurusan UPI</h2>
 
-      <div class="hero-actions">
-        <a href="pages/komunitas.html" class="btn primary">Cara Gabung</a>
-        <a href="pages/tentang.html" class="btn ghost">Tentang SA-UPI</a>
+          <p>
+            Lihat profil jurusan, akreditasi, daya tampung, mata kuliah,
+            prospek kerja, dan informasi penerimaan.
+          </p>
+
+          <div class="hero-actions">
+            <a href="pages/jurusan.html" class="btn primary">Lihat Jurusan</a>
+            <a href="pages/bandingkan-jurusan.html" class="btn ghost">Bandingkan Jurusan</a>
+          </div>
+        </div>
+
+        <div class="post-card explore-card">
+          <p class="eyebrow">Komunitas</p>
+          <h2>Gabung Sekumpulan Anak UPI</h2>
+
+          <p>
+            Ikut berdiskusi, berbagi informasi kampus, bertanya seputar UPI,
+            dan terhubung dengan mahasiswa serta alumni.
+          </p>
+
+          <div class="hero-actions">
+            <a href="pages/komunitas.html" class="btn primary">Cara Gabung</a>
+            <a href="pages/tentang.html" class="btn ghost">Tentang SA-UPI</a>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-</section>
-
-
+    </section>
   </main>
-  
-  
+
   <footer class="footer">
     <div data-component="footer"></div>
   </footer>

@@ -22,20 +22,20 @@ const TABLE_CONFIG = {
     table: "informasi_kampus",
     columns: "id, judul, kategori, isi, gambar, created_at",
     searchColumns: "judul, isi, kategori",
-    orderColumn: "created_at"
+    orderColumn: "created_at",
   },
   wiki: {
     table: "wiki_kampus",
     columns: "id, judul, kategori, isi, gambar, created_at",
     searchColumns: "judul, isi, kategori",
-    orderColumn: "created_at"
+    orderColumn: "created_at",
   },
   job: {
     table: "lowongan_kerja",
     columns: "id, posisi, perusahaan, lokasi, gambar, created_at",
     searchColumns: "posisi, perusahaan, lokasi",
-    orderColumn: "created_at"
-  }
+    orderColumn: "created_at",
+  },
 };
 
 let activeFilter = "all";
@@ -54,7 +54,7 @@ let faqData = [];
 let pageState = {
   info: { page: 0, hasMore: true, keyword: "" },
   wiki: { page: 0, hasMore: true, keyword: "" },
-  job: { page: 0, hasMore: true, keyword: "" }
+  job: { page: 0, hasMore: true, keyword: "" },
 };
 
 function cacheKey(key) {
@@ -79,20 +79,27 @@ function getCache(key) {
 
 function setCache(key, data) {
   try {
-    localStorage.setItem(cacheKey(key), JSON.stringify({ time: Date.now(), data }));
+    localStorage.setItem(
+      cacheKey(key),
+      JSON.stringify({ time: Date.now(), data }),
+    );
   } catch (error) {
     console.warn("Cache gagal disimpan:", key, error);
   }
 }
 
 function escapeHTML(text) {
-  return String(text || "").replace(/[&<>'"]/g, char => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    "'": "&#39;",
-    '"': "&quot;"
-  }[char]));
+  return String(text || "").replace(
+    /[&<>'"]/g,
+    (char) =>
+      ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        "'": "&#39;",
+        '"': "&quot;",
+      })[char],
+  );
 }
 
 function stripHTML(html) {
@@ -115,14 +122,18 @@ function setText(id, value) {
 function showLoading(targetId, count = 3) {
   const target = document.getElementById(targetId);
   if (!target) return;
-  target.innerHTML = Array.from({ length: count }).map(() => `
+  target.innerHTML = Array.from({ length: count })
+    .map(
+      () => `
     <article class="skeleton-card">
       <div class="skeleton-line title"></div>
       <div class="skeleton-line"></div>
       <div class="skeleton-line"></div>
       <div class="skeleton-line short"></div>
     </article>
-  `).join("");
+  `,
+    )
+    .join("");
 }
 
 function showSimpleLoading(targetId, message = "Memuat data...") {
@@ -169,8 +180,8 @@ async function fetchPaged(type, { append = false } = {}) {
     query = query.or(
       config.searchColumns
         .split(",")
-        .map(column => `${column.trim()}.ilike.%${escapedKeyword}%`)
-        .join(",")
+        .map((column) => `${column.trim()}.ilike.%${escapedKeyword}%`)
+        .join(","),
     );
   }
 
@@ -197,7 +208,7 @@ function applyPagedData(type, rows, append) {
 
 function mergeById(oldRows, newRows) {
   const map = new Map();
-  [...oldRows, ...newRows].forEach(row => map.set(String(row.id), row));
+  [...oldRows, ...newRows].forEach((row) => map.set(String(row.id), row));
   return Array.from(map.values());
 }
 
@@ -215,18 +226,30 @@ async function loadCoreData() {
     jurusanData = cachedCore.jurusanData || [];
     artikelJurusanData = cachedCore.artikelJurusanData || [];
   } else {
-    const [kategoriResult, artikelKategoriResult, jurusanResult, artikelJurusanResult] = await Promise.all([
+    const [
+      kategoriResult,
+      artikelKategoriResult,
+      jurusanResult,
+      artikelJurusanResult,
+    ] = await Promise.all([
       supabaseClient.from("kategori").select("id, nama"),
-      supabaseClient.from("artikel_kategori").select("artikel_tipe, artikel_id, kategori_id"),
-      supabaseClient.from("jurusan").select("id, nama").order("nama", { ascending: true }),
-      supabaseClient.from("artikel_jurusan").select("artikel_tipe, artikel_id, jurusan_id")
+      supabaseClient
+        .from("artikel_kategori")
+        .select("artikel_tipe, artikel_id, kategori_id"),
+      supabaseClient
+        .from("jurusan")
+        .select("id, nama")
+        .order("nama", { ascending: true }),
+      supabaseClient
+        .from("artikel_jurusan")
+        .select("artikel_tipe, artikel_id, jurusan_id"),
     ]);
 
     const firstError = [
       kategoriResult.error,
       artikelKategoriResult.error,
       jurusanResult.error,
-      artikelJurusanResult.error
+      artikelJurusanResult.error,
     ].find(Boolean);
 
     if (firstError) console.error("Gagal mengambil data relasi:", firstError);
@@ -236,7 +259,12 @@ async function loadCoreData() {
     jurusanData = jurusanResult.data || [];
     artikelJurusanData = artikelJurusanResult.data || [];
 
-    setCache("core_relations", { kategoriData, artikelKategoriData, jurusanData, artikelJurusanData });
+    setCache("core_relations", {
+      kategoriData,
+      artikelKategoriData,
+      jurusanData,
+      artikelJurusanData,
+    });
   }
 
   renderJurusanJobFilter();
@@ -244,7 +272,7 @@ async function loadCoreData() {
   await Promise.all([
     fetchPaged("info"),
     fetchPaged("wiki"),
-    fetchPaged("job")
+    fetchPaged("job"),
   ]);
 
   setTimeout(loadDeferredData, 100);
@@ -273,11 +301,14 @@ async function loadDeferredData() {
       .from("faq_kampus")
       .select("id, pertanyaan, kategori, created_at")
       .order("created_at", { ascending: false })
-      .limit(MINI_LIMIT)
+      .limit(MINI_LIMIT),
   ]);
 
   if (dokumenResult.error || faqResult.error) {
-    console.error("Gagal mengambil dokumen/FAQ:", dokumenResult.error || faqResult.error);
+    console.error(
+      "Gagal mengambil dokumen/FAQ:",
+      dokumenResult.error || faqResult.error,
+    );
   }
 
   dokumenData = dokumenResult.data || [];
@@ -310,26 +341,31 @@ function getSearchText(type, item) {
 }
 
 function filterLocalData(type, data) {
-  const keyword = (document.getElementById(`${type}Search`)?.value || "").trim().toLowerCase();
+  const keyword = (document.getElementById(`${type}Search`)?.value || "")
+    .trim()
+    .toLowerCase();
 
-  return data.filter(item => {
+  return data.filter((item) => {
     const matchSearch = !keyword || getSearchText(type, item).includes(keyword);
 
     let matchFilter = true;
     if (activeFilter !== "all") {
       if (type === "info" || type === "wiki") {
-        const kategoriNames = getArtikelKategori(type, item.id).map(nama => nama.toLowerCase());
-        matchFilter = kategoriNames.some(nama => nama.includes(activeFilter));
+        const kategoriNames = getArtikelKategori(type, item.id).map((nama) =>
+          nama.toLowerCase(),
+        );
+        matchFilter = kategoriNames.some((nama) => nama.includes(activeFilter));
       }
       if (type === "job") matchFilter = activeFilter === "lowongan";
     }
 
     let matchJurusan = true;
     if (type === "job" && activeJobJurusan !== "all") {
-      matchJurusan = artikelJurusanData.some(row =>
-        row.artikel_tipe === "job" &&
-        String(row.artikel_id) === String(item.id) &&
-        String(row.jurusan_id) === String(activeJobJurusan)
+      matchJurusan = artikelJurusanData.some(
+        (row) =>
+          row.artikel_tipe === "job" &&
+          String(row.artikel_id) === String(item.id) &&
+          String(row.jurusan_id) === String(activeJobJurusan),
       );
     }
 
@@ -343,7 +379,7 @@ function renderList(type, listId) {
 
   const filtered = filterLocalData(type, getDataByType(type));
   list.innerHTML = filtered.length
-    ? filtered.map(item => createCard(type, item)).join("")
+    ? filtered.map((item) => createCard(type, item)).join("")
     : `<div class="empty">Belum ada data.</div>`;
 }
 
@@ -401,42 +437,48 @@ function renderLatest() {
   if (!latestList) return;
 
   const combined = [
-    ...infoData.map(item => ({
+    ...infoData.map((item) => ({
       id: item.id,
       type: "info",
       title: item.judul || "",
       content: item.isi || "",
       gambar: item.gambar || "",
-      label: getArtikelKategori("info", item.id)[0] || item.kategori || "Info Kampus",
-      created_at: item.created_at || ""
+      label:
+        getArtikelKategori("info", item.id)[0] ||
+        item.kategori ||
+        "Info Kampus",
+      created_at: item.created_at || "",
     })),
-    ...wikiData.map(item => ({
+    ...wikiData.map((item) => ({
       id: item.id,
       type: "wiki",
       title: item.judul || "",
       content: item.isi || "",
       gambar: item.gambar || "",
-      label: getArtikelKategori("wiki", item.id)[0] || item.kategori || "Wiki Kampus",
-      created_at: item.created_at || ""
+      label:
+        getArtikelKategori("wiki", item.id)[0] ||
+        item.kategori ||
+        "Wiki Kampus",
+      created_at: item.created_at || "",
     })),
-    ...jobData.map(item => ({
+    ...jobData.map((item) => ({
       id: item.id,
       type: "job",
       title: item.posisi || "",
       content: item.lokasi || "Lowongan kerja terbaru.",
       gambar: item.gambar || "",
       label: item.perusahaan || "Lowongan",
-      created_at: item.created_at || ""
-    }))
+      created_at: item.created_at || "",
+    })),
   ];
 
   const latest = combined
-    .filter(item => item.id)
+    .filter((item) => item.id)
     .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
     .slice(0, PAGE_SIZE);
 
   latestList.innerHTML = latest.length
-    ? latest.map(item => createLatestCard(item)).join("")
+    ? latest.map((item) => createLatestCard(item)).join("")
     : `<div class="empty">Belum ada artikel terbaru.</div>`;
 }
 
@@ -445,7 +487,7 @@ function renderLatestJobs() {
   if (!list) return;
   const latestJobs = jobData.slice(0, PAGE_SIZE);
   list.innerHTML = latestJobs.length
-    ? latestJobs.map(item => createCard("job", item)).join("")
+    ? latestJobs.map((item) => createCard("job", item)).join("")
     : `<div class="empty">Belum ada lowongan terbaru.</div>`;
 }
 
@@ -454,12 +496,16 @@ function renderHomeDokumen() {
   if (!list) return;
   list.innerHTML = dokumenData.length
     ? `<div class="home-mini-list">
-        ${dokumenData.map(item => `
+        ${dokumenData
+          .map(
+            (item) => `
           <a href="${escapeHTML(item.link)}" target="_blank" rel="noopener" class="home-mini-item">
             <strong>${escapeHTML(item.judul)}</strong>
             <span>${escapeHTML(item.kategori || "Dokumen")}</span>
           </a>
-        `).join("")}
+        `,
+          )
+          .join("")}
       </div>`
     : `<div class="empty">Belum ada dokumen.</div>`;
 }
@@ -469,12 +515,16 @@ function renderHomeFaq() {
   if (!list) return;
   list.innerHTML = faqData.length
     ? `<div class="home-mini-list">
-        ${faqData.map(item => `
+        ${faqData
+          .map(
+            (item) => `
           <a href="../pages/faq.html" class="home-mini-item">
             <strong>${escapeHTML(item.pertanyaan)}</strong>
             <span>${escapeHTML(item.kategori || "FAQ")}</span>
           </a>
-        `).join("")}
+        `,
+          )
+          .join("")}
       </div>`
     : `<div class="empty">Belum ada FAQ.</div>`;
 }
@@ -498,15 +548,25 @@ function renderAll() {
 
 function getArtikelKategori(type, artikelId) {
   return artikelKategoriData
-    .filter(row => row.artikel_tipe === type && String(row.artikel_id) === String(artikelId))
-    .map(row => kategoriData.find(k => String(k.id) === String(row.kategori_id))?.nama)
+    .filter(
+      (row) =>
+        row.artikel_tipe === type &&
+        String(row.artikel_id) === String(artikelId),
+    )
+    .map(
+      (row) =>
+        kategoriData.find((k) => String(k.id) === String(row.kategori_id))
+          ?.nama,
+    )
     .filter(Boolean);
 }
 
 function renderKategoriPills(type, artikelId) {
   const kategori = getArtikelKategori(type, artikelId);
   if (!kategori.length) return "";
-  return kategori.map(item => `<span class="pill">${escapeHTML(item)}</span>`).join("");
+  return kategori
+    .map((item) => `<span class="pill">${escapeHTML(item)}</span>`)
+    .join("");
 }
 
 function renderJurusanJobFilter() {
@@ -515,7 +575,12 @@ function renderJurusanJobFilter() {
   const currentValue = select.value || activeJobJurusan;
   select.innerHTML =
     `<option value="all">Semua Jurusan</option>` +
-    jurusanData.map(item => `<option value="${escapeHTML(item.id)}">${escapeHTML(item.nama)}</option>`).join("");
+    jurusanData
+      .map(
+        (item) =>
+          `<option value="${escapeHTML(item.id)}">${escapeHTML(item.nama)}</option>`,
+      )
+      .join("");
   select.value = currentValue;
   select.onchange = () => {
     activeJobJurusan = select.value;
@@ -540,7 +605,7 @@ function loadMore(type) {
 }
 
 function updateLoadMoreButtons() {
-  ["info", "wiki", "job"].forEach(type => {
+  ["info", "wiki", "job"].forEach((type) => {
     const button = document.getElementById(`${type}LoadMore`);
     if (!button) return;
     button.style.display = pageState[type].hasMore ? "inline-flex" : "none";
@@ -549,14 +614,14 @@ function updateLoadMoreButtons() {
 }
 
 function initLoadMoreButtons() {
-  ["info", "wiki", "job"].forEach(type => {
+  ["info", "wiki", "job"].forEach((type) => {
     const button = document.getElementById(`${type}LoadMore`);
     if (button) button.addEventListener("click", () => loadMore(type));
   });
 }
 
 function initSearchInputs() {
-  const searchHandler = debounce(event => {
+  const searchHandler = debounce((event) => {
     const id = event.target.id;
     const type = id.replace("Search", "");
     if (!TABLE_CONFIG[type]) return;
@@ -564,16 +629,18 @@ function initSearchInputs() {
     resetAndFetch(type);
   }, 350);
 
-  ["infoSearch", "wikiSearch", "jobSearch"].forEach(id => {
+  ["infoSearch", "wikiSearch", "jobSearch"].forEach((id) => {
     const input = document.getElementById(id);
     if (input) input.addEventListener("input", searchHandler);
   });
 }
 
 function initFilterButtons() {
-  document.querySelectorAll(".filter-btn").forEach(button => {
+  document.querySelectorAll(".filter-btn").forEach((button) => {
     button.addEventListener("click", () => {
-      document.querySelectorAll(".filter-btn").forEach(btn => btn.classList.remove("active"));
+      document
+        .querySelectorAll(".filter-btn")
+        .forEach((btn) => btn.classList.remove("active"));
       button.classList.add("active");
       activeFilter = button.dataset.filter || "all";
       renderAll();
@@ -607,16 +674,22 @@ async function loadHeroStats() {
 
   const [jurusanResult, wikiResult, faqResult, jobResult] = await Promise.all([
     supabaseClient.from("jurusan").select("id", { count: "exact", head: true }),
-    supabaseClient.from("wiki_kampus").select("id", { count: "exact", head: true }),
-    supabaseClient.from("faq_kampus").select("id", { count: "exact", head: true }),
-    supabaseClient.from("lowongan_kerja").select("id", { count: "exact", head: true })
+    supabaseClient
+      .from("wiki_kampus")
+      .select("id", { count: "exact", head: true }),
+    supabaseClient
+      .from("faq_kampus")
+      .select("id", { count: "exact", head: true }),
+    supabaseClient
+      .from("lowongan_kerja")
+      .select("id", { count: "exact", head: true }),
   ]);
 
   const stats = {
     jurusan: jurusanResult.count || 0,
     wiki: wikiResult.count || 0,
     faq: faqResult.count || 0,
-    job: jobResult.count || 0
+    job: jobResult.count || 0,
   };
 
   setCache("hero_stats_v1", stats);
@@ -633,10 +706,8 @@ function initApp() {
   initLatestSlider();
   initLoadMoreButtons();
 
-  loadHeroStats();   // tambah ini
+  loadHeroStats(); // tambah ini
   loadCoreData();
 }
-
-
 
 initApp();

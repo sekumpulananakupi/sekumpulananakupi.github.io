@@ -1,12 +1,14 @@
-/* homepage.css - hasil pecahan dari style.css */
+/* homepage.css - SA-UPI homepage styles */
+
+/* ==========================================================================
+   Slider Artikel Terbaru
+   ========================================================================== */
 
 .slider-wrapper {
   display: flex;
   align-items: center;
   gap: 12px;
 }
-
-
 
 .latest-slider {
   display: flex;
@@ -16,53 +18,35 @@
   padding: 10px 4px 24px;
 }
 
-
-
 .latest-slider .item-card {
+  flex: 0 0 auto;
   min-width: 300px;
   max-width: 300px;
-  flex: 0 0 auto;
 }
-
-
-
-.slider-btn {
-  border: none;
-  width: 44px;
-  height: 44px;
-  border-radius: 999px;
-  background: #1d4ed8;
-  color: white;
-  font-size: 28px;
-  cursor: pointer;
-}
-
-
 
 .latest-slider::-webkit-scrollbar {
   height: 8px;
 }
-
-
 
 .latest-slider::-webkit-scrollbar-thumb {
   background: #cbd5e1;
   border-radius: 999px;
 }
 
-
-
-@media (max-width: 768px) {
-  .slider-btn {
-    display: none;
-  }
-
-  .latest-slider .item-card {
-    min-width: 260px;
-  }
+.slider-btn {
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 999px;
+  background: #1d4ed8;
+  color: #ffffff;
+  font-size: 28px;
+  cursor: pointer;
 }
 
-
+/* ==========================================================================
+   Akses Cepat
+   ========================================================================== */
 
 .feature-grid {
   display: grid;
@@ -70,64 +54,40 @@
   gap: 18px;
 }
 
-
-
 .feature-card {
-  background: #ffffff;
-  border-radius: 22px;
   padding: 24px;
-  text-decoration: none;
+  border-radius: 22px;
+  background: #ffffff;
   color: #0f172a;
+  text-decoration: none;
   box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
-  transition: 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-
-
 
 .feature-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
 }
 
-
-
 .feature-card span {
-  font-size: 34px;
   display: block;
   margin-bottom: 12px;
+  font-size: 34px;
 }
-
-
 
 .feature-card h3 {
   margin: 0 0 8px;
   color: #163b73;
 }
 
-
-
 .feature-card p {
   margin: 0;
   color: #64748b;
 }
 
-
-
-@media (max-width: 900px) {
-  .feature-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-
-
-@media (max-width: 600px) {
-  .feature-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-
+/* ==========================================================================
+   Dokumen & FAQ
+   ========================================================================== */
 
 .homepage-two-column {
   display: grid;
@@ -135,47 +95,33 @@
   gap: 24px;
 }
 
-
-
 .home-mini-list {
   display: grid;
   gap: 12px;
 }
 
-
-
 .home-mini-item {
   display: block;
-  background: #f8fafc;
   padding: 14px 16px;
   border-radius: 14px;
-  text-decoration: none;
+  background: #f8fafc;
   color: #0f172a;
+  text-decoration: none;
 }
-
-
 
 .home-mini-item strong {
   display: block;
   color: #163b73;
 }
 
-
-
 .home-mini-item span {
   color: #64748b;
   font-size: 14px;
 }
 
-
-
-@media (max-width: 768px) {
-  .homepage-two-column {
-    grid-template-columns: 1fr;
-  }
-}
-
-
+/* ==========================================================================
+   Hero Stats
+   ========================================================================== */
 
 .hero-stats {
   display: flex;
@@ -184,31 +130,101 @@
   margin-top: 24px;
 }
 
+/* ==========================================================================
+   Eksplor SA-UPI
+   ========================================================================== */
 
+#eksplor-saupi {
+  padding-top: 44px;
+  padding-bottom: 44px;
+}
 
-@media (max-width: 768px) {
-  .hero-stats {
-    display: grid;
-    grid-template-columns: repeat(2,1fr);
+#eksplor-saupi .section-heading {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.explore-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.explore-card {
+  height: 100%;
+}
+
+.explore-card .hero-actions {
+  margin-top: 22px;
+}
+
+/* ==========================================================================
+   Desktop Hover Polish
+   ========================================================================== */
+
+@media (min-width: 769px) {
+  .hero-stat,
+  .hero-actions .btn,
+  #homeDokumenList > *,
+  #homeFaqList > *,
+  .latest-slider > *,
+  #latestJobList > *,
+  #infoList > *,
+  #wikiList > * {
+    transition: transform 0.22s ease, box-shadow 0.22s ease;
   }
 
-  .hero-stat {
-    min-width: auto;
+  .hero-stat:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.12);
+  }
+
+  .hero-actions .btn:hover {
+    transform: translateY(-2px);
+  }
+
+  #homeDokumenList > *:hover,
+  #homeFaqList > *:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px rgba(15, 44, 82, 0.08);
+  }
+
+  .latest-slider > *:hover,
+  #latestJobList > *:hover,
+  #infoList > *:hover,
+  #wikiList > *:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 28px rgba(15, 44, 82, 0.1);
   }
 }
 
-/* FIX MOBILE HOME */
-.mobile-search-btn {
-  display: none;
+/* ==========================================================================
+   Tablet
+   ========================================================================== */
+
+@media (max-width: 900px) {
+  .feature-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
+/* ==========================================================================
+   Mobile
+   ========================================================================== */
+
 @media (max-width: 768px) {
+  /* Hero */
   .hero {
-    padding-top: 120px;
+    min-height: auto;
+    padding: 38px 0 30px;
     overflow-x: hidden;
+    background:
+      radial-gradient(circle at top right, rgba(255, 193, 7, 0.12), transparent 32%),
+      linear-gradient(180deg, #174783 0%, #1f5597 100%);
   }
 
   .hero-grid {
+    display: block;
     grid-template-columns: 1fr;
   }
 
@@ -217,144 +233,8 @@
   .hero-container,
   .hero-wrapper,
   .hero-grid {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: stretch !important;
     width: 100% !important;
     max-width: 100% !important;
-  }
-
-  .hero-search {
-    display: none !important;
-  }
-
-  .mobile-search-btn {
-    display: block;
-    width: 100%;
-    text-align: center;
-    margin-top: 20px;
-  }
-
-  .hero-stats,
-  .stats-grid {
-    width: 100% !important;
-    max-width: 100% !important;
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  }
-
-  .hero-actions {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 12px;
-    margin-top: 16px;
-  }
-
-  .hero-actions .btn {
-    width: 100%;
-    text-align: center;
-  }
-}
-
-/* FIX MOBILE HERO HOME SA-UPI */
-@media (max-width: 768px) {
-  .hero {
-    min-height: auto;
-    padding: 56px 0 34px;
-  }
-
-  .hero-grid {
-    display: block;
-  }
-
-  .hero .eyebrow {
-    font-size: 11px;
-    letter-spacing: 0.7px;
-    margin-bottom: 12px;
-  }
-
-  .hero h1 {
-    font-size: 31px;
-    line-height: 1.06;
-    margin-bottom: 14px;
-  }
-
-  .hero-text {
-    font-size: 13.5px;
-    line-height: 1.7;
-    margin-bottom: 18px;
-  }
-
-  .hero-stats {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-    margin: 18px 0 12px;
-  }
-
-  .hero-stat {
-    padding: 17px 12px;
-    border-radius: 12px;
-  }
-
-  .hero-stat strong {
-    font-size: 25px;
-    line-height: 1;
-  }
-
-  .hero-stat span {
-    font-size: 11px;
-    margin-top: 8px;
-  }
-
-  .hero-actions {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 10px;
-    margin-top: 12px;
-  }
-
-  .hero-actions .btn {
-    width: 100%;
-    min-height: 48px;
-    font-size: 13px;
-    border-radius: 11px;
-  }
-
-  .hero-search {
-    display: none;
-  }
-}
-
-@media (max-width: 380px) {
-  .hero {
-    padding-top: 48px;
-  }
-
-  .hero h1 {
-    font-size: 30px;
-  }
-
-  .hero-text {
-    font-size: 13px;
-  }
-
-  .hero-stat {
-    padding: 15px 10px;
-  }
-}
-
-/* FINAL POLISH MOBILE HERO SA-UPI */
-@media (max-width: 768px) {
-  .hero {
-    min-height: auto;
-    padding: 48px 0 34px;
-    background:
-      radial-gradient(circle at top right, rgba(255, 193, 7, 0.12), transparent 32%),
-      linear-gradient(180deg, #174783 0%, #1f5597 100%);
-  }
-
-  .hero-grid {
-    display: block;
   }
 
   .hero .eyebrow {
@@ -390,21 +270,41 @@
     line-height: 1.7;
   }
 
-  .hero-stats {
+  .hero-search {
+    display: none !important;
+  }
+
+  .mobile-search-btn {
+    display: block;
+    width: 100%;
+    margin-top: 20px;
+    text-align: center;
+  }
+
+  .hero-stats,
+  .stats-grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100% !important;
+    max-width: 100% !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
     gap: 10px;
     margin: 18px 0 13px;
   }
 
   .hero-stat {
+    min-width: auto;
     min-height: 78px;
     padding: 16px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 13px;
     background: rgba(255, 255, 255, 0.13);
-    border: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow: 0 10px 22px rgba(0, 0, 0, 0.08);
     backdrop-filter: blur(8px);
+    transition: transform 0.22s ease, box-shadow 0.22s ease;
+  }
+
+  .hero-stat:active {
+    transform: scale(0.98);
   }
 
   .hero-stat strong {
@@ -438,6 +338,7 @@
     border-radius: 12px;
     font-size: 13.5px;
     font-weight: 800;
+    text-align: center;
     transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
   }
 
@@ -448,118 +349,66 @@
   }
 
   .hero-actions .btn.ghost {
+    border: 1px solid rgba(219, 228, 242, 0.9);
     background: rgba(255, 255, 255, 0.92);
     color: #083b73;
-    border: 1px solid rgba(219, 228, 242, 0.9);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
   }
 
   .hero-actions .btn:active {
     transform: scale(0.98);
   }
 
-  .hero-search {
-    display: none;
-  }
-}
-
-@media (max-width: 380px) {
-  .hero {
-    padding-top: 36px;
-  }
-
-  .hero h1 {
-    font-size: 31px;
-  }
-
-  .hero-text {
-    font-size: 13.5px;
-  }
-
-  .hero-stat {
-    min-height: 76px;
-    padding: 15px 10px;
-  }
-
-  .hero-stat strong {
-    font-size: 24px;
-  }
-
-  .hero-stat span {
-    font-size: 11px;
-  }
-}
-
-/* EXTRA POLISH - HERO MOBILE */
-@media (max-width: 768px) {
-  .hero {
+  /* Reusable section heading style */
+  #fitur-utama,
+  #bantuan-kampus,
+  #terbaru,
+  #lowongan-terbaru,
+  #kampus,
+  #wiki {
     padding-top: 38px;
-    padding-bottom: 30px;
+    padding-bottom: 32px;
   }
 
-  .hero-stat {
-    transition: transform 0.22s ease, box-shadow 0.22s ease;
-  }
-
-  .hero-stat:active {
-    transform: scale(0.98);
-  }
-
-  .hero-actions .btn.ghost {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
-  }
-
-  .hero-actions .btn.primary:active,
-  .hero-actions .btn.ghost:active {
-    transform: scale(0.98);
-  }
-}
-
-/* DESKTOP HOVER EFFECT */
-@media (min-width: 769px) {
-  .hero-stat {
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
-  }
-
-  .hero-stat:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.12);
-  }
-
-  .hero-actions .btn {
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
-  }
-
-  .hero-actions .btn:hover {
-    transform: translateY(-2px);
-  }
-}
-
-/* MOBILE FEATURE SECTION POLISH */
-@media (max-width: 768px) {
-  #fitur-utama {
-    padding-top: 38px;
-    padding-bottom: 28px;
-  }
-
-  #fitur-utama .section-heading {
+  #fitur-utama .section-heading,
+  #terbaru .section-heading,
+  #bantuan-kampus > .section-heading,
+  #kampus .section-heading,
+  #wiki .section-heading {
     margin-bottom: 18px;
+    text-align: center;
   }
 
-  #fitur-utama .eyebrow {
-    font-size: 11px;
-    letter-spacing: 1px;
+  #kampus .section-heading,
+  #wiki .section-heading {
+    display: block;
+  }
+
+  #fitur-utama .eyebrow,
+  #bantuan-kampus > .section-heading .eyebrow,
+  #terbaru .eyebrow,
+  #kampus .eyebrow,
+  #wiki .eyebrow,
+  #eksplor-saupi .section-heading .eyebrow {
     color: #f5a400;
+    font-size: 11px;
     font-weight: 800;
+    letter-spacing: 1px;
   }
 
-  #fitur-utama h2 {
+  #fitur-utama h2,
+  #bantuan-kampus > .section-heading h2,
+  #terbaru h2,
+  #kampus h2,
+  #wiki h2,
+  #eksplor-saupi .section-heading h2 {
     font-size: 25px;
     line-height: 1.15;
     letter-spacing: -0.4px;
   }
 
+  /* Akses Cepat */
   .feature-grid {
-    display: grid;
     grid-template-columns: 1fr;
     gap: 12px;
   }
@@ -567,11 +416,10 @@
   .feature-card {
     position: relative;
     padding: 22px 20px;
+    border: 1px solid rgba(15, 44, 82, 0.06);
     border-radius: 18px;
     background: #ffffff;
-    border: 1px solid rgba(15, 44, 82, 0.06);
     box-shadow: 0 10px 26px rgba(15, 44, 82, 0.08);
-    transition: transform 0.22s ease, box-shadow 0.22s ease;
   }
 
   .feature-card:active {
@@ -602,44 +450,22 @@
     font-size: 13px;
     line-height: 1.6;
   }
-}
 
-/* MOBILE POLISH - DOKUMEN & FAQ */
-@media (max-width: 768px) {
+  /* Dokumen & FAQ */
   #bantuan-kampus {
-    padding-top: 38px;
     padding-bottom: 30px;
   }
 
-  #bantuan-kampus > .section-heading {
-    margin-bottom: 18px;
-    text-align: center;
-  }
-
-  #bantuan-kampus > .section-heading .eyebrow {
-    font-size: 11px;
-    letter-spacing: 1px;
-    color: #f5a400;
-    font-weight: 800;
-  }
-
-  #bantuan-kampus > .section-heading h2 {
-    font-size: 25px;
-    line-height: 1.15;
-    letter-spacing: -0.4px;
-  }
-
   .homepage-two-column {
-    display: grid;
     grid-template-columns: 1fr;
     gap: 18px;
   }
 
   #bantuan-kampus .post-card {
     padding: 22px 18px;
+    border: 1px solid rgba(15, 44, 82, 0.06);
     border-radius: 20px;
     background: #ffffff;
-    border: 1px solid rgba(15, 44, 82, 0.06);
     box-shadow: 0 12px 28px rgba(15, 44, 82, 0.08);
   }
 
@@ -658,22 +484,23 @@
   }
 
   #bantuan-kampus .post-card .section-heading .eyebrow {
-    font-size: 10.5px;
-    letter-spacing: 1px;
-    font-weight: 800;
     color: #f5a400;
+    font-size: 10.5px;
+    font-weight: 800;
+    letter-spacing: 1px;
   }
 
-  #bantuan-kampus .post-card .btn.ghost {
+  #bantuan-kampus .post-card .btn.ghost,
+  #lowongan-terbaru .btn.ghost {
     flex-shrink: 0;
     min-height: 38px;
     padding: 0 15px;
+    border: 1px solid #e5edf7;
     border-radius: 12px;
     background: #f2f6fc;
     color: #083b73;
     font-size: 12.5px;
     font-weight: 800;
-    border: 1px solid #e5edf7;
   }
 
   #homeDokumenList,
@@ -687,9 +514,9 @@
   #homeFaqList > * {
     position: relative;
     padding: 15px;
+    border: 1px solid #eef3fa;
     border-radius: 14px;
     background: #f7faff;
-    border: 1px solid #eef3fa;
     box-shadow: 0 4px 12px rgba(15, 44, 82, 0.035);
     transition: transform 0.22s ease, box-shadow 0.22s ease;
   }
@@ -719,54 +546,14 @@
     font-weight: 600;
     line-height: 1.45;
   }
-}
 
-/* DESKTOP HOVER - DOKUMEN & FAQ */
-@media (min-width: 769px) {
-  #homeDokumenList > *,
-  #homeFaqList > * {
-    transition: transform 0.22s ease, box-shadow 0.22s ease;
-  }
-
-  #homeDokumenList > *:hover,
-  #homeFaqList > *:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 22px rgba(15, 44, 82, 0.08);
-  }
-}
-
-/* MOBILE POLISH - ARTIKEL TERBARU SLIDER */
-@media (max-width: 768px) {
-  #terbaru {
-    padding-top: 38px;
-    padding-bottom: 32px;
-  }
-
-  #terbaru .section-heading {
-    margin-bottom: 18px;
-    text-align: center;
-  }
-
-  #terbaru .eyebrow {
-    font-size: 11px;
-    letter-spacing: 1px;
-    color: #f5a400;
-    font-weight: 800;
-  }
-
-  #terbaru h2 {
-    font-size: 25px;
-    line-height: 1.15;
-    letter-spacing: -0.4px;
-  }
-
+  /* Artikel terbaru */
   .slider-wrapper {
     position: relative;
     overflow: hidden;
   }
 
   .latest-slider {
-    display: flex;
     gap: 14px;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
@@ -782,11 +569,11 @@
   .latest-slider > * {
     flex: 0 0 78%;
     max-width: 78%;
-    scroll-snap-align: start;
     padding: 20px 18px;
+    scroll-snap-align: start;
+    border: 1px solid rgba(15, 44, 82, 0.06);
     border-radius: 18px;
     background: #ffffff;
-    border: 1px solid rgba(15, 44, 82, 0.06);
     box-shadow: 0 10px 26px rgba(15, 44, 82, 0.08);
     transition: transform 0.22s ease, box-shadow 0.22s ease;
   }
@@ -829,41 +616,22 @@
   .latest-slider .btn,
   .latest-slider a.btn,
   .latest-slider button {
-    margin-top: 14px;
     min-height: 40px;
     padding: 0 15px;
+    margin-top: 14px;
+    border: 1px solid #e5edf7;
     border-radius: 12px;
     background: #f2f6fc;
     color: #083b73;
     font-size: 12.5px;
     font-weight: 800;
-    border: 1px solid #e5edf7;
   }
 
   .slider-btn {
     display: none;
   }
-}
 
-/* DESKTOP POLISH - ARTIKEL TERBARU */
-@media (min-width: 769px) {
-  .latest-slider > * {
-    transition: transform 0.22s ease, box-shadow 0.22s ease;
-  }
-
-  .latest-slider > *:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 28px rgba(15, 44, 82, 0.1);
-  }
-}
-
-/* MOBILE POLISH - LOWONGAN TERBARU */
-@media (max-width: 768px) {
-  #lowongan-terbaru {
-    padding-top: 38px;
-    padding-bottom: 32px;
-  }
-
+  /* Lowongan terbaru */
   #lowongan-terbaru .section-heading {
     display: flex;
     align-items: center;
@@ -882,33 +650,28 @@
     letter-spacing: -0.4px;
   }
 
-  #lowongan-terbaru .btn.ghost {
-    min-height: 38px;
-    padding: 0 15px;
-    border-radius: 12px;
-    background: #f2f6fc;
-    color: #083b73;
-    font-size: 12.5px;
-    font-weight: 800;
-    border: 1px solid #e5edf7;
-  }
-
-  #latestJobList {
+  #latestJobList,
+  #infoList,
+  #wikiList {
     display: grid;
     grid-template-columns: 1fr;
     gap: 13px;
   }
 
-  #latestJobList > * {
+  #latestJobList > *,
+  #infoList > *,
+  #wikiList > * {
     padding: 19px 18px;
+    border: 1px solid rgba(15, 44, 82, 0.06);
     border-radius: 18px;
     background: #ffffff;
-    border: 1px solid rgba(15, 44, 82, 0.06);
     box-shadow: 0 10px 26px rgba(15, 44, 82, 0.08);
     transition: transform 0.22s ease, box-shadow 0.22s ease;
   }
 
-  #latestJobList > *:active {
+  #latestJobList > *:active,
+  #infoList > *:active,
+  #wikiList > *:active {
     transform: scale(0.98);
   }
 
@@ -916,7 +679,15 @@
   #latestJobList .tag,
   #latestJobList small,
   #latestJobList .job-company,
-  #latestJobList .job-location {
+  #latestJobList .job-location,
+  #infoList .badge,
+  #wikiList .badge,
+  #infoList .category,
+  #wikiList .category,
+  #infoList small,
+  #wikiList small,
+  #infoList .post-category,
+  #wikiList .post-category {
     display: inline-flex;
     width: fit-content;
     align-items: center;
@@ -930,141 +701,7 @@
     line-height: 1;
   }
 
-  #latestJobList h3 {
-    margin: 0 0 10px;
-    color: #082b55;
-    font-size: 15px;
-    font-weight: 800;
-    line-height: 1.45;
-  }
-
-  #latestJobList p {
-    margin-bottom: 14px;
-    color: #385678;
-    font-size: 13px;
-    line-height: 1.6;
-  }
-
-  #latestJobList .btn,
-  #latestJobList a.btn,
-  #latestJobList button {
-    min-height: 40px;
-    padding: 0 15px;
-    border-radius: 12px;
-    background: #f2f6fc;
-    color: #083b73;
-    font-size: 12.5px;
-    font-weight: 800;
-    border: 1px solid #e5edf7;
-  }
-}
-
-/* DESKTOP HOVER - LOWONGAN TERBARU */
-@media (min-width: 769px) {
-  #latestJobList > * {
-    transition: transform 0.22s ease, box-shadow 0.22s ease;
-  }
-
-  #latestJobList > *:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 28px rgba(15, 44, 82, 0.1);
-  }
-}
-
-/* MOBILE POLISH - INFORMASI & WIKI KAMPUS */
-@media (max-width: 768px) {
-  #kampus,
-  #wiki {
-    padding-top: 38px;
-    padding-bottom: 32px;
-  }
-
-  #kampus .section-heading,
-  #wiki .section-heading {
-    display: block;
-    margin-bottom: 18px;
-    text-align: center;
-  }
-
-  #kampus .eyebrow,
-  #wiki .eyebrow {
-    font-size: 11px;
-    letter-spacing: 1px;
-    color: #f5a400;
-    font-weight: 800;
-  }
-
-  #kampus h2,
-  #wiki h2 {
-    font-size: 25px;
-    line-height: 1.15;
-    letter-spacing: -0.4px;
-    margin-bottom: 16px;
-  }
-
-  #infoSearch,
-  #wikiSearch {
-    width: 100%;
-    min-height: 46px;
-    padding: 0 16px;
-    border-radius: 12px;
-    border: 1px solid #dce6f3;
-    background: #ffffff;
-    color: #082b55;
-    font-size: 13px;
-    outline: none;
-    box-shadow: 0 4px 12px rgba(15, 44, 82, 0.04);
-  }
-
-  #infoSearch:focus,
-  #wikiSearch:focus {
-    border-color: #1f5597;
-    box-shadow: 0 0 0 4px rgba(31, 85, 151, 0.12);
-  }
-
-  #infoList,
-  #wikiList {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 13px;
-  }
-
-  #infoList > *,
-  #wikiList > * {
-    padding: 19px 18px;
-    border-radius: 18px;
-    background: #ffffff;
-    border: 1px solid rgba(15, 44, 82, 0.06);
-    box-shadow: 0 10px 26px rgba(15, 44, 82, 0.08);
-    transition: transform 0.22s ease, box-shadow 0.22s ease;
-  }
-
-  #infoList > *:active,
-  #wikiList > *:active {
-    transform: scale(0.98);
-  }
-
-  #infoList .badge,
-  #wikiList .badge,
-  #infoList .category,
-  #wikiList .category,
-  #infoList small,
-  #wikiList small,
-  #infoList .post-category,
-  #wikiList .post-category {
-    display: inline-flex;
-    width: fit-content;
-    align-items: center;
-    padding: 6px 10px;
-    margin-bottom: 13px;
-    border-radius: 999px;
-    background: #edf4ff;
-    color: #1d4ed8;
-    font-size: 11px;
-    font-weight: 800;
-    line-height: 1;
-  }
-
+  #latestJobList h3,
   #infoList h3,
   #wikiList h3 {
     margin: 0 0 11px;
@@ -1074,6 +711,7 @@
     line-height: 1.45;
   }
 
+  #latestJobList p,
   #infoList p,
   #wikiList p {
     margin-bottom: 14px;
@@ -1082,63 +720,52 @@
     line-height: 1.62;
   }
 
+  #latestJobList .btn,
   #infoList .btn,
   #wikiList .btn,
+  #latestJobList a.btn,
   #infoList a.btn,
   #wikiList a.btn,
+  #latestJobList button,
   #infoList button,
   #wikiList button {
     min-height: 40px;
     padding: 0 15px;
+    border: 1px solid #e5edf7;
     border-radius: 12px;
     background: #f2f6fc;
     color: #083b73;
     font-size: 12.5px;
     font-weight: 800;
-    border: 1px solid #e5edf7;
-  }
-}
-
-/* DESKTOP HOVER - INFORMASI & WIKI */
-@media (min-width: 769px) {
-  #infoList > *,
-  #wikiList > * {
-    transition: transform 0.22s ease, box-shadow 0.22s ease;
   }
 
-  #infoList > *:hover,
-  #wikiList > *:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 28px rgba(15, 44, 82, 0.1);
+  /* Informasi & Wiki */
+  #kampus h2,
+  #wiki h2 {
+    margin-bottom: 16px;
   }
-}
 
-/* EKSPLOR SA-UPI SECTION */
-#eksplor-saupi {
-  padding-top: 44px;
-  padding-bottom: 44px;
-}
+  #infoSearch,
+  #wikiSearch {
+    width: 100%;
+    min-height: 46px;
+    padding: 0 16px;
+    border: 1px solid #dce6f3;
+    border-radius: 12px;
+    outline: none;
+    background: #ffffff;
+    color: #082b55;
+    font-size: 13px;
+    box-shadow: 0 4px 12px rgba(15, 44, 82, 0.04);
+  }
 
-#eksplor-saupi .section-heading {
-  text-align: center;
-  margin-bottom: 20px;
-}
+  #infoSearch:focus,
+  #wikiSearch:focus {
+    border-color: #1f5597;
+    box-shadow: 0 0 0 4px rgba(31, 85, 151, 0.12);
+  }
 
-.explore-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 18px;
-}
-
-.explore-card {
-  height: 100%;
-}
-
-.explore-card .hero-actions {
-  margin-top: 22px;
-}
-
-@media (max-width: 768px) {
+  /* Eksplor */
   #eksplor-saupi {
     padding-top: 38px;
     padding-bottom: 34px;
@@ -1146,19 +773,6 @@
 
   #eksplor-saupi .section-heading {
     margin-bottom: 18px;
-  }
-
-  #eksplor-saupi .section-heading .eyebrow {
-    font-size: 11px;
-    letter-spacing: 1px;
-    color: #f5a400;
-    font-weight: 800;
-  }
-
-  #eksplor-saupi .section-heading h2 {
-    font-size: 25px;
-    line-height: 1.15;
-    letter-spacing: -0.4px;
   }
 
   .explore-grid {
@@ -1185,5 +799,36 @@
 
   .explore-card .hero-actions {
     margin-top: 20px;
+  }
+}
+
+/* ==========================================================================
+   Small Mobile
+   ========================================================================== */
+
+@media (max-width: 380px) {
+  .hero {
+    padding-top: 36px;
+  }
+
+  .hero h1 {
+    font-size: 31px;
+  }
+
+  .hero-text {
+    font-size: 13.5px;
+  }
+
+  .hero-stat {
+    min-height: 76px;
+    padding: 15px 10px;
+  }
+
+  .hero-stat strong {
+    font-size: 24px;
+  }
+
+  .hero-stat span {
+    font-size: 11px;
   }
 }

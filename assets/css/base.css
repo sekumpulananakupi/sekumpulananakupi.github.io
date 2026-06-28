@@ -1,3 +1,43 @@
+:root {
+  /* Brand */
+  --primary: #174783;
+  --primary-2: #1f5597;
+  --accent: #ffc53d;
+
+  /* Text */
+  --text: #082b55;
+  --text-soft: #385678;
+  --muted: #6b7c93;
+
+  /* Surface */
+  --white: #ffffff;
+  --surface: #f7faff;
+  --surface-2: #f2f6fc;
+  --border: #e5edf7;
+
+  /* Radius */
+  --radius-sm: 12px;
+  --radius-md: 18px;
+  --radius-lg: 20px;
+  --radius-pill: 999px;
+
+  /* Shadow */
+  --shadow-sm: 0 4px 12px rgba(15, 44, 82, 0.04);
+  --shadow-md: 0 10px 26px rgba(15, 44, 82, 0.08);
+  --shadow-lg: 0 18px 40px rgba(15, 44, 82, 0.12);
+
+  /* Spacing */
+  --space-xs: 8px;
+  --space-sm: 12px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 40px;
+
+  /* Motion */
+  --transition: 0.22s ease;
+}
+
 /* base.css - hasil pecahan dari style.css */
 
 :root { --blue:#163b73; --gold:#f5b940; --bg:#f4f7fb; --text:#172033; --muted:#667085; --white:#fff; --danger:#c0392b; }

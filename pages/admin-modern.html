@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Modern V10 - Sekumpulan Anak UPI</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="../assets/css/admin-modern.css" />
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+</head>
+
+<body class="admin-modern-body">
+  <main class="container admin-main">
+
+    <section class="admin-login" id="loginBox">
+      <h1>Login Admin</h1>
+      <p>Login untuk mengelola data Sekumpulan Anak UPI.</p>
+
+      <input type="email" id="adminEmail" placeholder="Email admin" />
+      <input type="password" id="adminPassword" placeholder="Password admin" />
+
+      <button class="btn primary" id="loginBtn">Login</button>
+      <p id="loginStatus">Belum login</p>
+    </section>
+
+    <div id="adminPanel" style="display:none;">
+      <header class="admin-topline" aria-label="Admin command header">
+        <div class="admin-topline-title">
+          <span class="admin-live-chip"><i class="fas fa-signal"></i><strong id="adminLiveClock">--:--</strong><span>Admin aktif</span></span>
+        </div>
+        <button class="btn ghost admin-palette-trigger" type="button" id="openPaletteBtn">
+          <i class="fas fa-terminal"></i>
+          <span>Ctrl + K</span>
+        </button>
+        <button class="admin-hidden-action" type="button" id="adminThemeToggle" aria-hidden="true" tabindex="-1"></button>
+        <button class="admin-hidden-action" type="button" id="adminHelpToggle" aria-hidden="true" tabindex="-1"></button>
+        <button class="admin-hidden-action" type="button" id="logoutBtn" aria-hidden="true" tabindex="-1">Logout</button>
+      </header>
+
+      <section class="admin-smart-dock" aria-label="Shortcut workspace admin">
+        <button class="smart-dock-item sidebar-link" type="button" data-page="dashboardPage" data-shortcut="1">
+          <i class="fas fa-house"></i><span>Dashboard</span><kbd>Alt 1</kbd>
+        </button>
+        <button class="smart-dock-item sidebar-link" type="button" data-page="infoPage" data-shortcut="2">
+          <i class="fas fa-newspaper"></i><span>Info</span><kbd>Alt 2</kbd>
+        </button>
+        <button class="smart-dock-item sidebar-link" type="button" data-page="wikiPage" data-shortcut="3">
+          <i class="fas fa-book-open"></i><span>Wiki</span><kbd>Alt 3</kbd>
+        </button>
+        <button class="smart-dock-item sidebar-link" type="button" data-page="jobPage" data-shortcut="4">
+          <i class="fas fa-briefcase"></i><span>Lowongan</span><kbd>Alt 4</kbd>
+        </button>
+        <button class="smart-dock-item sidebar-link" type="button" data-page="jurusanPage" data-shortcut="5">
+          <i class="fas fa-graduation-cap"></i><span>Jurusan</span><kbd>Alt 5</kbd>
+        </button>
+      </section>
+
+      <div class="admin-palette-backdrop" id="adminPaletteBackdrop" aria-hidden="true">
+        <section class="admin-palette" role="dialog" aria-modal="true" aria-labelledby="adminPaletteTitle">
+          <div class="palette-head">
+            <i class="fas fa-terminal"></i>
+            <input id="adminPaletteInput" type="search" placeholder="Ketik menu: wiki, lowongan, biaya, faq..." autocomplete="off" />
+            <button type="button" id="adminPaletteClose" aria-label="Tutup command palette">×</button>
+          </div>
+          <h3 id="adminPaletteTitle">Command Palette</h3>
+          <div class="palette-list" id="adminPaletteList"></div>
+          <p class="palette-help">Enter untuk membuka • Esc untuk menutup • Ctrl + K untuk memanggil</p>
+        </section>
+      </div>
+
+      <div class="admin-toast-stack" id="adminToastStack" aria-live="polite"></div>
+
+      <aside class="admin-help-drawer" id="adminHelpDrawer" aria-label="Bantuan admin" aria-hidden="true">
+        <div class="help-drawer-head">
+          <div>
+            <p class="eyebrow">Bantuan Cepat</p>
+            <h3>Pusat kendali admin</h3>
+          </div>
+          <button type="button" id="adminHelpClose" aria-label="Tutup bantuan">×</button>
+        </div>
+        <div class="help-tip-list">
+          <article>
+            <i class="fas fa-keyboard"></i>
+            <div><strong>Ctrl + K</strong><span>Buka command palette dari halaman mana pun.</span></div>
+          </article>
+          <article>
+            <i class="fas fa-layer-group"></i>
+            <div><strong>Alt + 1–5</strong><span>Pindah cepat ke workspace utama.</span></div>
+          </article>
+          <article>
+            <i class="fas fa-expand"></i>
+            <div><strong>Mode Fokus</strong><span>Perbesar form panjang agar editing lebih nyaman.</span></div>
+          </article>
+          <article>
+            <i class="fas fa-moon"></i>
+            <div><strong>Dark Mode</strong><span>Tema tersimpan otomatis di browser.</span></div>
+          </article>
+        </div>
+      </aside>
+
+      <div class="admin-layout">
+
+        <section class="admin-content">
+
+          <section class="admin-page active" id="dashboardPage">
+            <div class="admin-toolbar admin-hero">
+              <div>
+                <p class="eyebrow">SA-UPI Admin</p>
+                <h2>Halo, Admin 👋</h2>
+                <p>Kelola konten, jurusan, biaya, FAQ, dan lowongan dari satu dashboard.</p>
+              </div>
+              <div class="admin-hero-actions compact-note">
+                <span><i class="fas fa-keyboard"></i> Tekan <strong>Ctrl + K</strong> untuk aksi cepat, lihat website, tema, bantuan, dan logout.</span>
+              </div>
+            </div>
+
+            <div class="admin-count-compat" hidden aria-hidden="true">
+              <span id="adminCountInfo">0</span>
+              <span id="adminCountWiki">0</span>
+              <span id="adminCountJobs">0</span>
+              <span id="adminCountTotal">0</span>
+              <span id="adminCountJurusan">0</span>
+              <span id="adminCountDokumen">0</span>
+              <span id="adminCountFaq">0</span>
+              <span id="adminCountKategori">0</span>
+              <span id="adminCountTag">0</span>
+            </div>
+
+            <section class="dashboard-v10-grid" aria-label="Dashboard ringkas admin v10">
+              <article class="admin-panel-card v10-workspace-card">
+                <div class="panel-head compact">
+                  <div>
+                    <p class="eyebrow">Workspace</p>
+                    <h3>Launchpad admin</h3>
+                  </div>
+                  
+                </div>
+                <div class="v10-launchpad">
+                  <button class="v10-launch-item sidebar-link" data-page="infoPage" type="button"><i class="fas fa-newspaper"></i><strong>Info</strong><span>Pengumuman kampus</span></button>
+                  <button class="v10-launch-item sidebar-link" data-page="wikiPage" type="button"><i class="fas fa-book-open"></i><strong>Wiki</strong><span>Artikel panduan</span></button>
+                  <button class="v10-launch-item sidebar-link" data-page="jobPage" type="button"><i class="fas fa-briefcase"></i><strong>Lowongan</strong><span>Karier & magang</span></button>
+                  <button class="v10-launch-item sidebar-link" data-page="jurusanPage" type="button"><i class="fas fa-graduation-cap"></i><strong>Jurusan</strong><span>Profil prodi</span></button>
+                  <button class="v10-launch-item sidebar-link" data-page="biayaPendidikanPage" type="button"><i class="fas fa-wallet"></i><strong>Biaya</strong><span>UKT & IPI</span></button>
+                  <button class="v10-launch-item sidebar-link" data-page="faqJurusanPage" type="button"><i class="fas fa-comments"></i><strong>FAQ</strong><span>Pertanyaan prodi</span></button>
+                </div>
+              </article>
+
+              <article class="admin-panel-card v10-tips-card">
+                <div class="panel-head compact">
+                  <div>
+                    <p class="eyebrow">Tips</p>
+                    <h3>Tips kerja admin</h3>
+                  </div>
+                  <i class="fas fa-wand-magic-sparkles"></i>
+                </div>
+                <div class="v10-tip-list">
+                  <p><strong>Ctrl + K</strong><span>Buka command palette untuk navigasi, dark mode, bantuan, dan logout.</span></p>
+                  <p><strong>Alt + 1–5</strong><span>Pindah cepat ke workspace utama tanpa scroll.</span></p>
+                  <p><strong>Mode Fokus</strong><span>Gunakan saat menulis konten panjang di Info, Wiki, atau Lowongan.</span></p>
+                </div>
+              </article>
+
+              <article class="admin-panel-card v7-note-card">
+                <div class="panel-head compact">
+                  <h3>Catatan kerja cepat</h3>
+                  <i class="fas fa-note-sticky"></i>
+                </div>
+                <textarea id="adminQuickNote" placeholder="Tulis catatan admin sementara, misalnya: cek ulang lowongan yang deadlinenya dekat..."></textarea>
+                <small>Tersimpan otomatis di browser.</small>
+              </article>
+
+              <article class="admin-panel-card v7-shortcuts-card">
+                <div class="panel-head compact">
+                  <h3>Shortcut produktif</h3>
+                  <i class="fas fa-bolt"></i>
+                </div>
+                <div class="v7-shortcut-list">
+                  <span><kbd>Ctrl</kbd> + <kbd>K</kbd> Command palette</span>
+                  <span><kbd>Shift</kbd> + <kbd>/</kbd> Bantuan</span>
+                  <span><kbd>Alt</kbd> + <kbd>1</kbd> Dashboard</span>
+                  <span><kbd>Alt</kbd> + <kbd>3</kbd> Wiki</span>
+                </div>
+              </article>
+
+              <article class="admin-panel-card v10-workflow-card">
+                <div class="panel-head compact">
+                  <h3>Alur kerja konten</h3>
+                  <i class="fas fa-route"></i>
+                </div>
+                <div class="v10-flow">
+                  <span><b>01</b><strong>Draft</strong><small>Tulis konten awal</small></span>
+                  <span><b>02</b><strong>Review</strong><small>Cek judul, kategori, dan link</small></span>
+                  <span><b>03</b><strong>Publish</strong><small>Simpan dan cek tampilan publik</small></span>
+                </div>
+              </article>
+
+              <article class="admin-panel-card v11-review-card">
+                <div class="panel-head compact no-icon">
+                  <h3>Review publik cepat</h3>
+                </div>
+                <div class="v11-review-list">
+                  <button class="v11-review-item sidebar-link" data-page="infoPage" type="button"><span>Info</span><small>Cek judul & ringkasan</small></button>
+                  <button class="v11-review-item sidebar-link" data-page="wikiPage" type="button"><span>Wiki</span><small>Pastikan panduan nyaman dibaca</small></button>
+                  <a class="v11-review-item" href="../index.html" target="_blank" rel="noopener"><span>Website publik</span><small>Buka lewat Ctrl + K juga tersedia</small></a>
+                </div>
+              </article>
+            </section>
+          </section>
+
+          <section class="admin-page info-editor-page" id="infoPage">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">CRUD</p>
+                <h2>Informasi Kampus</h2>
+              </div>
+              <input type="search" id="infoSearch" placeholder="Cari info..." />
+            </div>
+
+            <div class="info-editor-layout">
+              <form id="infoForm" class="form-card modern-editor-form">
+                <input type="hidden" id="infoId" />
+                <input type="text" id="infoTitle" class="info-title-input" placeholder="Judul informasi" required />
+
+                <select id="infoCategory" hidden aria-hidden="true" tabindex="-1">
+                  <option value="multi" selected>Kategori multi</option>
+                </select>
+                <label>Kategori Info Kampus</label>
+                <div id="infoKategoriMulti" class="checkbox-group compact-category-group"></div>
+
+                <div id="infoEditor"></div>
+                <input type="hidden" id="infoContent">
+                <input type="file" id="infoImage" accept="image/*" />
+
+                <div class="editor-status-row">
+                  <span id="infoAutosaveStatus"><i class="fas fa-circle-check"></i> Draft lokal aman</span>
+                  <span id="infoLastSaved">Siap menulis</span>
+                </div>
+
+                <div class="form-actions modern-editor-actions">
+                  <button class="btn primary" type="submit">Simpan</button>
+                  <button class="btn ghost" type="button" id="infoPreviewDesktop">Preview Desktop</button>
+                  <button class="btn ghost" type="button" id="infoPreviewMobile">Preview Mobile</button>
+                  <button class="btn ghost" type="button" onclick="clearForm('info')">Batal</button>
+                </div>
+              </form>
+
+              <aside class="modern-writing-assistant" aria-label="Asisten editor info">
+                <article class="editor-helper-card editor-helper-combined">
+                  <div class="helper-section">
+                    <h3><i class="fas fa-pen-nib"></i> Asisten penulisan</h3>
+                    <div class="helper-mini-metric"><span>Kata</span><strong id="infoWordCount">0 kata</strong></div>
+                    <div class="helper-mini-metric"><span>Estimasi baca</span><strong id="infoReadTime">±0 menit</strong></div>
+                    <div class="helper-mini-metric"><span>Paragraf</span><strong id="infoParagraphCount">0</strong></div>
+                    <div class="helper-mini-metric"><span>Heading</span><strong id="infoHeadingCount">0</strong></div>
+                  </div>
+
+                  <div class="helper-section helper-checklist">
+                    <h3><i class="fas fa-clipboard-check"></i> Checklist publish</h3>
+                    <label><input type="checkbox"> Judul jelas dan tidak terlalu panjang</label>
+                    <label><input type="checkbox"> Kategori sudah dipilih</label>
+                    <label><input type="checkbox"> Isi nyaman dibaca di mobile</label>
+                    <label><input type="checkbox"> Link/gambar sudah dicek</label>
+                  </div>
+
+                  <div class="helper-section readiness-card-info">
+                    <h3><i class="fas fa-gauge-high"></i> Readiness</h3>
+                    <div class="readiness-progress"><span id="infoReadinessBar"></span></div>
+                    <p id="infoReadinessText">Lengkapi judul, kategori, isi, dan media sebelum publish.</p>
+                    <button class="btn ghost" type="button" data-focus-target="infoForm">Mode Fokus</button>
+                  </div>
+                </article>
+              </aside>
+            </div>
+
+            <div class="grid-list info-article-list" id="infoList"></div>
+          </section>
+
+          <section class="admin-page" id="wikiPage">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">CRUD</p>
+                <h2>Wiki Kampus</h2>
+              </div>
+              <input type="search" id="wikiSearch" placeholder="Cari wiki..." />
+            </div>
+
+            <div class="info-editor-layout wiki-editor-layout">
+              <form id="wikiForm" class="form-card modern-editor-form">
+                <input type="hidden" id="wikiId" />
+                <input type="text" id="wikiTitle" class="info-title-input" placeholder="Judul wiki" required />
+                <input type="hidden" id="wikiTag" value="" />
+                <div id="wikiTagMulti" hidden aria-hidden="true"></div>
+
+                <label>Kategori Wiki</label>
+                <div id="wikiKategoriMulti" class="checkbox-group compact-category-group"></div>
+
+                <div id="wikiEditor"></div>
+                <input type="hidden" id="wikiContent">
+                <input type="file" id="wikiImage" accept="image/*" />
+
+                <div class="editor-status-row">
+                  <span id="wikiAutosaveStatus"><i class="fas fa-circle-check"></i> Draft lokal aman</span>
+                  <span id="wikiLastSaved">Siap menulis</span>
+                </div>
+
+                <div class="form-actions modern-editor-actions">
+                  <button class="btn primary" type="submit">Simpan</button>
+                  <button class="btn ghost" type="button" id="wikiPreviewDesktop">Preview Desktop</button>
+                  <button class="btn ghost" type="button" id="wikiPreviewMobile">Preview Mobile</button>
+                  <button class="btn ghost" type="button" onclick="clearForm('wiki')">Batal</button>
+                </div>
+              </form>
+
+              <aside class="modern-writing-assistant" aria-label="Asisten editor wiki">
+                <article class="editor-helper-card editor-helper-combined">
+                  <div class="helper-section">
+                    <h3><i class="fas fa-pen-nib"></i> Asisten penulisan</h3>
+                    <div class="helper-mini-metric"><span>Kata</span><strong id="wikiWordCount">0 kata</strong></div>
+                    <div class="helper-mini-metric"><span>Estimasi baca</span><strong id="wikiReadTime">±0 menit</strong></div>
+                    <div class="helper-mini-metric"><span>Paragraf</span><strong id="wikiParagraphCount">0</strong></div>
+                    <div class="helper-mini-metric"><span>Heading</span><strong id="wikiHeadingCount">0</strong></div>
+                  </div>
+                  <div class="helper-section helper-checklist">
+                    <h3><i class="fas fa-clipboard-check"></i> Checklist publish</h3>
+                    <label><input type="checkbox"> Judul jelas dan tidak terlalu panjang</label>
+                    <label><input type="checkbox"> Kategori sudah dipilih</label>
+                    <label><input type="checkbox"> Isi nyaman dibaca di mobile</label>
+                    <label><input type="checkbox"> Link/gambar sudah dicek</label>
+                  </div>
+                  <div class="helper-section readiness-card-info">
+                    <h3><i class="fas fa-gauge-high"></i> Readiness</h3>
+                    <div class="readiness-progress"><span id="wikiReadinessBar"></span></div>
+                    <p id="wikiReadinessText">Lengkapi judul, kategori, isi, dan media sebelum publish.</p>
+                    <button class="btn ghost" type="button" data-focus-target="wikiForm">Mode Fokus</button>
+                  </div>
+                </article>
+              </aside>
+            </div>
+
+            <div class="grid-list" id="wikiList"></div>
+          </section>
+
+          <section class="admin-page" id="jobPage">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">CRUD</p>
+                <h2>Lowongan Kerja</h2>
+              </div>
+              <input type="search" id="jobSearch" placeholder="Cari lowongan..." />
+            </div>
+
+            <div class="info-editor-layout job-editor-layout">
+              <form id="jobForm" class="form-card modern-job-form">
+              <input type="hidden" id="jobId" />
+              <input type="text" id="jobTitle" placeholder="Posisi" required />
+              <input type="text" id="jobCompany" placeholder="Perusahaan" required />
+              <input type="text" id="jobLocation" placeholder="Lokasi" />
+              <input type="url" id="jobLink" placeholder="Link pendaftaran" />
+              <div class="form-group">
+                <label>Sumber Lowongan</label>
+                <select id="jobSource">
+                  <option value="">Pilih sumber</option>
+                  <option value="LinkedIn">LinkedIn</option>
+                  <option value="Jobstreet">Jobstreet</option>
+                  <option value="Kalibrr">Telegram</option>
+                  <option value="Glints">Glints</option>
+                  <option value="Website Perusahaan">Website Perusahaan</option>
+                  <option value="Karir UPI">Karir UPI</option>
+                  <option value="Instagram">Instagram</option>
+                  <option value="Lainnya">Lainnya</option>
+                </select>
+              </div>
+              
+              <label>Deadline Lowongan</label><input type="date" id="jobDeadline">
+              <div class="form-group">
+                <label>Status Lowongan</label>
+                <select id="jobStatus">
+                  <option value="aktif">Aktif</option>
+                  <option value="draft">Draft</option>
+                  <option value="ditutup">Ditutup</option>
+                </select>
+              </div>
+
+              <div class="form-group checkbox-group">
+                <label>
+                  <input type="checkbox" id="jobFeatured">
+                  Jadikan lowongan pilihan
+                </label>
+              </div>
+
+              <div class="form-group">
+                <label>Tipe Pekerjaan</label>
+                <select id="jobType">
+                  <option value="">Pilih tipe pekerjaan</option>
+                  <option value="Magang">Magang</option>
+                  <option value="Full Time">Full Time</option>
+                  <option value="Part Time">Part Time</option>
+                  <option value="Freelance">Freelance</option>
+                  <option value="Kontrak">Kontrak</option>
+                  <option value="Fresh Graduate">Fresh Graduate</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label>Minimal Jenjang Pendidikan</label>
+                <select id="jobEducation">
+                  <option value="">Pilih jenjang</option>
+                  <option value="SMA/SMK">SMA/SMK</option>
+                  <option value="D3">D3</option>
+                  <option value="D4">D4</option>
+                  <option value="S1">S1</option>
+                  <option value="S2">S2</option>
+                  <option value="S3">S3</option>
+                  <option value="Fresh Graduate">Fresh Graduate</option>
+                  <option value="Mahasiswa Aktif">Mahasiswa Aktif</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label>Gaji Minimum</label>
+                <input type="number" id="jobSalaryMin" placeholder="Contoh: 4000000">
+              </div>
+              
+              <div class="form-group">
+                <label>Gaji Maksimum</label>
+                <input type="number" id="jobSalaryMax" placeholder="Contoh: 6000000">
+              </div>
+              
+              <div class="form-group">
+                <label>Keterangan Gaji</label>
+                <input type="text" id="jobSalaryNote" placeholder="Contoh: Negotiable / UMK / Per proyek">
+              </div>
+              
+              <label>Jurusan Terkait</label>
+              <div id="jobJurusanMulti" class="checkbox-group"></div>
+
+              <input type="file" id="jobImage" accept="image/*" />
+              <div id="jobEditor"></div>
+              <input type="hidden" id="jobContent">
+
+              <div class="form-actions">
+                <button class="btn primary" type="submit">Simpan</button>
+                <button class="btn ghost" type="button" onclick="clearForm('job')">Batal</button>
+              </div>
+              </form>
+
+              <aside class="modern-writing-assistant" aria-label="Asisten editor lowongan">
+                <article class="editor-helper-card editor-helper-combined">
+                  <div class="helper-section helper-checklist">
+                    <h3><i class="fas fa-clipboard-check"></i> Checklist lowongan</h3>
+                    <label><input type="checkbox"> Posisi dan perusahaan jelas</label>
+                    <label><input type="checkbox"> Deadline sudah dicek</label>
+                    <label><input type="checkbox"> Link pendaftaran valid</label>
+                    <label><input type="checkbox"> Status lowongan sesuai</label>
+                  </div>
+                  <div class="helper-section">
+                    <h3><i class="fas fa-calendar-check"></i> Validasi lowongan</h3>
+                    <p id="jobValidationText">Cek ulang deadline, sumber, lokasi, jurusan terkait, dan status aktif sebelum publish.</p>
+                    <div class="helper-mini-metric"><span>Deadline</span><strong id="jobDeadlineStatus">Belum diisi</strong></div>
+                    <div class="helper-mini-metric"><span>Deskripsi</span><strong id="jobDescStatus">0 kata</strong></div>
+                  </div>
+                  <div class="helper-section readiness-card-info">
+                    <h3><i class="fas fa-expand"></i> Fokus editor</h3>
+                    <p>Pakai Mode Fokus saat deskripsi lowongan panjang.</p>
+                    <button class="btn ghost" type="button" data-focus-target="jobForm">Mode Fokus</button>
+                  </div>
+                </article>
+              </aside>
+            </div>
+
+            <div class="grid-list" id="jobList"></div>
+
+            <div class="filter-row">
+              <select id="jobStatusFilter">
+                <option value="all">Semua Status</option>
+                <option value="aktif">Aktif</option>
+                <option value="draft">Draft</option>
+                <option value="ditutup">Ditutup</option>
+                <option value="featured">Lowongan Pilihan</option>
+              </select>
+              
+              <select id="jobSalaryFilter">
+                <option value="all">Semua Gaji</option>
+                <option value="with_salary">Ada Gaji</option>
+                <option value="without_salary">Tanpa Gaji</option>
+              </select>
+            </div>
+          </section>
+
+          <section class="admin-page" id="dokumenPage">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">CRUD</p>
+                <h2>Dokumen Kampus</h2>
+              </div>
+            </div>
+
+            <form id="dokumenForm" class="form-card">
+              <input type="hidden" id="dokumenId">
+
+              <input
+                type="text"
+                id="dokumenJudul"
+                placeholder="Judul dokumen"
+                required
+              >
+
+              <input
+                type="text"
+                id="dokumenKategori"
+                placeholder="Kategori"
+              >
+
+              <textarea
+                id="dokumenDeskripsi"
+                placeholder="Deskripsi singkat"
+              ></textarea>
+
+              <input
+                type="url"
+                id="dokumenLink"
+                placeholder="Link dokumen"
+                required
+              >
+
+              <div class="form-actions">
+                <button class="btn primary" type="submit">Simpan</button>
+              </div>
+            </form>
+
+            <div class="grid-list" id="dokumenList"></div>
+          </section>
+
+          <section class="admin-page" id="faqPage">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">CRUD</p>
+                <h2>FAQ Kampus</h2>
+              </div>
+            </div>
+
+            <form id="faqForm" class="form-card">
+              <input type="hidden" id="faqId" />
+              <input type="text" id="faqPertanyaan" placeholder="Pertanyaan" required />
+              <input type="text" id="faqKategori" placeholder="Kategori" />
+              <textarea id="faqJawaban" placeholder="Jawaban" required></textarea>
+
+              <div class="form-actions">
+                <button class="btn primary" type="submit">Simpan FAQ</button>
+                <button class="btn ghost" type="button" onclick="clearFaqForm()">Batal</button>
+              </div>
+            </form>
+
+            <div class="grid-list" id="faqList"></div>
+          </section>
+
+          <section class="admin-page" id="biayaPendidikanPage">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Admin</p>
+                <h2>Biaya Pendidikan</h2>
+              </div>
+              <input type="search" id="biayaPendidikanSearch" placeholder="Cari biaya..." />
+            </div>
+
+            <form id="biayaPendidikanForm" class="form-card">
+              <input type="hidden" id="biayaId" />
+
+              <label>Kode Prodi</label>
+              <input
+                type="text"
+                id="biayaKodeProdi"
+                placeholder="Contoh: D545"
+                required
+              />
+
+              <label>Nama Program Studi</label>
+              <input
+                type="text"
+                id="biayaNamaProdi"
+                list="biayaNamaProdiList"
+                placeholder="Contoh: Ilmu Komputer"
+                required
+              />
+              <datalist id="biayaNamaProdiList"></datalist>
+
+              <label>Tahun</label>
+              <input type="number" id="biayaTahun" value="2026" required />
+
+              <label>Jenjang</label>
+              <select id="biayaJenjang" required>
+                <option value="">Pilih jenjang</option>
+                <option value="S1">S1</option>
+                <option value="D4">D4</option>
+                <option value="S2">S2</option>
+                <option value="S3">S3</option>
+                <option value="Profesi">Profesi</option>
+              </select>
+
+              <label>Jalur</label>
+              <select id="biayaJalur" required>
+                <option value="">Pilih jalur</option>
+                <option value="SNBP/SNBT">SNBP/SNBT</option>
+                <option value="Mandiri">Seleksi Mandiri</option>
+                <option value="Kelas Internasional">Kelas Internasional</option>
+                <option value="RPL">RPL</option>
+                <option value="Reguler">Reguler</option>
+                <option value="Doktor by Research">Doktor by Research</option>
+                <option value="Profesi">Profesi</option>
+              </select>
+
+              <label>Kelompok UKT/IPI</label>
+              <select id="biayaKelompok">
+                <option value="">Tanpa kelompok</option>
+                <option value="1">Kelompok 1</option>
+                <option value="2">Kelompok 2</option>
+                <option value="3">Kelompok 3</option>
+                <option value="4">Kelompok 4</option>
+                <option value="5">Kelompok 5</option>
+                <option value="6">Kelompok 6</option>
+                <option value="7">Kelompok 7</option>
+                <option value="8">Kelompok 8</option>
+              </select>
+
+              <label>Status Mahasiswa</label>
+              <select id="biayaStatusMahasiswa">
+                <option value="">Tidak perlu</option>
+                <option value="WNI">WNI</option>
+                <option value="WNA">WNA</option>
+              </select>
+
+              <label>UKT</label>
+              <input
+                type="number"
+                id="biayaUkt"
+                min="0"
+                step="1000"
+                placeholder="Contoh: 500000"
+              />
+
+              <label>IPI</label>
+              <input
+                type="number"
+                id="biayaIpi"
+                min="0"
+                step="1000"
+                placeholder="Contoh: 16340000"
+              />
+
+              <label>Uang Kuliah</label>
+              <input
+                type="number"
+                id="biayaUangKuliah"
+                min="0"
+                step="1000"
+                placeholder="Untuk S2/S3/Profesi, contoh: 10100000"
+              />
+
+              <label>Catatan</label>
+              <textarea
+                id="biayaCatatan"
+                placeholder="Opsional, misalnya biaya per semester atau khusus kampus daerah"
+              ></textarea>
+
+              <small id="biayaPreview">Rp0</small>
+
+              <div class="form-actions">
+                <button type="submit" class="btn primary">Simpan</button>
+                <button type="button" class="btn ghost" onclick="clearBiayaPendidikanForm()">
+                  Bersihkan
+                </button>
+              </div>
+            </form>
+
+            <div id="biayaPendidikanAdminList" class="admin-list"></div>
+          </section>
+
+          <section class="admin-page" id="statistikPage">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">CRUD</p>
+                <h2>Statistik Jurusan</h2>
+              </div>
+            </div>
+
+            <form id="statistikForm" class="form-card">
+              <input type="hidden" id="statistikId" />
+
+              <label>Jurusan</label>
+              <select id="statistikJurusan" required></select>
+
+              <input type="number" id="statistikTahun" placeholder="Tahun" required />
+
+              <select id="statistikJalur" required>
+                <option value="">Pilih Jalur</option>
+                <option value="SNBP">SNBP</option>
+                <option value="SNBT">SNBT</option>
+                <option value="Mandiri">Mandiri</option>
+              </select>
+
+              <input type="number" id="statistikDayaTampung" placeholder="Daya tampung" required />
+              <input type="number" id="statistikPeminat" placeholder="Peminat" required />
+
+              <div class="form-actions">
+                <button class="btn primary" type="submit">Simpan Statistik</button>
+                <button class="btn ghost" type="button" onclick="clearStatistikForm()">Batal</button>
+              </div>
+            </form>
+
+            <div class="grid-list" id="statistikList"></div>
+          </section>
+
+          <section class="admin-page" id="jurusanPage">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">CRUD</p>
+                <h2>Data Jurusan</h2>
+              </div>
+            </div>
+
+            <form id="jurusanForm" class="form-card">
+              <input type="hidden" id="jurusanId" />
+
+              <input type="text" id="jurusanNama" placeholder="Nama jurusan" required />
+              <input type="text" id="jurusanSlug" placeholder="Slug, contoh: pendidikan-kimia" required />
+              <input type="text" id="jurusanFakultas" placeholder="Fakultas, contoh: FPMIPA" />
+              <input type="text" id="jurusanJenjang" placeholder="Jenjang, contoh: S1" />
+              <input type="text" id="jurusanAkreditasi" placeholder="Akreditasi, contoh: Unggul" />
+
+              <input type="url" id="jurusanWebsite" placeholder="Website resmi jurusan" />
+              <input type="url" id="jurusanUrlKurikulum" placeholder="Website kurikulum sesuai jurusan. https://kurikulum.upi.edu/..." />
+              <input type="url" id="jurusanUrlAkreditasi" placeholder="Link akreditasi/sertifikat" />
+
+              <textarea id="jurusanProspekKerja" placeholder="Prospek kerja, pisahkan per baris"></textarea>
+              <textarea id="jurusanDeskripsi" placeholder="Deskripsi jurusan"></textarea>
+
+              <div class="form-actions">
+                <button class="btn primary" type="submit">Simpan Jurusan</button>
+                <button class="btn ghost" type="button" onclick="clearJurusanForm()">Batal</button>
+              </div>
+            </form>
+
+            <div class="grid-list" id="jurusanAdminList"></div>
+          </section>
+
+          <section class="admin-page" id="taxonomyPage">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">CRUD</p>
+                <h2>Kategori & Tag</h2>
+              </div>
+            </div>
+
+            <form id="kategoriForm" class="form-card">
+              <input type="hidden" id="kategoriId" />
+              <input type="text" id="kategoriNama" placeholder="Nama kategori" required />
+              <input type="text" id="kategoriSlug" placeholder="Slug kategori" required />
+
+              <select id="kategoriTipe" required>
+                <option value="info">Info Kampus</option>
+                <option value="wiki">Wiki Kampus</option>
+              </select>
+
+              <div class="form-actions">
+                <button class="btn primary" type="submit">Simpan Kategori</button>
+                <button class="btn ghost" type="button" onclick="clearKategoriForm()">Batal</button>
+              </div>
+            </form>
+
+            <div class="grid-list" id="kategoriAdminList"></div>
+
+            <form id="tagForm" class="form-card">
+              <input type="hidden" id="tagId" />
+              <input type="text" id="tagNama" placeholder="Nama tag" required />
+              <input type="text" id="tagSlug" placeholder="Slug tag" required />
+
+              <div class="form-actions">
+                <button class="btn primary" type="submit">Simpan Tag</button>
+                <button class="btn ghost" type="button" onclick="clearTagForm()">Batal</button>
+              </div>
+            </form>
+
+            <div class="grid-list" id="tagAdminList"></div>
+          </section>
+
+          <section class="admin-page" id="faqJurusanPage">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">CRUD</p>
+                <h2>FAQ Jurusan</h2>
+              </div>
+            </div>
+          
+            <form id="faqJurusanForm" class="form-card">
+              <input type="hidden" id="faqJurusanId" />
+          
+              <label>Jurusan</label>
+              <select id="faqJurusanSelect" required></select>
+          
+              <input type="text" id="faqJurusanPertanyaan" placeholder="Pertanyaan" required />
+          
+              <textarea id="faqJurusanJawaban" placeholder="Jawaban" required></textarea>
+          
+              <input type="number" id="faqJurusanUrutan" placeholder="Urutan" value="0" />
+          
+              <div class="form-actions">
+                <button class="btn primary" type="submit">Simpan FAQ Jurusan</button>
+                <button class="btn ghost" type="button" onclick="clearFaqJurusanForm()">Batal</button>
+              </div>
+            </form>
+          
+            <div class="grid-list" id="faqJurusanList"></div>
+          </section>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.js"></script>
+  <script src="../modules/admin/00-config-state.js"></script>
+  <script src="../modules/admin/01-helpers-editors.js"></script>
+  <script src="../modules/admin/02-draft-autosave.js"></script>
+  <script src="../modules/admin/03-auth-login.js"></script>
+  <script src="../modules/admin/04-master-relations.js"></script>
+  <script src="../modules/admin/05-upload-image.js"></script>
+  <script src="../modules/admin/06-load-content.js"></script>
+  <script src="../modules/admin/07-render-dashboard-health.js"></script>
+  <script src="../modules/admin/08-crud-info.js"></script>
+  <script src="../modules/admin/09-crud-wiki.js"></script>
+  <script src="../modules/admin/10-crud-lowongan.js"></script>
+  <script src="../modules/admin/11-crud-dokumen.js"></script>
+  <script src="../modules/admin/12-crud-faq.js"></script>
+  <script src="../modules/admin/13-edit-data.js"></script>
+  <script src="../modules/admin/14-delete-clear.js"></script>
+  <script src="../modules/admin/15-statistik-jurusan.js"></script>
+  <script src="../modules/admin/16-data-jurusan.js"></script>
+  <script src="../modules/admin/17-taxonomy.js"></script>
+  <script src="../modules/admin/18-biaya-pendidikan.js"></script>
+  <script src="../modules/admin/19-faq-jurusan.js"></script>
+  <script src="../modules/admin/20-navigation-search-start.js"></script>
+  <script src="../modules/admin/21-editor-workspace-fix.js"></script>
+  <script src="../assets/js/admin-modern.js"></script>
+</body>
+</html>

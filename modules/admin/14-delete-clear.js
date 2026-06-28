@@ -73,6 +73,7 @@ function clearForm(type) {
   const relationIds = {
     info: ["infoKategoriMulti"],
     wiki: ["wikiKategoriMulti", "wikiTagMulti"],
+    job: ["jobJurusanMulti"],
   };
 
   (relationIds[type] || []).forEach(containerId => {
