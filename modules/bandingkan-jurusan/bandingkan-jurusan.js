@@ -46,7 +46,17 @@ function formatRupiah(value) {
   }).format(number);
 }
 
-function getTextPreview(text, maxLength = 220) {
+function getShortRupiah(value) {
+  const number = Number(value);
+  if (!number || Number.isNaN(number)) return "-";
+
+  if (number >= 1000000000) return `Rp${(number / 1000000000).toFixed(1).replace(".", ",")} M`;
+  if (number >= 1000000) return `Rp${(number / 1000000).toFixed(number % 1000000 === 0 ? 0 : 1).replace(".", ",")} jt`;
+  if (number >= 1000) return `Rp${(number / 1000).toFixed(0)} rb`;
+  return formatRupiah(number);
+}
+
+function getTextPreview(text, maxLength = 180) {
   const clean = stripHTML(text || "");
   if (!clean) return "Deskripsi belum tersedia.";
   return clean.length > maxLength ? `${clean.slice(0, maxLength)}...` : clean;
@@ -67,12 +77,8 @@ function formatPersentaseKeterimaan(stat) {
 }
 
 function getRasioPersaingan(stat) {
-  const dayaTampung = Number(stat?.daya_tampung || 0);
-  const peminat = Number(stat?.peminat || 0);
-
-  if (!dayaTampung || !peminat) return "-";
-
-  const rasio = peminat / dayaTampung;
+  const rasio = getRasioNumber(stat);
+  if (rasio === null) return "-";
   return `1 : ${rasio.toFixed(1).replace(".", ",")}`;
 }
 
@@ -111,16 +117,6 @@ function getBiayaSummary(jurusanId) {
     .map(row => Number(row.ipi))
     .filter(value => !Number.isNaN(value) && value > 0);
 
-  if (!uktValues.length && !ipiValues.length) {
-    return {
-      uktMin: null,
-      uktMax: null,
-      ipiMin: null,
-      ipiMax: null,
-      jalur: []
-    };
-  }
-
   const jalur = [...new Set(rows.map(row => row.jalur).filter(Boolean))];
 
   return {
@@ -140,24 +136,79 @@ function formatBiayaRange(min, max) {
   return `Hingga ${formatRupiah(max)}`;
 }
 
+function formatShortBiayaRange(min, max) {
+  if (!min && !max) return "-";
+  if (min && max && min === max) return getShortRupiah(min);
+  if (min && max) return `${getShortRupiah(min)} - ${getShortRupiah(max)}`;
+  if (min) return `Mulai ${getShortRupiah(min)}`;
+  return `Hingga ${getShortRupiah(max)}`;
+}
+
 function normalizeAkreditasi(value) {
   return String(value || "").trim().toLowerCase();
 }
 
-function compareHigherBetter(valueA, valueB, labelA, labelB, suffix = "") {
-  if (valueA === null || valueB === null || valueA === undefined || valueB === undefined) return "Data belum lengkap.";
-  if (Number(valueA) === Number(valueB)) return "Keduanya sama.";
-  return Number(valueA) > Number(valueB)
-    ? `${labelA} lebih tinggi${suffix}.`
-    : `${labelB} lebih tinggi${suffix}.`;
+function getAkreditasiScore(value) {
+  const normalized = normalizeAkreditasi(value);
+  if (["unggul", "a"].includes(normalized)) return 5;
+  if (["baik sekali", "b"].includes(normalized)) return 4;
+  if (["baik", "c"].includes(normalized)) return 3;
+  if (normalized) return 2;
+  return null;
 }
 
-function compareLowerBetter(valueA, valueB, labelA, labelB, suffix = "") {
-  if (valueA === null || valueB === null || valueA === undefined || valueB === undefined) return "Data belum lengkap.";
-  if (Number(valueA) === Number(valueB)) return "Keduanya sama.";
+function getProspekCount(text) {
+  return String(text || "")
+    .split("\n")
+    .map(item => item.trim())
+    .filter(Boolean).length;
+}
+
+function getAverageAcceptance(context, side) {
+  const snbp = getPersentaseKeterimaan(context[`snbp${side}`]);
+  const snbt = getPersentaseKeterimaan(context[`snbt${side}`]);
+  const values = [snbp, snbt].filter(value => value !== null);
+  if (!values.length) return null;
+  return values.reduce((total, value) => total + value, 0) / values.length;
+}
+
+function getAverageCompetition(context, side) {
+  const snbp = getRasioNumber(context[`snbp${side}`]);
+  const snbt = getRasioNumber(context[`snbt${side}`]);
+  const values = [snbp, snbt].filter(value => value !== null);
+  if (!values.length) return null;
+  return values.reduce((total, value) => total + value, 0) / values.length;
+}
+
+function winnerHigher(valueA, valueB, aName, bName) {
+  if (valueA === null || valueB === null || valueA === undefined || valueB === undefined) {
+    return { type: "unknown", label: "Data belum lengkap", name: "-" };
+  }
+  if (Number(valueA) === Number(valueB)) return { type: "draw", label: "Seri", name: "Seri" };
+  return Number(valueA) > Number(valueB)
+    ? { type: "a", label: aName, name: aName }
+    : { type: "b", label: bName, name: bName };
+}
+
+function winnerLower(valueA, valueB, aName, bName) {
+  if (valueA === null || valueB === null || valueA === undefined || valueB === undefined) {
+    return { type: "unknown", label: "Data belum lengkap", name: "-" };
+  }
+  if (Number(valueA) === Number(valueB)) return { type: "draw", label: "Seri", name: "Seri" };
   return Number(valueA) < Number(valueB)
-    ? `${labelA} lebih rendah${suffix}.`
-    : `${labelB} lebih rendah${suffix}.`;
+    ? { type: "a", label: aName, name: aName }
+    : { type: "b", label: bName, name: bName };
+}
+
+function winnerBadge(winner) {
+  const icon = winner.type === "draw" ? "fa-scale-balanced" : winner.type === "unknown" ? "fa-circle-info" : "fa-trophy";
+  return `<span class="winner-badge winner-${escapeHTML(winner.type)}"><i class="fa-solid ${icon}"></i>${escapeHTML(winner.label)}</span>`;
+}
+
+function getWinnerClass(winner, side) {
+  if (winner.type === "draw") return "is-draw";
+  if (winner.type === "unknown") return "";
+  return winner.type === side ? "is-winner" : "";
 }
 
 /* =========================
@@ -168,34 +219,30 @@ async function loadData() {
   const result = document.getElementById("compareResult");
 
   if (result) {
-    result.innerHTML = `<div class="empty">Memuat data jurusan...</div>`;
+    result.innerHTML = renderEmptyState("Memuat data jurusan...", "Sebentar, data perbandingan sedang disiapkan.", "fa-spinner fa-spin");
   }
 
-  const cacheKey = "compare_jurusan_v2";
-  const cached = getCache(cacheKey, 1440);
+  const cacheKey = "compare_jurusan_v3";
+  const cached = typeof getCache === "function" ? getCache(cacheKey, 1440) : null;
 
   if (cached) {
-    jurusanData = cached.jurusanData;
-    statistikData = cached.statistikData;
-    biayaData = cached.biayaData;
+    jurusanData = cached.jurusanData || [];
+    statistikData = cached.statistikData || [];
+    biayaData = cached.biayaData || [];
 
     fillSelect("jurusanA");
     fillSelect("jurusanB");
     applyCompareParamsFromURL();
+    updateCompareProgress();
 
-    if (result && !document.getElementById("jurusanA")?.value) {
-      result.innerHTML = `<div class="empty">Pilih dua jurusan untuk dibandingkan.</div>`;
+    if (result && !document.getElementById("jurusanA")?.value && !document.getElementById("jurusanB")?.value) {
+      result.innerHTML = renderEmptyState();
     }
 
     return;
   }
 
-  const [
-    jurusanResponse,
-    statistikResponse,
-    biayaResponse
-  ] = await Promise.all([
-
+  const [jurusanResponse, statistikResponse, biayaResponse] = await Promise.all([
     supabaseClient
       .from("jurusan")
       .select(`
@@ -234,31 +281,25 @@ async function loadData() {
       `)
   ]);
 
-  if (jurusanResponse.error)
-    console.error(jurusanResponse.error);
-
-  if (statistikResponse.error)
-    console.error(statistikResponse.error);
-
-  if (biayaResponse.error)
-    console.error(biayaResponse.error);
+  if (jurusanResponse.error) console.error(jurusanResponse.error);
+  if (statistikResponse.error) console.error(statistikResponse.error);
+  if (biayaResponse.error) console.error(biayaResponse.error);
 
   jurusanData = jurusanResponse.data || [];
   statistikData = statistikResponse.data || [];
   biayaData = biayaResponse.data || [];
 
-  setCache(cacheKey, {
-    jurusanData,
-    statistikData,
-    biayaData
-  });
+  if (typeof setCache === "function") {
+    setCache(cacheKey, { jurusanData, statistikData, biayaData });
+  }
 
   fillSelect("jurusanA");
   fillSelect("jurusanB");
   applyCompareParamsFromURL();
+  updateCompareProgress();
 
-  if (result && !document.getElementById("jurusanA")?.value) {
-    result.innerHTML = `<div class="empty">Pilih dua jurusan untuk dibandingkan.</div>`;
+  if (result && !document.getElementById("jurusanA")?.value && !document.getElementById("jurusanB")?.value) {
+    result.innerHTML = renderEmptyState();
   }
 }
 
@@ -295,7 +336,7 @@ function applyCompareParamsFromURL() {
 
   const result = document.getElementById("compareResult");
   if (result && jurusan1 && !jurusan2) {
-    result.innerHTML = `<div class="empty">Jurusan pertama sudah dipilih. Silakan pilih jurusan kedua untuk dibandingkan.</div>`;
+    result.innerHTML = renderEmptyState("Jurusan pertama sudah dipilih.", "Silakan pilih jurusan kedua untuk membuka hasil perbandingan.", "fa-circle-half-stroke");
   }
 }
 
@@ -313,17 +354,17 @@ function renderCompare() {
   const idA = selectA.value;
   const idB = selectB.value;
 
+  updateCompareProgress();
+
   if (!idA || !idB) {
-    result.innerHTML = `<div class="empty">Pilih dua jurusan untuk dibandingkan.</div>`;
+    result.innerHTML = renderEmptyState("Lengkapi dua pilihan jurusan.", "Pilih jurusan pertama dan kedua agar hasil perbandingan bisa ditampilkan.", "fa-circle-half-stroke");
     return;
   }
 
-  if (idA && idB) {
   localStorage.removeItem("compareFirstJurusan");
-  }
 
   if (idA === idB) {
-    result.innerHTML = `<div class="empty">Pilih dua jurusan yang berbeda.</div>`;
+    result.innerHTML = renderEmptyState("Pilih dua jurusan yang berbeda.", "Perbandingan akan lebih berguna kalau jurusannya tidak sama.", "fa-triangle-exclamation");
     return;
   }
 
@@ -331,130 +372,34 @@ function renderCompare() {
   const b = jurusanData.find(item => String(item.id) === String(idB));
 
   if (!a || !b) {
-    result.innerHTML = `<div class="empty">Data jurusan tidak ditemukan.</div>`;
+    result.innerHTML = renderEmptyState("Data jurusan tidak ditemukan.", "Coba reset pilihan lalu pilih ulang jurusan yang tersedia.", "fa-magnifying-glass");
     return;
   }
 
   const context = buildCompareContext(a, b);
 
   result.innerHTML = `
-    <div class="compare-top-grid">
-      ${renderJurusanHero(a, context.biayaA)}
-      ${renderJurusanHero(b, context.biayaB)}
-    </div>
+    ${renderStickyNav()}
 
-    ${renderInsightBox(a, b, context)}
-    ${renderCompareTable(a, b, context)}
-  `;
-}
-
-function buildCompareContext(a, b) {
-  const snbpA = getLatestStatistik(a.id, "SNBP");
-  const snbpB = getLatestStatistik(b.id, "SNBP");
-  const snbtA = getLatestStatistik(a.id, "SNBT");
-  const snbtB = getLatestStatistik(b.id, "SNBT");
-
-  const biayaA = getBiayaSummary(a.id);
-  const biayaB = getBiayaSummary(b.id);
-
-  return {
-    snbpA,
-    snbpB,
-    snbtA,
-    snbtB,
-    biayaA,
-    biayaB
-  };
-}
-
-function renderJurusanHero(item, biaya) {
-  return `
-    <article class="compare-hero-card">
-      <div class="compare-hero-pills">
-        <span class="pill">${escapeHTML(item.fakultas || "UPI")}</span>
-        <span class="pill">${escapeHTML(item.jenjang || "-")}</span>
+    <section class="compare-showcase" id="ringkasan">
+      <div class="compare-duel-grid">
+        ${renderJurusanHero(a, context, "A")}
+        <div class="compare-duel-center">
+          <span>VS</span>
+          <small>Bandingkan</small>
+        </div>
+        ${renderJurusanHero(b, context, "B")}
       </div>
 
-      <h3>${escapeHTML(item.nama)}</h3>
-      <p>${escapeHTML(getTextPreview(item.deskripsi, 180))}</p>
-
-      <div class="compare-mini-grid">
-        <div>
-          <span>Akreditasi</span>
-          <strong>${escapeHTML(item.akreditasi || "-")}</strong>
-        </div>
-        <div>
-          <span>UKT/Biaya</span>
-          <strong>${escapeHTML(formatBiayaRange(biaya.uktMin, biaya.uktMax))}</strong>
-        </div>
-      </div>
-
-      <a href="../pages/jurusan-detail.html?id=${encodeURIComponent(item.id)}" class="btn ghost">
-        Lihat Detail
-      </a>
-    </article>
-  `;
-}
-
-function renderInsightBox(a, b, context) {
-  const aName = a.nama || "Jurusan A";
-  const bName = b.nama || "Jurusan B";
-
-  const snbpRateA = getPersentaseKeterimaan(context.snbpA);
-  const snbpRateB = getPersentaseKeterimaan(context.snbpB);
-  const snbtRateA = getPersentaseKeterimaan(context.snbtA);
-  const snbtRateB = getPersentaseKeterimaan(context.snbtB);
-
-  const uktMaxA = context.biayaA.uktMax;
-  const uktMaxB = context.biayaB.uktMax;
-
-  const sameAkreditasi = normalizeAkreditasi(a.akreditasi) &&
-    normalizeAkreditasi(a.akreditasi) === normalizeAkreditasi(b.akreditasi);
-
-  return `
-    <section class="compare-insight-box">
-      <h3>Ringkasan Cepat</h3>
-      <ul>
-        <li>${sameAkreditasi ? `Akreditasi keduanya sama-sama ${escapeHTML(a.akreditasi)}.` : `Akreditasi: ${escapeHTML(aName)} (${escapeHTML(a.akreditasi || "-")}) vs ${escapeHTML(bName)} (${escapeHTML(b.akreditasi || "-")}).`}</li>
-        <li>SNBP: ${escapeHTML(compareHigherBetter(snbpRateA, snbpRateB, aName, bName, " persentase keterimaannya"))}</li>
-        <li>SNBT: ${escapeHTML(compareHigherBetter(snbtRateA, snbtRateB, aName, bName, " persentase keterimaannya"))}</li>
-        <li>Biaya tertinggi: ${escapeHTML(compareLowerBetter(uktMaxA, uktMaxB, aName, bName, " dibanding yang lain"))}</li>
-      </ul>
+      ${renderDecisionSummary(a, b, context)}
+      ${renderWinnerBoard(a, b, context)}
+      ${renderRadarSection(a, b, context)}
     </section>
-  `;
-}
 
-function renderCompareTable(a, b, context) {
-  return `
-    <div class="compare-table-wrap">
-      <table class="compare-table">
-        <thead>
-          <tr>
-            <th>Aspek</th>
-            <th>${escapeHTML(a.nama)}</th>
-            <th>${escapeHTML(b.nama)}</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${row("Fakultas", a.fakultas, b.fakultas)}
-          ${row("Jenjang", a.jenjang, b.jenjang)}
-          ${row("Akreditasi", a.akreditasi, b.akreditasi)}
-          ${row("Website Resmi", renderLink(a.website_resmi), renderLink(b.website_resmi), true)}
-          ${row("Kurikulum", renderLink(a.url_kurikulum, "Lihat Kurikulum"), renderLink(b.url_kurikulum, "Lihat Kurikulum"), true)}
-          ${row("Akreditasi Dokumen", renderLink(a.url_akreditasi, "Lihat Akreditasi"), renderLink(b.url_akreditasi, "Lihat Akreditasi"), true)}
-
-          ${statRows("SNBP", context.snbpA, context.snbpB)}
-          ${statRows("SNBT", context.snbtA, context.snbtB)}
-
-          ${row("UKT/Biaya Terendah", formatRupiah(context.biayaA.uktMin), formatRupiah(context.biayaB.uktMin))}
-          ${row("UKT/Biaya Tertinggi", formatRupiah(context.biayaA.uktMax), formatRupiah(context.biayaB.uktMax))}
-          ${row("IPI Terendah", formatRupiah(context.biayaA.ipiMin), formatRupiah(context.biayaB.ipiMin))}
-          ${row("IPI Tertinggi", formatRupiah(context.biayaA.ipiMax), formatRupiah(context.biayaB.ipiMax))}
-          ${row("Jalur Biaya Tersedia", context.biayaA.jalur.join(", ") || "-", context.biayaB.jalur.join(", ") || "-")}
-          ${row("Prospek Kerja", renderList(a.prospek_kerja), renderList(b.prospek_kerja), true)}
-        </tbody>
-      </table>
-    </div>
+    ${renderSectionTable("profil", "Profil Jurusan", "fa-id-card", renderProfileRows(a, b))}
+    ${renderSectionTable("statistik", "Statistik Penerimaan", "fa-chart-line", renderStatRows(context))}
+    ${renderSectionTable("biaya", "Biaya Pendidikan", "fa-wallet", renderCostRows(context))}
+    ${renderProspectSection(a, b)}
 
     <div class="info-note compare-note">
       <strong>Catatan:</strong>
@@ -464,23 +409,331 @@ function renderCompareTable(a, b, context) {
   `;
 }
 
-function row(label, valueA, valueB, isHTML = false) {
+function buildCompareContext(a, b) {
+  const snbpA = getLatestStatistik(a.id, "SNBP");
+  const snbpB = getLatestStatistik(b.id, "SNBP");
+  const snbtA = getLatestStatistik(a.id, "SNBT");
+  const snbtB = getLatestStatistik(b.id, "SNBT");
+  const biayaA = getBiayaSummary(a.id);
+  const biayaB = getBiayaSummary(b.id);
+
+  return { snbpA, snbpB, snbtA, snbtB, biayaA, biayaB };
+}
+
+function renderStickyNav() {
+  return `
+    <nav class="compare-sticky-nav" aria-label="Navigasi hasil perbandingan">
+      <a href="#ringkasan">Ringkasan</a>
+      <a href="#profil">Profil</a>
+      <a href="#statistik">Statistik</a>
+      <a href="#biaya">Biaya</a>
+      <a href="#prospek">Prospek</a>
+    </nav>
+  `;
+}
+
+function renderJurusanHero(item, context, side) {
+  const biaya = context[`biaya${side}`];
+  const snbp = context[`snbp${side}`];
+  const snbt = context[`snbt${side}`];
+  const avgAcceptance = getAverageAcceptance(context, side);
+  const avgCompetition = getAverageCompetition(context, side);
+
+  return `
+    <article class="compare-major-card compare-major-${side.toLowerCase()}">
+      <div class="compare-major-top">
+        <div>
+          <span class="compare-major-label">Jurusan ${escapeHTML(side)}</span>
+          <h2>${escapeHTML(item.nama)}</h2>
+        </div>
+        <span class="compare-accreditation">${escapeHTML(item.akreditasi || "-")}</span>
+      </div>
+
+      <p>${escapeHTML(getTextPreview(item.deskripsi, 150))}</p>
+
+      <div class="compare-major-tags">
+        <span><i class="fa-solid fa-building-columns"></i>${escapeHTML(item.fakultas || "UPI")}</span>
+        <span><i class="fa-solid fa-graduation-cap"></i>${escapeHTML(item.jenjang || "-")}</span>
+      </div>
+
+      <div class="compare-metric-grid">
+        <div>
+          <small>Peluang Rata-rata</small>
+          <strong>${avgAcceptance === null ? "-" : `${avgAcceptance.toFixed(2)}%`}</strong>
+        </div>
+        <div>
+          <small>Rasio Rata-rata</small>
+          <strong>${avgCompetition === null ? "-" : `1 : ${avgCompetition.toFixed(1).replace(".", ",")}`}</strong>
+        </div>
+        <div>
+          <small>UKT/Biaya</small>
+          <strong>${escapeHTML(formatShortBiayaRange(biaya.uktMin, biaya.uktMax))}</strong>
+        </div>
+        <div>
+          <small>Data Terbaru</small>
+          <strong>${escapeHTML(snbp?.tahun || snbt?.tahun || "-")}</strong>
+        </div>
+      </div>
+
+      <a href="../pages/jurusan-detail.html?id=${encodeURIComponent(item.id)}" class="btn ghost compare-detail-btn">
+        Lihat Detail
+        <i class="fa-solid fa-arrow-right"></i>
+      </a>
+    </article>
+  `;
+}
+
+function renderDecisionSummary(a, b, context) {
+  const aName = a.nama || "Jurusan A";
+  const bName = b.nama || "Jurusan B";
+
+  const acceptanceWinner = winnerHigher(getAverageAcceptance(context, "A"), getAverageAcceptance(context, "B"), aName, bName);
+  const competitionWinner = winnerLower(getAverageCompetition(context, "A"), getAverageCompetition(context, "B"), aName, bName);
+  const costWinner = winnerLower(context.biayaA.uktMax, context.biayaB.uktMax, aName, bName);
+  const accreditationWinner = winnerHigher(getAkreditasiScore(a.akreditasi), getAkreditasiScore(b.akreditasi), aName, bName);
+
+  const lines = [
+    getSummaryLine("Peluang masuk", acceptanceWinner, "lebih longgar berdasarkan rata-rata SNBP dan SNBT."),
+    getSummaryLine("Persaingan", competitionWinner, "lebih ringan dari sisi rasio peminat per kursi."),
+    getSummaryLine("Biaya tertinggi", costWinner, "lebih rendah berdasarkan data biaya yang tersedia."),
+    getSummaryLine("Akreditasi", accreditationWinner, "lebih unggul berdasarkan label akreditasi yang terbaca.")
+  ];
+
+  return `
+    <section class="compare-decision-card">
+      <div class="compare-decision-icon"><i class="fa-solid fa-brain"></i></div>
+      <div>
+        <p class="eyebrow">Kesimpulan Cepat</p>
+        <h2>Gambaran awal sebelum membaca tabel lengkap</h2>
+        <div class="compare-summary-list">
+          ${lines.join("")}
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+function getSummaryLine(label, winner, sentence) {
+  if (winner.type === "draw") {
+    return `<p><i class="fa-solid fa-scale-balanced"></i><strong>${escapeHTML(label)}:</strong> keduanya relatif seimbang.</p>`;
+  }
+
+  if (winner.type === "unknown") {
+    return `<p><i class="fa-solid fa-circle-info"></i><strong>${escapeHTML(label)}:</strong> data belum lengkap.</p>`;
+  }
+
+  return `<p><i class="fa-solid fa-check"></i><strong>${escapeHTML(label)}:</strong> ${escapeHTML(winner.name)} ${escapeHTML(sentence)}</p>`;
+}
+
+function renderWinnerBoard(a, b, context) {
+  const aName = a.nama || "Jurusan A";
+  const bName = b.nama || "Jurusan B";
+
+  const items = [
+    {
+      icon: "fa-award",
+      title: "Akreditasi",
+      desc: `${a.akreditasi || "-"} vs ${b.akreditasi || "-"}`,
+      winner: winnerHigher(getAkreditasiScore(a.akreditasi), getAkreditasiScore(b.akreditasi), aName, bName)
+    },
+    {
+      icon: "fa-door-open",
+      title: "Peluang Masuk",
+      desc: "Rata-rata persentase keterimaan SNBP dan SNBT",
+      winner: winnerHigher(getAverageAcceptance(context, "A"), getAverageAcceptance(context, "B"), aName, bName)
+    },
+    {
+      icon: "fa-people-arrows",
+      title: "Persaingan",
+      desc: "Rasio rata-rata peminat per kursi",
+      winner: winnerLower(getAverageCompetition(context, "A"), getAverageCompetition(context, "B"), aName, bName)
+    },
+    {
+      icon: "fa-wallet",
+      title: "Biaya",
+      desc: "UKT/biaya tertinggi lebih rendah",
+      winner: winnerLower(context.biayaA.uktMax, context.biayaB.uktMax, aName, bName)
+    },
+    {
+      icon: "fa-briefcase",
+      title: "Prospek Tercatat",
+      desc: "Jumlah prospek kerja yang tersedia di data",
+      winner: winnerHigher(getProspekCount(a.prospek_kerja), getProspekCount(b.prospek_kerja), aName, bName)
+    }
+  ];
+
+  return `
+    <section class="compare-winner-board">
+      <div class="compare-block-head">
+        <p class="eyebrow">Highlight Pemenang</p>
+        <h2>Aspek mana yang lebih unggul?</h2>
+      </div>
+      <div class="compare-winner-grid">
+        ${items.map(item => `
+          <article class="compare-winner-card">
+            <div class="compare-winner-icon"><i class="fa-solid ${item.icon}"></i></div>
+            <div>
+              <h3>${escapeHTML(item.title)}</h3>
+              <p>${escapeHTML(item.desc)}</p>
+              ${winnerBadge(item.winner)}
+            </div>
+          </article>
+        `).join("")}
+      </div>
+    </section>
+  `;
+}
+
+function renderRadarSection(a, b, context) {
+  const scoreA = buildRadarScores(a, context, "A");
+  const scoreB = buildRadarScores(b, context, "B");
+
+  const rows = [
+    ["Akreditasi", scoreA.accreditation, scoreB.accreditation],
+    ["Peluang", scoreA.acceptance, scoreB.acceptance],
+    ["Persaingan", scoreA.competition, scoreB.competition],
+    ["Biaya", scoreA.cost, scoreB.cost],
+    ["Prospek", scoreA.prospect, scoreB.prospect]
+  ];
+
+  return `
+    <section class="compare-radar-card">
+      <div class="compare-block-head">
+        <p class="eyebrow">Radar Sederhana</p>
+        <h2>Skor cepat tiap aspek</h2>
+      </div>
+
+      <div class="compare-score-legend">
+        <span><b></b>${escapeHTML(a.nama)}</span>
+        <span><b></b>${escapeHTML(b.nama)}</span>
+      </div>
+
+      <div class="compare-score-list">
+        ${rows.map(([label, aScore, bScore]) => `
+          <div class="compare-score-row">
+            <span>${escapeHTML(label)}</span>
+            <div class="compare-score-bars">
+              <div class="score-bar score-a" style="--score:${aScore}"><i></i><small>${aScore}/5</small></div>
+              <div class="score-bar score-b" style="--score:${bScore}"><i></i><small>${bScore}/5</small></div>
+            </div>
+          </div>
+        `).join("")}
+      </div>
+    </section>
+  `;
+}
+
+function buildRadarScores(item, context, side) {
+  const acc = getAkreditasiScore(item.akreditasi);
+  const acceptance = getAverageAcceptance(context, side);
+  const competition = getAverageCompetition(context, side);
+  const costMax = context[`biaya${side}`].uktMax;
+  const prospectCount = getProspekCount(item.prospek_kerja);
+
+  return {
+    accreditation: acc || 1,
+    acceptance: acceptance === null ? 1 : clampScore(acceptance / 4),
+    competition: competition === null ? 1 : clampScore(6 - competition / 6),
+    cost: costMax === null ? 1 : clampScore(6 - costMax / 2000000),
+    prospect: clampScore(prospectCount / 2)
+  };
+}
+
+function clampScore(value) {
+  const number = Math.round(Number(value));
+  if (Number.isNaN(number)) return 1;
+  return Math.max(1, Math.min(5, number));
+}
+
+function renderSectionTable(id, title, icon, rows) {
+  return `
+    <section class="compare-data-section" id="${escapeHTML(id)}">
+      <div class="compare-block-head">
+        <p class="eyebrow"><i class="fa-solid ${escapeHTML(icon)}"></i> Perbandingan</p>
+        <h2>${escapeHTML(title)}</h2>
+      </div>
+
+      <div class="compare-table-wrap">
+        <table class="compare-table modern-compare-table">
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+    </section>
+  `;
+}
+
+function renderProfileRows(a, b) {
+  return `
+    ${row("Fakultas", a.fakultas, b.fakultas)}
+    ${row("Jenjang", a.jenjang, b.jenjang)}
+    ${row("Akreditasi", a.akreditasi, b.akreditasi, false, winnerHigher(getAkreditasiScore(a.akreditasi), getAkreditasiScore(b.akreditasi), a.nama, b.nama))}
+    ${row("Website Resmi", renderLink(a.website_resmi), renderLink(b.website_resmi), true)}
+    ${row("Kurikulum", renderLink(a.url_kurikulum, "Lihat Kurikulum"), renderLink(b.url_kurikulum, "Lihat Kurikulum"), true)}
+    ${row("Dokumen Akreditasi", renderLink(a.url_akreditasi, "Lihat Akreditasi"), renderLink(b.url_akreditasi, "Lihat Akreditasi"), true)}
+  `;
+}
+
+function renderStatRows(context) {
+  return `
+    ${statRows("SNBP", context.snbpA, context.snbpB)}
+    ${statRows("SNBT", context.snbtA, context.snbtB)}
+  `;
+}
+
+function renderCostRows(context) {
+  return `
+    ${row("UKT/Biaya Terendah", formatRupiah(context.biayaA.uktMin), formatRupiah(context.biayaB.uktMin), false, winnerLower(context.biayaA.uktMin, context.biayaB.uktMin, "Jurusan A", "Jurusan B"))}
+    ${row("UKT/Biaya Tertinggi", formatRupiah(context.biayaA.uktMax), formatRupiah(context.biayaB.uktMax), false, winnerLower(context.biayaA.uktMax, context.biayaB.uktMax, "Jurusan A", "Jurusan B"))}
+    ${row("IPI Terendah", formatRupiah(context.biayaA.ipiMin), formatRupiah(context.biayaB.ipiMin), false, winnerLower(context.biayaA.ipiMin, context.biayaB.ipiMin, "Jurusan A", "Jurusan B"))}
+    ${row("IPI Tertinggi", formatRupiah(context.biayaA.ipiMax), formatRupiah(context.biayaB.ipiMax), false, winnerLower(context.biayaA.ipiMax, context.biayaB.ipiMax, "Jurusan A", "Jurusan B"))}
+    ${row("Jalur Biaya Tersedia", context.biayaA.jalur.join(", ") || "-", context.biayaB.jalur.join(", ") || "-")}
+  `;
+}
+
+function row(label, valueA, valueB, isHTML = false, winner = null) {
   return `
     <tr>
       <td><strong>${escapeHTML(label)}</strong></td>
-      <td>${isHTML ? valueA : escapeHTML(valueA || "-")}</td>
-      <td>${isHTML ? valueB : escapeHTML(valueB || "-")}</td>
+      <td class="${winner ? getWinnerClass(winner, "a") : ""}">${isHTML ? valueA : escapeHTML(valueA || "-")}</td>
+      <td class="${winner ? getWinnerClass(winner, "b") : ""}">${isHTML ? valueB : escapeHTML(valueB || "-")}</td>
     </tr>
   `;
 }
 
 function statRows(label, statA, statB) {
+  const rateA = getPersentaseKeterimaan(statA);
+  const rateB = getPersentaseKeterimaan(statB);
+  const ratioA = getRasioNumber(statA);
+  const ratioB = getRasioNumber(statB);
+
   return `
     ${row(`${label} Tahun Terbaru`, statA?.tahun || "-", statB?.tahun || "-")}
-    ${row(`${label} Daya Tampung`, statA ? `${formatNumber(statA.daya_tampung)} kursi` : "-", statB ? `${formatNumber(statB.daya_tampung)} kursi` : "-")}
+    ${row(`${label} Daya Tampung`, statA ? `${formatNumber(statA.daya_tampung)} kursi` : "-", statB ? `${formatNumber(statB.daya_tampung)} kursi` : "-", false, winnerHigher(Number(statA?.daya_tampung || 0) || null, Number(statB?.daya_tampung || 0) || null, "Jurusan A", "Jurusan B"))}
     ${row(`${label} Peminat`, statA ? `${formatNumber(statA.peminat)} peminat` : "-", statB ? `${formatNumber(statB.peminat)} peminat` : "-")}
-    ${row(`${label} Persentase Keterimaan`, formatPersentaseKeterimaan(statA), formatPersentaseKeterimaan(statB))}
-    ${row(`${label} Rasio Persaingan`, getRasioPersaingan(statA), getRasioPersaingan(statB))}
+    ${row(`${label} Persentase Keterimaan`, formatPersentaseKeterimaan(statA), formatPersentaseKeterimaan(statB), false, winnerHigher(rateA, rateB, "Jurusan A", "Jurusan B"))}
+    ${row(`${label} Rasio Persaingan`, getRasioPersaingan(statA), getRasioPersaingan(statB), false, winnerLower(ratioA, ratioB, "Jurusan A", "Jurusan B"))}
+  `;
+}
+
+function renderProspectSection(a, b) {
+  return `
+    <section class="compare-data-section" id="prospek">
+      <div class="compare-block-head">
+        <p class="eyebrow"><i class="fa-solid fa-briefcase"></i> Perbandingan</p>
+        <h2>Prospek Kerja</h2>
+      </div>
+
+      <div class="compare-prospect-grid">
+        <article>
+          <h3>${escapeHTML(a.nama)}</h3>
+          ${renderList(a.prospek_kerja)}
+        </article>
+        <article>
+          <h3>${escapeHTML(b.nama)}</h3>
+          ${renderList(b.prospek_kerja)}
+        </article>
+      </div>
+    </section>
   `;
 }
 
@@ -489,7 +742,7 @@ function renderLink(url, label = "Buka Link") {
 
   return `
     <a href="${escapeHTML(url)}" target="_blank" rel="noopener noreferrer" class="compare-link">
-      ${escapeHTML(label)}
+      ${escapeHTML(label)} <i class="fa-solid fa-arrow-up-right-from-square"></i>
     </a>
   `;
 }
@@ -500,12 +753,22 @@ function renderList(text) {
     .map(item => item.trim())
     .filter(Boolean);
 
-  if (!items.length) return "-";
+  if (!items.length) return `<p class="compare-muted">Prospek kerja belum tersedia.</p>`;
 
   return `
     <ul class="compare-list">
-      ${items.slice(0, 8).map(item => `<li>${escapeHTML(item)}</li>`).join("")}
+      ${items.slice(0, 10).map(item => `<li>${escapeHTML(item)}</li>`).join("")}
     </ul>
+  `;
+}
+
+function renderEmptyState(title = "Pilih dua jurusan untuk dibandingkan.", description = "Setelah dua jurusan dipilih, SA-UPI akan menampilkan ringkasan keputusan, pemenang tiap aspek, dan tabel lengkap.", icon = "fa-graduation-cap") {
+  return `
+    <div class="compare-empty-state">
+      <div class="compare-empty-icon"><i class="fa-solid ${escapeHTML(icon)}"></i></div>
+      <h2>${escapeHTML(title)}</h2>
+      <p>${escapeHTML(description)}</p>
+    </div>
   `;
 }
 
@@ -518,13 +781,33 @@ function resetCompareJurusan() {
 
   if (selectA) selectA.value = "";
   if (selectB) selectB.value = "";
+  if (result) result.innerHTML = renderEmptyState();
 
-  if (result) {
-    result.innerHTML = `<div class="empty">Pilih dua jurusan untuk dibandingkan.</div>`;
-  }
+  updateCompareProgress();
 
   const cleanURL = window.location.pathname;
   window.history.replaceState({}, "", cleanURL);
+}
+
+function updateCompareProgress() {
+  const selectA = document.getElementById("jurusanA");
+  const selectB = document.getElementById("jurusanB");
+  const card = document.querySelector(".compare-picker-card");
+
+  if (!selectA || !selectB || !card) return;
+
+  card.dataset.step = selectA.value && selectB.value ? "complete" : selectA.value || selectB.value ? "half" : "empty";
+}
+
+function setupHelpToggle() {
+  const button = document.getElementById("compareHelpToggle");
+  const box = document.getElementById("compareHelpBox");
+  if (!button || !box) return;
+
+  button.addEventListener("click", () => {
+    box.hidden = !box.hidden;
+    button.classList.toggle("is-active", !box.hidden);
+  });
 }
 
 /* =========================
@@ -539,6 +822,8 @@ function setupEvents() {
   if (jurusanA) jurusanA.addEventListener("change", renderCompare);
   if (jurusanB) jurusanB.addEventListener("change", renderCompare);
   if (resetButton) resetButton.addEventListener("click", resetCompareJurusan);
+
+  setupHelpToggle();
 }
 
 setupEvents();

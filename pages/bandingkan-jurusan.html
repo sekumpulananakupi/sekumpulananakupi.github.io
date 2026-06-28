@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Bandingkan Jurusan - SA UPI</title>
   <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="../modules/bandingkan-jurusan/bandingkan-jurusan.css" />
 
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZWLZ2952C1"></script>
@@ -14,9 +15,8 @@
     gtag('js', new Date());
     gtag('config', 'G-ZWLZ2952C1');
   </script>
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
 
 <body>
@@ -24,94 +24,92 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     <div data-component="navbar"></div>
   </header>
 
-  <main class="container">
-    <section class="section compare-page-section">
-      <div class="section-heading">
-        <div>
-          <p class="eyebrow">Komparasi</p>
-          <h2>Bandingkan Jurusan</h2>
-          <p class="section-desc">
-            Pilih dua jurusan untuk membandingkan profil, akreditasi, statistik penerimaan, rasio persaingan, dan biaya pendidikan.
-          </p>
-        </div>
+  <main class="compare-page">
+    <section class="compare-hero container">
+      <div class="compare-hero-copy">
+        <p class="compare-kicker"><i class="fa-solid fa-scale-balanced"></i> Komparasi Jurusan</p>
+        <h1>Bandingkan jurusan sebelum menentukan pilihan.</h1>
+        <p>
+          Lihat perbedaan akreditasi, peluang masuk, rasio persaingan, biaya pendidikan,
+          dan prospek kerja dalam satu tampilan yang lebih mudah dibaca.
+        </p>
       </div>
 
-<section class="compare-intro">
-  <div class="compare-intro-header">
-    <span class="compare-badge">Panduan Singkat</span>
-    <h2>Cara Membandingkan Jurusan</h2>
-    <p>
-      Jangan hanya melihat nama jurusannya. Perhatikan juga kurikulum,
-      akreditasi, statistik penerimaan, rasio persaingan, dan biaya pendidikan
-      agar pilihanmu lebih sesuai dengan minat, kemampuan, dan rencana masa depan.
-    </p>
-  </div>
+      <div class="compare-hero-card">
+        <span>Mode Keputusan</span>
+        <strong>2 Jurusan</strong>
+        <small>Profil · Statistik · Biaya · Prospek</small>
+      </div>
+    </section>
 
-  <div class="compare-guide-grid">
-    <div class="compare-guide-card">
-      <h3>📚 Mengapa Kurikulum Penting?</h3>
-      <p>
-        Kurikulum menunjukkan mata kuliah dan kompetensi yang akan kamu pelajari
-        selama kuliah. Dari sini, kamu bisa menilai apakah isi jurusan tersebut
-        sesuai dengan minat dan tujuan kariermu.
-      </p>
-    </div>
+    <section class="container compare-picker-section" aria-label="Pilih jurusan untuk dibandingkan">
+      <div class="compare-picker-card">
+        <div class="compare-picker-head">
+          <div>
+            <p class="eyebrow">Mulai Bandingkan</p>
+            <h2>Pilih dua jurusan</h2>
+          </div>
 
-    <div class="compare-guide-card">
-      <h3>📊 Apa Itu Rasio Persaingan?</h3>
-      <p>
-        Rasio persaingan menunjukkan seberapa ketat peluang masuk suatu jurusan.
-        Misalnya rasio 1:20 berarti sekitar 20 pendaftar memperebutkan 1 kursi.
-      </p>
-    </div>
-
-    <div class="compare-guide-card">
-      <h3>🏅 Kenapa Akreditasi Perlu Dilihat?</h3>
-      <p>
-        Akreditasi menggambarkan mutu program studi berdasarkan penilaian lembaga
-        resmi. Ini bisa menjadi salah satu indikator kualitas penyelenggaraan
-        pendidikan.
-      </p>
-    </div>
-
-    <div class="compare-guide-card">
-      <h3>💰 Mengapa Biaya Pendidikan Perlu Dibandingkan?</h3>
-      <p>
-        Biaya pendidikan membantu kamu memperkirakan kebutuhan finansial selama
-        kuliah, termasuk UKT atau biaya lain sesuai jalur dan jenjang pendidikan.
-      </p>
-    </div>
-  </div>
-</section>
-      
-      <div class="filter-panel compare-filter-panel">
-        <div class="filter-field">
-          <label for="jurusanA">Jurusan Pertama</label>
-          <select id="jurusanA">
-            <option value="">Memuat jurusan...</option>
-          </select>
+          <button type="button" class="compare-help-toggle" id="compareHelpToggle">
+            <i class="fa-regular fa-circle-question"></i>
+            Cara baca data
+          </button>
         </div>
 
-        <div class="filter-field">
-          <label for="jurusanB">Jurusan Kedua</label>
-          <select id="jurusanB">
-            <option value="">Memuat jurusan...</option>
-          </select>
+        <div class="compare-help-box" id="compareHelpBox" hidden>
+          <div>
+            <strong>Persentase keterimaan</strong>
+            <p>Semakin besar, peluang masuk relatif lebih longgar karena dihitung dari daya tampung dibagi peminat.</p>
+          </div>
+          <div>
+            <strong>Rasio persaingan</strong>
+            <p>Semakin kecil, persaingan relatif lebih ringan. Contoh 1 : 20 berarti 1 kursi diperebutkan sekitar 20 peminat.</p>
+          </div>
+          <div>
+            <strong>Biaya</strong>
+            <p>Ringkasan biaya diambil dari data UKT, uang kuliah, dan IPI yang tersedia di database.</p>
+          </div>
+        </div>
+
+        <div class="compare-picker-grid">
+          <div class="filter-field compare-select-field">
+            <label for="jurusanA">Jurusan Pertama</label>
+            <select id="jurusanA">
+              <option value="">Memuat jurusan...</option>
+            </select>
+          </div>
+
+          <div class="compare-vs-badge" aria-hidden="true">VS</div>
+
+          <div class="filter-field compare-select-field">
+            <label for="jurusanB">Jurusan Kedua</label>
+            <select id="jurusanB">
+              <option value="">Memuat jurusan...</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="compare-actions">
+          <a href="../pages/jurusan.html" class="btn ghost">
+            <i class="fa-solid fa-list-ul"></i>
+            Pilih dari Daftar Jurusan
+          </a>
+
+          <button type="button" id="resetCompareJurusan" class="btn secondary">
+            <i class="fa-solid fa-rotate-left"></i>
+            Reset
+          </button>
         </div>
       </div>
+    </section>
 
-      <div class="compare-actions">
-        <a href="../pages/jurusan.html" class="btn ghost">
-          Pilih dari Daftar Jurusan
-        </a>
-
-        <button type="button" id="resetCompareJurusan" class="btn secondary">
-          Reset Bandingkan
-        </button>
-      </div>
-
+    <section class="container compare-result-section">
       <div id="compareResult">
-        <div class="empty">Pilih dua jurusan untuk dibandingkan.</div>
+        <div class="compare-empty-state">
+          <div class="compare-empty-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+          <h2>Pilih dua jurusan untuk dibandingkan.</h2>
+          <p>Setelah dua jurusan dipilih, SA-UPI akan menampilkan ringkasan keputusan, pemenang tiap aspek, dan tabel lengkap.</p>
+        </div>
       </div>
     </section>
   </main>
@@ -120,11 +118,10 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     <div data-component="footer"></div>
   </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="../assets/js/cache.js"></script>
-<script src="../modules/bandingkan-jurusan/bandingkan-jurusan.js"></script>
-<script src="../assets/js/menu.js"></script>
-<script src="../assets/js/components.js"></script>
-
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/cache.js"></script>
+  <script src="../modules/bandingkan-jurusan/bandingkan-jurusan.js"></script>
+  <script src="../assets/js/menu.js"></script>
+  <script src="../assets/js/components.js"></script>
 </body>
 </html>
