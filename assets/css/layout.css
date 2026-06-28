@@ -1,34 +1,60 @@
-/* layout.css - hasil pecahan dari style.css */
+/* layout.css */
 
-.site-header{background:var(--white);box-shadow:0 6px 20px rgba(0,0,0,.07);position:sticky;top:0;z-index:10}
-
-.navbar{display:flex;align-items:center;justify-content:space-between;padding:16px 0}
-
-.brand{font-size:24px;font-weight:800;text-decoration:none;color:var(--blue)}
-
-.brand span{color:var(--gold)}
-
-.nav-menu{display:flex;gap:20px;list-style:none;margin:0;padding:0}
-
-.nav-menu a{text-decoration:none;color:var(--text);font-weight:600}
-
-.menu-toggle{display:none;background:none;border:0;font-size:26px}
-
-.footer{padding:28px 0;background:#101828;color:white;margin-top:40px}
-
-
-
-.header,
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.site-header {
+  background: var(--white);
+  box-shadow: 0 6px 20px rgba(0,0,0,.07);
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 0;
+}
 
+.brand {
+  font-size: 24px;
+  font-weight: 800;
+  text-decoration: none;
+  color: var(--blue);
+}
 
-.nav-menu,
-nav ul {
+.brand span {
+  color: var(--gold);
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.search-btn,
+.menu-toggle {
+  width: 42px;
+  height: 42px;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: var(--blue);
+  text-decoration: none;
+}
+
+.search-btn {
+  display: flex;
+}
+
+.menu-toggle {
+  display: none;
+}
+
+.nav-menu {
   display: flex;
   gap: 24px;
   list-style: none;
@@ -36,35 +62,30 @@ nav ul {
   padding: 0;
 }
 
-
-
-.nav-menu a,
-nav a {
+.nav-menu a {
   text-decoration: none;
   color: #0f172a;
   font-weight: 600;
 }
 
-
-
-.logo {
-  font-weight: 800;
-  letter-spacing: 1px;
+.footer {
+  padding: 28px 0;
+  background: #101828;
+  color: white;
+  margin-top: 40px;
 }
-
-
 
 @media (max-width: 800px) {
   .menu-toggle {
-    display: block !important;
+    display: flex;
   }
 
   .nav-menu {
-    display: none !important;
+    display: none;
   }
 
   .nav-menu.show {
-    display: flex !important;
+    display: flex;
     position: absolute;
     top: 70px;
     left: 4%;
@@ -75,24 +96,4 @@ nav a {
     border-radius: 18px;
     z-index: 999;
   }
-}
-
-
-
-.logo-mark {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 38px;
-  height: 38px;
-  border-radius: 12px;
-  background: #0f766e;
-  color: white;
-  font-weight: 900;
-}
-
-
-
-.logo-text {
-  font-size: 1.1rem;
 }
