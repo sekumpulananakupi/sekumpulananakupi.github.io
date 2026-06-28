@@ -665,3 +665,522 @@
 .calendar-section {
   scroll-margin-top: 105px;
 }
+
+/* ================================
+   FIX UI/UX KALENDER MOBILE
+================================ */
+@media (max-width: 768px) {
+  body {
+    overflow-x: hidden;
+  }
+
+  .calendar-wrapper,
+  .calendar-section,
+  .calendar-container {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(42px, 1fr));
+    gap: 8px;
+  }
+
+  .calendar-day {
+    min-height: 105px;
+    padding: 10px 8px;
+    border-radius: 14px;
+    overflow: hidden;
+  }
+
+  .calendar-day-number {
+    font-size: 16px;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+
+  .calendar-event {
+    font-size: 12px;
+    line-height: 1.35;
+    padding: 7px 8px;
+    border-radius: 10px;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .more-events,
+  .agenda-more {
+    font-size: 12px;
+    font-weight: 700;
+    margin-top: 6px;
+  }
+
+  /* Popup agenda mobile */
+  .calendar-modal,
+  .agenda-modal,
+  .event-modal {
+    width: 100vw;
+    max-width: 100vw;
+    left: 0;
+    right: 0;
+    top: auto;
+    bottom: 0;
+    transform: none;
+    border-radius: 24px 24px 0 0;
+    max-height: 82vh;
+    overflow-y: auto;
+    padding: 22px 20px;
+  }
+
+  .calendar-modal-content,
+  .agenda-modal-content,
+  .event-modal-content {
+    width: 100%;
+    max-width: 100%;
+    border-radius: 24px 24px 0 0;
+  }
+
+  .calendar-modal h3,
+  .agenda-modal h3,
+  .event-modal h3 {
+    font-size: 18px;
+    line-height: 1.35;
+  }
+
+  .calendar-modal p,
+  .agenda-modal p,
+  .event-modal p {
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .modal-overlay,
+  .calendar-overlay {
+    align-items: flex-end;
+  }
+}
+
+/* MOBILE: kalender dibuat ringkas */
+@media (max-width: 768px) {
+  .calendar-grid {
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+  }
+
+  .calendar-day {
+    min-height: 78px;
+    padding: 8px 5px;
+    border-radius: 12px;
+  }
+
+  .calendar-day-number {
+    font-size: 14px;
+    margin-bottom: 5px;
+  }
+
+  .calendar-event {
+    font-size: 10.5px;
+    line-height: 1.25;
+    padding: 5px 6px;
+    border-radius: 8px;
+
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    max-height: 36px;
+  }
+
+  /* Sembunyikan agenda ke-2, ke-3, dst */
+  .calendar-day .calendar-event:nth-of-type(n + 2) {
+    display: none;
+  }
+
+  .more-events,
+  .agenda-more {
+    font-size: 10.5px;
+    margin-top: 4px;
+  }
+}
+/* =====================================================
+   MOBILE FINAL FIX - Kalender tidak penuh di HP
+   Strategi:
+   1. Kalender boleh horizontal-scroll rapi, bukan kepotong halaman.
+   2. Isi kotak tanggal dibuat ringkas: hanya tanggal + titik agenda + jumlah.
+   3. Teks agenda panjang disembunyikan di grid mobile.
+   4. Detail tetap dibuka lewat modal/bottom sheet.
+===================================================== */
+@media (max-width: 768px) {
+  html,
+  body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  .calendar-page {
+    overflow-x: hidden;
+  }
+
+  .calendar-hero-modern {
+    padding: 56px 0 36px;
+  }
+
+  .calendar-hero-content h1 {
+    font-size: 2rem;
+    line-height: 1.15;
+  }
+
+  .calendar-hero-content p {
+    font-size: 0.95rem;
+  }
+
+  .calendar-card,
+  .highlight-card,
+  .note-box,
+  .next-event-card {
+    border-radius: 16px;
+    padding: 14px;
+  }
+
+  .calendar-month-header {
+    gap: 10px;
+    margin: 22px 0 18px;
+  }
+
+  .calendar-month-header h2,
+  .calendar-month-header h3 {
+    font-size: 1rem;
+    white-space: nowrap;
+  }
+
+  .calendar-month-header button {
+    width: 34px;
+    height: 34px;
+    font-size: 14px;
+    flex: 0 0 auto;
+  }
+
+  /* Wrapper yang memegang grid kalender */
+  .calendar-wrapper,
+  .calendar-container,
+  .calendar-month-section,
+  .calendar-month-view,
+  .calendar-table-wrapper {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: visible;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 8px;
+  }
+
+  /* Grid utama kalender: tetap 7 kolom, tapi dibuat mini dan bisa digeser */
+  .calendar-grid,
+  .calendar-days,
+  .calendar-table {
+    display: grid !important;
+    grid-template-columns: repeat(7, 44px) !important;
+    gap: 6px !important;
+    width: max-content !important;
+    min-width: max-content !important;
+    max-width: none !important;
+  }
+
+  /* Header hari */
+  .calendar-weekdays,
+  .calendar-week-header {
+    display: grid !important;
+    grid-template-columns: repeat(7, 44px) !important;
+    gap: 6px !important;
+    width: max-content !important;
+    min-width: max-content !important;
+    max-width: none !important;
+    margin-bottom: 8px;
+  }
+
+  .calendar-weekdays > *,
+  .calendar-week-header > *,
+  .weekday,
+  .day-name {
+    width: 44px !important;
+    max-width: 44px !important;
+    text-align: center;
+    font-size: 9px !important;
+    font-weight: 800;
+  }
+
+  /* Kotak tanggal dibuat kecil */
+  .calendar-day,
+  .day-cell,
+  .calendar-date-cell {
+    width: 44px !important;
+    min-width: 44px !important;
+    max-width: 44px !important;
+    min-height: 62px !important;
+    height: 62px !important;
+    padding: 6px 4px !important;
+    border-radius: 10px !important;
+    overflow: hidden !important;
+    position: relative;
+  }
+
+  .calendar-day-number,
+  .day-number,
+  .date-number {
+    font-size: 13px !important;
+    line-height: 1 !important;
+    margin: 0 0 6px !important;
+    font-weight: 800 !important;
+  }
+
+  /* Sembunyikan teks agenda panjang di kotak tanggal mobile */
+  .calendar-day .calendar-event,
+  .calendar-day .event-item,
+  .calendar-day .agenda-item,
+  .calendar-day .day-event,
+  .calendar-day .event-title,
+  .calendar-day .calendar-event-title,
+  .calendar-day .calendar-item,
+  .calendar-day .agenda-title,
+  .day-cell .calendar-event,
+  .day-cell .event-item,
+  .day-cell .agenda-item,
+  .day-cell .day-event,
+  .day-cell .event-title,
+  .day-cell .calendar-event-title,
+  .day-cell .calendar-item,
+  .day-cell .agenda-title {
+    font-size: 0 !important;
+    line-height: 0 !important;
+    color: transparent !important;
+    width: 7px !important;
+    height: 7px !important;
+    min-width: 7px !important;
+    min-height: 7px !important;
+    max-width: 7px !important;
+    max-height: 7px !important;
+    padding: 0 !important;
+    margin: 2px 2px 0 0 !important;
+    border-radius: 50% !important;
+    display: inline-block !important;
+    overflow: hidden !important;
+    background: #0f766e !important;
+    vertical-align: top;
+  }
+
+  /* Maksimal 3 titik agenda saja */
+  .calendar-day .calendar-event:nth-of-type(n + 4),
+  .calendar-day .event-item:nth-of-type(n + 4),
+  .calendar-day .agenda-item:nth-of-type(n + 4),
+  .calendar-day .day-event:nth-of-type(n + 4),
+  .day-cell .calendar-event:nth-of-type(n + 4),
+  .day-cell .event-item:nth-of-type(n + 4),
+  .day-cell .agenda-item:nth-of-type(n + 4),
+  .day-cell .day-event:nth-of-type(n + 4) {
+    display: none !important;
+  }
+
+  .more-events,
+  .agenda-more,
+  .more-agenda,
+  .event-more {
+    display: block !important;
+    margin-top: 4px !important;
+    font-size: 8.5px !important;
+    line-height: 1.15 !important;
+    font-weight: 800 !important;
+    color: #0f766e !important;
+    white-space: normal !important;
+  }
+
+  /* Modal jadi bottom sheet */
+  .calendar-modal {
+    align-items: flex-end !important;
+    justify-content: center !important;
+    padding: 0 !important;
+  }
+
+  .calendar-modal-content {
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: 82vh !important;
+    border-radius: 22px 22px 0 0 !important;
+    padding: 20px !important;
+  }
+
+  .calendar-modal-content h3 {
+    font-size: 1.05rem !important;
+    line-height: 1.35 !important;
+  }
+
+  .calendar-modal-content p,
+  .calendar-modal-content li {
+    font-size: 0.92rem !important;
+    line-height: 1.55 !important;
+  }
+}
+
+/* HP sangat kecil */
+@media (max-width: 380px) {
+  .calendar-grid,
+  .calendar-days,
+  .calendar-table,
+  .calendar-weekdays,
+  .calendar-week-header {
+    grid-template-columns: repeat(7, 40px) !important;
+    gap: 5px !important;
+  }
+
+  .calendar-weekdays > *,
+  .calendar-week-header > *,
+  .weekday,
+  .day-name,
+  .calendar-day,
+  .day-cell,
+  .calendar-date-cell {
+    width: 40px !important;
+    min-width: 40px !important;
+    max-width: 40px !important;
+  }
+
+  .calendar-day,
+  .day-cell,
+  .calendar-date-cell {
+    height: 58px !important;
+    min-height: 58px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .month-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+  }
+
+  .month-day {
+    min-height: 68px;
+    padding: 6px;
+    border-radius: 10px;
+  }
+
+  .month-event {
+    display: none;
+  }
+
+  .month-day.has-event::after {
+    content: "";
+    display: block;
+    width: 7px;
+    height: 7px;
+    margin-top: 6px;
+    border-radius: 50%;
+    background: #0f766e;
+  }
+
+  .month-more {
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 768px) {
+  .calendar-month-section .container {
+    width: 100%;
+    max-width: 100%;
+    padding-left: 10px;
+    padding-right: 10px;
+    overflow: hidden;
+  }
+
+  .month-weekdays,
+  .month-grid {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 5px;
+    width: 100%;
+  }
+
+  .month-weekdays div {
+    font-size: 9px;
+    text-align: center;
+  }
+
+  .month-day {
+    min-width: 0;
+    min-height: 58px;
+    padding: 5px 3px;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .month-day-number {
+    font-size: 11px;
+  }
+
+  .month-more,
+  .more-events,
+  .agenda-more {
+    font-size: 8.5px;
+    line-height: 1.15;
+    word-break: break-word;
+  }
+
+  .calendar-month-header {
+    gap: 8px;
+    margin: 20px 0 16px;
+  }
+
+  .calendar-month-header h2 {
+    font-size: 14px;
+  }
+
+  .calendar-month-header button {
+    width: 28px;
+    height: 28px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 768px) {
+  .month-day {
+    position: relative;
+    min-height: 54px;
+    padding: 6px 4px;
+  }
+
+  .month-day-number {
+    font-size: 13px;
+    font-weight: 800;
+  }
+
+  /* sembunyikan teks agenda di kotak kalender */
+  .month-event,
+  .month-more,
+  .more-events,
+  .agenda-more {
+    display: none !important;
+  }
+
+  /* titik agenda */
+  .month-day:has(.month-event)::after,
+  .month-day:has(.month-more)::after,
+  .month-day:has(.agenda-more)::after {
+    content: "●";
+    position: absolute;
+    left: 6px;
+    bottom: 6px;
+    font-size: 11px;
+    color: #0f766e;
+    letter-spacing: 1px;
+  }
+
+  /* tanggal dengan banyak agenda */
+  .month-day:has(.month-more)::after,
+  .month-day:has(.agenda-more)::after {
+    content: "●●●";
+  }
+}

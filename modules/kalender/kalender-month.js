@@ -153,3 +153,16 @@ if (nextMonthBtn) {
 }
 
 renderMonth();
+
+document.querySelectorAll(".month-day").forEach((day) => {
+  const events = day.querySelectorAll(".month-event").length;
+  const more = day.querySelector(".month-more, .agenda-more, .more-events");
+
+  if (events > 0 || more) {
+    day.classList.add("has-agenda");
+  }
+
+  if (events > 1 || more) {
+    day.classList.add("many-agenda");
+  }
+});
