@@ -5,7 +5,7 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 /*
   SA UPI - script optimasi agresif
   Fokus:
-  1. Konten awal 5 item per jenis.
+  1. Konten awal 3 item per jenis.
   2. Pagination / tombol muat lagi otomatis jika elemen tombol tersedia.
   3. Query Supabase hanya ambil kolom yang dipakai.
   4. Isi lengkap tetap aman untuk detail page, bukan untuk card/list.
@@ -13,7 +13,7 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   6. FAQ dan dokumen dimuat setelah konten utama.
 */
 
-const PAGE_SIZE = 5;
+const PAGE_SIZE = 3;
 const MINI_LIMIT = 4;
 const CACHE_TTL = 5 * 60 * 1000;
 
