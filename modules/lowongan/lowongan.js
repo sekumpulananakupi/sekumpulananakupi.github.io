@@ -3,8 +3,8 @@ const SUPABASE_ANON_KEY = "sb_publishable_KL8Jcb1hEzU-kAZiOMYWFg_hupftFmq";
 
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-const PAGE_SIZE = 5;
-const FILTER_CACHE_KEY = "saupi_lowongan_filters_v2";
+const PAGE_SIZE = 6;
+const FILTER_CACHE_KEY = "saupi_lowongan_filters_v3";
 const FILTER_CACHE_TTL = 5 * 60 * 1000;
 
 let currentPage = 0;
@@ -37,7 +37,37 @@ function stripHTML(html) {
   return (div.textContent || div.innerText || "").trim();
 }
 
-function showLoading(targetId, count = 3) {
+function formatDate(dateValue) {
+  if (!dateValue) return "Baru diperbarui";
+
+  try {
+    return new Intl.DateTimeFormat("id-ID", {
+      day: "numeric",
+      month: "short",
+      year: "numeric"
+    }).format(new Date(dateValue));
+  } catch {
+    return "Baru diperbarui";
+  }
+}
+
+function getInitial(text) {
+  return String(text || "SA").trim().slice(0, 1).toUpperCase();
+}
+
+function setText(id, value) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = value;
+}
+
+function updateStats() {
+  setText("statTotalJobs", totalMatchedJobs ? totalMatchedJobs.toLocaleString("id-ID") : "0");
+  setText("statLoadedJobs", totalLoadedJobs ? totalLoadedJobs.toLocaleString("id-ID") : "0");
+  setText("statJurusanJobs", jurusanData.filter(item => (jurusanCounts[item.id] || 0) > 0).length.toLocaleString("id-ID"));
+  setText("statTagJobs", tagData.length.toLocaleString("id-ID"));
+}
+
+function showLoading(targetId, count = 4) {
   const target = document.getElementById(targetId);
   if (!target) return;
 
@@ -98,7 +128,7 @@ function setCachedFilters() {
       jurusanCounts
     }));
   } catch {
-    // localStorage bisa gagal di mode private, abaikan saja.
+    // localStorage bisa gagal di mode private, jadi aman diabaikan.
   }
 }
 
@@ -108,7 +138,9 @@ async function loadFilters() {
   if (cached) {
     jurusanData = cached.jurusanData || [];
     tagData = cached.tagData || [];
+    jurusanCounts = cached.jurusanCounts || {};
     renderFilters();
+    updateStats();
     return;
   }
 
@@ -128,35 +160,7 @@ async function loadFilters() {
 
   setCachedFilters();
   renderFilters();
-} // WAJIB ADA: nutup loadFilters di sini
-
-function renderFilters() {
-  const jurusanFilter = document.getElementById("jurusanFilter");
-  const tagFilter = document.getElementById("tagFilter");
-
-  if (jurusanFilter) {
-    jurusanFilter.innerHTML =
-      `<option value="all">Semua Jurusan</option>` +
-      jurusanData
-        .filter(item => (jurusanCounts[item.id] || 0) > 0)
-        .map(item => {
-          const count = jurusanCounts[item.id] || 0;
-          return `<option value="${item.id}">${escapeHTML(item.nama)} (${count})</option>`;
-        })
-        .join("");
-
-    jurusanFilter.value = activeJurusan;
-  }
-
-  if (tagFilter) {
-    tagFilter.innerHTML =
-      `<option value="all">Semua Tag</option>` +
-      tagData
-        .map(item => `<option value="${item.id}">${escapeHTML(item.nama)}</option>`)
-        .join("");
-
-    tagFilter.value = activeTag;
-  }
+  updateStats();
 }
 
 function renderFilters() {
@@ -172,35 +176,56 @@ function renderFilters() {
       })
       .join("");
 
-    jurusanFilter.innerHTML =
-      `<option value="all">Semua Jurusan</option>` + jurusanOptions;
-
+    jurusanFilter.innerHTML = `<option value="all">Semua Jurusan</option>` + jurusanOptions;
     jurusanFilter.value = activeJurusan;
   }
 
   if (tagFilter) {
     tagFilter.innerHTML =
       `<option value="all">Semua Tag</option>` +
-      tagData
-        .map(item => `<option value="${item.id}">${escapeHTML(item.nama)}</option>`)
-        .join("");
+      tagData.map(item => `<option value="${item.id}">${escapeHTML(item.nama)}</option>`).join("");
 
     tagFilter.value = activeTag;
   }
 }
 
 function createJobCard(item) {
+  const description = stripHTML(item.deskripsi_ringkas || item.deskripsi || "");
+  const safeDescription = description.length > 150 ? `${description.slice(0, 150)}...` : description;
+  const company = item.perusahaan || "Lowongan SA UPI";
+  const location = item.lokasi || "Fleksibel";
+
   return `
-    <article class="item-card">
-      ${item.gambar ? `<img src="${escapeHTML(item.gambar)}" class="card-image" alt="${escapeHTML(item.posisi)}" loading="lazy">` : ""}
+    <article class="job-card">
+      <div class="job-card__top">
+        <div class="job-card__logo" aria-hidden="true">
+          ${item.gambar
+            ? `<img src="${escapeHTML(item.gambar)}" alt="${escapeHTML(company)}" loading="lazy">`
+            : escapeHTML(getInitial(company))}
+        </div>
 
-      <span class="pill">${escapeHTML(item.perusahaan || "Lowongan")}</span>
-      <span class="pill">${escapeHTML(item.lokasi || "Fleksibel")}</span>
+        <div>
+          <h3>${escapeHTML(item.posisi || "Lowongan Kerja")}</h3>
+          <div class="job-card__company">
+            <span><i class="fa-solid fa-building"></i> ${escapeHTML(company)}</span>
+          </div>
+        </div>
+      </div>
 
-      <h3>${escapeHTML(item.posisi)}</h3>
-      <p>${escapeHTML(stripHTML(item.deskripsi_ringkas || item.deskripsi || "")).slice(0, 140)}...</p>
+      <div class="job-card__meta">
+        <span class="job-pill"><i class="fa-solid fa-location-dot"></i> ${escapeHTML(location)}</span>
+        <span class="job-pill"><i class="fa-solid fa-briefcase"></i> Karier</span>
+        <span class="job-pill"><i class="fa-solid fa-clock"></i> Terbaru</span>
+      </div>
 
-      <a href="../pages/post.html?type=job&id=${item.id}" class="btn ghost">Lihat Detail</a>
+      <p class="job-card__desc">${escapeHTML(safeDescription || "Buka detail lowongan untuk melihat informasi lengkap, persyaratan, dan cara melamar.")}</p>
+
+      <div class="job-card__footer">
+        <span class="job-date">Update ${escapeHTML(formatDate(item.created_at))}</span>
+        <a href="../pages/post.html?type=job&id=${encodeURIComponent(item.id)}" class="btn ghost">
+          Lihat Detail <i class="fa-solid fa-arrow-right"></i>
+        </a>
+      </div>
     </article>
   `;
 }
@@ -209,12 +234,9 @@ function updateJobCount() {
   const el = document.getElementById("jobCount");
   if (!el) return;
 
-  if (!totalMatchedJobs) {
-    el.textContent = "";
-    return;
-  }
-
-  el.textContent = `Menampilkan ${totalLoadedJobs} dari ${totalMatchedJobs} lowongan`;
+  el.textContent = totalMatchedJobs
+    ? `Menampilkan ${totalLoadedJobs} dari ${totalMatchedJobs} lowongan`
+    : "Belum ada hasil";
 }
 
 function getLoadMoreButton() {
@@ -261,6 +283,7 @@ async function loadJobs(reset = false) {
     totalMatchedJobs = 0;
     showLoading("jobList", PAGE_SIZE);
     updateJobCount();
+    updateStats();
   }
 
   let allowedIds = null;
@@ -280,8 +303,10 @@ async function loadJobs(reset = false) {
     if (reset) showEmpty("jobList");
     hasMoreJobs = false;
     isLoadingJobs = false;
+    totalMatchedJobs = 0;
     updateLoadMoreButton();
     updateJobCount();
+    updateStats();
     return;
   }
 
@@ -295,7 +320,7 @@ async function loadJobs(reset = false) {
     .range(from, to);
 
   if (activeKeyword) {
-    const safeKeyword = activeKeyword.replaceAll(",", " ");
+    const safeKeyword = activeKeyword.replaceAll(",", " ").trim();
     query = query.or(
       `posisi.ilike.%${safeKeyword}%,perusahaan.ilike.%${safeKeyword}%,lokasi.ilike.%${safeKeyword}%,deskripsi.ilike.%${safeKeyword}%`
     );
@@ -316,14 +341,13 @@ async function loadJobs(reset = false) {
     isLoadingJobs = false;
     updateLoadMoreButton();
     updateJobCount();
+    updateStats();
     return;
   }
 
   const jobs = data || [];
 
-  if (reset) {
-    jobList.innerHTML = "";
-  }
+  if (reset) jobList.innerHTML = "";
 
   if (!jobs.length && reset) {
     showEmpty("jobList");
@@ -339,12 +363,38 @@ async function loadJobs(reset = false) {
   isLoadingJobs = false;
   updateLoadMoreButton();
   updateJobCount();
+  updateStats();
+}
+
+function setActiveQuickChip(keyword) {
+  document.querySelectorAll(".quick-chip").forEach(button => {
+    button.classList.toggle("is-active", button.dataset.keyword === keyword);
+  });
+}
+
+function resetFilters() {
+  const searchInput = document.getElementById("jobSearch");
+  const jurusanFilter = document.getElementById("jurusanFilter");
+  const tagFilter = document.getElementById("tagFilter");
+
+  activeKeyword = "";
+  activeJurusan = "all";
+  activeTag = "all";
+
+  if (searchInput) searchInput.value = "";
+  if (jurusanFilter) jurusanFilter.value = "all";
+  if (tagFilter) tagFilter.value = "all";
+
+  setActiveQuickChip("");
+  loadJobs(true);
 }
 
 function initEvents() {
   const searchInput = document.getElementById("jobSearch");
   const jurusanFilter = document.getElementById("jurusanFilter");
   const tagFilter = document.getElementById("tagFilter");
+  const loadMoreButton = getLoadMoreButton();
+  const resetButton = document.getElementById("resetJobFilters");
 
   const params = new URLSearchParams(window.location.search);
   const keywordFromUrl = params.get("q");
@@ -352,11 +402,13 @@ function initEvents() {
   if (searchInput && keywordFromUrl) {
     searchInput.value = keywordFromUrl;
     activeKeyword = keywordFromUrl.trim().toLowerCase();
+    setActiveQuickChip(activeKeyword);
   }
 
   if (searchInput) {
     searchInput.addEventListener("input", debounce(event => {
       activeKeyword = event.target.value.trim().toLowerCase();
+      setActiveQuickChip(activeKeyword);
       loadJobs(true);
     }));
   }
@@ -374,6 +426,24 @@ function initEvents() {
       loadJobs(true);
     });
   }
+
+  if (loadMoreButton) {
+    loadMoreButton.addEventListener("click", () => loadJobs(false));
+  }
+
+  if (resetButton) {
+    resetButton.addEventListener("click", resetFilters);
+  }
+
+  document.querySelectorAll(".quick-chip").forEach(button => {
+    button.addEventListener("click", () => {
+      const keyword = button.dataset.keyword || "";
+      activeKeyword = keyword;
+      if (searchInput) searchInput.value = keyword;
+      setActiveQuickChip(keyword);
+      loadJobs(true);
+    });
+  });
 }
 
 async function initLowonganPage() {

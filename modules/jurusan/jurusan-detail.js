@@ -105,10 +105,11 @@ function renderChipLinks(text) {
   }
 
   return `
-    <div class="prospek-chip-group">
+    <div class="career-grid">
       ${items.map(item => `
-        <a class="pill prospek-chip" href="../pages/lowongan.html?q=${encodeURIComponent(item)}">
-          ${escapeHTML(item)}
+        <a class="career-card" href="../pages/lowongan.html?q=${encodeURIComponent(item)}">
+          <span class="career-icon">💼</span>
+          <span>${escapeHTML(item)}</span>
         </a>
       `).join("")}
     </div>
@@ -116,7 +117,56 @@ function renderChipLinks(text) {
 }
 
 function renderCocokUntukSiapa(text) {
-  return renderLineList(text, "Data kecocokan jurusan belum tersedia.");
+  const items = String(text || "")
+    .split("\n")
+    .map(item => item.trim())
+    .filter(Boolean);
+
+  if (!items.length) {
+    return `<div class="empty">Data kecocokan jurusan belum tersedia.</div>`;
+  }
+
+  return `
+    <div class="fit-list">
+      ${items.map(item => `
+        <div class="fit-item">
+          <span>✓</span>
+          <p>${escapeHTML(item)}</p>
+        </div>
+      `).join("")}
+    </div>
+  `;
+}
+
+function getLatestStatistik(statistik = []) {
+  if (!Array.isArray(statistik) || !statistik.length) return null;
+  return statistik.slice().sort((a, b) => Number(b.tahun) - Number(a.tahun))[0];
+}
+
+function getBiayaRangeText(biayaList = []) {
+  const values = biayaList
+    .flatMap(item => [item.ukt, item.ipi, item.uang_kuliah])
+    .map(Number)
+    .filter(value => !Number.isNaN(value) && value > 0);
+
+  if (!values.length) return "Belum tersedia";
+
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+
+  if (min === max) return formatRupiah(min);
+  return `${formatRupiah(min)} - ${formatRupiah(max)}`;
+}
+
+function setupDetailNav() {
+  document.querySelectorAll(".detail-jump-nav a").forEach(link => {
+    link.addEventListener("click", event => {
+      const target = document.querySelector(link.getAttribute("href"));
+      if (!target) return;
+      event.preventDefault();
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  });
 }
 
 function makeSafeId(text) {
@@ -299,106 +349,207 @@ const { data: faqJurusan, error: faqError } = await supabaseClient
 
   updateFaqSchemaJurusan(faqJurusan || []);
 
+  const biayaList = Array.isArray(biayaPendidikan) ? biayaPendidikan : [];
+  const latestStat = getLatestStatistik(statistik);
+  const latestSNBP = getLatestByJalur(statistik, "SNBP");
+  const latestSNBT = getLatestByJalur(statistik, "SNBT");
+  const mainStat = latestSNBT || latestSNBP || latestStat;
+
   detail.innerHTML = `
-  <nav class="breadcrumb">
-  <a href="../index.html">Beranda</a>
-  <span>›</span>
-  <a href="../pages/jurusan.html">Jurusan</a>
-  <span>›</span>
-  <span>${escapeHTML(jurusan.nama)}</span>
-   </nav>
-    <article class="post-card">
-      <span class="pill">${escapeHTML(jurusan.fakultas || "UPI")}</span>
-      <h1>${escapeHTML(jurusan.nama)}</h1>
-      <p class="post-date">${escapeHTML(jurusan.jenjang || "S1")}</p>
+    <nav class="breadcrumb detail-breadcrumb">
+      <a href="../index.html">Beranda</a>
+      <span>›</span>
+      <a href="../pages/jurusan.html">Jurusan</a>
+      <span>›</span>
+      <span>${escapeHTML(jurusan.nama)}</span>
+    </nav>
 
-      <h2>Profil Jurusan</h2>
-      <div class="post-content">
-        ${escapeHTML(jurusan.deskripsi || "Deskripsi jurusan belum tersedia.").replace(/\n/g, "<br>")}
-      </div>
+    <article class="jurusan-detail-shell">
+      <section class="jurusan-hero-card">
+        <div class="hero-copy">
+          <div class="hero-pill-row">
+            <span class="pill">${escapeHTML(jurusan.fakultas || "UPI")}</span>
+            <span class="pill soft-pill">${escapeHTML(jurusan.jenjang || "S1")}</span>
+            ${jurusan.akreditasi ? `<span class="pill accent-pill">Akreditasi ${escapeHTML(jurusan.akreditasi)}</span>` : ""}
+          </div>
 
-      <h2>Cocok Untuk Siapa?</h2>
-      ${renderCocokUntukSiapa(jurusan.cocok_untuk)}
+          <h1>${escapeHTML(jurusan.nama)}</h1>
+          <p class="hero-lead">
+            ${escapeHTML(stripHTML(jurusan.deskripsi || "Temukan profil jurusan, daya tampung, peminat, biaya pendidikan, FAQ, prospek kerja, dan jurusan mirip di UPI.")).slice(0, 220)}${String(stripHTML(jurusan.deskripsi || "")).length > 220 ? "..." : ""}
+          </p>
 
-      <h2>Informasi Program Studi</h2>
-      <div class="jurusan-info-grid">
-        <div class="stat-card">
+          <div class="hero-actions">
+            <a href="#statistik" class="btn primary">Lihat Statistik</a>
+            <a href="../pages/bandingkan-jurusan.html" class="btn ghost">Bandingkan Jurusan</a>
+          </div>
+        </div>
+
+        <aside class="hero-summary-card" aria-label="Ringkasan jurusan">
+          <div class="summary-main">
+            <span>Peluang terbaru</span>
+            <strong>${mainStat ? `${formatPersentaseKeterimaan(mainStat)}%` : "-"}</strong>
+            <small>${mainStat ? `${escapeHTML(mainStat.jalur || "")} ${escapeHTML(mainStat.tahun || "")}` : "Data belum tersedia"}</small>
+          </div>
+
+          <div class="mini-stat-grid">
+            <div>
+              <span>Daya tampung</span>
+              <strong>${mainStat ? formatNumber(mainStat.daya_tampung) : "-"}</strong>
+            </div>
+            <div>
+              <span>Peminat</span>
+              <strong>${mainStat ? formatNumber(mainStat.peminat) : "-"}</strong>
+            </div>
+            <div>
+              <span>Rasio</span>
+              <strong>${mainStat ? getRasioPersaingan(mainStat) : "-"}</strong>
+            </div>
+            <div>
+              <span>Gelar</span>
+              <strong>${escapeHTML(jurusan.gelar || "-")}</strong>
+            </div>
+          </div>
+        </aside>
+      </section>
+
+      <nav class="detail-jump-nav" aria-label="Navigasi detail jurusan">
+        <a href="#profil"><i class="fa-regular fa-file-lines"></i> Profil</a>
+        <a href="#statistik"><i class="fa-solid fa-chart-line"></i> Statistik</a>
+        <a href="#biaya"><i class="fa-regular fa-credit-card"></i> Biaya</a>
+        <a href="#faq"><i class="fa-regular fa-circle-question"></i> FAQ</a>
+        <a href="#prospek"><i class="fa-solid fa-briefcase"></i> Prospek</a>
+        <a href="#mirip"><i class="fa-solid fa-code-compare"></i> Jurusan Mirip</a>
+      </nav>
+
+      <section class="quick-facts-card">
+        <div>
           <span>Akreditasi</span>
           <strong>${escapeHTML(jurusan.akreditasi || "-")}</strong>
         </div>
-
-        <div class="stat-card">
+        <div>
           <span>Jenjang</span>
           <strong>${escapeHTML(jurusan.jenjang || "-")}</strong>
         </div>
-
-        <div class="stat-card">
+        <div>
           <span>Fakultas</span>
           <strong>${escapeHTML(jurusan.fakultas || "-")}</strong>
         </div>
-      </div>
-
-      <div class="stat-card">
-        <span>Gelar Lulusan</span>
-        <strong>${escapeHTML(jurusan.gelar || "-")}</strong>
-      </div>
-      
-      ${jurusan.website_resmi ? `
-        <a href="${escapeHTML(jurusan.website_resmi)}" target="_blank" rel="noopener noreferrer" class="btn ghost">
-          Website Resmi
-        </a>
-      ` : ""}
-
-      <div class="program-links">
-        ${jurusan.url_kurikulum ? `
-          <a href="${escapeHTML(jurusan.url_kurikulum)}" target="_blank" rel="noopener noreferrer" class="btn-link">
-            📚 Lihat Kurikulum
-          </a>
-        ` : ""}
-
-        ${jurusan.url_akreditasi ? `
-          <a href="${escapeHTML(jurusan.url_akreditasi)}" target="_blank" rel="noopener noreferrer" class="btn-link">
-            📄 Lihat Akreditasi
-          </a>
-        ` : ""}
-      </div>
-
-      <h2>Statistik Penerimaan</h2>
-      ${renderStatistik(statistik)}
-
-      ${renderBiayaPendidikanSection(Array.isArray(biayaPendidikan) ? biayaPendidikan : [])}
-
-      <h2>FAQ Jurusan</h2>
-      ${renderFaqJurusan(faqJurusan || [])}
-
-      <section class="related-jurusan-section">
-        <h2>Jurusan Mirip</h2>
-      
-        <div id="relatedJurusanList" class="related-grid">
-          <div class="loading-state">
-            Mencari jurusan yang mirip...
-          </div>
+        <div>
+          <span>Estimasi biaya</span>
+          <strong>${escapeHTML(getBiayaRangeText(biayaList))}</strong>
         </div>
       </section>
 
-      <h2>Prospek Kerja</h2>
-      ${renderChipLinks(jurusan.prospek_kerja)}
+      <section id="profil" class="detail-section-card">
+        <div class="section-title-row">
+          <div>
+            <p class="eyebrow">Profil</p>
+            <h2>Gambaran Jurusan</h2>
+          </div>
+        </div>
+        <div class="post-content compact-content">
+          ${escapeHTML(jurusan.deskripsi || "Deskripsi jurusan belum tersedia.").replace(/\n/g, "<br>")}
+        </div>
+      </section>
 
-      <div class="share-actions">
-        <button id="shareWhatsapp" class="btn primary">
-          📤 Bagikan Jurusan
-        </button>
+      <section class="detail-section-card">
+        <div class="section-title-row">
+          <div>
+            <p class="eyebrow">Kecocokan</p>
+            <h2>Cocok Untuk Siapa?</h2>
+          </div>
+        </div>
+        ${renderCocokUntukSiapa(jurusan.cocok_untuk)}
+      </section>
 
-        <button id="copyLink" class="btn ghost">
-          🔗 Salin Link
-        </button>
-      </div>
+      <section class="detail-section-card">
+        <div class="section-title-row">
+          <div>
+            <p class="eyebrow">Program</p>
+            <h2>Informasi Program Studi</h2>
+          </div>
+        </div>
 
-      <a href="../pages/jurusan.html" class="btn ghost">← Kembali ke Daftar Jurusan</a>
+        <div class="jurusan-info-grid modern-info-grid">
+          <div class="stat-card"><span>Akreditasi</span><strong>${escapeHTML(jurusan.akreditasi || "-")}</strong></div>
+          <div class="stat-card"><span>Jenjang</span><strong>${escapeHTML(jurusan.jenjang || "-")}</strong></div>
+          <div class="stat-card"><span>Fakultas</span><strong>${escapeHTML(jurusan.fakultas || "-")}</strong></div>
+          <div class="stat-card"><span>Gelar Lulusan</span><strong>${escapeHTML(jurusan.gelar || "-")}</strong></div>
+        </div>
+
+        <div class="program-links modern-link-row">
+          ${jurusan.website_resmi ? `<a href="${escapeHTML(jurusan.website_resmi)}" target="_blank" rel="noopener noreferrer" class="btn ghost">Website Resmi</a>` : ""}
+          ${jurusan.url_kurikulum ? `<a href="${escapeHTML(jurusan.url_kurikulum)}" target="_blank" rel="noopener noreferrer" class="btn-link">📚 Lihat Kurikulum</a>` : ""}
+          ${jurusan.url_akreditasi ? `<a href="${escapeHTML(jurusan.url_akreditasi)}" target="_blank" rel="noopener noreferrer" class="btn-link">📄 Lihat Akreditasi</a>` : ""}
+        </div>
+      </section>
+
+      <section id="statistik" class="detail-section-card highlight-section">
+        <div class="section-title-row">
+          <div>
+            <p class="eyebrow">Seleksi Masuk</p>
+            <h2>Statistik Penerimaan</h2>
+          </div>
+          <span class="section-hint">SNBP & SNBT</span>
+        </div>
+        ${renderStatistik(statistik)}
+      </section>
+
+      <section id="biaya" class="detail-section-card">
+        ${renderBiayaPendidikanSection(biayaList)}
+      </section>
+
+      <section id="faq" class="detail-section-card">
+        <div class="section-title-row">
+          <div>
+            <p class="eyebrow">Pertanyaan Umum</p>
+            <h2>FAQ Jurusan</h2>
+          </div>
+        </div>
+        ${renderFaqJurusan(faqJurusan || [])}
+      </section>
+
+      <section id="mirip" class="detail-section-card related-jurusan-section">
+        <div class="section-title-row">
+          <div>
+            <p class="eyebrow">Eksplorasi</p>
+            <h2>Jurusan Mirip</h2>
+          </div>
+        </div>
+        <div id="relatedJurusanList" class="related-grid">
+          <div class="loading-state">Mencari jurusan yang mirip...</div>
+        </div>
+      </section>
+
+      <section id="prospek" class="detail-section-card">
+        <div class="section-title-row">
+          <div>
+            <p class="eyebrow">Karier</p>
+            <h2>Prospek Kerja</h2>
+          </div>
+          <a class="btn ghost small-btn" href="../pages/lowongan.html">Cari Lowongan</a>
+        </div>
+        ${renderChipLinks(jurusan.prospek_kerja)}
+      </section>
+
+      <section class="detail-section-card final-action-card">
+        <div>
+          <p class="eyebrow">Bagikan</p>
+          <h2>Simpan atau bagikan halaman ini</h2>
+          <p>Gunakan halaman ini sebagai referensi saat membandingkan jurusan UPI.</p>
+        </div>
+
+        <div class="share-actions">
+          <button id="shareWhatsapp" class="btn primary">📤 Bagikan Jurusan</button>
+          <button id="copyLink" class="btn ghost">🔗 Salin Link</button>
+          <a href="../pages/jurusan.html" class="btn ghost">← Daftar Jurusan</a>
+        </div>
+      </section>
     </article>
   `;
 
   setupShareButtons();
+  setupDetailNav();
   setupAdmissionStatistik(statistik);
 
   await loadRelatedContent(id, relatedArticleList, relatedJobList);
@@ -902,7 +1053,7 @@ function createRelatedCard(item) {
   }
 
   return `
-    <article class="item-card" ${item.type === "job" ? `data-job-id="${escapeHTML(item.id)}"` : ""}>
+    <article class="clean-related-card" ${item.type === "job" ? `data-job-id="${escapeHTML(item.id)}"` : ""}>
       ${item.gambar ? `
         <img src="${escapeHTML(item.gambar)}" class="card-image" alt="${escapeHTML(title)}">
       ` : ""}

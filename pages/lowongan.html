@@ -4,19 +4,20 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Lowongan Kerja - SA UPI</title>
+  <meta name="description" content="Temukan lowongan kerja, magang, part-time, freelance, dan peluang karier yang relevan untuk mahasiswa dan alumni UPI." />
+
   <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="../assets/css/lowongan-redesign.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+
   <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZWLZ2952C1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-ZWLZ2952C1');
-</script>
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZWLZ2952C1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-ZWLZ2952C1');
+  </script>
 </head>
 
 <body>
@@ -24,41 +25,98 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     <div data-component="navbar"></div>
   </header>
 
-<main class="container">
-  <section class="section">
-    <div class="section-heading">
-      <div>
-        <p class="eyebrow">Karier</p>
-        <h2>Lowongan Kerja</h2>
+  <main class="container jobs-page">
+    <section class="jobs-hero" aria-labelledby="jobsTitle">
+      <div class="jobs-hero__content">
+        <p class="jobs-eyebrow"><i class="fa-solid fa-briefcase"></i> Karier SA UPI</p>
+        <h1 id="jobsTitle">Temukan peluang kerja yang cocok dengan jurusanmu.</h1>
+        <p>
+          Cari lowongan magang, part-time, freelance, hingga full-time dari berbagai bidang.
+          Gunakan filter jurusan dan tag supaya hasilnya lebih relevan.
+        </p>
+
+        <div class="hero-search" role="search">
+          <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+          <input type="search" id="jobSearch" placeholder="Cari posisi, perusahaan, atau lokasi..." autocomplete="off" />
+        </div>
       </div>
-    </div>
 
-    <div class="filter-panel">
-      <input type="search" id="jobSearch" placeholder="Cari posisi, perusahaan, atau lokasi..." />
+      <aside class="jobs-hero__card" aria-label="Ringkasan halaman lowongan">
+        <div class="hero-card-icon"><i class="fa-solid fa-layer-group"></i></div>
+        <strong>Portal Karier Mahasiswa</strong>
+        <span>Ringkas, mudah difilter, dan ringan dibuka di HP.</span>
+      </aside>
+    </section>
 
-      <select id="jurusanFilter">
-        <option value="all">Semua Jurusan</option>
-      </select>
+    <section class="jobs-stats" aria-label="Statistik lowongan">
+      <article>
+        <strong id="statTotalJobs">-</strong>
+        <span>Lowongan cocok</span>
+      </article>
+      <article>
+        <strong id="statLoadedJobs">-</strong>
+        <span>Ditampilkan</span>
+      </article>
+      <article>
+        <strong id="statJurusanJobs">-</strong>
+        <span>Jurusan terkait</span>
+      </article>
+      <article>
+        <strong id="statTagJobs">-</strong>
+        <span>Tag tersedia</span>
+      </article>
+    </section>
 
-      <select id="tagFilter">
-        <option value="all">Semua Tag</option>
-      </select>
-    </div>
+    <section class="jobs-tools" aria-label="Filter lowongan">
+      <div class="quick-filter" aria-label="Filter cepat">
+        <button class="quick-chip is-active" type="button" data-keyword="">Semua</button>
+        <button class="quick-chip" type="button" data-keyword="magang">Magang</button>
+        <button class="quick-chip" type="button" data-keyword="freelance">Freelance</button>
+        <button class="quick-chip" type="button" data-keyword="part time">Part-time</button>
+        <button class="quick-chip" type="button" data-keyword="remote">Remote</button>
+        <button class="quick-chip" type="button" data-keyword="bandung">Bandung</button>
+      </div>
 
-    <div class="results-meta">
-      <span id="jobCount"></span>
-    </div>
+      <div class="filter-panel jobs-filter-panel">
+        <label class="filter-field" for="jurusanFilter">
+          <span><i class="fa-solid fa-graduation-cap"></i> Jurusan</span>
+          <select id="jurusanFilter">
+            <option value="all">Semua Jurusan</option>
+          </select>
+        </label>
 
-    <div class="grid-list" id="jobList"></div>
+        <label class="filter-field" for="tagFilter">
+          <span><i class="fa-solid fa-tags"></i> Tag</span>
+          <select id="tagFilter">
+            <option value="all">Semua Tag</option>
+          </select>
+        </label>
 
-    <div class="load-more-wrapper">
-      <button id="loadMoreJobs" class="btn primary" style="display:none;">
-        Muat Lagi
-      </button>
-    </div>
-  </section>
-</main>
-  
+        <button class="btn ghost reset-filter-btn" type="button" id="resetJobFilters">
+          <i class="fa-solid fa-rotate-left"></i> Reset
+        </button>
+      </div>
+    </section>
+
+    <section class="jobs-results" aria-label="Daftar lowongan kerja">
+      <div class="results-topbar">
+        <div>
+          <p class="eyebrow">Hasil Pencarian</p>
+          <h2>Daftar Lowongan</h2>
+        </div>
+        <span id="jobCount" class="results-count"></span>
+      </div>
+
+      <div class="job-grid" id="jobList"></div>
+
+      <div class="load-more-wrapper">
+        <button id="loadMoreJobs" class="btn primary" style="display:none;">
+          Muat Lagi
+        </button>
+      </div>
+    </section>
+  </main>
+
   <footer class="footer">
     <div data-component="footer"></div>
   </footer>

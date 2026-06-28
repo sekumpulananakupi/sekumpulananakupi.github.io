@@ -3,20 +3,434 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>Komunitas SA UPI</title>
+  <meta name="description" content="Gabung komunitas Sekumpulan Anak UPI untuk mendapatkan informasi kampus, diskusi mahasiswa, lowongan, beasiswa, dan kebutuhan akademik seputar UPI." />
+
   <link rel="stylesheet" href="../assets/css/style.css" />
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZWLZ2952C1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
-  gtag('config', 'G-ZWLZ2952C1');
-</script>
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <style>
+    .community-page {
+      padding: 34px 0 56px;
+    }
 
+    .community-hero {
+      position: relative;
+      overflow: hidden;
+      border-radius: 30px;
+      padding: 42px;
+      background:
+        radial-gradient(circle at top left, rgba(37, 99, 235, .18), transparent 34%),
+        linear-gradient(135deg, #0f172a, #1e3a8a);
+      color: #fff;
+      box-shadow: 0 24px 60px rgba(15, 23, 42, .22);
+    }
+
+    .community-hero::after {
+      content: "";
+      position: absolute;
+      width: 220px;
+      height: 220px;
+      right: -70px;
+      bottom: -80px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .12);
+    }
+
+    .community-hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 760px;
+    }
+
+    .community-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .14);
+      color: #dbeafe;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+
+    .community-hero h1 {
+      margin: 0 0 14px;
+      font-size: clamp(32px, 5vw, 58px);
+      line-height: 1.05;
+      letter-spacing: -1.4px;
+      color: #fff;
+    }
+
+    .community-hero p {
+      margin: 0;
+      max-width: 680px;
+      font-size: 17px;
+      line-height: 1.8;
+      color: #dbeafe;
+    }
+
+    .community-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 26px;
+    }
+
+    .community-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      min-height: 48px;
+      padding: 0 18px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 800;
+      transition: .2s ease;
+    }
+
+    .community-btn.primary {
+      background: #facc15;
+      color: #172554;
+    }
+
+    .community-btn.primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(250, 204, 21, .28);
+    }
+
+    .community-btn.secondary {
+      border: 1px solid rgba(255, 255, 255, .3);
+      color: #fff;
+      background: rgba(255, 255, 255, .08);
+    }
+
+    .community-stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .community-stat-card {
+      padding: 20px;
+      border-radius: 22px;
+      background: #fff;
+      border: 1px solid rgba(148, 163, 184, .22);
+      box-shadow: 0 14px 36px rgba(15, 23, 42, .08);
+    }
+
+    .community-stat-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 15px;
+      display: grid;
+      place-items: center;
+      background: #eff6ff;
+      color: #2563eb;
+      margin-bottom: 12px;
+      font-size: 18px;
+    }
+
+    .community-stat-card strong {
+      display: block;
+      font-size: 24px;
+      color: #0f172a;
+      margin-bottom: 4px;
+    }
+
+    .community-stat-card span {
+      font-size: 14px;
+      color: #64748b;
+      font-weight: 600;
+    }
+
+    .community-section {
+      margin-top: 34px;
+      padding: 30px;
+      border-radius: 28px;
+      background: #fff;
+      border: 1px solid rgba(148, 163, 184, .22);
+      box-shadow: 0 14px 40px rgba(15, 23, 42, .06);
+    }
+
+    .community-section-header {
+      margin-bottom: 22px;
+    }
+
+    .community-section-header .eyebrow {
+      margin: 0 0 8px;
+      color: #2563eb;
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .community-section-header h2 {
+      margin: 0;
+      color: #0f172a;
+      font-size: clamp(24px, 3vw, 34px);
+      letter-spacing: -.6px;
+    }
+
+    .community-section-header p {
+      margin: 10px 0 0;
+      color: #64748b;
+      line-height: 1.7;
+      max-width: 760px;
+    }
+
+    .step-list {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      counter-reset: step;
+    }
+
+    .step-card {
+      position: relative;
+      padding: 20px;
+      border-radius: 20px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+    }
+
+    .step-card::before {
+      counter-increment: step;
+      content: counter(step);
+      width: 34px;
+      height: 34px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      background: #2563eb;
+      color: #fff;
+      font-weight: 900;
+      margin-bottom: 14px;
+    }
+
+    .step-card h3 {
+      margin: 0 0 8px;
+      font-size: 17px;
+      color: #0f172a;
+    }
+
+    .step-card p {
+      margin: 0;
+      color: #64748b;
+      line-height: 1.65;
+      font-size: 14px;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .feature-card {
+      padding: 20px;
+      border-radius: 20px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+    }
+
+    .feature-card i {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 15px;
+      background: #eff6ff;
+      color: #2563eb;
+      margin-bottom: 14px;
+      font-size: 18px;
+    }
+
+    .feature-card h3 {
+      margin: 0 0 8px;
+      color: #0f172a;
+      font-size: 17px;
+    }
+
+    .feature-card p {
+      margin: 0;
+      color: #64748b;
+      line-height: 1.65;
+      font-size: 14px;
+    }
+
+    .rules-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .rule-card {
+      display: flex;
+      gap: 14px;
+      padding: 18px;
+      border-radius: 20px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+    }
+
+    .rule-card i {
+      flex: 0 0 38px;
+      width: 38px;
+      height: 38px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: #fff7ed;
+      color: #ea580c;
+    }
+
+    .rule-card h3 {
+      margin: 0 0 6px;
+      color: #0f172a;
+      font-size: 16px;
+    }
+
+    .rule-card p {
+      margin: 0;
+      color: #64748b;
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .faq-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .faq-list details {
+      border-radius: 18px;
+      border: 1px solid #e2e8f0;
+      background: #f8fafc;
+      overflow: hidden;
+    }
+
+    .faq-list summary {
+      cursor: pointer;
+      padding: 18px 20px;
+      font-weight: 800;
+      color: #0f172a;
+      list-style: none;
+    }
+
+    .faq-list summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .faq-list summary::after {
+      content: "+";
+      float: right;
+      color: #2563eb;
+      font-size: 20px;
+      font-weight: 900;
+    }
+
+    .faq-list details[open] summary::after {
+      content: "−";
+    }
+
+    .faq-list details p {
+      margin: 0;
+      padding: 0 20px 18px;
+      color: #64748b;
+      line-height: 1.7;
+    }
+
+    .community-cta {
+      margin-top: 34px;
+      padding: 34px;
+      border-radius: 28px;
+      text-align: center;
+      background:
+        radial-gradient(circle at top right, rgba(250, 204, 21, .22), transparent 36%),
+        linear-gradient(135deg, #1d4ed8, #0f172a);
+      color: #fff;
+      box-shadow: 0 20px 54px rgba(15, 23, 42, .2);
+    }
+
+    .community-cta h2 {
+      margin: 0 0 10px;
+      color: #fff;
+      font-size: clamp(26px, 4vw, 38px);
+    }
+
+    .community-cta p {
+      margin: 0 auto 22px;
+      max-width: 680px;
+      color: #dbeafe;
+      line-height: 1.7;
+    }
+
+    .community-note {
+      margin: 18px 0 0;
+      color: #64748b;
+      font-size: 14px;
+      line-height: 1.7;
+      text-align: center;
+    }
+
+    @media (max-width: 900px) {
+      .community-hero {
+        padding: 32px 24px;
+        border-radius: 24px;
+      }
+
+      .community-stats,
+      .step-list,
+      .feature-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .rules-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .community-page {
+        padding-top: 22px;
+      }
+
+      .community-hero {
+        padding: 28px 20px;
+      }
+
+      .community-actions,
+      .community-btn {
+        width: 100%;
+      }
+
+      .community-stats,
+      .step-list,
+      .feature-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .community-section {
+        padding: 22px;
+        border-radius: 24px;
+      }
+
+      .rule-card {
+        align-items: flex-start;
+      }
+
+      .community-cta {
+        padding: 28px 20px;
+      }
+    }
+  </style>
 </head>
 
 <body>
@@ -24,105 +438,262 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     <div data-component="navbar"></div>
   </header>
 
-  <main class="container">
-    <section class="section">
-      <div class="post-card">
-        <p class="eyebrow">Komunitas</p>
-        <h1>Gabung Sekumpulan Anak UPI</h1>
+  <main class="container community-page">
+
+    <section class="community-hero">
+      <div class="community-hero-content">
+        <div class="community-badge">
+          <i class="fa-solid fa-users"></i>
+          Komunitas Mahasiswa UPI
+        </div>
+
+        <h1>Gabung bareng 1700+ anggota SA UPI</h1>
 
         <p>
-          Sekumpulan Anak UPI adalah ruang berbagi informasi kampus,
-          diskusi mahasiswa, lowongan kerja, dan berbagai hal seputar kehidupan di UPI.
+          Tempat ngobrol, tanya jawab, berbagi info kampus, lowongan, beasiswa,
+          dokumen akademik, dan kehidupan mahasiswa UPI dalam satu komunitas yang aktif dan saling bantu.
         </p>
 
-        <div class="info-box success">
-          <h2>📢 Status Komunitas</h2>
-
-          <ul>
-            <li>✅ Pendaftaran anggota: Dibuka</li>
-            <li>👥 Total anggota: 1700+</li>
-            <li>🛡️ Admin aktif melakukan moderasi</li>
-            <li>📅 Informasi diperbarui: 26 Juni 2026</li>
-          </ul>
-
-          <p>
-            Jika pendaftaran sedang ditutup atau terdapat perubahan aturan,
-            informasi akan diperbarui pada halaman ini.
-          </p>
-        </div>
-
-        <h2>Cara Gabung</h2>
-        <ol>
-          <li>Baca aturan komunitas terlebih dahulu.</li>
-          <li>Pastikan kamu menggunakan nama dan identitas yang jelas.</li>
-          <li>Klik tombol gabung grup WhatsApp.</li>
-          <li>Ikuti arahan admin grup.</li>
-        </ol>
-
-        <h2>Aturan Grup</h2>
-        <ul>
-          <li>Gunakan bahasa yang sopan dan saling menghargai.</li>
-          <li>Dilarang mengirim spam, promosi, atau iklan tanpa izin admin.</li>
-          <li>Dilarang menyebarkan informasi yang belum jelas sumbernya.</li>
-          <li>Hormati privasi anggota dan jangan membagikan data pribadi.</li>
-          <li>Gunakan grup sesuai tujuan diskusi dan informasi seputar UPI.</li>
-          <li>Hindari SARA, ujaran kebencian, maupun provokasi.</li>
-          <li>Admin berhak menghapus pesan atau mengeluarkan anggota yang melanggar aturan.</li>
-        </ul>
-
-        <h2>Manfaat Bergabung</h2>
-        <ul>
-          <li>Mendapat informasi seputar kampus UPI dengan lebih cepat.</li>
-          <li>Bisa bertanya dan berdiskusi dengan sesama mahasiswa maupun calon mahasiswa UPI.</li>
-          <li>Mendapat info lowongan, kegiatan, beasiswa, dokumen, dan kebutuhan akademik lainnya.</li>
-          <li>Menambah relasi lintas jurusan, fakultas, dan angkatan.</li>
-          <li>Ikut membangun ruang berbagi informasi yang saling membantu.</li>
-        </ul>
-
-        <h2>FAQ Komunitas</h2>
-        <div class="faq-preview">
-          <details>
-            <summary>Apakah komunitas ini resmi dari UPI?</summary>
-            <p>Tidak. Sekumpulan Anak UPI adalah komunitas independen dan bukan kanal resmi Universitas Pendidikan Indonesia.</p>
-          </details>
-
-          <details>
-            <summary>Siapa saja yang boleh bergabung?</summary>
-            <p>Mahasiswa UPI, alumni, calon mahasiswa, dan orang yang membutuhkan informasi seputar UPI boleh bergabung selama mengikuti aturan komunitas.</p>
-          </details>
-
-          <details>
-            <summary>Apakah boleh bertanya tentang jurusan, UKT, beasiswa, atau kehidupan kampus?</summary>
-            <p>Boleh. Komunitas ini memang dibuat untuk saling berbagi informasi seputar perkuliahan, jurusan, dokumen, lowongan, dan kehidupan kampus UPI.</p>
-          </details>
-
-          <details>
-            <summary>Apakah informasi di grup selalu resmi?</summary>
-            <p>Tidak selalu. Informasi penting tetap harus dicek kembali ke sumber resmi seperti website UPI, fakultas, program studi, atau kanal resmi terkait.</p>
-          </details>
-
-          <details>
-            <summary>Apakah boleh promosi di grup?</summary>
-            <p>Promosi yang tidak relevan, spam, atau mengganggu tidak diperbolehkan. Jika ingin membagikan informasi kegiatan atau peluang, pastikan tetap sopan dan relevan dengan kebutuhan anggota.</p>
-          </details>
-        </div>
-
-
-        <div class="hero-actions">
-          <a href="https://docs.google.com/forms/u/1/d/e/1FAIpQLSeUFORAgr9mFDIYjwx3eSgD2qVmDJh_8sbUxWL3_i0GsKzQoA/viewform?usp=sf_link&pli=1&authuser=1" class="btn primary" target="_blank">
+        <div class="community-actions">
+          <a href="https://docs.google.com/forms/u/1/d/e/1FAIpQLSeUFORAgr9mFDIYjwx3eSgD2qVmDJh_8sbUxWL3_i0GsKzQoA/viewform?usp=sf_link&pli=1&authuser=1" class="community-btn primary" target="_blank" rel="noopener">
+            <i class="fa-brands fa-whatsapp"></i>
             Gabung Grup WhatsApp
           </a>
 
-          <a href="../pages/tentang.html" class="btn ghost">
+          <a href="../pages/tentang.html" class="community-btn secondary">
+            <i class="fa-solid fa-circle-info"></i>
             Tentang SA UPI
           </a>
         </div>
-
-        <p class="post-date">
-          Catatan: Sekumpulan Anak UPI adalah komunitas independen dan bukan kanal resmi Universitas Pendidikan Indonesia.
-        </p>
       </div>
     </section>
+
+    <section class="community-stats" aria-label="Status komunitas">
+      <div class="community-stat-card">
+        <div class="community-stat-icon">
+          <i class="fa-solid fa-user-group"></i>
+        </div>
+        <strong>1700+</strong>
+        <span>Anggota komunitas</span>
+      </div>
+
+      <div class="community-stat-card">
+        <div class="community-stat-icon">
+          <i class="fa-solid fa-circle-check"></i>
+        </div>
+        <strong>Dibuka</strong>
+        <span>Pendaftaran anggota</span>
+      </div>
+
+      <div class="community-stat-card">
+        <div class="community-stat-icon">
+          <i class="fa-solid fa-shield-halved"></i>
+        </div>
+        <strong>Aktif</strong>
+        <span>Moderasi admin</span>
+      </div>
+
+      <div class="community-stat-card">
+        <div class="community-stat-icon">
+          <i class="fa-solid fa-calendar-check"></i>
+        </div>
+        <strong>26 Jun</strong>
+        <span>Update terakhir</span>
+      </div>
+    </section>
+
+    <section class="community-section">
+      <div class="community-section-header">
+        <p class="eyebrow">Cara Gabung</p>
+        <h2>Masuk komunitasnya gampang</h2>
+        <p>
+          Supaya grup tetap nyaman, pastikan kamu membaca aturan dulu sebelum bergabung.
+        </p>
+      </div>
+
+      <div class="step-list">
+        <div class="step-card">
+          <h3>Baca aturan</h3>
+          <p>Pahami etika dan batasan diskusi agar komunitas tetap aman.</p>
+        </div>
+
+        <div class="step-card">
+          <h3>Gunakan identitas jelas</h3>
+          <p>Pakai nama yang wajar agar admin dan anggota lain mudah mengenali.</p>
+        </div>
+
+        <div class="step-card">
+          <h3>Isi formulir</h3>
+          <p>Klik tombol gabung dan ikuti proses pendaftaran yang tersedia.</p>
+        </div>
+
+        <div class="step-card">
+          <h3>Ikuti arahan admin</h3>
+          <p>Setelah masuk, ikuti arahan admin dan jaga suasana grup.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="community-section">
+      <div class="community-section-header">
+        <p class="eyebrow">Manfaat</p>
+        <h2>Kenapa perlu gabung?</h2>
+        <p>
+          Komunitas ini dibuat untuk membantu mahasiswa, calon mahasiswa, alumni,
+          dan siapa pun yang membutuhkan informasi seputar UPI.
+        </p>
+      </div>
+
+      <div class="feature-grid">
+        <div class="feature-card">
+          <i class="fa-solid fa-bullhorn"></i>
+          <h3>Info kampus lebih cepat</h3>
+          <p>Dapatkan kabar seputar UPI, kegiatan, dokumen, dan kebutuhan akademik.</p>
+        </div>
+
+        <div class="feature-card">
+          <i class="fa-solid fa-comments"></i>
+          <h3>Tempat bertanya</h3>
+          <p>Bisa bertanya tentang jurusan, UKT, beasiswa, PKKMB, KRS, dan kehidupan kampus.</p>
+        </div>
+
+        <div class="feature-card">
+          <i class="fa-solid fa-briefcase"></i>
+          <h3>Lowongan & peluang</h3>
+          <p>Dapatkan info lowongan, magang, freelance, kegiatan, dan peluang pengembangan diri.</p>
+        </div>
+
+        <div class="feature-card">
+          <i class="fa-solid fa-handshake-angle"></i>
+          <h3>Relasi lintas jurusan</h3>
+          <p>Kenalan dengan mahasiswa dari berbagai jurusan, fakultas, kampus daerah, dan angkatan.</p>
+        </div>
+
+        <div class="feature-card">
+          <i class="fa-solid fa-book-open"></i>
+          <h3>Berbagi pengetahuan</h3>
+          <p>Saling membantu lewat pengalaman, tips kuliah, dan informasi yang relevan.</p>
+        </div>
+
+        <div class="feature-card">
+          <i class="fa-solid fa-heart"></i>
+          <h3>Ruang saling bantu</h3>
+          <p>Komunitas yang dibangun untuk berbagi, bukan sekadar meneruskan informasi.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="community-section">
+      <div class="community-section-header">
+        <p class="eyebrow">Aturan Grup</p>
+        <h2>Biar grup tetap nyaman</h2>
+        <p>
+          Aturan ini dibuat supaya diskusi tetap aman, tertib, dan bermanfaat untuk semua anggota.
+        </p>
+      </div>
+
+      <div class="rules-grid">
+        <div class="rule-card">
+          <i class="fa-solid fa-comment-dots"></i>
+          <div>
+            <h3>Gunakan bahasa sopan</h3>
+            <p>Jaga komunikasi agar tetap menghargai anggota lain.</p>
+          </div>
+        </div>
+
+        <div class="rule-card">
+          <i class="fa-solid fa-ban"></i>
+          <div>
+            <h3>Tidak spam atau promosi bebas</h3>
+            <p>Promosi, iklan, dan pesan berulang tanpa izin admin tidak diperbolehkan.</p>
+          </div>
+        </div>
+
+        <div class="rule-card">
+          <i class="fa-solid fa-circle-exclamation"></i>
+          <div>
+            <h3>Cek sumber informasi</h3>
+            <p>Jangan menyebarkan informasi yang belum jelas kebenaran atau sumbernya.</p>
+          </div>
+        </div>
+
+        <div class="rule-card">
+          <i class="fa-solid fa-lock"></i>
+          <div>
+            <h3>Hormati privasi</h3>
+            <p>Jangan membagikan data pribadi anggota tanpa izin.</p>
+          </div>
+        </div>
+
+        <div class="rule-card">
+          <i class="fa-solid fa-people-arrows"></i>
+          <div>
+            <h3>Diskusi sesuai tujuan</h3>
+            <p>Gunakan grup untuk informasi kampus, akademik, lowongan, dan kebutuhan mahasiswa.</p>
+          </div>
+        </div>
+
+        <div class="rule-card">
+          <i class="fa-solid fa-gavel"></i>
+          <div>
+            <h3>Admin berhak moderasi</h3>
+            <p>Admin dapat menghapus pesan atau mengeluarkan anggota yang melanggar aturan.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="community-section">
+      <div class="community-section-header">
+        <p class="eyebrow">FAQ</p>
+        <h2>Pertanyaan yang sering ditanyakan</h2>
+      </div>
+
+      <div class="faq-list">
+        <details>
+          <summary>Apakah komunitas ini resmi dari UPI?</summary>
+          <p>Tidak. Sekumpulan Anak UPI adalah komunitas independen dan bukan kanal resmi Universitas Pendidikan Indonesia.</p>
+        </details>
+
+        <details>
+          <summary>Siapa saja yang boleh bergabung?</summary>
+          <p>Mahasiswa UPI, alumni, calon mahasiswa, dan orang yang membutuhkan informasi seputar UPI boleh bergabung selama mengikuti aturan komunitas.</p>
+        </details>
+
+        <details>
+          <summary>Apakah boleh bertanya tentang jurusan, UKT, beasiswa, atau kehidupan kampus?</summary>
+          <p>Boleh. Komunitas ini memang dibuat untuk saling berbagi informasi seputar perkuliahan, jurusan, dokumen, lowongan, dan kehidupan kampus UPI.</p>
+        </details>
+
+        <details>
+          <summary>Apakah informasi di grup selalu resmi?</summary>
+          <p>Tidak selalu. Informasi penting tetap harus dicek kembali ke sumber resmi seperti website UPI, fakultas, program studi, atau kanal resmi terkait.</p>
+        </details>
+
+        <details>
+          <summary>Apakah boleh promosi di grup?</summary>
+          <p>Promosi yang tidak relevan, spam, atau mengganggu tidak diperbolehkan. Jika ingin membagikan informasi kegiatan atau peluang, pastikan tetap sopan dan relevan dengan kebutuhan anggota.</p>
+        </details>
+      </div>
+    </section>
+
+    <section class="community-cta">
+      <h2>Siap gabung komunitas SA UPI?</h2>
+      <p>
+        Masuk ke ruang berbagi informasi kampus bersama 1700+ anggota lainnya.
+        Gratis, terbuka, dan dibuat untuk saling membantu.
+      </p>
+
+      <a href="https://docs.google.com/forms/u/1/d/e/1FAIpQLSeUFORAgr9mFDIYjwx3eSgD2qVmDJh_8sbUxWL3_i0GsKzQoA/viewform?usp=sf_link&pli=1&authuser=1" class="community-btn primary" target="_blank" rel="noopener">
+        <i class="fa-brands fa-whatsapp"></i>
+        Gabung Sekarang
+      </a>
+    </section>
+
+    <p class="community-note">
+      Catatan: Sekumpulan Anak UPI adalah komunitas independen dan bukan kanal resmi Universitas Pendidikan Indonesia.
+    </p>
+
   </main>
 
   <footer class="footer">

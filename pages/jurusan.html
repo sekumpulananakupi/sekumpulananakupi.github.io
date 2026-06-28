@@ -1,148 +1,15 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Jurusan UPI</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jurusan UPI - SA UPI</title>
+  <meta name="description" content="Direktori jurusan dan program studi UPI lengkap dengan filter fakultas, jenjang, akreditasi, daya tampung, peminat, dan estimasi tingkat keterimaan." />
+
   <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="../modules/jurusan/jurusan.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
 
-  <!-- Tambahan styling khusus filter jurusan. Boleh dipindahkan ke style.css kalau mau. -->
-  <style>
-    .jurusan-controls {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(160px, 1fr));
-      gap: 12px;
-      margin: 18px 0 10px;
-      align-items: end;
-    }
-
-    .filter-group {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .filter-group label {
-      font-size: 0.82rem;
-      font-weight: 700;
-      color: var(--text-muted, #64748b);
-    }
-
-    .filter-select,
-    .section-heading input[type="search"] {
-      width: 100%;
-      min-height: 42px;
-      border: 1px solid var(--border, #e2e8f0);
-      border-radius: 12px;
-      padding: 0 12px;
-      background: #fff;
-      color: var(--text, #0f172a);
-      outline: none;
-    }
-
-    .filter-select:focus,
-    .section-heading input[type="search"]:focus {
-      border-color: var(--primary, #2563eb);
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
-    }
-
-    .jurusan-filter-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      align-items: center;
-      justify-content: space-between;
-      margin: 8px 0 20px;
-    }
-
-    .result-info {
-      margin: 0;
-      color: var(--text-muted, #64748b);
-      font-size: 0.95rem;
-    }
-
-    .item-card .card-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-bottom: 10px;
-    }
-
-    .acceptance-note {
-      font-size: 0.9rem;
-      color: var(--text-muted, #64748b);
-      margin-top: 8px;
-    }
-
-    .card-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 14px;
-    }
-
-    .card-actions .btn {
-      flex: 1;
-      justify-content: center;
-      text-align: center;
-    }
-
-    .jurusan-action-buttons {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .jurusan-stat-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      margin: 14px 0 8px;
-    }
-
-    .jurusan-stat-grid div {
-      padding: 10px;
-      border: 1px solid var(--border, #e2e8f0);
-      border-radius: 12px;
-      background: #f8fafc;
-    }
-
-    .jurusan-stat-grid span {
-      display: block;
-      margin-bottom: 4px;
-      font-size: 0.75rem;
-      color: var(--text-muted, #64748b);
-    }
-
-    .jurusan-stat-grid strong {
-      font-size: 0.95rem;
-      color: var(--text, #0f172a);
-    }
-
-    @media (max-width: 560px) {
-      .jurusan-stat-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-    
-    @media (max-width: 900px) {
-      .jurusan-controls {
-        grid-template-columns: repeat(2, minmax(150px, 1fr));
-      }
-    }
-
-    @media (max-width: 560px) {
-      .section-heading {
-        gap: 14px;
-      }
-
-      .jurusan-controls {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
-
-  <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZWLZ2952C1"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -150,87 +17,129 @@
     gtag('js', new Date());
     gtag('config', 'G-ZWLZ2952C1');
   </script>
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-
 </head>
 <body>
+  <header class="site-header">
+    <div data-component="navbar"></div>
+  </header>
 
-<header class="site-header">
-  <div data-component="navbar"></div>
-</header>
+  <main class="jurusan-page">
+    <section class="jurusan-hero">
+      <div class="container jurusan-hero-inner">
+        <div class="jurusan-hero-copy">
+          <p class="eyebrow">Direktori Program Studi UPI</p>
+          <h1>Temukan jurusan yang paling cocok buat rencana kuliahmu.</h1>
+          <p>
+            Cari berdasarkan nama jurusan, fakultas, jenjang, akreditasi, atau tingkat persaingan.
+            Hasil tidak ditampilkan sekaligus supaya halaman tetap ringan dan nyaman dibaca.
+          </p>
 
-<main class="container">
+          <div class="jurusan-hero-search" role="search">
+            <i class="fas fa-search" aria-hidden="true"></i>
+            <input
+              type="search"
+              id="jurusanSearch"
+              placeholder="Cari jurusan, misalnya Kimia, PGSD, Ilmu Komputer..."
+              autocomplete="off"
+            />
+          </div>
+        </div>
 
-  <section class="section">
-    <div class="section-heading">
-      <div>
-        <p class="eyebrow">Direktori</p>
-        <h2>Jurusan UPI</h2>
+        <div class="jurusan-hero-panel" aria-label="Ringkasan direktori jurusan">
+          <div>
+            <span id="totalJurusanHero">0</span>
+            <p>Jurusan</p>
+          </div>
+          <div>
+            <span id="totalFakultasHero">0</span>
+            <p>Fakultas/Kampus</p>
+          </div>
+          <div>
+            <span>S1-S3</span>
+            <p>Jenjang tersedia</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="container jurusan-section">
+      <div class="jurusan-toolbar">
+        <div>
+          <p class="eyebrow">Eksplorasi</p>
+          <h2>Daftar Jurusan</h2>
+          <p id="jurusanResultInfo" class="result-info">Memuat jurusan...</p>
+        </div>
+
+        <div class="jurusan-toolbar-actions">
+          <button type="button" id="toggleFilterJurusan" class="btn secondary filter-toggle" aria-expanded="false" aria-controls="jurusanFilterPanel">
+            <i class="fas fa-sliders" aria-hidden="true"></i>
+            Filter
+          </button>
+          <button type="button" id="resetFilterJurusan" class="btn ghost-btn">
+            Reset
+          </button>
+        </div>
       </div>
 
-      <input
-        type="search"
-        id="jurusanSearch"
-        placeholder="Cari jurusan..."
-        autocomplete="off"
-      />
-    </div>
+      <div id="jurusanFilterPanel" class="jurusan-filter-panel">
+        <div class="filter-group">
+          <label for="filterFakultas">Fakultas/Kampus</label>
+          <select id="filterFakultas" class="filter-select">
+            <option value="all">Semua fakultas</option>
+          </select>
+        </div>
 
-    <div class="jurusan-controls">
-      <div class="filter-group">
-        <label for="filterFakultas">Fakultas</label>
-        <select id="filterFakultas" class="filter-select">
-          <option value="all">Semua fakultas</option>
-        </select>
+        <div class="filter-group">
+          <label for="filterJenjang">Jenjang</label>
+          <select id="filterJenjang" class="filter-select">
+            <option value="all">Semua jenjang</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="filterAkreditasi">Akreditasi</label>
+          <select id="filterAkreditasi" class="filter-select">
+            <option value="all">Semua akreditasi</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="sortJurusan">Urutkan</label>
+          <select id="sortJurusan" class="filter-select">
+            <option value="az">Nama A-Z</option>
+            <option value="za">Nama Z-A</option>
+            <option value="ketat">Daya saing paling ketat</option>
+            <option value="longgar">Daya saing paling longgar</option>
+          </select>
+        </div>
       </div>
 
-      <div class="filter-group">
-        <label for="filterJenjang">Jenjang</label>
-        <select id="filterJenjang" class="filter-select">
-          <option value="all">Semua jenjang</option>
-        </select>
+      <div id="activeFilterChips" class="active-filter-chips" aria-label="Filter aktif"></div>
+
+      <div class="jurusan-layout">
+        <aside class="jurusan-side-note">
+          <h3>Tips memilih jurusan</h3>
+          <ul>
+            <li>Mulai dari minat dan mata pelajaran yang kamu nikmati.</li>
+            <li>Cek peminat dan daya tampung untuk melihat tingkat persaingan.</li>
+            <li>Gunakan fitur bandingkan kalau masih bimbang.</li>
+          </ul>
+        </aside>
+
+        <div class="jurusan-content">
+          <div class="grid-list jurusan-grid" id="jurusanList"></div>
+
+          <nav id="jurusanPagination" class="jurusan-pagination" aria-label="Navigasi halaman jurusan"></nav>
+        </div>
       </div>
+    </section>
+  </main>
 
-      <div class="filter-group">
-        <label for="filterAkreditasi">Akreditasi</label>
-        <select id="filterAkreditasi" class="filter-select">
-          <option value="all">Semua akreditasi</option>
-        </select>
-      </div>
-
-      <div class="filter-group">
-        <label for="sortJurusan">Urutkan</label>
-        <select id="sortJurusan" class="filter-select">
-          <option value="az">Nama A-Z</option>
-          <option value="za">Nama Z-A</option>
-          <option value="ketat">Daya saing paling ketat</option>
-          <option value="longgar">Daya saing paling longgar</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="jurusan-filter-actions">
-      <p id="jurusanResultInfo" class="result-info">Memuat jurusan...</p>
-
-        <button type="button" id="resetFilterJurusan" class="btn secondary">
-          Reset filter
-        </button>
-      </div>
-    </div>
-
-    <div class="grid-list" id="jurusanList"></div>
-
-  </section>
-
-</main>
-
-<script src="../assets/js/components.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="../assets/js/utils.js"></script>
-<script src="../assets/js/cache.js"></script>
-<script src="../modules/jurusan/jurusan.js"></script>
-<script src="../assets/js/menu.js"></script>
-
+  <script src="../assets/js/components.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/utils.js"></script>
+  <script src="../assets/js/cache.js"></script>
+  <script src="../modules/jurusan/jurusan.js"></script>
+  <script src="../assets/js/menu.js"></script>
 </body>
 </html>

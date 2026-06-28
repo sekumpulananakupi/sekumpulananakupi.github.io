@@ -5,18 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pencarian - SA UPI</title>
   <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="../modules/search/search.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+
   <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZWLZ2952C1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-ZWLZ2952C1');
-</script>
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZWLZ2952C1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-ZWLZ2952C1');
+  </script>
 </head>
 
 <body>
@@ -24,27 +23,74 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     <div data-component="navbar"></div>
   </header>
 
-  <main class="container">
-    <section class="section">
-      <div class="section-heading">
-        <div>
-          <p class="eyebrow">Search</p>
-          <h2>Pencarian Global</h2>
+  <main class="search-page">
+    <section class="search-hero container" aria-labelledby="searchTitle">
+      <div class="search-hero__content">
+        <p class="search-eyebrow"><i class="fa-solid fa-magnifying-glass"></i> Search Center</p>
+        <h1 id="searchTitle">Cari apa pun tentang UPI dalam satu tempat.</h1>
+        <p class="search-lead">
+          Temukan info kampus, wiki, lowongan kerja, dan jurusan dengan tampilan hasil yang lebih rapi.
+        </p>
+
+        <div class="global-search-box" role="search">
+          <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+          <input
+            type="search"
+            id="globalSearch"
+            placeholder="Cari UKT, PKKMB, Pendidikan Kimia, lowongan..."
+            autocomplete="off"
+            aria-label="Cari di SA-UPI"
+          />
+          <button type="button" id="clearSearch" aria-label="Hapus pencarian">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <div class="quick-search" aria-label="Pencarian populer">
+          <span>Populer:</span>
+          <button type="button" data-keyword="UKT">UKT</button>
+          <button type="button" data-keyword="SNBT">SNBT</button>
+          <button type="button" data-keyword="Beasiswa">Beasiswa</button>
+          <button type="button" data-keyword="Pendidikan Kimia">Pendidikan Kimia</button>
         </div>
       </div>
 
-      <div class="filter-panel">
-        <input type="search" id="globalSearch" placeholder="Cari info, wiki, lowongan, atau jurusan..." />
+      <aside class="search-hero__card" aria-label="Ringkasan fitur pencarian">
+        <div class="hero-card-icon"><i class="fa-solid fa-bolt"></i></div>
+        <strong>Pencarian lebih cepat dibaca</strong>
+        <p>Hasil diberi kategori, ikon, ringkasan, highlight kata kunci, dan ranking relevansi.</p>
+      </aside>
+    </section>
+
+    <section class="container search-shell" aria-label="Hasil pencarian">
+      <div class="search-toolbar">
+        <div>
+          <p class="search-status" id="searchStatus">Ketik kata kunci untuk mulai mencari.</p>
+          <h2 id="resultTitle">Pencarian Global</h2>
+        </div>
+
+        <div class="search-shortcut" title="Shortcut pencarian">
+          <kbd>Ctrl</kbd><span>+</span><kbd>K</kbd>
+        </div>
       </div>
 
-      <div class="grid-list" id="searchResults"></div>
+      <div class="filter-chips" aria-label="Filter tipe hasil">
+        <button class="active" type="button" data-filter="all">Semua</button>
+        <button type="button" data-filter="info"><i class="fa-regular fa-newspaper"></i> Info</button>
+        <button type="button" data-filter="wiki"><i class="fa-solid fa-book-open"></i> Wiki</button>
+        <button type="button" data-filter="jurusan"><i class="fa-solid fa-graduation-cap"></i> Jurusan</button>
+        <button type="button" data-filter="job"><i class="fa-solid fa-briefcase"></i> Lowongan</button>
+      </div>
+
+      <div class="recent-search" id="recentSearch" hidden></div>
+
+      <div class="search-results" id="searchResults"></div>
     </section>
   </main>
 
   <footer class="footer">
     <div data-component="footer"></div>
   </footer>
-
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../assets/js/components.js"></script>

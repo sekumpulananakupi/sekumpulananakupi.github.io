@@ -24,35 +24,50 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
       <div data-component="navbar"></div>
   </header>
 
-  <main class="container">
-  <section class="section">
-
-    <div class="section-heading">
-      <div>
-        <p class="eyebrow">Referensi</p>
-        <h2>Dokumen Penting Kampus</h2>
-      </div>
-
-      <div class="filter-inline">
-
-        <input
-          type="search"
-          id="dokumenSearch"
-          placeholder="Cari dokumen..."
-        />
-
-        <select id="dokumenKategoriFilter">
-          <option value="all">Semua Kategori</option>
-        </select>
-
-      </div>
-
+  <main class="container dokumen-page">
+  <section class="dokumen-hero">
+    <div>
+      <p class="eyebrow">Referensi Kampus</p>
+      <h1>Dokumen Penting Kampus</h1>
+      <p>
+        Kumpulan dokumen akademik, panduan, surat, dan referensi penting untuk mahasiswa UPI.
+      </p>
     </div>
 
-    <div class="category-chip-bar" id="dokumenCategoryChips"></div>
-    <div class="grid-list" id="dokumenList"></div>
-
+    <div class="dokumen-hero-card">
+      <span id="dokumenTotal">0</span>
+      <small>dokumen tersedia</small>
+    </div>
   </section>
+
+  <section class="dokumen-toolbar">
+    <div class="dokumen-search-wrap">
+      <i class="fas fa-search"></i>
+      <input
+        type="search"
+        id="dokumenSearch"
+        placeholder="Cari dokumen, kategori, atau kata kunci..."
+      />
+    </div>
+
+    <select id="dokumenKategoriFilter">
+      <option value="all">Semua Kategori</option>
+    </select>
+
+    <select id="dokumenSort">
+      <option value="az">Urut A-Z</option>
+      <option value="za">Urut Z-A</option>
+      <option value="kategori">Kategori</option>
+    </select>
+  </section>
+
+  <div class="dokumen-result-row">
+    <p id="dokumenResultInfo">Memuat dokumen...</p>
+  </div>
+
+  <div class="category-chip-bar dokumen-chip-bar" id="dokumenCategoryChips"></div>
+
+  <div class="dokumen-grid" id="dokumenList"></div>
 </main>
   
   <footer class="footer">

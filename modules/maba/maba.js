@@ -158,7 +158,7 @@ async function loadMabaDokumen() {
   const { data, error } = await supabaseClient
     .from("dokumen")
     .select("judul, deskripsi, file_url, kategori")
-    .or("kategori.ilike.%maba%,kategori.ilike.%mahasiswa baru%,judul.ilike.%pedoman%,judul.ilike.%kalender%,judul.ilike.%pkkmb%")
+    .or("kategori.ilike.%maba%,kategori.ilike.%mahasiswa baru%,judul.ilike.%pedoman%,judul.ilike.%kalender%")
     .limit(4);
 
   if (error || !data || data.length === 0) return;
@@ -175,7 +175,7 @@ async function loadMabaFaq() {
   const { data, error } = await supabaseClient
     .from("faq")
     .select("pertanyaan, jawaban, kategori")
-    .or("kategori.ilike.%maba%,kategori.ilike.%mahasiswa baru%,pertanyaan.ilike.%ukt%,pertanyaan.ilike.%pkkmb%,pertanyaan.ilike.%krs%")
+    .or("kategori.ilike.%maba%,kategori.ilike.%mahasiswa baru%,pertanyaan.ilike.%ukt%,pertanyaan.ilike.%krs%")
     .limit(8);
 
   if (error || !data || data.length === 0) return;

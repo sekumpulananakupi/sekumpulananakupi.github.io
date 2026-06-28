@@ -4,48 +4,64 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Detail Jurusan - SA UPI</title>
+  <meta name="description" content="Detail jurusan UPI: profil, akreditasi, statistik penerimaan, biaya pendidikan, FAQ, prospek kerja, jurusan mirip, artikel terkait, dan lowongan." />
+
   <link rel="stylesheet" href="../assets/css/style.css" />
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZWLZ2952C1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+  <link rel="stylesheet" href="../assets/css/jurusan-detail.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
 
-  gtag('config', 'G-ZWLZ2952C1');
-</script>
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZWLZ2952C1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-ZWLZ2952C1');
+  </script>
 </head>
 
 <body>
   <header class="site-header">
     <nav class="navbar container">
       <div data-component="navbar"></div>
+    </nav>
   </header>
 
-  <main class="container">
+  <main class="container jurusan-detail-page">
     <section class="post-detail" id="jurusanDetail">
-      <p>Memuat jurusan...</p>
-    </section>
-
-    <section class="section">
-      <div class="section-heading">
-        <div>
-          <p class="eyebrow">Terkait</p>
-          <h2>Artikel Terkait</h2>
-            <div class="grid-list" id="relatedArticleList"></div>
-            <br><br>
-
-            <h2>Lowongan Cocok untuk Jurusan Ini</h2>
-            <div class="grid-list" id="relatedJobList"></div>
+      <div class="detail-loading-card">
+        <div class="loading-state">
+          <div class="loading-spinner"></div>
+          Memuat detail jurusan...
         </div>
       </div>
+    </section>
 
+    <section class="section related-content-panel" aria-label="Konten terkait">
+      <div class="related-content-grid">
+        <div class="related-content-block">
+          <div class="section-heading compact-heading">
+            <div>
+              <p class="eyebrow">Bacaan Lanjutan</p>
+              <h2>Artikel Terkait</h2>
+            </div>
+          </div>
+          <div class="grid-list" id="relatedArticleList"></div>
+        </div>
+
+        <div class="related-content-block related-job-block">
+          <div class="section-heading compact-heading">
+            <div>
+              <p class="eyebrow">Karier</p>
+              <h2>Lowongan Cocok</h2>
+            </div>
+          </div>
+          <div class="grid-list" id="relatedJobList"></div>
+        </div>
+      </div>
     </section>
   </main>
-  
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="../assets/js/components.js"></script>

@@ -4,79 +4,567 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tentang SA UPI</title>
+
   <link rel="stylesheet" href="../assets/css/style.css" />
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZWLZ2952C1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
-  gtag('config', 'G-ZWLZ2952C1');
-</script>
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <style>
+    .about-page {
+      padding: 32px 0 56px;
+    }
 
+    .about-hero {
+      position: relative;
+      overflow: hidden;
+      padding: 56px 28px;
+      border-radius: 28px;
+      background:
+        radial-gradient(circle at top right, rgba(255, 193, 7, .28), transparent 36%),
+        linear-gradient(135deg, #0f4c81, #1769aa);
+      color: #fff;
+      box-shadow: 0 18px 45px rgba(15, 76, 129, .24);
+    }
+
+    .about-hero::after {
+      content: "";
+      position: absolute;
+      width: 260px;
+      height: 260px;
+      right: -90px;
+      bottom: -120px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.12);
+    }
+
+    .about-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.16);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+
+    .about-hero h1 {
+      max-width: 760px;
+      font-size: clamp(34px, 6vw, 62px);
+      line-height: 1.05;
+      margin: 0 0 18px;
+      color: #fff;
+    }
+
+    .about-hero p {
+      max-width: 720px;
+      font-size: 18px;
+      line-height: 1.8;
+      color: rgba(255,255,255,.9);
+      margin: 0;
+    }
+
+    .about-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 28px;
+    }
+
+    .about-actions a {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 13px 18px;
+      border-radius: 14px;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .about-actions .primary {
+      background: #ffc107;
+      color: #102a43;
+    }
+
+    .about-actions .secondary {
+      background: rgba(255,255,255,.14);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,.24);
+    }
+
+    .about-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-top: 22px;
+    }
+
+    .about-stat {
+      padding: 20px;
+      border-radius: 20px;
+      background: #fff;
+      box-shadow: 0 12px 30px rgba(15, 23, 42, .08);
+      border: 1px solid rgba(15, 23, 42, .06);
+    }
+
+    .about-stat strong {
+      display: block;
+      font-size: 28px;
+      color: #0f4c81;
+      margin-bottom: 4px;
+    }
+
+    .about-stat span {
+      color: #64748b;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .about-section {
+      margin-top: 38px;
+    }
+
+    .section-head {
+      max-width: 760px;
+      margin-bottom: 18px;
+    }
+
+    .section-head .eyebrow {
+      color: #0f4c81;
+      font-weight: 800;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    .section-head h2 {
+      font-size: clamp(26px, 4vw, 38px);
+      margin: 0 0 10px;
+      color: #0f172a;
+    }
+
+    .section-head p {
+      color: #64748b;
+      line-height: 1.8;
+      margin: 0;
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .about-card {
+      padding: 22px;
+      border-radius: 22px;
+      background: #fff;
+      border: 1px solid rgba(15, 23, 42, .08);
+      box-shadow: 0 12px 30px rgba(15, 23, 42, .06);
+    }
+
+    .about-card .icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      background: rgba(15, 76, 129, .1);
+      color: #0f4c81;
+      font-size: 20px;
+      margin-bottom: 14px;
+    }
+
+    .about-card h3 {
+      margin: 0 0 8px;
+      font-size: 19px;
+      color: #0f172a;
+    }
+
+    .about-card p {
+      margin: 0;
+      color: #64748b;
+      line-height: 1.7;
+    }
+
+    .story-box {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .story-main,
+    .disclaimer-box,
+    .final-cta {
+      padding: 26px;
+      border-radius: 24px;
+      background: #fff;
+      border: 1px solid rgba(15, 23, 42, .08);
+      box-shadow: 0 12px 30px rgba(15, 23, 42, .06);
+    }
+
+    .story-main p {
+      margin: 0;
+      color: #475569;
+      line-height: 1.85;
+    }
+
+    .story-side {
+      padding: 26px;
+      border-radius: 24px;
+      background: linear-gradient(135deg, rgba(15, 76, 129, .1), rgba(255, 193, 7, .18));
+      border: 1px solid rgba(15, 76, 129, .08);
+    }
+
+    .story-side ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: 12px;
+    }
+
+    .story-side li {
+      display: flex;
+      gap: 10px;
+      color: #334155;
+      font-weight: 700;
+      line-height: 1.5;
+    }
+
+    .story-side i {
+      color: #0f4c81;
+      margin-top: 3px;
+    }
+
+    .disclaimer-box {
+      display: flex;
+      gap: 16px;
+      background: #fff8e1;
+      border-color: rgba(255, 193, 7, .35);
+    }
+
+    .disclaimer-box i {
+      color: #b7791f;
+      font-size: 24px;
+      margin-top: 4px;
+    }
+
+    .disclaimer-box h2 {
+      margin: 0 0 8px;
+      color: #7c4a03;
+    }
+
+    .disclaimer-box p {
+      margin: 0;
+      color: #6b4e16;
+      line-height: 1.75;
+    }
+
+    .final-cta {
+      text-align: center;
+      background:
+        radial-gradient(circle at top left, rgba(255, 193, 7, .22), transparent 34%),
+        #0f172a;
+      color: #fff;
+    }
+
+    .final-cta h2 {
+      color: #fff;
+      margin: 0 0 10px;
+      font-size: clamp(26px, 4vw, 40px);
+    }
+
+    .final-cta p {
+      color: rgba(255,255,255,.78);
+      max-width: 680px;
+      margin: 0 auto 22px;
+      line-height: 1.75;
+    }
+
+    @media (max-width: 900px) {
+      .about-stats,
+      .about-grid,
+      .story-box {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .about-page {
+        padding-top: 20px;
+      }
+
+      .about-hero {
+        padding: 34px 22px;
+        border-radius: 24px;
+      }
+
+      .about-actions a {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .about-stats,
+      .about-grid,
+      .story-box {
+        grid-template-columns: 1fr;
+      }
+
+      .disclaimer-box {
+        flex-direction: column;
+      }
+    }
+  </style>
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZWLZ2952C1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-ZWLZ2952C1');
+  </script>
 </head>
 
 <body>
   <header class="site-header">
-<div data-component="navbar"></div>
+    <div data-component="navbar"></div>
   </header>
 
-  <main class="container">
-    <section class="section">
-      <div class="post-card">
-        <p class="eyebrow">Tentang</p>
-        <h1>Sekumpulan Anak UPI</h1>
+  <main class="container about-page">
 
+    <section class="about-hero">
+      <div class="about-eyebrow">
+        <i class="fa-solid fa-circle-info"></i>
+        Tentang SA UPI
+      </div>
+
+      <h1>Satu portal komunitas untuk mengenal UPI dengan lebih mudah.</h1>
+
+      <p>
+        Sekumpulan Anak UPI adalah portal komunitas independen yang membantu
+        calon mahasiswa, mahasiswa, dan alumni menemukan informasi kampus,
+        jurusan, dokumen, FAQ, wiki, hingga peluang kerja dalam satu tempat.
+      </p>
+
+      <div class="about-actions">
+        <a href="../pages/komunitas.html" class="primary">
+          <i class="fa-solid fa-users"></i>
+          Gabung Komunitas
+        </a>
+        <a href="../index.html" class="secondary">
+          <i class="fa-solid fa-house"></i>
+          Jelajahi Website
+        </a>
+      </div>
+    </section>
+
+    <section class="about-stats">
+      <div class="about-stat">
+        <strong>55+</strong>
+        <span>Direktori Jurusan</span>
+      </div>
+      <div class="about-stat">
+        <strong>100+</strong>
+        <span>FAQ Kampus</span>
+      </div>
+      <div class="about-stat">
+        <strong>Wiki</strong>
+        <span>Panduan Mahasiswa</span>
+      </div>
+      <div class="about-stat">
+        <strong>Info</strong>
+        <span>Terpusat & Praktis</span>
+      </div>
+    </section>
+
+    <section class="about-section">
+      <div class="section-head">
+        <p class="eyebrow">Tujuan Kami</p>
+        <h2>Membuat informasi kampus lebih mudah ditemukan.</h2>
         <p>
-          Sekumpulan Anak UPI adalah portal komunitas independen yang dibuat
-          untuk membantu mahasiswa, calon mahasiswa, dan alumni dalam mengakses
+          SA UPI dibuat agar informasi yang biasanya tercecer di banyak tempat
+          bisa dikumpulkan, dirapikan, dan disajikan dengan bahasa yang lebih
+          mudah dipahami.
+        </p>
+      </div>
+
+      <div class="about-grid">
+        <article class="about-card">
+          <div class="icon">
+            <i class="fa-solid fa-book-open"></i>
+          </div>
+          <h3>Informasi Terpusat</h3>
+          <p>
+            Mengumpulkan informasi kampus penting agar pengguna tidak perlu
+            mencari dari banyak sumber secara manual.
+          </p>
+        </article>
+
+        <article class="about-card">
+          <div class="icon">
+            <i class="fa-solid fa-graduation-cap"></i>
+          </div>
+          <h3>Bantu Calon Mahasiswa</h3>
+          <p>
+            Menyediakan informasi jurusan, daya tampung, peminat, biaya,
+            dan panduan agar calon mahasiswa lebih siap memilih.
+          </p>
+        </article>
+
+        <article class="about-card">
+          <div class="icon">
+            <i class="fa-solid fa-handshake-angle"></i>
+          </div>
+          <h3>Ruang Berbagi</h3>
+          <p>
+            Membangun ekosistem komunitas yang saling membantu melalui wiki,
+            FAQ, dokumen, dan informasi yang bermanfaat.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section class="about-section">
+      <div class="section-head">
+        <p class="eyebrow">Fitur Utama</p>
+        <h2>Apa saja yang bisa kamu temukan?</h2>
+        <p>
+          SA UPI dirancang sebagai pintu masuk cepat untuk berbagai kebutuhan
           informasi seputar kehidupan kampus UPI.
         </p>
+      </div>
 
-        <h2>Tujuan</h2>
+      <div class="about-grid">
+        <article class="about-card">
+          <div class="icon">
+            <i class="fa-solid fa-newspaper"></i>
+          </div>
+          <h3>Informasi Kampus</h3>
+          <p>Berita, pengumuman, dan informasi penting yang dikemas ringkas.</p>
+        </article>
+
+        <article class="about-card">
+          <div class="icon">
+            <i class="fa-solid fa-layer-group"></i>
+          </div>
+          <h3>Wiki Kampus</h3>
+          <p>Panduan praktis tentang istilah, alur, dan kehidupan mahasiswa.</p>
+        </article>
+
+        <article class="about-card">
+          <div class="icon">
+            <i class="fa-solid fa-building-columns"></i>
+          </div>
+          <h3>Direktori Jurusan</h3>
+          <p>Profil jurusan, fakultas, jenjang, dan informasi penerimaan.</p>
+        </article>
+
+        <article class="about-card">
+          <div class="icon">
+            <i class="fa-solid fa-chart-line"></i>
+          </div>
+          <h3>Statistik Penerimaan</h3>
+          <p>Data daya tampung dan peminat untuk membantu membandingkan jurusan.</p>
+        </article>
+
+        <article class="about-card">
+          <div class="icon">
+            <i class="fa-solid fa-briefcase"></i>
+          </div>
+          <h3>Lowongan Kerja</h3>
+          <p>Peluang kerja dan magang yang bisa difilter berdasarkan jurusan.</p>
+        </article>
+
+        <article class="about-card">
+          <div class="icon">
+            <i class="fa-solid fa-file-lines"></i>
+          </div>
+          <h3>Dokumen & FAQ</h3>
+          <p>Dokumen penting dan jawaban cepat untuk pertanyaan umum mahasiswa.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="about-section story-box">
+      <div class="story-main">
+        <div class="section-head">
+          <p class="eyebrow">Kenapa Dibuat?</p>
+          <h2>Berawal dari kebutuhan sederhana: informasi kampus yang lebih rapi.</h2>
+        </div>
+
+        <p>
+          Banyak mahasiswa dan calon mahasiswa membutuhkan informasi yang cepat,
+          jelas, dan mudah dipahami. SA UPI hadir sebagai inisiatif komunitas
+          untuk membantu merapikan informasi tersebut agar lebih mudah diakses
+          oleh siapa pun yang sedang mencari gambaran tentang UPI.
+        </p>
+      </div>
+
+      <aside class="story-side">
         <ul>
-          <li>Mengumpulkan informasi kampus dalam satu tempat.</li>
-          <li>Menyediakan wiki kampus yang mudah dipahami.</li>
-          <li>Membantu calon mahasiswa mengenal jurusan di UPI.</li>
-          <li>Menghubungkan mahasiswa dan alumni dengan peluang kerja.</li>
-          <li>Membangun komunitas berbagi informasi yang sehat dan bermanfaat.</li>
+          <li>
+            <i class="fa-solid fa-check"></i>
+            Bahasa dibuat lebih sederhana dan ramah pembaca.
+          </li>
+          <li>
+            <i class="fa-solid fa-check"></i>
+            Informasi disusun agar mudah dipindai dari HP.
+          </li>
+          <li>
+            <i class="fa-solid fa-check"></i>
+            Fokus pada kebutuhan calon mahasiswa, mahasiswa, dan alumni.
+          </li>
+          <li>
+            <i class="fa-solid fa-check"></i>
+            Dikembangkan sebagai portal komunitas yang terus bertumbuh.
+          </li>
         </ul>
+      </aside>
+    </section>
 
-        <h2>Fitur Utama</h2>
-        <ul>
-          <li>Informasi kampus</li>
-          <li>Wiki Kampus</li>
-          <li>Direktori jurusan</li>
-          <li>Statistik daya tampung dan peminat</li>
-          <li>Lowongan kerja berdasarkan jurusan</li>
-          <li>Dokumen penting kampus</li>
-          <li>FAQ kampus</li>
-        </ul>
-
+    <section class="about-section disclaimer-box">
+      <i class="fa-solid fa-triangle-exclamation"></i>
+      <div>
         <h2>Disclaimer</h2>
         <p>
           SA UPI bukan website resmi Universitas Pendidikan Indonesia.
           Informasi yang tersedia di website ini dikumpulkan untuk kebutuhan
-          komunitas. Untuk keputusan akademik atau administratif, pengguna tetap
-          disarankan merujuk ke kanal resmi UPI.
+          komunitas. Untuk keputusan akademik, administratif, atau informasi
+          resmi, pengguna tetap disarankan merujuk ke kanal resmi UPI.
         </p>
-
-        <div class="hero-actions">
-          <a href="../pages/komunitas.html" class="btn primary">Gabung Komunitas</a>
-          <a href="../index.html" class="btn ghost">Kembali ke Beranda</a>
-        </div>
       </div>
     </section>
+
+    <section class="about-section final-cta">
+      <h2>Mulai jelajahi SA UPI</h2>
+      <p>
+        Temukan informasi kampus, jurusan, wiki, dokumen, FAQ, dan peluang kerja
+        dalam satu portal komunitas yang mudah digunakan.
+      </p>
+
+      <div class="about-actions" style="justify-content:center;">
+        <a href="../index.html" class="primary">
+          <i class="fa-solid fa-compass"></i>
+          Ke Beranda
+        </a>
+        <a href="../pages/komunitas.html" class="secondary">
+          <i class="fa-solid fa-user-plus"></i>
+          Gabung Komunitas
+        </a>
+      </div>
+    </section>
+
   </main>
 
   <footer class="footer">
     <div data-component="footer"></div>
   </footer>
-  
-<script src="../assets/js/components.js"></script>
-<script src="../assets/js/menu.js"></script>
+
+  <script src="../assets/js/components.js"></script>
+  <script src="../assets/js/menu.js"></script>
 </body>
 </html>

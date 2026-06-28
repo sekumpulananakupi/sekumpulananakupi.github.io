@@ -25,26 +25,70 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
   <div data-component="navbar"></div>
 </header>
 
-<main class="container">
+<main class="container faq-page">
 
-  <section class="section">
+  <section class="faq-hero">
+    <div class="faq-hero-content">
+      <p class="eyebrow">Pusat Bantuan</p>
+      <h1>Pertanyaan yang Sering Ditanyakan</h1>
+      <p>
+        Temukan jawaban cepat seputar akademik, maba, UKT, beasiswa,
+        organisasi, dan kehidupan kampus UPI.
+      </p>
 
-    <div class="section-heading">
-      <div>
-        <p class="eyebrow">Bantuan</p>
-        <h2>Pertanyaan yang Sering Ditanyakan</h2>
+      <div class="faq-search-box">
+        <i class="fas fa-search"></i>
+        <input
+          type="search"
+          id="faqSearch"
+          placeholder="Cari pertanyaan, UKT, KRS, PKKMB..."
+        >
       </div>
 
-      <input
-        type="search"
-        id="faqSearch"
-        placeholder="Cari pertanyaan..."
-      >
+      <div class="faq-meta" id="faqMeta">
+        Memuat FAQ...
+      </div>
+    </div>
+  </section>
+
+  <section class="faq-popular-section" id="faqPopularSection">
+    <div class="section-heading compact">
+      <div>
+        <p class="eyebrow">Rekomendasi</p>
+        <h2>FAQ Populer</h2>
+      </div>
     </div>
 
-    <div class="category-chip-bar" id="faqCategoryChips"></div>
-    <div id="faqContainer"></div>
+    <div class="faq-popular-grid" id="faqPopularGrid"></div>
+  </section>
 
+  <section class="section faq-main-section">
+    <div class="section-heading compact">
+      <div>
+        <p class="eyebrow">Kategori</p>
+        <h2>Jelajahi FAQ</h2>
+      </div>
+    </div>
+
+    <div class="category-chip-bar faq-chip-bar" id="faqCategoryChips"></div>
+
+    <div id="faqContainer" class="faq-list"></div>
+  </section>
+
+  <section class="faq-help-card">
+    <div>
+      <p class="eyebrow">Masih bingung?</p>
+      <h2>Belum menemukan jawaban?</h2>
+      <p>
+        Coba cek Wiki SA UPI atau gunakan halaman pencarian untuk menemukan
+        informasi kampus yang lebih lengkap.
+      </p>
+    </div>
+
+    <div class="faq-help-actions">
+      <a href="wiki.html" class="btn-primary">Buka Wiki</a>
+      <a href="search.html" class="btn-secondary">Cari Informasi</a>
+    </div>
   </section>
 
 </main>

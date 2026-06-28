@@ -4,29 +4,40 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Detail Artikel - SA UPI</title>
+  <meta name="description" content="Baca informasi, wiki, dan lowongan terbaru dari SA UPI." />
+
   <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="../assets/css/post.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+
   <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZWLZ2952C1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-ZWLZ2952C1');
-</script>
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZWLZ2952C1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-ZWLZ2952C1');
+  </script>
 </head>
-
 <body>
+  <div class="reading-progress" aria-hidden="true">
+    <span id="readingProgressBar"></span>
+  </div>
+
   <header class="site-header">
-   <div data-component="navbar"></div>
+    <div data-component="navbar"></div>
   </header>
 
-  <main class="container">
-    <section class="post-detail" id="postDetail">
-      <p>Memuat artikel...</p>
+  <main class="post-page-shell">
+    <section class="container post-detail" id="postDetail" aria-live="polite">
+      <div class="post-skeleton-card">
+        <div class="skeleton skeleton-chip"></div>
+        <div class="skeleton skeleton-title"></div>
+        <div class="skeleton skeleton-line"></div>
+        <div class="skeleton skeleton-image"></div>
+        <div class="skeleton skeleton-text"></div>
+        <div class="skeleton skeleton-text short"></div>
+      </div>
     </section>
   </main>
 

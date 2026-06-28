@@ -1,28 +1,29 @@
 const SUPABASE_URL = "https://rozfgvucyiwqqmmrmbph.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_KL8Jcb1hEzU-kAZiOMYWFg_hupftFmq";
 
-const supabaseClient = supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_ANON_KEY
-);
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 let jurusanData = [];
 let statistikData = [];
 let acceptanceMap = new Map();
+let currentPage = 1;
+
+const ITEMS_PER_PAGE = 12;
 
 const FILTER_DEFAULTS = {
   q: "",
   fakultas: "all",
   jenjang: "all",
   akreditasi: "all",
-  sort: "az"
+  sort: "az",
+  page: 1
 };
 
 async function loadJurusan() {
-  showLoading("jurusanList", 6);
+  showLoading("jurusanList", ITEMS_PER_PAGE);
 
-  const cachedJurusan = getCache("jurusan_list_v1", 1440);
-  const cachedStatistik = getCache("statistik_jurusan_list_v1", 1440);
+  const cachedJurusan = getCache("jurusan_list_v2", 1440);
+  const cachedStatistik = getCache("statistik_jurusan_list_v2", 1440);
 
   if (cachedJurusan && cachedStatistik) {
     jurusanData = cachedJurusan;
@@ -30,6 +31,7 @@ async function loadJurusan() {
     acceptanceMap = buildAcceptanceMap(statistikData);
 
     setupFilterOptions();
+    updateHeroSummary();
     applyFiltersFromURL();
     renderJurusan(false);
     return;
@@ -56,9 +58,7 @@ async function loadJurusan() {
 
   if (jurusanResult.error) {
     console.error("Gagal memuat jurusan:", jurusanResult.error);
-    document.getElementById("jurusanList").innerHTML = `
-      <div class="empty">Gagal memuat data jurusan.</div>
-    `;
+    document.getElementById("jurusanList").innerHTML = `<div class="empty">Gagal memuat data jurusan.</div>`;
     setResultInfo("Gagal memuat data jurusan.");
     return;
   }
@@ -67,20 +67,19 @@ async function loadJurusan() {
   statistikData = statistikResult.data || [];
 
   if (statistikResult.error) {
-    console.warn("Statistik jurusan tidak bisa dimuat. Sorting daya saing tetap aman, tapi tidak aktif.", statistikResult.error);
+    console.warn("Statistik jurusan tidak bisa dimuat.", statistikResult.error);
     statistikData = [];
   }
 
   acceptanceMap = buildAcceptanceMap(statistikData);
-
-  setCache("jurusan_list_v1", jurusanData);
-  setCache("statistik_jurusan_list_v1", statistikData);
+  setCache("jurusan_list_v2", jurusanData);
+  setCache("statistik_jurusan_list_v2", statistikData);
 
   setupFilterOptions();
+  updateHeroSummary();
   applyFiltersFromURL();
   renderJurusan(false);
 }
-
 
 function buildAcceptanceMap(rows) {
   const latestYearByJurusan = new Map();
@@ -107,11 +106,7 @@ function buildAcceptanceMap(rows) {
     const peminat = Number(row.peminat) || 0;
 
     if (!grouped.has(jurusanId)) {
-      grouped.set(jurusanId, {
-        tahun,
-        dayaTampung: 0,
-        peminat: 0
-      });
+      grouped.set(jurusanId, { tahun, dayaTampung: 0, peminat: 0 });
     }
 
     const item = grouped.get(jurusanId);
@@ -126,16 +121,13 @@ function buildAcceptanceMap(rows) {
       ? (value.dayaTampung / value.peminat) * 100
       : null;
 
-    result.set(jurusanId, {
-      ...value,
-      percent
-    });
+    result.set(jurusanId, { ...value, percent });
   });
 
   return result;
 }
 
-function showLoading(targetId, count = 3) {
+function showLoading(targetId, count = 6) {
   const target = document.getElementById(targetId);
   if (!target) return;
 
@@ -168,11 +160,8 @@ function fillSelectOptions(selectId, rawValues, defaultLabel) {
   if (!select) return;
 
   const currentValue = select.value || "all";
-  const uniqueValues = [...new Set(
-    rawValues
-      .map(normalizeText)
-      .filter(Boolean)
-  )].sort((a, b) => a.localeCompare(b, "id"));
+  const uniqueValues = [...new Set(rawValues.map(normalizeText).filter(Boolean))]
+    .sort((a, b) => a.localeCompare(b, "id"));
 
   select.innerHTML = `
     <option value="all">${escapeHTML(defaultLabel)}</option>
@@ -186,26 +175,41 @@ function fillSelectOptions(selectId, rawValues, defaultLabel) {
   }
 }
 
+function updateHeroSummary() {
+  const totalJurusan = document.getElementById("totalJurusanHero");
+  const totalFakultas = document.getElementById("totalFakultasHero");
+
+  const fakultasCount = new Set(jurusanData.map(item => normalizeText(item.fakultas)).filter(Boolean)).size;
+
+  if (totalJurusan) totalJurusan.textContent = jurusanData.length.toLocaleString("id-ID");
+  if (totalFakultas) totalFakultas.textContent = fakultasCount.toLocaleString("id-ID");
+}
+
 function getCurrentFilters() {
   return {
     q: normalizeText(document.getElementById("jurusanSearch")?.value).toLowerCase(),
     fakultas: document.getElementById("filterFakultas")?.value || "all",
     jenjang: document.getElementById("filterJenjang")?.value || "all",
     akreditasi: document.getElementById("filterAkreditasi")?.value || "all",
-    sort: document.getElementById("sortJurusan")?.value || "az"
+    sort: document.getElementById("sortJurusan")?.value || "az",
+    page: currentPage
   };
 }
 
-function renderJurusan(shouldUpdateURL = true) {
+function getFilteredJurusan() {
   const filters = getCurrentFilters();
 
-  let filtered = jurusanData.filter(item => {
-    const nama = normalizeText(item.nama).toLowerCase();
+  const filtered = jurusanData.filter(item => {
+    const keywordSource = [item.nama, item.fakultas, item.jenjang, item.akreditasi, item.deskripsi, item.prospek_kerja]
+      .map(normalizeText)
+      .join(" ")
+      .toLowerCase();
+
     const fakultas = normalizeText(item.fakultas);
     const jenjang = normalizeText(item.jenjang);
     const akreditasi = normalizeText(item.akreditasi);
 
-    const cocokKeyword = !filters.q || nama.includes(filters.q);
+    const cocokKeyword = !filters.q || keywordSource.includes(filters.q);
     const cocokFakultas = filters.fakultas === "all" || fakultas === filters.fakultas;
     const cocokJenjang = filters.jenjang === "all" || jenjang === filters.jenjang;
     const cocokAkreditasi = filters.akreditasi === "all" || akreditasi === filters.akreditasi;
@@ -213,18 +217,38 @@ function renderJurusan(shouldUpdateURL = true) {
     return cocokKeyword && cocokFakultas && cocokJenjang && cocokAkreditasi;
   });
 
-  filtered = sortJurusan(filtered, filters.sort);
+  return sortJurusan(filtered, filters.sort);
+}
 
-  setResultInfo(`Menampilkan ${filtered.length} dari ${jurusanData.length} jurusan.`);
+function renderJurusan(shouldUpdateURL = true) {
+  const filtered = getFilteredJurusan();
+  const totalPages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE));
+
+  if (currentPage > totalPages) currentPage = totalPages;
+  if (currentPage < 1) currentPage = 1;
+
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const visibleItems = filtered.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  const visibleStart = filtered.length ? startIndex + 1 : 0;
+  const visibleEnd = Math.min(startIndex + ITEMS_PER_PAGE, filtered.length);
+
+  setResultInfo(
+    filtered.length
+      ? `Menampilkan ${visibleStart}-${visibleEnd} dari ${filtered.length} hasil. Total data: ${jurusanData.length} jurusan.`
+      : `Tidak ada hasil dari total ${jurusanData.length} jurusan.`
+  );
 
   const list = document.getElementById("jurusanList");
   if (!list) return;
 
-  list.innerHTML = filtered.length
-    ? filtered.map(createCard).join("")
-    : `<div class="empty">Tidak ada jurusan yang cocok dengan filter.</div>`;
+  list.innerHTML = visibleItems.length
+    ? visibleItems.map(createCard).join("")
+    : `<div class="empty">Tidak ada jurusan yang cocok dengan filter. Coba reset atau pakai kata kunci lain.</div>`;
 
-  if (shouldUpdateURL) updateURLFromFilters(filters);
+  renderActiveFilterChips();
+  renderPagination(filtered.length, totalPages);
+
+  if (shouldUpdateURL) updateURLFromFilters(getCurrentFilters());
 }
 
 function sortJurusan(items, sortType) {
@@ -246,11 +270,8 @@ function sortJurusan(items, sortType) {
 }
 
 function compareAcceptance(a, b, direction = "asc") {
-  const aStat = acceptanceMap.get(Number(a.id));
-  const bStat = acceptanceMap.get(Number(b.id));
-
-  const aValue = typeof aStat?.percent === "number" ? aStat.percent : null;
-  const bValue = typeof bStat?.percent === "number" ? bStat.percent : null;
+  const aValue = acceptanceMap.get(Number(a.id))?.percent ?? null;
+  const bValue = acceptanceMap.get(Number(b.id))?.percent ?? null;
 
   if (aValue === null && bValue === null) {
     return normalizeText(a.nama).localeCompare(normalizeText(b.nama), "id");
@@ -262,9 +283,94 @@ function compareAcceptance(a, b, direction = "asc") {
   return direction === "asc" ? aValue - bValue : bValue - aValue;
 }
 
+function renderPagination(totalItems, totalPages) {
+  const pagination = document.getElementById("jurusanPagination");
+  if (!pagination) return;
+
+  if (totalItems <= ITEMS_PER_PAGE) {
+    pagination.innerHTML = "";
+    return;
+  }
+
+  const buttons = [];
+  buttons.push(createPageButton("Sebelumnya", currentPage - 1, currentPage === 1));
+
+  const pageNumbers = getVisiblePageNumbers(currentPage, totalPages);
+
+  pageNumbers.forEach(page => {
+    if (page === "...") {
+      buttons.push(`<span class="page-dots">...</span>`);
+    } else {
+      buttons.push(createPageButton(page, page, false, page === currentPage));
+    }
+  });
+
+  buttons.push(createPageButton("Berikutnya", currentPage + 1, currentPage === totalPages));
+  pagination.innerHTML = buttons.join("");
+}
+
+function getVisiblePageNumbers(page, totalPages) {
+  if (totalPages <= 7) return Array.from({ length: totalPages }, (_, index) => index + 1);
+
+  const pages = [1];
+  const start = Math.max(2, page - 1);
+  const end = Math.min(totalPages - 1, page + 1);
+
+  if (start > 2) pages.push("...");
+  for (let i = start; i <= end; i++) pages.push(i);
+  if (end < totalPages - 1) pages.push("...");
+  pages.push(totalPages);
+
+  return pages;
+}
+
+function createPageButton(label, page, disabled = false, active = false) {
+  return `
+    <button
+      type="button"
+      class="page-btn ${active ? "active" : ""}"
+      data-page="${page}"
+      ${disabled ? "disabled" : ""}
+    >${label}</button>
+  `;
+}
+
+function goToPage(page) {
+  currentPage = Number(page) || 1;
+  renderJurusan(true);
+
+  const section = document.querySelector(".jurusan-section");
+  if (section) section.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
 function setResultInfo(text) {
   const resultInfo = document.getElementById("jurusanResultInfo");
   if (resultInfo) resultInfo.textContent = text;
+}
+
+function renderActiveFilterChips() {
+  const target = document.getElementById("activeFilterChips");
+  if (!target) return;
+
+  const filters = getCurrentFilters();
+  const chips = [];
+
+  if (filters.q) chips.push(`Kata kunci: ${filters.q}`);
+  if (filters.fakultas !== "all") chips.push(`Fakultas: ${filters.fakultas}`);
+  if (filters.jenjang !== "all") chips.push(`Jenjang: ${filters.jenjang}`);
+  if (filters.akreditasi !== "all") chips.push(`Akreditasi: ${filters.akreditasi}`);
+  if (filters.sort !== "az") chips.push(`Urutan: ${getSortLabel(filters.sort)}`);
+
+  target.innerHTML = chips.map(chip => `<span class="filter-chip">${escapeHTML(chip)}</span>`).join("");
+}
+
+function getSortLabel(sort) {
+  return {
+    za: "Nama Z-A",
+    ketat: "Paling ketat",
+    longgar: "Paling longgar",
+    az: "Nama A-Z"
+  }[sort] || "Nama A-Z";
 }
 
 function resetFilterJurusan() {
@@ -280,6 +386,8 @@ function resetFilterJurusan() {
   if (akreditasi) akreditasi.value = FILTER_DEFAULTS.akreditasi;
   if (sort) sort.value = FILTER_DEFAULTS.sort;
 
+  currentPage = 1;
+  localStorage.removeItem("compareFirstJurusan");
   renderJurusan(true);
 }
 
@@ -297,6 +405,8 @@ function applyFiltersFromURL() {
   setSelectValueIfExists(jenjang, normalizeParam(params.get("jenjang")));
   setSelectValueIfExists(akreditasi, normalizeParam(params.get("akreditasi")));
   setSelectValueIfExists(sort, params.get("sort") || FILTER_DEFAULTS.sort);
+
+  currentPage = Math.max(1, Number(params.get("page")) || 1);
 }
 
 function setSelectValueIfExists(select, value) {
@@ -314,11 +424,10 @@ function updateURLFromFilters(filters) {
   if (filters.jenjang !== "all") params.set("jenjang", filters.jenjang);
   if (filters.akreditasi !== "all") params.set("akreditasi", filters.akreditasi);
   if (filters.sort !== "az") params.set("sort", filters.sort);
+  if (filters.page > 1) params.set("page", String(filters.page));
 
   const query = params.toString();
-  const newURL = query
-    ? `${window.location.pathname}?${query}`
-    : window.location.pathname;
+  const newURL = query ? `${window.location.pathname}?${query}` : window.location.pathname;
 
   window.history.replaceState({}, "", newURL);
 }
@@ -347,6 +456,56 @@ function escapeHTML(text) {
   }[char]));
 }
 
+function truncateText(text, maxLength = 128) {
+  const value = normalizeText(text);
+  if (!value) return "Deskripsi jurusan belum tersedia.";
+  return value.length > maxLength ? `${value.slice(0, maxLength).trim()}...` : value;
+}
+
+function getProspekSingkat(text) {
+  const value = normalizeText(text);
+  if (!value) return "Prospek kerja belum tersedia.";
+
+  return value
+    .split(/\n|,|;/)
+    .map(item => item.trim())
+    .filter(Boolean)
+    .slice(0, 3)
+    .join(", ");
+}
+
+function getFacultyIcon(fakultas = "") {
+  const value = fakultas.toLowerCase();
+
+  if (value.includes("mipa")) return "⚗️";
+  if (value.includes("teknik") || value.includes("fptk")) return "🛠️";
+  if (value.includes("ekonomi") || value.includes("fpeb")) return "📈";
+  if (value.includes("olahraga") || value.includes("fpok")) return "🏃";
+  if (value.includes("seni") || value.includes("fpsd")) return "🎨";
+  if (value.includes("bahasa") || value.includes("fpbs")) return "📚";
+  if (value.includes("pendidikan") || value.includes("fip")) return "🧑‍🏫";
+  if (value.includes("kampus")) return "🏫";
+  return "🎓";
+}
+
+function getCompetitionInfo(percent) {
+  if (typeof percent !== "number" || Number.isNaN(percent)) {
+    return { label: "Belum ada data", width: 0, color: "#94a3b8" };
+  }
+
+  const width = Math.min(100, Math.max(4, percent));
+
+  if (percent < 10) {
+    return { label: "Sangat ketat", width, color: "#ef4444" };
+  }
+
+  if (percent < 20) {
+    return { label: "Cukup ketat", width, color: "#f59e0b" };
+  }
+
+  return { label: "Relatif longgar", width, color: "#16a34a" };
+}
+
 function getCompareURL(jurusanId) {
   const currentId = String(jurusanId);
   const savedId = localStorage.getItem("compareFirstJurusan");
@@ -366,85 +525,98 @@ function handleCompareClick(event, jurusanId) {
 }
 
 function createCard(item) {
-  const prospekSingkat = item.prospek_kerja
-    ? item.prospek_kerja.split("\n").slice(0, 3).join(", ")
-    : "Prospek kerja belum tersedia.";
-
   const stat = acceptanceMap.get(Number(item.id));
   const percentText = formatPercent(stat?.percent);
+  const competition = getCompetitionInfo(stat?.percent);
+  const fakultas = item.fakultas || "UPI";
+  const jenjang = item.jenjang || "S1";
+  const akreditasi = item.akreditasi ? `Akreditasi ${item.akreditasi}` : "Akreditasi -";
 
   return `
-    <article class="item-card">
-      <div class="card-meta">
-        <span class="pill">${escapeHTML(item.fakultas || "UPI")}</span>
-        <span class="pill">${escapeHTML(item.jenjang || "S1")}</span>
-        ${
-          item.akreditasi
-            ? `<span class="pill">Akreditasi ${escapeHTML(item.akreditasi)}</span>`
-            : ""
-        }
+    <article class="jurusan-card">
+      <div class="jurusan-card-head">
+        <div class="jurusan-icon" aria-hidden="true">${getFacultyIcon(fakultas)}</div>
+        <div>
+          <h3>${escapeHTML(item.nama)}</h3>
+          <div class="card-meta">
+            <span class="pill">${escapeHTML(fakultas)}</span>
+            <span class="pill">${escapeHTML(jenjang)}</span>
+            <span class="pill">${escapeHTML(akreditasi)}</span>
+          </div>
+        </div>
       </div>
 
-      <h3>${escapeHTML(item.nama)}</h3>
+      <p class="jurusan-card-desc">${escapeHTML(truncateText(item.deskripsi, 132))}</p>
+      <p class="prospek-line"><strong>Prospek:</strong> ${escapeHTML(getProspekSingkat(item.prospek_kerja))}</p>
 
-      <p>${escapeHTML(item.deskripsi || "").slice(0, 120)}${item.deskripsi && item.deskripsi.length > 120 ? "..." : ""}</p>
+      <div class="jurusan-stat-row">
+        <div class="stat-mini">
+          <span>Tampung</span>
+          <strong>${formatCompactNumber(stat?.dayaTampung)}</strong>
+        </div>
+        <div class="stat-mini">
+          <span>Peminat</span>
+          <strong>${formatCompactNumber(stat?.peminat)}</strong>
+        </div>
+        <div class="stat-mini">
+          <span>Keterimaan</span>
+          <strong>${percentText ? `${percentText}%` : "-"}</strong>
+        </div>
+      </div>
 
-      <p><strong>Prospek:</strong> ${escapeHTML(prospekSingkat)}</p>
-
-      ${
-        stat
-          ? `
-            <div class="jurusan-stat-grid">
-              <div>
-                <span>Total Daya Tampung</span>
-                <strong>${formatCompactNumber(stat.dayaTampung)}</strong>
-              </div>
-              <div>
-                <span>Total Peminat</span>
-                <strong>${formatCompactNumber(stat.peminat)}</strong>
-              </div>
-              <div>
-                <span>Estimasi Keterimaan</span>
-                <strong>${percentText ? `${percentText}%` : "-"}</strong>
-              </div>
-            </div>
-
-            <p class="acceptance-note">
-              Data dihitung dari gabungan SNBP dan SNBT tahun ${escapeHTML(stat.tahun)}. Jalur Mandiri tidak termasuk.
-            </p>
-          `
-          : ""
-      }
+      <div class="competition-meter" title="Data gabungan SNBP dan SNBT${stat?.tahun ? ` tahun ${stat.tahun}` : ""}">
+        <div class="competition-top">
+          <span>${escapeHTML(competition.label)}</span>
+          <span>${stat?.tahun ? `Data ${escapeHTML(stat.tahun)}` : ""}</span>
+        </div>
+        <div class="meter-track" aria-hidden="true">
+          <span class="meter-fill" style="--meter-width:${competition.width}%; --meter-color:${competition.color};"></span>
+        </div>
+      </div>
 
       <div class="card-actions">
-        <a href="../pages/jurusan-detail.html?id=${encodeURIComponent(item.id)}" class="btn primary">
-          Lihat Detail
-        </a>
-
-        <a 
+        <a href="../pages/jurusan-detail.html?id=${encodeURIComponent(item.id)}" class="btn primary">Lihat Detail</a>
+        <a
           href="../pages/bandingkan-jurusan.html?jurusan1=${encodeURIComponent(item.id)}"
-          class="btn secondary"
+          class="btn compare-btn"
           onclick="handleCompareClick(event, '${escapeHTML(item.id)}')"
-        >
-          Bandingkan
-        </a>
+        >Bandingkan</a>
       </div>
     </article>
   `;
 }
 
+function handleFilterChange() {
+  currentPage = 1;
+  renderJurusan(true);
+}
+
+function initFilterToggle() {
+  const toggle = document.getElementById("toggleFilterJurusan");
+  const panel = document.getElementById("jurusanFilterPanel");
+  if (!toggle || !panel) return;
+
+  toggle.addEventListener("click", () => {
+    const isOpen = panel.classList.toggle("show");
+    toggle.setAttribute("aria-expanded", String(isOpen));
+  });
+}
+
 function initJurusanPage() {
-  document.getElementById("jurusanSearch")?.addEventListener("input", () => renderJurusan(true));
-  document.getElementById("filterFakultas")?.addEventListener("change", () => renderJurusan(true));
-  document.getElementById("filterJenjang")?.addEventListener("change", () => renderJurusan(true));
-  document.getElementById("filterAkreditasi")?.addEventListener("change", () => renderJurusan(true));
-  document.getElementById("sortJurusan")?.addEventListener("change", () => renderJurusan(true));
+  document.getElementById("jurusanSearch")?.addEventListener("input", handleFilterChange);
+  document.getElementById("filterFakultas")?.addEventListener("change", handleFilterChange);
+  document.getElementById("filterJenjang")?.addEventListener("change", handleFilterChange);
+  document.getElementById("filterAkreditasi")?.addEventListener("change", handleFilterChange);
+  document.getElementById("sortJurusan")?.addEventListener("change", handleFilterChange);
   document.getElementById("resetFilterJurusan")?.addEventListener("click", resetFilterJurusan);
-  document.getElementById("resetCompareJurusan")?.addEventListener("click", () => {
-    localStorage.removeItem("compareFirstJurusan");
-    alert("Pilihan bandingkan sudah direset.");
+
+  document.getElementById("jurusanPagination")?.addEventListener("click", event => {
+    const button = event.target.closest(".page-btn");
+    if (!button || button.disabled) return;
+    goToPage(button.dataset.page);
   });
 
+  initFilterToggle();
   loadJurusan();
 }
 

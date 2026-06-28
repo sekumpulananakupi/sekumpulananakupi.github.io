@@ -3,51 +3,7 @@ const SUPABASE_ANON_KEY = "sb_publishable_KL8Jcb1hEzU-kAZiOMYWFg_hupftFmq";
 
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-function showLoading(targetId, count = 3) {
-  const target = document.getElementById(targetId);
-  if (!target) return;
-
-  target.innerHTML = Array.from({ length: count }).map(() => `
-    <article class="skeleton-card">
-      <div class="skeleton-line title"></div>
-      <div class="skeleton-line"></div>
-      <div class="skeleton-line"></div>
-      <div class="skeleton-line short"></div>
-    </article>
-  `).join("");
-}
-
-function showSimpleLoading(targetId, message = "Memuat data...") {
-  const target = document.getElementById(targetId);
-  if (!target) return;
-
-  target.innerHTML = `
-    <div class="loading-state">
-      <div class="loading-spinner"></div>
-      ${message}
-    </div>
-  `;
-}
-
-function showError(targetId, message = "Gagal memuat data.") {
-  const target = document.getElementById(targetId);
-  if (!target) return;
-
-  target.innerHTML = `<div class="empty">${message}</div>`;
-}
-
 let faqData = [];
-function prepareFaqSearch() {
-  faqData = faqData.map(item => ({
-    ...item,
-    searchText: `
-      ${item.pertanyaan || ""}
-      ${item.jawaban || ""}
-      ${item.kategori || ""}
-    `.toLowerCase()
-  }));
-}
-
 let activeFaqKategori = "all";
 
 function escapeHTML(text) {
@@ -60,18 +16,45 @@ function escapeHTML(text) {
   }[char]));
 }
 
+function showSimpleLoading(targetId, message = "Memuat data...") {
+  const target = document.getElementById(targetId);
+  if (!target) return;
+
+  target.innerHTML = `
+    <div class="loading-state">
+      <div class="loading-spinner"></div>
+      <span>${message}</span>
+    </div>
+  `;
+}
+
+function showError(targetId, message = "Gagal memuat data.") {
+  const target = document.getElementById(targetId);
+  if (!target) return;
+
+  target.innerHTML = `<div class="empty">${message}</div>`;
+}
+
+function prepareFaqSearch() {
+  faqData = faqData.map(item => ({
+    ...item,
+    searchText: `
+      ${item.pertanyaan || ""}
+      ${item.jawaban || ""}
+      ${item.kategori || ""}
+    `.toLowerCase()
+  }));
+}
+
 async function loadFaq() {
   showSimpleLoading("faqContainer", "Memuat FAQ...");
 
-  const cacheKey = "faq_kampus_v2";
+  const cacheKey = "faq_kampus_v3";
   const cached = getCache(cacheKey, 720);
 
   if (cached) {
     faqData = cached;
-    prepareFaqSearch();
-    renderFaqKategoriFilter();
-    renderFaqCategoryChips();
-    renderFaq();
+    initFaqUI();
     return;
   }
 
@@ -84,61 +67,28 @@ async function loadFaq() {
   if (error) {
     console.error("Gagal mengambil FAQ:", error);
     showError("faqContainer", "Gagal memuat FAQ.");
+    updateFaqMeta(0, 0);
     return;
   }
 
   faqData = data || [];
-
-  prepareFaqSearch();
-
   setCache(cacheKey, faqData);
 
-  renderFaqKategoriFilter();
+  initFaqUI();
+}
+
+function initFaqUI() {
+  prepareFaqSearch();
   renderFaqCategoryChips();
+  renderPopularFaq();
   renderFaq();
 }
 
-function renderFaqKategoriFilter() {
-  const select = document.getElementById("faqKategoriFilter");
-  if (!select) return;
-
-  const kategoriList = [...new Set(
-    faqData
-      .map(item => item.kategori)
-      .filter(Boolean)
-  )];
-
-  select.innerHTML =
-    `<option value="all">Semua Kategori</option>` +
-    kategoriList
-      .map(item => `<option value="${escapeHTML(item)}">${escapeHTML(item)}</option>`)
-      .join("");
-
-select.addEventListener("change", () => {
-  activeFaqKategori = select.value;
-
-  document.querySelectorAll("#faqCategoryChips .category-chip").forEach(btn => {
-    btn.classList.toggle(
-      "active",
-      btn.dataset.kategori === activeFaqKategori
-    );
-  });
-
-  renderFaq();
-});
-}
-
-function renderFaq() {
+function getFilteredFaq() {
   const searchInput = document.getElementById("faqSearch");
-  const container = document.getElementById("faqContainer");
+  const keyword = searchInput ? searchInput.value.toLowerCase().trim() : "";
 
-  if (!container) return;
-
-  const keyword = searchInput
-    ? searchInput.value.toLowerCase()
-    : "";
-
-  const filtered = faqData.filter(item => {
+  return faqData.filter(item => {
     const matchSearch = item.searchText.includes(keyword);
 
     const matchKategori =
@@ -147,47 +97,81 @@ function renderFaq() {
 
     return matchSearch && matchKategori;
   });
-
-if (filtered.length) {
-  container.innerHTML = filtered.map(createFaqCard).join("");
-} else {
-  showEmpty(
-    "faqContainer",
-    "FAQ tidak ditemukan",
-    "Coba gunakan kata kunci lain atau pilih kategori berbeda.",
-    "❓"
-  );
-}
 }
 
-  
+function updateFaqMeta(filteredCount, totalCount) {
+  const meta = document.getElementById("faqMeta");
+  if (!meta) return;
+
+  const kategoriText =
+    activeFaqKategori === "all"
+      ? "Semua kategori"
+      : activeFaqKategori;
+
+  meta.innerHTML = `
+    <span><strong>${filteredCount}</strong> FAQ ditemukan</span>
+    <span>•</span>
+    <span>${escapeHTML(kategoriText)}</span>
+    <span>•</span>
+    <span>Total ${totalCount} FAQ</span>
+  `;
+}
+
+function highlightKeyword(text) {
+  const searchInput = document.getElementById("faqSearch");
+  const keyword = searchInput ? searchInput.value.trim() : "";
+
+  const safeText = escapeHTML(text);
+
+  if (!keyword) return safeText;
+
+  const escapedKeyword = keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const regex = new RegExp(`(${escapedKeyword})`, "gi");
+
+  return safeText.replace(regex, `<mark>$1</mark>`);
+}
+
 function createFaqCard(item) {
   return `
     <details class="faq-item">
       <summary>
-        <span class="pill">${escapeHTML(item.kategori || "FAQ")}</span>
-        ${escapeHTML(item.pertanyaan)}
+        <span class="faq-summary-top">
+          <span class="pill">${escapeHTML(item.kategori || "FAQ")}</span>
+          <i class="fas fa-chevron-down faq-arrow"></i>
+        </span>
+
+        <span class="faq-question">
+          ${highlightKeyword(item.pertanyaan)}
+        </span>
       </summary>
 
       <div class="faq-answer">
-        ${escapeHTML(item.jawaban).replace(/\n/g, "<br>")}
+        ${highlightKeyword(item.jawaban).replace(/\n/g, "<br>")}
       </div>
     </details>
   `;
 }
 
-const faqSearch = document.getElementById("faqSearch");
+function renderFaq() {
+  const container = document.getElementById("faqContainer");
+  if (!container) return;
 
-if (faqSearch) {
-  let faqTimer;
+  const filtered = getFilteredFaq();
 
-faqSearch.addEventListener("input", () => {
-  clearTimeout(faqTimer);
+  updateFaqMeta(filtered.length, faqData.length);
 
-  faqTimer = setTimeout(() => {
-    renderFaq();
-  }, 250);
-});
+  if (filtered.length) {
+    container.innerHTML = filtered.map(createFaqCard).join("");
+    return;
+  }
+
+  container.innerHTML = `
+    <div class="empty faq-empty">
+      <div class="empty-icon">❓</div>
+      <h3>FAQ tidak ditemukan</h3>
+      <p>Coba gunakan kata kunci lain atau pilih kategori berbeda.</p>
+    </div>
+  `;
 }
 
 function renderFaqCategoryChips() {
@@ -219,11 +203,77 @@ function renderFaqCategoryChips() {
       button.classList.add("active");
       activeFaqKategori = button.dataset.kategori;
 
-      const select = document.getElementById("faqKategoriFilter");
-      if (select) select.value = activeFaqKategori;
-
       renderFaq();
     });
+  });
+}
+
+function renderPopularFaq() {
+  const popularGrid = document.getElementById("faqPopularGrid");
+  const popularSection = document.getElementById("faqPopularSection");
+
+  if (!popularGrid || !popularSection) return;
+
+  const popularKeywords = [
+    "ukt",
+    "krs",
+    "beasiswa",
+    "registrasi",
+    "kuliah"
+  ];
+
+  const popularItems = faqData
+    .filter(item => {
+      const text = `${item.pertanyaan} ${item.jawaban} ${item.kategori}`.toLowerCase();
+      return popularKeywords.some(keyword => text.includes(keyword));
+    })
+    .slice(0, 6);
+
+  if (!popularItems.length) {
+    popularSection.style.display = "none";
+    return;
+  }
+
+  popularGrid.innerHTML = popularItems.map(item => `
+    <button class="faq-popular-card" type="button">
+      <span>${escapeHTML(item.kategori || "FAQ")}</span>
+      <strong>${escapeHTML(item.pertanyaan)}</strong>
+    </button>
+  `).join("");
+
+  popularGrid.querySelectorAll(".faq-popular-card").forEach((button, index) => {
+    button.addEventListener("click", () => {
+      const searchInput = document.getElementById("faqSearch");
+      if (!searchInput) return;
+
+      searchInput.value = popularItems[index].pertanyaan;
+      activeFaqKategori = "all";
+
+      document.querySelectorAll("#faqCategoryChips .category-chip").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.kategori === "all");
+      });
+
+      renderFaq();
+
+      document.getElementById("faqContainer")?.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    });
+  });
+}
+
+const faqSearch = document.getElementById("faqSearch");
+
+if (faqSearch) {
+  let faqTimer;
+
+  faqSearch.addEventListener("input", () => {
+    clearTimeout(faqTimer);
+
+    faqTimer = setTimeout(() => {
+      renderFaq();
+    }, 250);
   });
 }
 
