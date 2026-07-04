@@ -28,6 +28,16 @@
   <priority>0.80</priority>
 </url>
 <url>
+  <loc>https://anakupi.my.id/pages/info.html</loc>
+  <lastmod>2026-07-04T10:54:00+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://anakupi.my.id/pages/wiki.html</loc>
+  <lastmod>2026-07-04T10:54:00+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
   <loc>https://anakupi.my.id/pages/dokumen.html</loc>
   <lastmod>2026-06-16T10:58:52+00:00</lastmod>
   <priority>0.80</priority>
@@ -45,6 +55,11 @@
 <url>
   <loc>https://anakupi.my.id/pages/tentang.html</loc>
   <lastmod>2026-06-16T10:58:52+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://anakupi.my.id/pages/hubungi-kami.html</loc>
+  <lastmod>2026-07-04T10:32:40+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>

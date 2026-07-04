@@ -40,10 +40,18 @@ if (qs("wikiForm")) {
 
     const savedId = id ? Number(id) : response.data.id;
 
+    let wikiKategoriIds = [];
+    try {
+      wikiKategoriIds = await ensureWikiKategoriFromInput();
+    } catch (error) {
+      alert("Gagal menyimpan kategori wiki: " + error.message);
+      return;
+    }
+
     await saveRelations(
       "wiki",
       savedId,
-      getSelectedValues("wikiKategoriMulti"),
+      wikiKategoriIds,
       getSelectedValues("wikiTagMulti"),
       []
     );
@@ -112,7 +120,7 @@ async function runWikiAI(mode = "generate") {
           current_title: currentTitle,
           current_html: currentContent,
           selected_html: getSelectedQuillHTML("wiki"),
-          kategori: getSelectedValues("wikiKategoriMulti"),
+          kategori: qs("wikiKategoriInput")?.value.trim() || "",
           tags: getSelectedValues("wikiTagMulti")
         }
       }

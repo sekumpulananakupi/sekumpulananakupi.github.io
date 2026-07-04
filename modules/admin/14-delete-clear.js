@@ -67,6 +67,7 @@ function clearForm(type) {
 
   if (form) form.reset();
   if (idInput) idInput.value = "";
+  if (type === "wiki" && qs("wikiKategoriInput")) qs("wikiKategoriInput").value = "";
 
   clearEditor(type);
 

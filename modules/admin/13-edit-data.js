@@ -49,6 +49,10 @@ async function editWiki(id) {
     ""
   );
 
+  const selectedKategori = qs("wikiKategoriMulti")?.querySelector("input[type='checkbox']:checked");
+  const selectedLabel = selectedKategori?.closest("label")?.querySelector("span")?.textContent || "";
+  if (qs("wikiKategoriInput")) qs("wikiKategoriInput").value = selectedLabel;
+
   showAdminPage("wikiPage");
 }
 

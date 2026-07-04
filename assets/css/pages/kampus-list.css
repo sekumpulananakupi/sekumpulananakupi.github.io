@@ -1,0 +1,239 @@
+.kampus-list-page {
+  background:
+    radial-gradient(circle at top left, rgba(255, 197, 61, 0.18), transparent 28rem),
+    linear-gradient(180deg, #f8fbff 0%, #eef5ff 48%, #f8fafc 100%);
+}
+
+.kampus-list-hero {
+  position: relative;
+  overflow: hidden;
+  padding: 76px 0 58px;
+  background:
+    radial-gradient(circle at 84% 14%, rgba(255, 197, 61, 0.24), transparent 18rem),
+    linear-gradient(135deg, #082b55 0%, #1557a5 54%, #0b3c78 100%);
+  color: #ffffff;
+}
+
+.wiki-theme .kampus-list-hero {
+  background:
+    radial-gradient(circle at 86% 12%, rgba(255, 197, 61, 0.28), transparent 18rem),
+    linear-gradient(135deg, #0b3c78 0%, #0f766e 56%, #0b4f4a 100%);
+}
+
+.kampus-list-hero::before {
+  position: absolute;
+  inset: 0;
+  content: "";
+  opacity: 0.25;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.09) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.09) 1px, transparent 1px);
+  background-size: 52px 52px;
+}
+
+.kampus-list-hero__grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 0.55fr);
+  gap: 34px;
+  align-items: end;
+}
+
+.kampus-list-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 13px;
+  border: 1px solid rgba(255, 197, 61, 0.32);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffe08a;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.kampus-list-hero h1 {
+  max-width: 780px;
+  margin: 16px 0;
+  font-size: clamp(42px, 6vw, 76px);
+  line-height: 0.98;
+  letter-spacing: -2.4px;
+}
+
+.kampus-list-hero p:not(.kampus-list-eyebrow) {
+  max-width: 680px;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.84);
+  font-size: 18px;
+  line-height: 1.75;
+}
+
+.kampus-list-search {
+  display: grid;
+  gap: 11px;
+  padding: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 26px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 24px 58px rgba(0, 0, 0, 0.18);
+}
+
+.kampus-list-search label {
+  color: #082b55;
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.kampus-list-search div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid #dce8f7;
+  border-radius: 999px;
+  background: #f8fbff;
+  padding: 0 14px;
+  color: #1557a5;
+}
+
+.kampus-list-search input {
+  min-width: 0;
+  width: 100%;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  padding: 14px 0;
+  font: inherit;
+}
+
+.kampus-list-section {
+  padding: 54px 0 76px;
+}
+
+.kampus-list-topbar {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+.kampus-list-topbar h2 {
+  margin: 0;
+  color: #082b55;
+  font-size: clamp(28px, 4vw, 42px);
+  letter-spacing: -1px;
+}
+
+.kampus-list-count {
+  display: inline-flex;
+  align-items: center;
+  min-height: 38px;
+  padding: 8px 14px;
+  border: 1px solid rgba(21, 87, 165, 0.12);
+  border-radius: 999px;
+  background: #ffffff;
+  color: #385678;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.kampus-list-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.kampus-card {
+  overflow: hidden;
+  border: 1px solid rgba(21, 87, 165, 0.08);
+  border-radius: 26px;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+  box-shadow: 0 18px 46px rgba(15, 44, 82, 0.09);
+}
+
+.kampus-card img {
+  width: 100%;
+  height: 178px;
+  object-fit: cover;
+  display: block;
+}
+
+.kampus-card__body {
+  display: grid;
+  gap: 12px;
+  padding: 22px;
+}
+
+.kampus-card h3 {
+  margin: 0;
+  color: #082b55;
+  font-size: 21px;
+  line-height: 1.28;
+}
+
+.kampus-card p {
+  margin: 0;
+  color: #52657d;
+  line-height: 1.7;
+}
+
+.kampus-card .btn {
+  width: fit-content;
+  border-radius: 999px;
+}
+
+.kampus-empty {
+  grid-column: 1 / -1;
+}
+
+.load-more-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 28px;
+}
+
+@media (min-width: 769px) {
+  .kampus-card {
+    transition: transform 0.22s ease, box-shadow 0.22s ease;
+  }
+
+  .kampus-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 24px 56px rgba(15, 44, 82, 0.13);
+  }
+}
+
+@media (max-width: 900px) {
+  .kampus-list-hero__grid,
+  .kampus-list-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .kampus-list-hero {
+    padding: 46px 0 38px;
+  }
+
+  .kampus-list-hero h1 {
+    font-size: 40px;
+    letter-spacing: -1.2px;
+  }
+
+  .kampus-list-hero p:not(.kampus-list-eyebrow) {
+    font-size: 14px;
+  }
+
+  .kampus-list-topbar {
+    display: grid;
+    align-items: start;
+  }
+
+  .kampus-card__body {
+    padding: 20px;
+  }
+}

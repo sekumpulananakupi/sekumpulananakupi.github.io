@@ -1,0 +1,1160 @@
+/* Dark mode hardening for public pages loaded after page styles. */
+html[data-theme="dark"] body:not(.admin-modern-body) {
+  --dark-bg: #080f1d;
+  --dark-surface: rgba(17, 26, 45, 0.9);
+  --dark-surface-strong: #101a2d;
+  --dark-surface-soft: rgba(139, 183, 255, 0.1);
+  --dark-border: rgba(148, 163, 184, 0.22);
+  --dark-text: #edf4ff;
+  --dark-text-soft: #b8c7dd;
+  --dark-muted: #93a4ba;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body),
+html[data-theme="dark"] body:not(.admin-modern-body) .post-page-shell,
+html[data-theme="dark"] body:not(.admin-modern-body) .compare-page,
+html[data-theme="dark"] body:not(.admin-modern-body) .search-page,
+html[data-theme="dark"] body:not(.admin-modern-body) .jurusan-page,
+html[data-theme="dark"] body:not(.admin-modern-body).maba-page,
+html[data-theme="dark"] body:not(.admin-modern-body) .maba-page,
+html[data-theme="dark"] body:not(.admin-modern-body) .kalender-page,
+html[data-theme="dark"] body:not(.admin-modern-body) .calendar-page,
+html[data-theme="dark"] body:not(.admin-modern-body) .kampus-list-page,
+html[data-theme="dark"] body:not(.admin-modern-body) .dokumen-page,
+html[data-theme="dark"] body:not(.admin-modern-body) .faq-page,
+html[data-theme="dark"] body:not(.admin-modern-body) .community-page,
+html[data-theme="dark"] body:not(.admin-modern-body) .about-page,
+html[data-theme="dark"] body:not(.admin-modern-body) .contact-page,
+html[data-theme="dark"] body:not(.admin-modern-body) .jobs-page,
+html[data-theme="dark"] body:not(.admin-modern-body) .lowongan-page {
+  background:
+    radial-gradient(circle at 12% 0%, rgba(38, 92, 168, 0.34), transparent 34rem),
+    radial-gradient(circle at 88% 18%, rgba(245, 185, 64, 0.11), transparent 24rem),
+    linear-gradient(180deg, #08101f 0%, #0d1424 45%, #090f1c 100%) !important;
+  color: var(--dark-text) !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) :where(h1, h2, h3, h4, h5, h6),
+html[data-theme="dark"] body:not(.admin-modern-body) :where(.section-head h2, .community-section-header h2, .kampus-list-topbar h2, .compare-hero h1, .compare-block-head h2, .compare-picker-head h2, .about-hero h1, .contact-hero h1) {
+  color: #f7fbff !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) :where(p, li, span, small, label, td, dd, .muted, .lead, .subtitle, .hero-text, .compare-hero p, .compare-help-box p, .compare-empty-state p, .kampus-list-count, .community-note) {
+  color: var(--dark-text-soft) !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) :where(
+  .maba-heading p,
+  .maba-card p,
+  .accordion-content,
+  .search-lead,
+  .search-status,
+  .search-shortcut,
+  .quick-search,
+  .result-description,
+  .result-type,
+  .recent-search,
+  .ai-hero p,
+  .ai-header p,
+  .message.bot p,
+  .message.bot li,
+  .calendar-count,
+  .calendar-card p,
+  .next-event-date,
+  .month-day span,
+  .month-more,
+  .note-box p,
+  .contact-card p,
+  .contact-panel p,
+  .about-card p,
+  .story-box p,
+  .disclaimer-box p
+) {
+  color: var(--dark-text-soft) !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) :where(strong, b, th) {
+  color: #f7fbff !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) :where(.next-event-title) {
+  color: #f7fbff !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) :where(.next-event-item) {
+  border-color: rgba(148, 163, 184, 0.18) !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) :where(
+  .card,
+  .item-card,
+  .feature-card,
+  .stat-card,
+  .form-card,
+  .post-card,
+  .sidebar-card,
+  .floating-share,
+  .post-skeleton-card,
+  .hero-search,
+  .hero-stat,
+  .quick-card,
+  .info-card,
+  .wiki-card,
+  .kampus-card,
+  .kampus-list-card,
+  .kampus-list-search,
+  .kampus-list-topbar,
+  .document-card,
+  .dokumen-card,
+  .dokumen-filter,
+  .faq-card,
+  .faq-item,
+  .faq-category-card,
+  .community-stat-card,
+  .step-card,
+  .rule-card,
+  .about-stat,
+  .about-card,
+  .story-box,
+  .story-side,
+  .contact-card,
+  .contact-form,
+  .contact-info,
+  .job-card,
+  .job-filter-card,
+  .lowongan-card,
+  .lowongan-filter,
+  .calendar-card,
+  .calendar-event,
+  .event-card,
+  .kalender-card,
+  .highlight-card,
+  .note-box,
+  .next-event-card,
+  .calendar-hero-panel,
+  .month-grid,
+  .month-day,
+  .maba-card,
+  .maba-card-link,
+  .progress-box,
+  .check-item,
+  .accordion-item,
+  .search-hero__content,
+  .search-hero__card,
+  .search-shell,
+  .global-search-box,
+  .search-result-card,
+  .search-empty,
+  .ai-card,
+  .ai-chat-box,
+  .chat-box,
+  .chat-input,
+  .message.bot,
+  .ai-message.bot,
+  .contact-panel,
+  .disclaimer-box,
+  .final-cta,
+  .compare-hero-card,
+  .compare-picker-card,
+  .compare-decision-card,
+  .compare-winner-board,
+  .compare-radar-card,
+  .compare-data-section,
+  .compare-empty-state,
+  .compare-note,
+  .compare-major-card,
+  .compare-insight-card,
+  .compare-table-wrap,
+  .jurusan-card,
+  .jurusan-filter,
+  .jurusan-summary,
+  .detail-hero-card,
+  .detail-section-card,
+  .biaya-section,
+  .faq-jurusan-item,
+  .clean-related-card,
+  .empty,
+  .empty-state,
+  .loading-state
+) {
+  background: var(--dark-surface) !important;
+  border-color: var(--dark-border) !important;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.3) !important;
+  color: var(--dark-text) !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) :where(
+  .hero-showcase,
+  .maba-hero,
+  .maba-section.alt,
+  .compare-help-box,
+  .compare-sticky-nav,
+  .compare-empty-icon,
+  .community-hero,
+  .community-cta,
+  .about-hero,
+  .contact-hero,
+  .kampus-list-hero,
+  .dokumen-hero,
+  .faq-hero,
+  .calendar-hero,
+  .jurusan-hero,
+  .lowongan-hero
+) {
+  background: linear-gradient(145deg, rgba(17, 26, 45, 0.94), rgba(12, 22, 39, 0.9)) !important;
+  border-color: var(--dark-border) !important;
+  color: var(--dark-text) !important;
+}
+
+/* Lowongan page has a custom redesign stylesheet with light-only surfaces. */
+html[data-theme="dark"] body:not(.admin-modern-body) .jobs-page :where(
+  .jobs-hero,
+  .jobs-stats article,
+  .jobs-tools,
+  .job-card,
+  .skeleton-card,
+  .empty-state
+) {
+  background:
+    radial-gradient(circle at top right, rgba(245, 185, 64, 0.12), transparent 32%),
+    linear-gradient(180deg, rgba(17, 26, 45, 0.96), rgba(13, 22, 39, 0.93)) !important;
+  border-color: var(--dark-border) !important;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.3) !important;
+  color: var(--dark-text) !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .jobs-page :where(.jobs-hero__card) {
+  background:
+    radial-gradient(circle at top left, rgba(245, 185, 64, 0.18), transparent 36%),
+    linear-gradient(160deg, #17346b, #0b1220) !important;
+  border: 1px solid rgba(147, 197, 253, 0.18) !important;
+  color: #ffffff !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .jobs-page :where(
+  .jobs-hero h1,
+  .jobs-hero__card strong,
+  .jobs-stats strong,
+  .results-topbar h2,
+  .job-card h3,
+  .empty-state h3
+) {
+  color: #f7fbff !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .jobs-page :where(
+  .jobs-hero p:not(.jobs-eyebrow),
+  .jobs-hero__card span,
+  .jobs-stats span,
+  .filter-field span,
+  .job-card__company,
+  .job-card__desc,
+  .job-date,
+  .empty-state p
+) {
+  color: var(--dark-text-soft) !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .jobs-page :where(
+  .jobs-eyebrow,
+  .results-topbar .eyebrow,
+  .hero-search i
+) {
+  color: #93c5fd !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .jobs-page :where(
+  .hero-search,
+  .filter-field select,
+  .quick-chip,
+  .job-pill,
+  .results-count,
+  .empty-icon
+) {
+  background: var(--dark-surface-soft) !important;
+  border-color: rgba(139, 183, 255, 0.25) !important;
+  color: #cfe0ff !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .jobs-page .hero-search input {
+  background: transparent !important;
+  color: var(--dark-text) !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .jobs-page :where(.quick-chip:hover, .quick-chip.is-active) {
+  background: linear-gradient(135deg, #2f6df0, #1d4ed8) !important;
+  border-color: rgba(147, 197, 253, 0.36) !important;
+  color: #ffffff !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .jobs-page :where(.job-card__logo) {
+  background: linear-gradient(135deg, rgba(47, 109, 240, 0.2), rgba(245, 185, 64, 0.16)) !important;
+  color: #bfdbfe !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .jobs-page :where(.job-card__footer) {
+  border-color: rgba(148, 163, 184, 0.18) !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .jobs-page .jobs-tools,
+html[data-theme="dark"] body:not(.admin-modern-body) .jobs-page .jobs-filter-panel {
+  background: linear-gradient(180deg, rgba(15, 26, 45, 0.98), rgba(10, 18, 32, 0.96)) !important;
+  border-color: rgba(148, 163, 184, 0.24) !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .jobs-page .quick-chip,
+html[data-theme="dark"] body:not(.admin-modern-body) .jobs-page .filter-field select,
+html[data-theme="dark"] body:not(.admin-modern-body) .jobs-page .reset-filter-btn {
+  background-color: #0b1628 !important;
+  background-image: none !important;
+  border-color: rgba(139, 183, 255, 0.28) !important;
+  color: #dbeafe !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .jobs-page .filter-field select option {
+  background-color: #0b1628 !important;
+  color: #edf4ff !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .jobs-page .quick-chip:hover,
+html[data-theme="dark"] body:not(.admin-modern-body) .jobs-page .quick-chip.is-active {
+  background: linear-gradient(135deg, #2f6df0, #1d4ed8) !important;
+  border-color: rgba(147, 197, 253, 0.42) !important;
+  color: #ffffff !important;
+}
+
+/* Bandingkan jurusan has a standalone module stylesheet with many white panels. */
+html[data-theme="dark"] body:not(.admin-modern-body) .compare-page {
+  background:
+    radial-gradient(circle at 8% 0%, rgba(47, 109, 240, 0.28), transparent 34rem),
+    radial-gradient(circle at 92% 20%, rgba(245, 158, 11, 0.12), transparent 26rem),
+    linear-gradient(180deg, #08101f 0%, #0d1424 48%, #090f1c 100%) !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .compare-page .compare-hero,
+html[data-theme="dark"] body:not(.admin-modern-body) .compare-page .compare-hero-copy {
+  background:
+    radial-gradient(circle at top left, rgba(47, 109, 240, 0.18), transparent 32rem),
+    linear-gradient(145deg, rgba(17, 26, 45, 0.96), rgba(12, 22, 39, 0.9)) !important;
+  border: 1px solid rgba(148, 163, 184, 0.22) !important;
+  border-radius: 30px !important;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.3) !important;
+  color: var(--dark-text) !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .compare-page .compare-hero {
+  padding: 32px !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .compare-page .compare-hero-copy {
+  padding: 28px !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .compare-page :where(
+  .compare-picker-card,
+  .compare-hero-card,
+  .compare-empty-state,
+  .compare-sticky-nav,
+  .compare-major-card,
+  .compare-winner-board,
+  .compare-radar-card,
+  .compare-data-section,
+  .compare-note,
+  .compare-table-wrap,
+  .compare-prospect-grid article
+) {
+  background: linear-gradient(180deg, rgba(17, 26, 45, 0.97), rgba(13, 22, 39, 0.94)) !important;
+  border-color: rgba(148, 163, 184, 0.24) !important;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.32) !important;
+  color: var(--dark-text) !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .compare-page :where(
+  .compare-help-box,
+  .compare-winner-card,
+  .compare-metric-grid div,
+  .compare-major-tags span,
+  .compare-empty-icon,
+  .compare-winner-icon,
+  .compare-help-toggle,
+  .compare-select-field select,
+  .compare-sticky-nav a
+) {
+  background: rgba(139, 183, 255, 0.1) !important;
+  border-color: rgba(139, 183, 255, 0.25) !important;
+  color: #cfe0ff !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .compare-page :where(
+  .compare-hero h1,
+  .compare-picker-head h2,
+  .compare-block-head h2,
+  .compare-empty-state h2,
+  .compare-major-card h2,
+  .compare-winner-card h3,
+  .compare-prospect-grid h3,
+  .compare-score-row > span,
+  .compare-help-box strong,
+  .compare-metric-grid strong,
+  .modern-compare-table td:first-child strong,
+  .compare-note strong
+) {
+  color: #f7fbff !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .compare-page :where(
+  .compare-hero p,
+  .compare-hero-card span,
+  .compare-hero-card small,
+  .compare-help-box p,
+  .compare-empty-state p,
+  .compare-major-card p,
+  .compare-duel-center small,
+  .compare-winner-card p,
+  .compare-score-legend span,
+  .score-bar small,
+  .compare-list,
+  .compare-muted,
+  .compare-note,
+  .compare-select-field label,
+  .compare-metric-grid small
+) {
+  color: var(--dark-text-soft) !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .compare-page :where(.compare-kicker, .compare-page .eyebrow, .compare-major-label, .compare-link) {
+  color: #93c5fd !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .compare-page :where(.compare-hero-card strong) {
+  color: #bfdbfe !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .compare-page :where(.compare-accreditation) {
+  background: rgba(245, 158, 11, 0.18) !important;
+  color: #fde68a !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .compare-page :where(.compare-help-toggle.is-active, .compare-sticky-nav a:hover) {
+  background: linear-gradient(135deg, #2f6df0, #1d4ed8) !important;
+  border-color: rgba(147, 197, 253, 0.36) !important;
+  color: #ffffff !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .compare-page .compare-select-field select option {
+  background-color: #0b1628 !important;
+  color: #edf4ff !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .compare-page .modern-compare-table {
+  background: #101a2d !important;
+  color: var(--dark-text) !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .compare-page .modern-compare-table td {
+  background: #101a2d !important;
+  border-color: rgba(148, 163, 184, 0.18) !important;
+  color: var(--dark-text-soft) !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .compare-page .modern-compare-table td:first-child {
+  background: #162239 !important;
+  color: #f7fbff !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .compare-page .modern-compare-table td.is-winner {
+  background: rgba(34, 197, 94, 0.14) !important;
+  color: #bbf7d0 !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .compare-page .modern-compare-table td.is-draw {
+  background: rgba(14, 165, 233, 0.14) !important;
+  color: #bae6fd !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .compare-page .score-bar i {
+  background: linear-gradient(90deg, #60a5fa calc(var(--score) * 20%), rgba(148, 163, 184, 0.2) 0) !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .compare-page .score-b i {
+  background: linear-gradient(90deg, #fbbf24 calc(var(--score) * 20%), rgba(148, 163, 184, 0.2) 0) !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .compare-page :where(.winner-badge) {
+  background: rgba(34, 197, 94, 0.16) !important;
+  color: #bbf7d0 !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .compare-page :where(.winner-draw) {
+  background: rgba(14, 165, 233, 0.16) !important;
+  color: #bae6fd !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .compare-page :where(.winner-unknown) {
+  background: rgba(148, 163, 184, 0.14) !important;
+  color: #cbd5e1 !important;
+}
+
+/* Dokumen page labels need stronger contrast than the global span rule. */
+html[data-theme="dark"] body:not(.admin-modern-body) .dokumen-page :where(
+  .dokumen-type,
+  .dokumen-category,
+  .dokumen-chip-bar .category-chip,
+  .dokumen-chip-bar .category-chip span
+) {
+  border: 1px solid rgba(139, 183, 255, 0.28) !important;
+  background: rgba(139, 183, 255, 0.12) !important;
+  color: #dbeafe !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .dokumen-page .dokumen-category {
+  border-color: rgba(251, 191, 36, 0.34) !important;
+  background: rgba(251, 191, 36, 0.16) !important;
+  color: #fde68a !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .dokumen-page .dokumen-chip-bar .category-chip.active {
+  background: linear-gradient(135deg, #2f6df0, #1d4ed8) !important;
+  border-color: rgba(147, 197, 253, 0.42) !important;
+  color: #ffffff !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .dokumen-page .dokumen-chip-bar .category-chip.active span {
+  background: rgba(255, 255, 255, 0.18) !important;
+  border-color: rgba(255, 255, 255, 0.22) !important;
+  color: #ffffff !important;
+}
+
+/* FAQ page has standalone cards, search, answer boxes, and pagination. */
+html[data-theme="dark"] body:not(.admin-modern-body) .faq-page :where(
+  .faq-search-box,
+  .faq-popular-card,
+  .faq-pagination,
+  .faq-answer,
+  .faq-empty
+) {
+  background: linear-gradient(180deg, rgba(17, 26, 45, 0.96), rgba(13, 22, 39, 0.93)) !important;
+  border-color: rgba(148, 163, 184, 0.24) !important;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.3) !important;
+  color: var(--dark-text) !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .faq-page .faq-search-box input {
+  background: transparent !important;
+  color: var(--dark-text) !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .faq-page :where(
+  .faq-search-box i,
+  .faq-arrow
+) {
+  color: #93c5fd !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .faq-page :where(
+  .faq-popular-card strong,
+  .faq-question,
+  .faq-empty h3
+) {
+  color: #f7fbff !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .faq-page :where(
+  .faq-answer,
+  .faq-empty p,
+  .faq-pagination-ellipsis
+) {
+  color: var(--dark-text-soft) !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .faq-page :where(
+  .faq-popular-card span,
+  .faq-chip-bar .category-chip,
+  .faq-page-button,
+  .faq-page-nav,
+  .pill
+) {
+  background: rgba(139, 183, 255, 0.12) !important;
+  border-color: rgba(139, 183, 255, 0.28) !important;
+  color: #dbeafe !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .faq-page :where(
+  .faq-chip-bar .category-chip:hover,
+  .faq-page-button:hover,
+  .faq-page-nav:hover:not(:disabled)
+) {
+  border-color: rgba(147, 197, 253, 0.46) !important;
+  color: #ffffff !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .faq-page :where(
+  .faq-chip-bar .category-chip.active,
+  .faq-page-button.active
+) {
+  background: linear-gradient(135deg, #2f6df0, #1d4ed8) !important;
+  border-color: rgba(147, 197, 253, 0.42) !important;
+  color: #ffffff !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .faq-page .faq-help-card {
+  background:
+    radial-gradient(circle at top left, rgba(245, 185, 64, 0.16), transparent 30%),
+    linear-gradient(145deg, rgba(17, 26, 45, 0.97), rgba(12, 22, 39, 0.94)) !important;
+  border: 1px solid rgba(148, 163, 184, 0.22) !important;
+  color: var(--dark-text) !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .faq-page .faq-help-card p {
+  color: var(--dark-text-soft) !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .faq-page .btn-primary {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b) !important;
+  color: #111827 !important;
+  text-shadow: none !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .faq-page .btn-secondary {
+  background: rgba(139, 183, 255, 0.12) !important;
+  border: 1px solid rgba(139, 183, 255, 0.28) !important;
+  color: #dbeafe !important;
+}
+
+/* Komunitas page keeps most styling inline, so override its light panels here. */
+html[data-theme="dark"] body:not(.admin-modern-body) .community-page :where(
+  .community-section,
+  .community-stat-card,
+  .step-card,
+  .feature-card,
+  .rule-card,
+  .faq-list details
+) {
+  background: linear-gradient(180deg, rgba(17, 26, 45, 0.96), rgba(13, 22, 39, 0.93)) !important;
+  border-color: rgba(148, 163, 184, 0.24) !important;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.28) !important;
+  color: var(--dark-text) !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .community-page :where(
+  .community-hero,
+  .community-cta
+) {
+  background:
+    radial-gradient(circle at top right, rgba(245, 185, 64, 0.15), transparent 34%),
+    linear-gradient(145deg, rgba(17, 26, 45, 0.97), rgba(12, 22, 39, 0.94)) !important;
+  border: 1px solid rgba(148, 163, 184, 0.22) !important;
+  color: var(--dark-text) !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .community-page :where(
+  .community-hero h1,
+  .community-cta h2,
+  .community-stat-card strong,
+  .community-section-header h2,
+  .step-card h3,
+  .feature-card h3,
+  .rule-card h3,
+  .faq-list summary
+) {
+  color: #f7fbff !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .community-page :where(
+  .community-hero p,
+  .community-cta p,
+  .community-stat-card span,
+  .community-section-header p,
+  .step-card p,
+  .feature-card p,
+  .rule-card p,
+  .faq-list details p,
+  .community-note
+) {
+  color: var(--dark-text-soft) !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .community-page :where(
+  .community-badge,
+  .community-stat-icon,
+  .feature-card i,
+  .rule-card i
+) {
+  background: rgba(139, 183, 255, 0.12) !important;
+  border: 1px solid rgba(139, 183, 255, 0.24) !important;
+  color: #bfdbfe !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .community-page .community-section-header .eyebrow,
+html[data-theme="dark"] body:not(.admin-modern-body) .community-page .faq-list summary::after {
+  color: #93c5fd !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .community-page .community-btn.primary {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b) !important;
+  color: #111827 !important;
+  text-shadow: none !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .community-page .community-btn.secondary {
+  background: rgba(139, 183, 255, 0.12) !important;
+  border-color: rgba(139, 183, 255, 0.34) !important;
+  color: #dbeafe !important;
+}
+
+/* Tentang page has inline light cards and CTA buttons. */
+html[data-theme="dark"] body:not(.admin-modern-body) .about-page :where(
+  .about-stat,
+  .about-card,
+  .story-main,
+  .story-side,
+  .disclaimer-box,
+  .final-cta
+) {
+  background: linear-gradient(180deg, rgba(17, 26, 45, 0.96), rgba(13, 22, 39, 0.93)) !important;
+  border-color: rgba(148, 163, 184, 0.24) !important;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.28) !important;
+  color: var(--dark-text) !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .about-page :where(
+  .story-main,
+  .story-side
+) {
+  background:
+    radial-gradient(circle at top right, rgba(245, 185, 64, 0.12), transparent 34%),
+    linear-gradient(180deg, rgba(17, 26, 45, 0.97), rgba(13, 22, 39, 0.94)) !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .about-page :where(
+  .about-stat strong,
+  .about-card h3,
+  .story-main h2,
+  .disclaimer-box h2,
+  .final-cta h2
+) {
+  color: #f7fbff !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .about-page :where(
+  .about-stat span,
+  .about-card p,
+  .story-main p,
+  .story-side li,
+  .disclaimer-box p,
+  .final-cta p,
+  .section-head p
+) {
+  color: var(--dark-text-soft) !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .about-page :where(
+  .about-card .icon,
+  .story-side i,
+  .disclaimer-box i
+) {
+  background: rgba(139, 183, 255, 0.12) !important;
+  border: 1px solid rgba(139, 183, 255, 0.24) !important;
+  color: #bfdbfe !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .about-page :where(
+  .section-head .eyebrow,
+  .about-eyebrow
+) {
+  color: #93c5fd !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .about-page .about-actions .primary {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b) !important;
+  color: #111827 !important;
+  text-shadow: none !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .about-page .about-actions .secondary {
+  background: rgba(139, 183, 255, 0.12) !important;
+  border-color: rgba(139, 183, 255, 0.34) !important;
+  color: #dbeafe !important;
+}
+
+/* Directory jurusan page uses its own CSS variables and light card surfaces. */
+html[data-theme="dark"] body:not(.admin-modern-body) .jurusan-page {
+  --jurusan-ink: var(--dark-text);
+  --jurusan-muted: var(--dark-text-soft);
+  --jurusan-border: var(--dark-border);
+  --jurusan-soft: rgba(139, 183, 255, 0.1);
+  --jurusan-card: rgba(17, 26, 45, 0.94);
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) :where(
+  .jurusan-hero-copy,
+  .jurusan-hero-panel,
+  .jurusan-filter-panel,
+  .jurusan-side-note,
+  .jurusan-card,
+  .empty,
+  .skeleton-card
+) {
+  background: linear-gradient(180deg, rgba(17, 26, 45, 0.96), rgba(13, 22, 39, 0.93)) !important;
+  border-color: var(--dark-border) !important;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.3) !important;
+  color: var(--dark-text) !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) :where(.jurusan-hero-panel) {
+  background:
+    radial-gradient(circle at top left, rgba(47, 109, 240, 0.28), transparent 36%),
+    linear-gradient(135deg, #111a2d, #0d1b35) !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) :where(.jurusan-hero-panel div, .stat-mini) {
+  background: rgba(139, 183, 255, 0.1) !important;
+  border-color: rgba(139, 183, 255, 0.22) !important;
+  color: var(--dark-text) !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) :where(
+  .jurusan-hero-copy h1,
+  .jurusan-toolbar h2,
+  .jurusan-side-note h3,
+  .jurusan-card h3,
+  .stat-mini strong,
+  .prospek-line strong,
+  .jurusan-hero-panel span
+) {
+  color: #f7fbff !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) :where(
+  .jurusan-hero-copy p:not(.eyebrow),
+  .result-info,
+  .filter-group label,
+  .jurusan-side-note ul,
+  .jurusan-card-desc,
+  .prospek-line,
+  .stat-mini span,
+  .competition-top,
+  .page-dots,
+  .empty,
+  .jurusan-hero-panel p
+) {
+  color: var(--dark-text-soft) !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) :where(
+  .jurusan-hero-search,
+  .filter-select,
+  .ghost-btn,
+  .compare-btn,
+  .page-btn
+) {
+  background: #0f1a2d !important;
+  border-color: rgba(148, 163, 184, 0.28) !important;
+  color: var(--dark-text) !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) :where(.jurusan-hero-search input) {
+  color: var(--dark-text) !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) :where(.jurusan-icon, .filter-chip, .pill) {
+  background: var(--dark-surface-soft) !important;
+  border-color: rgba(139, 183, 255, 0.25) !important;
+  color: #cfe0ff !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) :where(.meter-track) {
+  background: rgba(148, 163, 184, 0.18) !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) :where(.page-btn:hover, .page-btn.active) {
+  background: linear-gradient(135deg, #2f6df0, #1d4ed8) !important;
+  border-color: rgba(147, 197, 253, 0.36) !important;
+  color: #ffffff !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .jurusan-page .card-actions .btn.primary {
+  color: #111827 !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) :where(.skeleton-line) {
+  background: linear-gradient(90deg, #111a2d 25%, #17233a 37%, #111a2d 63%) !important;
+  background-size: 200% 100% !important;
+}
+
+/* Detail jurusan has strong light overrides, so keep its custom cards dark explicitly. */
+html[data-theme="dark"] body:not(.admin-modern-body) :where(
+  .jurusan-detail-page,
+  .post-detail,
+  .jurusan-detail-shell,
+  .related-content-panel
+) {
+  color: var(--dark-text) !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) :where(
+  .jurusan-hero-card,
+  .quick-facts-card,
+  .detail-jump-nav,
+  .desktop-section-nav,
+  .mobile-section-select,
+  .mobile-detail-nav,
+  .hero-summary-card,
+  .mini-stat-grid div,
+  .quick-facts-card div,
+  .fit-item,
+  .career-card,
+  .career-icon,
+  .related-content-block,
+  .related-jurusan-card,
+  .admission-section,
+  .admission-card,
+  .admission-table-wrap,
+  .admission-compare-card,
+  .admission-summary-card,
+  .biaya-card,
+  .info-note
+) {
+  background: linear-gradient(180deg, rgba(17, 26, 45, 0.96), rgba(13, 22, 39, 0.93)) !important;
+  border-color: var(--dark-border) !important;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.3) !important;
+  color: var(--dark-text) !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) :where(.highlight-section, .final-action-card) {
+  background:
+    radial-gradient(circle at top left, rgba(47, 109, 240, 0.18), transparent 32%),
+    linear-gradient(180deg, rgba(17, 26, 45, 0.96), rgba(13, 22, 39, 0.93)) !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) :where(
+  .desktop-section-nav a,
+  .detail-jump-nav a,
+  .mobile-detail-nav a,
+  .mobile-section-select select,
+  .admission-tab,
+  .chart-mode-btn,
+  .biaya-tab-btn
+) {
+  background: var(--dark-surface-soft) !important;
+  border-color: rgba(139, 183, 255, 0.25) !important;
+  color: #cfe0ff !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) :where(
+  .desktop-section-nav a:hover,
+  .detail-jump-nav a:hover,
+  .mobile-detail-nav a:hover,
+  .mobile-detail-nav a.active,
+  .admission-tab.active,
+  .chart-mode-btn.active,
+  .biaya-tab-btn.active
+) {
+  background: linear-gradient(135deg, #2f6df0, #1d4ed8) !important;
+  border-color: rgba(147, 197, 253, 0.36) !important;
+  color: #ffffff !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) :where(
+  .jurusan-hero-card h1,
+  .section-title-row h2,
+  .detail-section-card h2,
+  .clean-related-card h3,
+  .related-jurusan-card h3,
+  .mini-stat-grid strong,
+  .quick-facts-card strong,
+  .fit-item p,
+  .career-card,
+  .biaya-item strong,
+  .admission-compare-card strong,
+  .admission-summary-card strong,
+  .faq-jurusan-item summary
+) {
+  color: #f7fbff !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) :where(
+  .detail-breadcrumb,
+  .hero-lead,
+  .compact-content,
+  .clean-related-card p,
+  .final-action-card p:not(.eyebrow),
+  .faq-jurusan-answer,
+  .biaya-title,
+  .biaya-item span,
+  .admission-compare-card small,
+  .mobile-section-select label,
+  .mini-stat-grid span,
+  .quick-facts-card span
+) {
+  color: var(--dark-text-soft) !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) :where(.admission-table th) {
+  background: #162239 !important;
+  color: #f7fbff !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) :where(.admission-table td) {
+  color: var(--dark-text-soft) !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) :where(input, textarea, select, .search-input, .filter-input) {
+  background: #0f1a2d !important;
+  border-color: rgba(148, 163, 184, 0.28) !important;
+  color: var(--dark-text) !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) :where(.global-search-box input, .kampus-list-search input) {
+  background: transparent !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) :where(input, textarea)::placeholder {
+  color: #8191a8 !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) :where(.pill, .tag, .tag-pill, .badge, .chip, .category-chip, .jurusan-pill, .filter-chip, .compare-help-toggle, .compare-tab, .chart-mode-btn, .biaya-tab-btn, .admission-tab) {
+  background: var(--dark-surface-soft) !important;
+  border-color: rgba(139, 183, 255, 0.25) !important;
+  color: #cfe0ff !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) :where(
+  .maba-badge,
+  .search-eyebrow,
+  .hero-card-icon,
+  .result-icon,
+  .result-category,
+  .quick-search button,
+  .filter-chips button,
+  .recent-search button,
+  .calendar-badge,
+  .calendar-semester,
+  .next-event-category,
+  .next-event-days,
+  .month-event,
+  .month-day.today,
+  .maba-btn:not(.primary),
+  .about-eyebrow,
+  .contact-badge
+) {
+  background: var(--dark-surface-soft) !important;
+  border-color: rgba(139, 183, 255, 0.25) !important;
+  color: #cfe0ff !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) :where(table, .table-wrap, .compare-table-wrap) {
+  background: var(--dark-surface-strong) !important;
+  color: var(--dark-text) !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) :where(th) {
+  background: #162239 !important;
+  border-color: var(--dark-border) !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) :where(td) {
+  border-color: rgba(148, 163, 184, 0.18) !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) :where(a:not(.btn):not(.primary):not(.secondary):not(.community-btn):not(.compare-detail-btn)) {
+  color: #a9c9ff !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) :where(.btn.ghost, .secondary, .community-btn.secondary) {
+  background: rgba(139, 183, 255, 0.1) !important;
+  border-color: rgba(139, 183, 255, 0.28) !important;
+  color: #dbeafe !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) :where(.maba-btn.primary, .filter-chips button.active, .ai-message.user, .message.user) {
+  background: linear-gradient(135deg, #2f6df0, #1d4ed8) !important;
+  border-color: rgba(147, 197, 253, 0.36) !important;
+  color: #ffffff !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) :where(.message.bot h1, .message.bot h2, .message.bot h3, .message.bot strong, .ai-header h1) {
+  color: #f7fbff !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) :where(.message.bot code, mark) {
+  background: rgba(250, 204, 21, 0.18) !important;
+  color: #fde68a !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) :where(
+  .post-excerpt,
+  .post-info-row,
+  .post-breadcrumb,
+  .post-content,
+  .post-content p,
+  .toc-list a,
+  .writer-box p
+) {
+  color: var(--dark-text-soft) !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) :where(.post-info-item, .post-type-badge) {
+  background: var(--dark-surface-soft) !important;
+  border-color: rgba(139, 183, 255, 0.25) !important;
+  color: #cfe0ff !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) :where(.post-content blockquote) {
+  background: rgba(37, 99, 235, 0.16) !important;
+  border-color: #60a5fa !important;
+  color: #dbeafe !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) :where(.post-content h2) {
+  border-color: var(--dark-border) !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) :where(.skeleton, .loading-skeleton) {
+  background: linear-gradient(90deg, #111a2d 25%, #17233a 37%, #111a2d 63%) !important;
+}
+
+/* Homepage-specific overrides for cards with stronger page-level selectors. */
+html[data-theme="dark"] body:not(.admin-modern-body) :where(
+  .hero-dashboard-card,
+  .home-mini-item,
+  #homeDokumenList > *,
+  #homeFaqList > *
+) {
+  background: linear-gradient(180deg, rgba(17, 26, 45, 0.95), rgba(13, 22, 39, 0.92)) !important;
+  border-color: var(--dark-border) !important;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.28) !important;
+  color: var(--dark-text) !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) :where(.feature-card)::after {
+  background: rgba(96, 165, 250, 0.12) !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) :where(.feature-card span) {
+  background: rgba(139, 183, 255, 0.12) !important;
+  color: #bfdbfe !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) :where(
+  .hero-dashboard-card strong,
+  .home-mini-item strong,
+  #homeDokumenList a,
+  #homeFaqList a
+) {
+  color: #f7fbff !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) :where(
+  .hero-dashboard-card p,
+  .hero-dashboard-card small,
+  .home-mini-item span,
+  #homeDokumenList p,
+  #homeFaqList p,
+  #homeDokumenList small,
+  #homeFaqList small,
+  #homeDokumenList span,
+  #homeFaqList span
+) {
+  color: var(--dark-text-soft) !important;
+}

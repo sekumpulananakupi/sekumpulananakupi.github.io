@@ -193,6 +193,73 @@
   gap: 14px;
 }
 
+.faq-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 12px;
+  padding: 16px;
+  border: 1px solid rgba(20, 99, 184, 0.12);
+  border-radius: 24px;
+  background: #fff;
+  box-shadow: 0 14px 40px rgba(17, 24, 39, 0.05);
+}
+
+.faq-page-numbers {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.faq-page-button,
+.faq-page-nav {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 42px;
+  min-height: 42px;
+  border: 1px solid rgba(20, 99, 184, 0.14);
+  border-radius: 999px;
+  background: #f7faff;
+  color: #40516d;
+  font-weight: 800;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.faq-page-nav {
+  padding: 0 16px;
+}
+
+.faq-page-button:hover,
+.faq-page-nav:hover:not(:disabled) {
+  border-color: rgba(20, 99, 184, 0.36);
+  color: #1463b8;
+  transform: translateY(-1px);
+}
+
+.faq-page-button.active {
+  border-color: #1463b8;
+  background: #1463b8;
+  color: #fff;
+  box-shadow: 0 10px 24px rgba(20, 99, 184, 0.24);
+}
+
+.faq-page-nav:disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
+}
+
+.faq-pagination-ellipsis {
+  color: #8a96aa;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
 .faq-item {
   border: 1px solid rgba(20, 99, 184, 0.12);
   border-radius: 24px;
@@ -383,6 +450,20 @@
   .faq-answer {
     margin: 0 18px 18px;
     padding: 16px;
+  }
+
+  .faq-pagination {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 14px;
+  }
+
+  .faq-page-numbers {
+    order: -1;
+  }
+
+  .faq-page-nav {
+    width: 100%;
   }
 
   .faq-help-card {

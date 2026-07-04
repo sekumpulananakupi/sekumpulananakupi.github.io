@@ -13,12 +13,41 @@
 
   <ul class="nav-menu" id="navMenu">
     <li><a href="../index.html">Beranda</a></li>
-    <li><a href="../pages/kalender-akademik.html">Kalender</a></li>
-    <li><a href="../pages/jurusan.html">Jurusan</a></li>
-    <li><a href="../pages/lowongan.html">Lowongan</a></li>
-    <li><a href="../pages/dokumen.html">Dokumen</a></li>
-    <li><a href="../pages/faq.html">FAQ</a></li>
+    <li class="nav-dropdown">
+      <button class="nav-dropdown-toggle" type="button" aria-expanded="false">
+        Akademik <i class="fas fa-chevron-down" aria-hidden="true"></i>
+      </button>
+      <ul class="nav-dropdown-menu">
+        <li><a href="../pages/kalender-akademik.html">Kalender</a></li>
+        <li><a href="../pages/jurusan.html">Jurusan</a></li>
+      </ul>
+    </li>
+    <li class="nav-dropdown">
+      <button class="nav-dropdown-toggle" type="button" aria-expanded="false">
+        Karier <i class="fas fa-chevron-down" aria-hidden="true"></i>
+      </button>
+      <ul class="nav-dropdown-menu">
+        <li><a href="../pages/lowongan.html">Lowongan</a></li>
+      </ul>
+    </li>
+    <li class="nav-dropdown">
+      <button class="nav-dropdown-toggle" type="button" aria-expanded="false">
+        Sumber Daya <i class="fas fa-chevron-down" aria-hidden="true"></i>
+      </button>
+      <ul class="nav-dropdown-menu">
+        <li><a href="../pages/info.html">Info Kampus</a></li>
+        <li><a href="../pages/wiki.html">Wiki Kampus</a></li>
+        <li><a href="../pages/dokumen.html">Dokumen</a></li>
+        <li><a href="../pages/faq.html">FAQ</a></li>
+      </ul>
+    </li>
     <li><a href="../pages/komunitas.html">Komunitas</a></li>
     <li><a href="../pages/tentang.html">Tentang</a></li>
+    <li><a href="../pages/hubungi-kami.html">Hubungi Kami</a></li>
+    <li class="theme-nav-item">
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Aktifkan night mode" aria-pressed="false">
+        <i class="fas fa-moon" aria-hidden="true"></i>
+      </button>
+    </li>
   </ul>
 </nav>

@@ -42,10 +42,127 @@
 
 :root { --blue:#163b73; --gold:#f5b940; --bg:#f4f7fb; --text:#172033; --muted:#667085; --white:#fff; --danger:#c0392b; }
 
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --primary: #78a9ff;
+  --primary-2: #9cc0ff;
+  --accent: #ffd166;
+  --text: #edf4ff;
+  --text-soft: #b8c7dd;
+  --muted: #93a4ba;
+  --white: #111a2d;
+  --surface: #0b1220;
+  --surface-2: #121c31;
+  --border: rgba(148, 163, 184, 0.24);
+  --blue: #8bb7ff;
+  --gold: #ffd166;
+  --bg: #080f1d;
+  --danger: #ff8a80;
+  --shadow-sm: 0 4px 14px rgba(0, 0, 0, 0.28);
+  --shadow-md: 0 14px 34px rgba(0, 0, 0, 0.34);
+  --shadow-lg: 0 22px 54px rgba(0, 0, 0, 0.42);
+}
+
 
 *{box-sizing:border-box}
 
  body{margin:0;font-family:Arial, sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+
+html[data-theme="dark"] body:not(.admin-modern-body) {
+  background:
+    radial-gradient(circle at top left, rgba(38, 92, 168, 0.34), transparent 34rem),
+    linear-gradient(180deg, #08101f 0%, #0d1424 45%, #090f1c 100%);
+  color: var(--text);
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) a {
+  color: #a9c9ff;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) input,
+html[data-theme="dark"] body:not(.admin-modern-body) textarea,
+html[data-theme="dark"] body:not(.admin-modern-body) select {
+  background: #0f1a2d;
+  border-color: rgba(148, 163, 184, 0.28);
+  color: var(--text);
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) input::placeholder,
+html[data-theme="dark"] body:not(.admin-modern-body) textarea::placeholder {
+  color: #8191a8;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .section,
+html[data-theme="dark"] body:not(.admin-modern-body) main {
+  color: var(--text);
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .item-card,
+html[data-theme="dark"] body:not(.admin-modern-body) .feature-card,
+html[data-theme="dark"] body:not(.admin-modern-body) .form-card,
+html[data-theme="dark"] body:not(.admin-modern-body) .post-card,
+html[data-theme="dark"] body:not(.admin-modern-body) .stat-card,
+html[data-theme="dark"] body:not(.admin-modern-body) .empty,
+html[data-theme="dark"] body:not(.admin-modern-body) .empty-state,
+html[data-theme="dark"] body:not(.admin-modern-body) .loading-state,
+html[data-theme="dark"] body:not(.admin-modern-body) .compare-card,
+html[data-theme="dark"] body:not(.admin-modern-body) .admission-summary-card,
+html[data-theme="dark"] body:not(.admin-modern-body) .faq-jurusan-item,
+html[data-theme="dark"] body:not(.admin-modern-body) .biaya-section,
+html[data-theme="dark"] body:not(.admin-modern-body) .detail-section-card,
+html[data-theme="dark"] body:not(.admin-modern-body) .clean-related-card,
+html[data-theme="dark"] body:not(.admin-modern-body) .ai-card,
+html[data-theme="dark"] body:not(.admin-modern-body) .chat-panel {
+  background: rgba(17, 26, 45, 0.88) !important;
+  border-color: rgba(148, 163, 184, 0.2) !important;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.28) !important;
+  color: var(--text) !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) h1,
+html[data-theme="dark"] body:not(.admin-modern-body) h2,
+html[data-theme="dark"] body:not(.admin-modern-body) h3,
+html[data-theme="dark"] body:not(.admin-modern-body) h4,
+html[data-theme="dark"] body:not(.admin-modern-body) strong {
+  color: #f7fbff;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) p,
+html[data-theme="dark"] body:not(.admin-modern-body) li,
+html[data-theme="dark"] body:not(.admin-modern-body) span,
+html[data-theme="dark"] body:not(.admin-modern-body) td,
+html[data-theme="dark"] body:not(.admin-modern-body) .post-content,
+html[data-theme="dark"] body:not(.admin-modern-body) .compare-desc,
+html[data-theme="dark"] body:not(.admin-modern-body) .compact-content {
+  color: inherit;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) .pill,
+html[data-theme="dark"] body:not(.admin-modern-body) .tag-pill,
+html[data-theme="dark"] body:not(.admin-modern-body) .jurusan-pill,
+html[data-theme="dark"] body:not(.admin-modern-body) .category-chip,
+html[data-theme="dark"] body:not(.admin-modern-body) .chart-mode-btn,
+html[data-theme="dark"] body:not(.admin-modern-body) .biaya-tab-btn,
+html[data-theme="dark"] body:not(.admin-modern-body) .admission-tab {
+  background: rgba(139, 183, 255, 0.13) !important;
+  border-color: rgba(139, 183, 255, 0.25) !important;
+  color: #cfe0ff !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) table,
+html[data-theme="dark"] body:not(.admin-modern-body) .table-wrap {
+  background: #101a2d !important;
+  color: var(--text) !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) th {
+  background: #162239 !important;
+  color: #dce8f8 !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) td {
+  border-color: rgba(148, 163, 184, 0.18) !important;
+}
 
 .container{width:min(1120px,92%);margin:auto}
 

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wiki Kampus - SA UPI</title>
+  <meta name="description" content="Wiki Kampus SA UPI berisi panduan, istilah akademik, dan catatan praktis kehidupan kampus UPI." />
+
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZWLZ2952C1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-ZWLZ2952C1');
+  </script>
+</head>
+
+<body>
+  <header class="site-header">
+    <div data-component="navbar"></div>
+  </header>
+
+  <main class="kampus-list-page wiki-theme" data-content-type="wiki">
+    <section class="kampus-list-hero">
+      <div class="container kampus-list-hero__grid">
+        <div>
+          <p class="kampus-list-eyebrow"><i class="fa-solid fa-book-open"></i> Pengetahuan Kampus</p>
+          <h1>Wiki Kampus</h1>
+          <p>Baca panduan ringkas tentang istilah, proses akademik, dan tips praktis menjalani kehidupan kampus di UPI.</p>
+        </div>
+
+        <form class="kampus-list-search" role="search">
+          <label for="kampusSearch">Cari wiki</label>
+          <div>
+            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+            <input id="kampusSearch" type="search" placeholder="Cari istilah, panduan, atau topik..." autocomplete="off" />
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section class="container kampus-list-section" aria-label="Daftar wiki kampus">
+      <div class="kampus-list-topbar">
+        <div>
+          <p class="eyebrow">Semua Wiki</p>
+          <h2>Daftar Wiki Kampus</h2>
+        </div>
+        <span id="kampusCount" class="kampus-list-count"></span>
+      </div>
+
+      <div class="kampus-list-grid" id="kampusList"></div>
+
+      <div class="load-more-wrapper">
+        <button id="loadMoreKampus" class="btn primary" type="button" hidden>Muat Lagi</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div data-component="footer"></div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/components.js"></script>
+  <script src="../assets/js/utils.js"></script>
+  <script src="../modules/kampus/kampus-list.js"></script>
+  <script src="../assets/js/menu.js"></script>
+</body>
+</html>

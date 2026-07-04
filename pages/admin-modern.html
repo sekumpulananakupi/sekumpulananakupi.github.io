@@ -385,8 +385,10 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
                 <input type="hidden" id="wikiTag" value="" />
                 <div id="wikiTagMulti" hidden aria-hidden="true"></div>
 
-                <label>Kategori Wiki</label>
-                <div id="wikiKategoriMulti" class="checkbox-group compact-category-group"></div>
+                <label for="wikiKategoriInput">Kategori Wiki</label>
+                <input type="text" id="wikiKategoriInput" list="wikiKategoriList" placeholder="Ketik kategori wiki, contoh: Panduan Akademik" />
+                <datalist id="wikiKategoriList"></datalist>
+                <div id="wikiKategoriMulti" hidden aria-hidden="true"></div>
 
                 <div id="wikiEditor"></div>
                 <input type="hidden" id="wikiContent">

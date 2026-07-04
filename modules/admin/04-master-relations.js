@@ -50,10 +50,62 @@ function renderMasterInputs() {
   const kategoriWiki = kategoriData.filter(item => item.tipe === "wiki");
 
   fillCheckGroup("infoKategoriMulti", kategoriInfo);
-  fillCheckGroup("wikiKategoriMulti", kategoriWiki);
+  fillWikiKategoriInput(kategoriWiki);
   fillCheckGroup("wikiTagMulti", tagData);
   fillCheckGroup("jobJurusanMulti", jurusanData);
   fillSingleSelect("statistikJurusan", jurusanData);
+}
+
+function fillWikiKategoriInput(data) {
+  const input = qs("wikiKategoriInput");
+  const list = qs("wikiKategoriList");
+  const legacy = qs("wikiKategoriMulti");
+  if (list) {
+    list.innerHTML = data.map(item => `<option value="${item.nama}"></option>`).join("");
+  }
+  if (legacy) fillCheckGroup("wikiKategoriMulti", data);
+  if (legacy) legacy.hidden = true;
+  if (input) input.dataset.ready = "true";
+}
+
+function slugifyAdmin(value) {
+  return String(value || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "") || "kategori";
+}
+
+async function ensureWikiKategoriFromInput() {
+  const input = qs("wikiKategoriInput");
+  const name = input?.value.trim();
+  if (!name) return [];
+
+  let existing = kategoriData.find(item =>
+    item.tipe === "wiki" && item.nama.toLowerCase() === name.toLowerCase()
+  );
+  if (existing) return [Number(existing.id)];
+
+  const baseSlug = slugifyAdmin(name);
+  let slug = baseSlug;
+  let counter = 2;
+  while (kategoriData.some(item => item.slug === slug)) {
+    slug = `${baseSlug}-${counter++}`;
+  }
+
+  const { data, error } = await supabaseClient
+    .from("kategori")
+    .insert({ nama: name, slug, tipe: "wiki" })
+    .select("id, nama, slug, tipe")
+    .single();
+
+  if (error) throw error;
+  kategoriData.push(data);
+  clearMasterDataCache();
+  await loadMasterData();
+  if (input) input.value = data.nama;
+  return [Number(data.id)];
 }
 
 function fillCheckGroup(elementId, data) {

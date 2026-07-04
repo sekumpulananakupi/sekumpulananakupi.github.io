@@ -3162,3 +3162,124 @@ body.admin-dark .grid-list .admin-list-item {
     grid-template-columns:1fr;
   }
 }
+
+/* Admin dark readability overrides */
+body.admin-modern-body.admin-dark {
+  background: #07111f;
+  color: #e5e7eb;
+}
+
+body.admin-dark .admin-page .section-heading,
+body.admin-dark .form-card,
+body.admin-dark .grid-list,
+body.admin-dark .admin-list,
+body.admin-dark .filter-row,
+body.admin-dark .admin-panel-card,
+body.admin-dark .job-import-card,
+body.admin-dark .notion-ai-box,
+body.admin-dark .modern-writing-assistant,
+body.admin-dark .editor-helper-card {
+  background: rgba(15, 23, 42, .76) !important;
+  border-color: rgba(148, 163, 184, .18) !important;
+  color: #e5e7eb !important;
+}
+
+body.admin-dark .section-heading h2,
+body.admin-dark .form-card h3,
+body.admin-dark .grid-list h3,
+body.admin-dark .admin-list h3,
+body.admin-dark .admin-list-item h3,
+body.admin-dark .job-import-card h3,
+body.admin-dark .notion-ai-box h3,
+body.admin-dark .editor-helper-card h3,
+body.admin-dark .helper-mini-metric strong,
+body.admin-dark .readiness-card-info strong {
+  color: #f8fafc !important;
+}
+
+body.admin-dark .section-heading p,
+body.admin-dark .form-card label,
+body.admin-dark .form-group label,
+body.admin-dark .grid-list p,
+body.admin-dark .admin-list p,
+body.admin-dark .admin-list small,
+body.admin-dark .job-import-card p,
+body.admin-dark .notion-ai-box p,
+body.admin-dark .editor-helper-card p,
+body.admin-dark .helper-mini-metric span,
+body.admin-dark .readiness-card-info p,
+body.admin-dark .empty {
+  color: #cbd5e1 !important;
+}
+
+body.admin-dark .form-card input,
+body.admin-dark .form-card select,
+body.admin-dark .form-card textarea,
+body.admin-dark .section-heading input,
+body.admin-dark .filter-row select,
+body.admin-dark .job-import-card textarea,
+body.admin-dark .notion-ai-input,
+body.admin-dark .notion-ai-textarea {
+  background: rgba(2, 6, 23, .72) !important;
+  border-color: rgba(148, 163, 184, .22) !important;
+  color: #f8fafc !important;
+}
+
+body.admin-dark .form-card input::placeholder,
+body.admin-dark .form-card textarea::placeholder,
+body.admin-dark .section-heading input::placeholder,
+body.admin-dark .job-import-card textarea::placeholder,
+body.admin-dark .notion-ai-input::placeholder,
+body.admin-dark .notion-ai-textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+#wikiKategoriMulti[hidden] {
+  display: none !important;
+}
+
+body.admin-dark .checkbox-group,
+body.admin-dark .multi-select-panel,
+body.admin-dark .notion-ai-options label,
+body.admin-dark .helper-mini-metric,
+body.admin-dark .editor-status-row,
+body.admin-dark .job-image-import,
+body.admin-dark .job-image-import-preview,
+body.admin-dark .admin-list-item,
+body.admin-dark .grid-list > article {
+  background: rgba(2, 6, 23, .44) !important;
+  border-color: rgba(148, 163, 184, .18) !important;
+  color: #e5e7eb !important;
+}
+
+body.admin-dark .multi-select-button,
+body.admin-dark .multi-select-search,
+body.admin-dark .notion-ai-action {
+  background: rgba(15, 23, 42, .9) !important;
+  border-color: rgba(148, 163, 184, .22) !important;
+  color: #e5e7eb !important;
+}
+
+body.admin-dark .btn.ghost {
+  background: rgba(59, 130, 246, .16) !important;
+  color: #bfdbfe !important;
+}
+
+body.admin-dark .pill,
+body.admin-dark .notion-ai-badge {
+  background: rgba(96, 165, 250, .16) !important;
+  color: #bfdbfe !important;
+  border-color: rgba(96, 165, 250, .24) !important;
+}
+
+body.admin-dark .ql-toolbar,
+body.admin-dark .ql-container,
+body.admin-dark .ql-editor {
+  background: rgba(2, 6, 23, .66) !important;
+  color: #f8fafc !important;
+  border-color: rgba(148, 163, 184, .2) !important;
+}
+
+body.admin-dark .ql-editor.ql-blank::before {
+  color: #94a3b8 !important;
+}

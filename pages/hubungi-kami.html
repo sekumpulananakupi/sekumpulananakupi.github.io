@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hubungi Kami - SA UPI</title>
+  <meta name="description" content="Hubungi Sekumpulan Anak UPI melalui email atau WhatsApp untuk pertanyaan, kerja sama, dan informasi komunitas." />
+
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+  <style>
+    .contact-page {
+      padding: 34px 0 58px;
+    }
+
+    .contact-hero {
+      position: relative;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 28px;
+      align-items: center;
+      padding: 46px;
+      border-radius: 32px;
+      background:
+        radial-gradient(circle at 12% 18%, rgba(250, 204, 21, .26), transparent 28%),
+        radial-gradient(circle at 92% 10%, rgba(14, 165, 233, .22), transparent 32%),
+        linear-gradient(135deg, #082f49, #0f766e);
+      color: #fff;
+      box-shadow: 0 24px 60px rgba(8, 47, 73, .22);
+    }
+
+    .contact-hero::after {
+      content: "";
+      position: absolute;
+      width: 290px;
+      height: 290px;
+      right: -105px;
+      bottom: -130px;
+      border-radius: 999px;
+      border: 34px solid rgba(255, 255, 255, .12);
+    }
+
+    .contact-copy,
+    .contact-panel {
+      position: relative;
+      z-index: 1;
+    }
+
+    .contact-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .14);
+      color: #ecfeff;
+      font-size: 14px;
+      font-weight: 800;
+      margin-bottom: 18px;
+    }
+
+    .contact-hero h1 {
+      margin: 0 0 16px;
+      max-width: 720px;
+      font-size: clamp(34px, 6vw, 62px);
+      line-height: 1.04;
+      letter-spacing: -1.2px;
+      color: #fff;
+    }
+
+    .contact-hero p {
+      margin: 0;
+      max-width: 650px;
+      color: rgba(255, 255, 255, .88);
+      font-size: 17px;
+      line-height: 1.8;
+    }
+
+    .contact-panel {
+      padding: 24px;
+      border: 1px solid rgba(255, 255, 255, .2);
+      border-radius: 28px;
+      background: rgba(255, 255, 255, .12);
+      backdrop-filter: blur(14px);
+    }
+
+    .contact-panel h2 {
+      margin: 0 0 14px;
+      color: #fff;
+      font-size: 24px;
+    }
+
+    .contact-list {
+      display: grid;
+      gap: 12px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .contact-list a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, .14);
+      color: #fff;
+      text-decoration: none;
+      font-weight: 800;
+      transition: transform .2s ease, background .2s ease;
+    }
+
+    .contact-list a:hover {
+      transform: translateY(-2px);
+      background: rgba(255, 255, 255, .2);
+    }
+
+    .contact-list i {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      background: #facc15;
+      color: #0f172a;
+      font-size: 18px;
+      flex: 0 0 auto;
+    }
+
+    .contact-section {
+      margin-top: 28px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .contact-card {
+      padding: 24px;
+      border-radius: 24px;
+      background: #fff;
+      border: 1px solid rgba(15, 23, 42, .08);
+      box-shadow: 0 14px 34px rgba(15, 23, 42, .07);
+    }
+
+    .contact-card .icon {
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 14px;
+      border-radius: 16px;
+      background: rgba(15, 118, 110, .1);
+      color: #0f766e;
+      font-size: 20px;
+    }
+
+    .contact-card h2 {
+      margin: 0 0 8px;
+      color: #0f172a;
+      font-size: 21px;
+    }
+
+    .contact-card p {
+      margin: 0 0 16px;
+      color: #64748b;
+      line-height: 1.75;
+    }
+
+    .contact-card a {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #0f766e;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    @media (max-width: 860px) {
+      .contact-hero,
+      .contact-section {
+        grid-template-columns: 1fr;
+      }
+
+      .contact-hero {
+        padding: 30px;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .contact-hero {
+        padding: 24px;
+        border-radius: 24px;
+      }
+
+      .contact-list a {
+        align-items: flex-start;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="../assets/css/dark-mode.css" />
+</head>
+
+<body>
+  <header class="site-header">
+    <div data-component="navbar"></div>
+  </header>
+
+  <main class="container contact-page">
+    <section class="contact-hero">
+      <div class="contact-copy">
+        <span class="contact-badge"><i class="fa-solid fa-paper-plane"></i> Kanal Resmi SA UPI</span>
+        <h1>Hubungi kami untuk info, kolaborasi, dan pertanyaan seputar UPI.</h1>
+        <p>
+          Kirim pesan lewat email atau WhatsApp. Kami akan membantu mengarahkan pertanyaanmu
+          terkait informasi kampus, komunitas, dokumen, dan peluang kerja.
+        </p>
+      </div>
+
+      <aside class="contact-panel" aria-label="Kontak cepat SA UPI">
+        <h2>Kontak Cepat</h2>
+        <ul class="contact-list">
+          <li>
+            <a href="mailto:sekumpulananakupi@gmail.com">
+              <i class="fa-solid fa-envelope"></i>
+              <span>sekumpulananakupi@gmail.com</span>
+            </a>
+          </li>
+          <li>
+            <a href="https://wa.me/6283128668215" target="_blank" rel="noopener noreferrer">
+              <i class="fa-brands fa-whatsapp"></i>
+              <span>+62 831-2866-8215</span>
+            </a>
+          </li>
+        </ul>
+      </aside>
+    </section>
+
+    <section class="contact-section" aria-label="Pilihan kontak">
+      <article class="contact-card">
+        <div class="icon"><i class="fa-solid fa-envelope-open-text"></i></div>
+        <h2>Email</h2>
+        <p>Cocok untuk kerja sama, pengiriman dokumen, atau pertanyaan yang butuh detail lengkap.</p>
+        <a href="mailto:sekumpulananakupi@gmail.com">Kirim email <i class="fa-solid fa-arrow-right"></i></a>
+      </article>
+
+      <article class="contact-card">
+        <div class="icon"><i class="fa-brands fa-whatsapp"></i></div>
+        <h2>WhatsApp</h2>
+        <p>Gunakan WhatsApp untuk pertanyaan singkat dan komunikasi yang lebih cepat.</p>
+        <a href="https://wa.me/6283128668215" target="_blank" rel="noopener noreferrer">Chat WhatsApp <i class="fa-solid fa-arrow-right"></i></a>
+      </article>
+
+      <article class="contact-card">
+        <div class="icon"><i class="fa-solid fa-circle-info"></i></div>
+        <h2>Sebelum Menghubungi</h2>
+        <p>Cek FAQ dan dokumen terlebih dahulu; mungkin jawaban yang kamu cari sudah tersedia.</p>
+        <a href="faq.html">Buka FAQ <i class="fa-solid fa-arrow-right"></i></a>
+      </article>
+    </section>
+  </main>
+
+  <script src="../assets/js/components.js"></script>
+  <script src="../assets/js/menu.js"></script>
+</body>
+</html>

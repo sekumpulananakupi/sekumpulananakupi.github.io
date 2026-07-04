@@ -5,6 +5,8 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 let faqData = [];
 let activeFaqKategori = "all";
+let currentFaqPage = 1;
+const FAQ_ITEMS_PER_PAGE = 8;
 
 function escapeHTML(text) {
   return String(text || "").replace(/[&<>'"]/g, char => ({
@@ -117,6 +119,99 @@ function updateFaqMeta(filteredCount, totalCount) {
   `;
 }
 
+function getPaginationRange(currentPage, totalPages) {
+  const pages = [];
+  const windowSize = 1;
+
+  for (let page = 1; page <= totalPages; page += 1) {
+    const isEdge = page === 1 || page === totalPages;
+    const isNearCurrent = Math.abs(page - currentPage) <= windowSize;
+
+    if (isEdge || isNearCurrent) {
+      pages.push(page);
+      continue;
+    }
+
+    if (pages[pages.length - 1] !== "...") {
+      pages.push("...");
+    }
+  }
+
+  return pages;
+}
+
+function renderFaqPagination(totalItems) {
+  const totalPages = Math.ceil(totalItems / FAQ_ITEMS_PER_PAGE);
+
+  if (totalPages <= 1) return "";
+
+  const pages = getPaginationRange(currentFaqPage, totalPages)
+    .map(page => {
+      if (page === "...") {
+        return `<span class="faq-pagination-ellipsis" aria-hidden="true">...</span>`;
+      }
+
+      return `
+        <button
+          class="faq-page-button${page === currentFaqPage ? " active" : ""}"
+          type="button"
+          data-page="${page}"
+          aria-label="Buka halaman ${page}"
+          ${page === currentFaqPage ? 'aria-current="page"' : ""}
+        >
+          ${page}
+        </button>
+      `;
+    })
+    .join("");
+
+  return `
+    <nav class="faq-pagination" aria-label="Navigasi halaman FAQ">
+      <button
+        class="faq-page-nav"
+        type="button"
+        data-page="${currentFaqPage - 1}"
+        ${currentFaqPage === 1 ? "disabled" : ""}
+      >
+        <i class="fas fa-chevron-left"></i>
+        Sebelumnya
+      </button>
+
+      <div class="faq-page-numbers">
+        ${pages}
+      </div>
+
+      <button
+        class="faq-page-nav"
+        type="button"
+        data-page="${currentFaqPage + 1}"
+        ${currentFaqPage === totalPages ? "disabled" : ""}
+      >
+        Berikutnya
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </nav>
+  `;
+}
+
+function bindFaqPagination(container, totalPages) {
+  container.querySelectorAll("[data-page]").forEach(button => {
+    button.addEventListener("click", () => {
+      const nextPage = Number(button.dataset.page);
+
+      if (!nextPage || nextPage === currentFaqPage) return;
+
+      currentFaqPage = Math.min(Math.max(nextPage, 1), totalPages);
+      renderFaq();
+
+      container.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    });
+  });
+}
+
 function highlightKeyword(text) {
   const searchInput = document.getElementById("faqSearch");
   const keyword = searchInput ? searchInput.value.trim() : "";
@@ -157,11 +252,22 @@ function renderFaq() {
   if (!container) return;
 
   const filtered = getFilteredFaq();
+  const totalPages = Math.ceil(filtered.length / FAQ_ITEMS_PER_PAGE) || 1;
+
+  currentFaqPage = Math.min(currentFaqPage, totalPages);
+
+  const startIndex = (currentFaqPage - 1) * FAQ_ITEMS_PER_PAGE;
+  const visibleFaq = filtered.slice(startIndex, startIndex + FAQ_ITEMS_PER_PAGE);
 
   updateFaqMeta(filtered.length, faqData.length);
 
   if (filtered.length) {
-    container.innerHTML = filtered.map(createFaqCard).join("");
+    container.innerHTML = `
+      ${visibleFaq.map(createFaqCard).join("")}
+      ${renderFaqPagination(filtered.length)}
+    `;
+
+    bindFaqPagination(container, totalPages);
     return;
   }
 
@@ -202,6 +308,7 @@ function renderFaqCategoryChips() {
 
       button.classList.add("active");
       activeFaqKategori = button.dataset.kategori;
+      currentFaqPage = 1;
 
       renderFaq();
     });
@@ -248,6 +355,7 @@ function renderPopularFaq() {
 
       searchInput.value = popularItems[index].pertanyaan;
       activeFaqKategori = "all";
+      currentFaqPage = 1;
 
       document.querySelectorAll("#faqCategoryChips .category-chip").forEach(btn => {
         btn.classList.toggle("active", btn.dataset.kategori === "all");
@@ -272,6 +380,7 @@ if (faqSearch) {
     clearTimeout(faqTimer);
 
     faqTimer = setTimeout(() => {
+      currentFaqPage = 1;
       renderFaq();
     }, 250);
   });
