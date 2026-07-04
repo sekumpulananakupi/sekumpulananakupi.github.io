@@ -288,7 +288,97 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
               <input type="search" id="wikiSearch" placeholder="Cari wiki..." />
             </div>
 
-            <div class="info-editor-layout wiki-editor-layout">
+
+            <div class="notion-ai-box">
+  <div class="notion-ai-top">
+    <div>
+      <h3>✨ AI Wiki Assistant</h3>
+      <p>Buat, poles, atau optimalkan artikel Wiki Kampus.</p>
+    </div>
+
+    <span class="notion-ai-badge">Beta</span>
+  </div>
+
+  <input
+    id="wikiAiTopic"
+    class="notion-ai-input"
+    placeholder="Tulis topik artikel, misalnya: Cara Menghubungi Dosen"
+  />
+
+  <textarea
+    id="wikiAiAngle"
+    class="notion-ai-textarea"
+    placeholder="Tambahkan konteks opsional, misalnya: untuk mahasiswa baru UPI, gaya santai, sertakan contoh chat"
+  ></textarea>
+
+  <div class="notion-ai-options">
+    <label><input type="checkbox" id="aiSeo" checked /> SEO friendly</label>
+    <label><input type="checkbox" id="aiMaba" checked /> Untuk maba</label>
+    <label><input type="checkbox" id="aiFaq" /> Tambahkan FAQ</label>
+    <label><input type="checkbox" id="aiTips" checked /> Tambahkan tips</label>
+    <label><input type="checkbox" id="aiSteps" checked /> Buat langkah praktis</label>
+  </div>
+
+<div class="notion-ai-actions">
+  <button type="button" id="generateWikiAI" class="notion-ai-primary">
+    <i class="fa-solid fa-wand-magic-sparkles"></i>
+    Generate Artikel
+  </button>
+
+  <button type="button" class="notion-ai-action" data-ai-action="improve">
+    <i class="fa-solid fa-pen-to-square"></i>
+    Perbaiki
+  </button>
+
+  <button type="button" class="notion-ai-action" data-ai-action="shorten">
+    <i class="fa-solid fa-compress"></i>
+    Persingkat
+  </button>
+
+  <button type="button" class="notion-ai-action" data-ai-action="expand">
+    <i class="fa-solid fa-expand"></i>
+    Perpanjang
+  </button>
+
+  <button type="button" class="notion-ai-action" data-ai-action="formal">
+    <i class="fa-solid fa-user-tie"></i>
+    Formal
+  </button>
+
+  <button type="button" class="notion-ai-action" data-ai-action="casual">
+    <i class="fa-solid fa-face-smile"></i>
+    Santai
+  </button>
+
+  <button type="button" class="notion-ai-action" data-ai-action="faq">
+    <i class="fa-solid fa-circle-question"></i>
+    FAQ
+  </button>
+
+  <button type="button" class="notion-ai-action" data-ai-action="continue">
+    <i class="fa-solid fa-forward"></i>
+    Lanjutkan
+  </button>
+
+  <button type="button" class="notion-ai-action" data-ai-action="selection-improve">
+    <i class="fa-solid fa-pencil"></i>
+    Seleksi
+  </button>
+
+  <button type="button" class="notion-ai-action" data-ai-action="factcheck">
+    <i class="fa-solid fa-shield-check"></i>
+    Fact Check
+  </button>
+
+  <button type="button" class="notion-ai-action" data-ai-action="thumbnail">
+    <i class="fa-solid fa-image"></i>
+    Thumbnail
+  </button>
+</div>
+
+<div id="wikiAiStatus" class="notion-ai-status"></div>
+
+          <div class="info-editor-layout wiki-editor-layout">
               <form id="wikiForm" class="form-card modern-editor-form">
                 <input type="hidden" id="wikiId" />
                 <input type="text" id="wikiTitle" class="info-title-input" placeholder="Judul wiki" required />
@@ -353,6 +443,45 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
               <input type="search" id="jobSearch" placeholder="Cari lowongan..." />
             </div>
 
+            <div class="job-import-card">
+              <div class="job-import-head">
+                <div>
+                  <p class="eyebrow">Import Cepat</p>
+                  <h3>Paste lowongan dari Telegram</h3>
+                  <p>Tempel teks mentah, lalu sistem bantu isi form lowongan otomatis.</p>
+                </div>
+                <div class="job-import-score">
+                  <span>Skor</span>
+                  <strong id="jobImportScore">0</strong>
+                </div>
+              </div>
+
+              <textarea id="jobRawImport" placeholder="Paste teks lowongan dari Telegram di sini..."></textarea>
+
+              <div class="job-import-actions">
+                <button type="button" class="btn primary" id="analyzeJobImport">
+                  Analisis & Isi Form
+                </button>
+                <button type="button" class="btn ghost" id="clearJobImport">
+                  Bersihkan
+                </button>
+              </div>
+
+              <div class="job-image-import">
+  <label for="jobImportImage">Upload poster lowongan</label>
+  <input type="file" id="jobImportImage" accept="image/*">
+
+  <div id="jobImageImportPreview" class="job-image-import-preview"></div>
+
+  <button type="button" class="btn primary" id="analyzeJobImageImport">
+    Analisis Gambar
+  </button>
+</div>
+
+              <p id="jobImportWarning" class="job-import-warning"></p>
+            </div>
+
+            
             <div class="info-editor-layout job-editor-layout">
               <form id="jobForm" class="form-card modern-job-form">
               <input type="hidden" id="jobId" />
@@ -366,7 +495,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
                   <option value="">Pilih sumber</option>
                   <option value="LinkedIn">LinkedIn</option>
                   <option value="Jobstreet">Jobstreet</option>
-                  <option value="Kalibrr">Telegram</option>
+                  <option value="Telegram">Telegram</option>
                   <option value="Glints">Glints</option>
                   <option value="Website Perusahaan">Website Perusahaan</option>
                   <option value="Karir UPI">Karir UPI</option>
@@ -832,6 +961,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
   <script src="../modules/admin/07-render-dashboard-health.js"></script>
   <script src="../modules/admin/08-crud-info.js"></script>
   <script src="../modules/admin/09-crud-wiki.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <script src="../modules/admin/10-crud-lowongan.js"></script>
   <script src="../modules/admin/11-crud-dokumen.js"></script>
   <script src="../modules/admin/12-crud-faq.js"></script>

@@ -2483,3 +2483,682 @@ body.admin-dark .grid-list .admin-list-item {
   .modern-job-form { grid-template-columns: 1fr; }
   .editor-status-row { flex-direction: column; align-items: flex-start; }
 }
+
+.job-import-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 22px;
+  padding: 20px;
+  margin: 18px 0 24px;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.06);
+}
+
+.job-import-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 14px;
+}
+
+.job-import-head h3 {
+  margin: 4px 0;
+  font-size: 20px;
+}
+
+.job-import-head p {
+  margin: 0;
+  color: #64748b;
+}
+
+.job-import-score {
+  min-width: 82px;
+  text-align: center;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 16px;
+  padding: 10px 12px;
+}
+
+.job-import-score span {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: #2563eb;
+}
+
+.job-import-score strong {
+  font-size: 28px;
+  color: #1d4ed8;
+}
+
+#jobRawImport {
+  width: 100%;
+  min-height: 180px;
+  resize: vertical;
+  border: 1px solid #dbe3ef;
+  border-radius: 16px;
+  padding: 14px;
+  font: inherit;
+  background: #f8fafc;
+  outline: none;
+}
+
+#jobRawImport:focus {
+  background: #fff;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+}
+
+.job-import-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.job-import-warning {
+  margin: 10px 0 0;
+  font-size: 14px;
+  color: #b45309;
+}
+
+@media (max-width: 768px) {
+  .job-import-head {
+    flex-direction: column;
+  }
+
+  .job-import-score {
+    width: 100%;
+  }
+
+  .job-import-actions {
+    flex-direction: column;
+  }
+}
+
+.job-image-import {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+  padding: 14px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 16px;
+  background: #f8fafc;
+}
+
+.job-image-import label {
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.job-image-import input[type="file"] {
+  width: 100%;
+}
+
+.job-image-preview-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  background: #fff;
+}
+
+.job-image-preview-card img {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.job-image-preview-card span {
+  font-size: 13px;
+  color: #475569;
+  word-break: break-word;
+}
+
+/* ==========================================
+   AI WIKI GENERATOR
+========================================== */
+
+.ai-box{
+    margin-top:18px;
+    padding:18px;
+    background:var(--surface,#fff);
+    border:1px solid var(--border,#e5e7eb);
+    border-radius:16px;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    box-shadow:0 8px 24px rgba(0,0,0,.05);
+}
+
+.ai-box label{
+    font-size:15px;
+    font-weight:700;
+    color:var(--text,#222);
+}
+
+.ai-box input,
+.ai-box textarea{
+    width:100%;
+    border:1px solid #d1d5db;
+    border-radius:12px;
+    padding:12px 14px;
+    font-size:14px;
+    background:#fff;
+    transition:.25s;
+    resize:vertical;
+}
+
+.ai-box textarea{
+    min-height:90px;
+}
+
+.ai-box input:focus,
+.ai-box textarea:focus{
+    outline:none;
+    border-color:#2563eb;
+    box-shadow:0 0 0 4px rgba(37,99,235,.12);
+}
+
+.ai-box button{
+    align-self:flex-start;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:12px 18px;
+    border:none;
+    border-radius:12px;
+    background:#2563eb;
+    color:white;
+    font-weight:600;
+    cursor:pointer;
+    transition:.25s;
+}
+
+.ai-box button:hover{
+    background:#1d4ed8;
+    transform:translateY(-1px);
+}
+
+.ai-box button:disabled{
+    opacity:.6;
+    cursor:not-allowed;
+    transform:none;
+}
+
+#wikiAiStatus{
+    font-size:13px;
+    color:#6b7280;
+    min-height:18px;
+}
+
+.ai-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:20px;
+}
+
+.ai-header h3{
+    margin:0;
+    font-size:18px;
+}
+
+.ai-header small{
+    color:#6b7280;
+}
+
+.ai-header button{
+    white-space:nowrap;
+}
+
+/* ==========================================
+   NOTION STYLE AI WIKI ASSISTANT
+========================================== */
+
+.notion-ai-box{
+  margin:20px 0;
+  padding:18px;
+  border:1px solid rgba(120,120,120,.18);
+  border-radius:18px;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,.92), rgba(248,250,252,.96));
+  box-shadow:
+    0 18px 45px rgba(15,23,42,.08),
+    inset 0 1px 0 rgba(255,255,255,.9);
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+
+.notion-ai-top{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:16px;
+}
+
+.notion-ai-top h3{
+  margin:0;
+  font-size:18px;
+  font-weight:800;
+  color:#111827;
+  letter-spacing:-.02em;
+}
+
+.notion-ai-top p{
+  margin:4px 0 0;
+  font-size:13px;
+  color:#6b7280;
+}
+
+.notion-ai-badge{
+  padding:5px 10px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:700;
+  color:#7c3aed;
+  background:#f3e8ff;
+  border:1px solid #e9d5ff;
+}
+
+.notion-ai-input,
+.notion-ai-textarea{
+  width:100%;
+  border:1px solid #e5e7eb;
+  border-radius:14px;
+  background:#fff;
+  color:#111827;
+  padding:13px 14px;
+  font-size:14px;
+  outline:none;
+  transition:.2s ease;
+}
+
+.notion-ai-textarea{
+  min-height:86px;
+  resize:vertical;
+  line-height:1.6;
+}
+
+.notion-ai-input:focus,
+.notion-ai-textarea:focus{
+  border-color:#a78bfa;
+  box-shadow:0 0 0 4px rgba(167,139,250,.18);
+}
+
+.notion-ai-options{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+
+.notion-ai-options label{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  padding:8px 11px;
+  border-radius:999px;
+  background:#fff;
+  border:1px solid #e5e7eb;
+  font-size:13px;
+  color:#374151;
+  cursor:pointer;
+  user-select:none;
+}
+
+.notion-ai-options input{
+  width:14px;
+  height:14px;
+  accent-color:#7c3aed;
+}
+
+.notion-ai-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:9px;
+  padding-top:4px;
+}
+
+.notion-ai-actions button{
+  border:1px solid #e5e7eb;
+  background:#fff;
+  color:#374151;
+  padding:10px 13px;
+  border-radius:12px;
+  font-size:13px;
+  font-weight:700;
+  cursor:pointer;
+  transition:.2s ease;
+}
+
+.notion-ai-actions button:hover{
+  transform:translateY(-1px);
+  border-color:#c4b5fd;
+  color:#5b21b6;
+  background:#faf5ff;
+}
+
+.notion-ai-primary{
+  background:#111827 !important;
+  color:#fff !important;
+  border-color:#111827 !important;
+}
+
+.notion-ai-primary:hover{
+  background:#4c1d95 !important;
+  border-color:#4c1d95 !important;
+  color:#fff !important;
+}
+
+.notion-ai-actions button:disabled{
+  opacity:.55;
+  cursor:not-allowed;
+  transform:none;
+}
+
+.notion-ai-status{
+  min-height:20px;
+  font-size:13px;
+  color:#6b7280;
+}
+
+.notion-ai-status.success{
+  color:#047857;
+}
+
+.notion-ai-status.error{
+  color:#dc2626;
+}
+
+@media(max-width:768px){
+  .notion-ai-box{
+    padding:15px;
+    border-radius:16px;
+  }
+
+  .notion-ai-top{
+    flex-direction:column;
+  }
+
+  .notion-ai-actions{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+  }
+
+  .notion-ai-primary{
+    grid-column:1 / -1;
+  }
+}
+
+@media(max-width:480px){
+  .notion-ai-actions{
+    grid-template-columns:1fr;
+  }
+
+  .notion-ai-options label{
+    width:100%;
+  }
+}
+
+/* ==========================================
+   ACTION BUTTONS
+========================================== */
+
+.notion-ai-actions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-top:8px;
+}
+
+/* Tombol utama */
+
+.notion-ai-primary{
+    display:flex;
+    align-items:center;
+    gap:8px;
+
+    padding:12px 18px;
+
+    background:linear-gradient(135deg,#2563eb,#4f46e5);
+    color:#fff;
+
+    border:none;
+    border-radius:14px;
+
+    font-weight:700;
+    font-size:14px;
+
+    cursor:pointer;
+    transition:.25s;
+    box-shadow:0 8px 20px rgba(37,99,235,.25);
+}
+
+.notion-ai-primary:hover{
+    transform:translateY(-2px);
+    box-shadow:0 12px 30px rgba(37,99,235,.35);
+}
+
+.notion-ai-primary:disabled{
+    opacity:.6;
+    cursor:not-allowed;
+}
+
+/* Tombol sekunder */
+
+.notion-ai-action{
+    display:flex;
+    align-items:center;
+    gap:6px;
+
+    padding:10px 14px;
+
+    background:#fff;
+
+    border:1px solid #e5e7eb;
+    border-radius:999px;
+
+    font-size:13px;
+    font-weight:600;
+
+    color:#374151;
+
+    cursor:pointer;
+    transition:.2s;
+}
+
+.notion-ai-action:hover{
+    background:#f8fafc;
+    border-color:#cbd5e1;
+    transform:translateY(-1px);
+}
+
+.notion-ai-action:disabled{
+    opacity:.5;
+    cursor:not-allowed;
+}
+
+/* Warna khusus tiap fitur */
+
+.notion-ai-action[data-ai-action="continue"]{
+    border-color:#bfdbfe;
+    color:#1d4ed8;
+}
+
+.notion-ai-action[data-ai-action="continue"]:hover{
+    background:#eff6ff;
+}
+
+.notion-ai-action[data-ai-action="selection-improve"]{
+    border-color:#ddd6fe;
+    color:#6d28d9;
+}
+
+.notion-ai-action[data-ai-action="selection-improve"]:hover{
+    background:#f5f3ff;
+}
+
+.notion-ai-action[data-ai-action="factcheck"]{
+    border-color:#bbf7d0;
+    color:#15803d;
+}
+
+.notion-ai-action[data-ai-action="factcheck"]:hover{
+    background:#f0fdf4;
+}
+
+.notion-ai-action[data-ai-action="thumbnail"]{
+    border-color:#fed7aa;
+    color:#c2410c;
+}
+
+.notion-ai-action[data-ai-action="thumbnail"]:hover{
+    background:#fff7ed;
+}
+
+.notion-ai-action[data-ai-action="expand"]{
+    border-color:#bfdbfe;
+}
+
+.notion-ai-action[data-ai-action="shorten"]{
+    border-color:#fde68a;
+}
+
+.notion-ai-action[data-ai-action="formal"]{
+    border-color:#d1d5db;
+}
+
+.notion-ai-action[data-ai-action="casual"]{
+    border-color:#fbcfe8;
+}
+
+.notion-ai-action[data-ai-action="faq"]{
+    border-color:#a7f3d0;
+}
+
+/* Mobile */
+
+@media(max-width:768px){
+
+    .notion-ai-actions{
+        display:grid;
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .notion-ai-primary{
+        grid-column:1/-1;
+        justify-content:center;
+    }
+
+    .notion-ai-action{
+        justify-content:center;
+        border-radius:14px;
+    }
+
+}
+
+@media(max-width:480px){
+
+    .notion-ai-actions{
+        grid-template-columns:1fr;
+    }
+
+}
+
+.notion-ai-actions{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:8px;
+  margin-top:10px;
+}
+
+.notion-ai-actions button{
+  width:auto !important;
+  flex:0 0 auto !important;
+  min-height:34px;
+  padding:8px 12px;
+  border-radius:12px;
+  font-size:12.5px;
+  font-weight:700;
+  line-height:1;
+  white-space:nowrap;
+}
+
+.notion-ai-primary{
+  background:#111827 !important;
+  color:#fff !important;
+  border:1px solid #111827 !important;
+  box-shadow:0 8px 18px rgba(17,24,39,.15);
+}
+
+.notion-ai-action{
+  background:#fff;
+  color:#374151;
+  border:1px solid #e5e7eb;
+}
+
+.notion-ai-action:hover,
+.notion-ai-primary:hover{
+  transform:translateY(-1px);
+}
+
+/* Fitur lanjutan jangan full width */
+.notion-ai-action[data-ai-action="continue"],
+.notion-ai-action[data-ai-action="selection-improve"],
+.notion-ai-action[data-ai-action="factcheck"],
+.notion-ai-action[data-ai-action="thumbnail"]{
+  width:auto !important;
+  min-width:auto !important;
+  justify-content:center;
+}
+
+/* warna tipis */
+.notion-ai-action[data-ai-action="continue"]{
+  color:#2563eb;
+  border-color:#bfdbfe;
+  background:#eff6ff;
+}
+
+.notion-ai-action[data-ai-action="selection-improve"]{
+  color:#7c3aed;
+  border-color:#ddd6fe;
+  background:#f5f3ff;
+}
+
+.notion-ai-action[data-ai-action="factcheck"]{
+  color:#16a34a;
+  border-color:#bbf7d0;
+  background:#f0fdf4;
+}
+
+.notion-ai-action[data-ai-action="thumbnail"]{
+  color:#ea580c;
+  border-color:#fed7aa;
+  background:#fff7ed;
+}
+
+@media(max-width:768px){
+  .notion-ai-actions{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+  }
+
+  .notion-ai-actions button{
+    width:100% !important;
+  }
+
+  .notion-ai-primary{
+    grid-column:1/-1;
+  }
+}
+
+@media(max-width:480px){
+  .notion-ai-actions{
+    grid-template-columns:1fr;
+  }
+}
