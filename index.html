@@ -35,8 +35,8 @@
     <!-- Hero -->
     <section class="hero" id="beranda">
       <div class="container hero-grid">
-        <div>
-          <p class="eyebrow">Komunitas Mahasiswa</p>
+        <div class="hero-copy">
+          <p class="eyebrow">Komunitas Mahasiswa UPI</p>
           <h1>Sekumpulan Anak UPI</h1>
 
           <p class="hero-text">
@@ -72,14 +72,44 @@
           </div>
         </div>
 
-        <form class="hero-search" action="pages/search.html">
-          <input
-            type="search"
-            name="q"
-            placeholder="Cari info kampus, jurusan, wiki, atau lowongan..."
-          />
-          <button class="btn primary" type="submit">Cari</button>
-        </form>
+        <aside class="hero-showcase" aria-label="Ringkasan fitur SA-UPI">
+          <div class="hero-orbit hero-orbit-one"></div>
+          <div class="hero-orbit hero-orbit-two"></div>
+
+          <form class="hero-search" action="pages/search.html">
+            <label for="heroSearchInput">Mulai pencarian</label>
+            <div class="hero-search-row">
+              <input
+                id="heroSearchInput"
+                type="search"
+                name="q"
+                placeholder="Cari jurusan, wiki, dokumen, lowongan..."
+              />
+              <button class="btn primary" type="submit">Cari</button>
+            </div>
+          </form>
+
+          <div class="hero-dashboard-card hero-dashboard-main">
+            <span class="hero-card-icon"><i class="fa-solid fa-bolt"></i></span>
+            <div>
+              <p>Rute Cepat</p>
+              <strong>Info kampus, wiki, dan karier dalam satu portal.</strong>
+            </div>
+          </div>
+
+          <div class="hero-dashboard-grid">
+            <a href="pages/jurusan.html" class="hero-dashboard-card">
+              <span class="hero-card-icon"><i class="fa-solid fa-graduation-cap"></i></span>
+              <strong>Jurusan</strong>
+              <small>Profil prodi UPI</small>
+            </a>
+            <a href="pages/dokumen.html" class="hero-dashboard-card">
+              <span class="hero-card-icon"><i class="fa-solid fa-file-lines"></i></span>
+              <strong>Dokumen</strong>
+              <small>Panduan akademik</small>
+            </a>
+          </div>
+        </aside>
       </div>
     </section>
 
@@ -89,6 +119,7 @@
         <div>
           <p class="eyebrow">Akses Cepat</p>
           <h2>Butuh Apa Hari Ini?</h2>
+          <p class="section-kicker">Pilih pintasan yang paling sering dicari mahasiswa dan calon mahasiswa UPI.</p>
         </div>
       </div>
 
@@ -175,6 +206,7 @@
         <div>
           <p class="eyebrow">Terbaru</p>
           <h2>Artikel Terbaru</h2>
+          <p class="section-kicker">Baca update terbaru yang dikurasi dari komunitas SA-UPI.</p>
         </div>
       </div>
 
@@ -197,6 +229,7 @@
         <div>
           <p class="eyebrow">Karier</p>
           <h2>Lowongan Terbaru</h2>
+          <p class="section-kicker">Peluang kerja dan magang yang relevan untuk mahasiswa serta alumni.</p>
         </div>
 
         <a href="pages/lowongan.html" class="btn ghost">Lihat Semua</a>
@@ -211,6 +244,7 @@
         <div>
           <p class="eyebrow">Update</p>
           <h2>Informasi Kampus</h2>
+          <p class="section-kicker">Temukan kabar kampus tanpa perlu berpindah-pindah sumber.</p>
         </div>
 
         <input type="search" id="infoSearch" placeholder="Cari informasi kampus..." />
@@ -225,6 +259,7 @@
         <div>
           <p class="eyebrow">Pengetahuan</p>
           <h2>Wiki Kampus</h2>
+          <p class="section-kicker">Catatan praktis seputar istilah, proses, dan kehidupan akademik UPI.</p>
         </div>
 
         <input type="search" id="wikiSearch" placeholder="Cari wiki kampus..." />
