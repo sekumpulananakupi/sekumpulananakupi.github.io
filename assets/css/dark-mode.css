@@ -997,8 +997,13 @@ html[data-theme="dark"] body:not(.admin-modern-body) :where(
 }
 
 html[data-theme="dark"] body:not(.admin-modern-body) :where(
+  .site-header,
+  .site-header .nav-menu,
+  .site-header .navbar ul,
+  .site-header .menu-toggle,
   .jurusan-hero-card,
   .quick-facts-card,
+  .detail-section-card,
   .detail-jump-nav,
   .desktop-section-nav,
   .mobile-section-select,
@@ -1006,18 +1011,25 @@ html[data-theme="dark"] body:not(.admin-modern-body) :where(
   .hero-summary-card,
   .mini-stat-grid div,
   .quick-facts-card div,
+  .stat-card,
   .fit-item,
   .career-card,
   .career-icon,
+  .faq-jurusan-item,
   .related-content-block,
   .related-jurusan-card,
+  .clean-related-card,
+  .biaya-section,
   .admission-section,
   .admission-card,
   .admission-table-wrap,
+  .admission-controls,
   .admission-compare-card,
   .admission-summary-card,
   .biaya-card,
-  .info-note
+  .info-note,
+  .empty,
+  .empty-statistik
 ) {
   background: linear-gradient(180deg, rgba(17, 26, 45, 0.96), rgba(13, 22, 39, 0.93)) !important;
   border-color: var(--dark-border) !important;
@@ -1031,14 +1043,30 @@ html[data-theme="dark"] body:not(.admin-modern-body) :where(.highlight-section, 
     linear-gradient(180deg, rgba(17, 26, 45, 0.96), rgba(13, 22, 39, 0.93)) !important;
 }
 
+html[data-theme="dark"] body:not(.admin-modern-body) :where(.jurusan-hero-card) {
+  background:
+    radial-gradient(circle at 12% 8%, rgba(47, 109, 240, 0.24), transparent 34%),
+    radial-gradient(circle at 92% 12%, rgba(245, 185, 64, 0.14), transparent 30%),
+    linear-gradient(145deg, rgba(17, 26, 45, 0.98), rgba(10, 18, 32, 0.96)) !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) :where(.summary-main, .btn.primary) {
+  background: linear-gradient(135deg, #2f6df0, #1d4ed8) !important;
+  color: #ffffff !important;
+}
+
 html[data-theme="dark"] body:not(.admin-modern-body) :where(
+  .site-header .nav-menu a,
+  .site-header .navbar li a,
   .desktop-section-nav a,
   .detail-jump-nav a,
   .mobile-detail-nav a,
   .mobile-section-select select,
   .admission-tab,
   .chart-mode-btn,
-  .biaya-tab-btn
+  .biaya-tab-btn,
+  .btn.ghost,
+  .btn-link
 ) {
   background: var(--dark-surface-soft) !important;
   border-color: rgba(139, 183, 255, 0.25) !important;
@@ -1046,13 +1074,19 @@ html[data-theme="dark"] body:not(.admin-modern-body) :where(
 }
 
 html[data-theme="dark"] body:not(.admin-modern-body) :where(
+  .site-header .nav-menu a:hover,
+  .site-header .navbar li a:hover,
+  .site-header .nav-menu a.active,
+  .site-header .navbar li a.active,
   .desktop-section-nav a:hover,
   .detail-jump-nav a:hover,
   .mobile-detail-nav a:hover,
   .mobile-detail-nav a.active,
   .admission-tab.active,
   .chart-mode-btn.active,
-  .biaya-tab-btn.active
+  .biaya-tab-btn.active,
+  .btn.ghost:hover,
+  .btn-link:hover
 ) {
   background: linear-gradient(135deg, #2f6df0, #1d4ed8) !important;
   border-color: rgba(147, 197, 253, 0.36) !important;
@@ -1060,6 +1094,9 @@ html[data-theme="dark"] body:not(.admin-modern-body) :where(
 }
 
 html[data-theme="dark"] body:not(.admin-modern-body) :where(
+  .site-header .brand,
+  .site-header .logo,
+  .site-header a.brand,
   .jurusan-hero-card h1,
   .section-title-row h2,
   .detail-section-card h2,
@@ -1067,6 +1104,7 @@ html[data-theme="dark"] body:not(.admin-modern-body) :where(
   .related-jurusan-card h3,
   .mini-stat-grid strong,
   .quick-facts-card strong,
+  .stat-card strong,
   .fit-item p,
   .career-card,
   .biaya-item strong,
@@ -1084,14 +1122,25 @@ html[data-theme="dark"] body:not(.admin-modern-body) :where(
   .clean-related-card p,
   .final-action-card p:not(.eyebrow),
   .faq-jurusan-answer,
+  .info-note,
   .biaya-title,
   .biaya-item span,
   .admission-compare-card small,
+  .admission-summary-card span,
+  .empty,
+  .empty-statistik,
   .mobile-section-select label,
   .mini-stat-grid span,
-  .quick-facts-card span
+  .quick-facts-card span,
+  .stat-card span
 ) {
   color: var(--dark-text-soft) !important;
+}
+
+html[data-theme="dark"] body:not(.admin-modern-body) :where(.soft-pill, .accent-pill, .section-hint, .career-icon, .fit-item span) {
+  background: rgba(139, 183, 255, 0.14) !important;
+  border-color: rgba(139, 183, 255, 0.28) !important;
+  color: #dbeafe !important;
 }
 
 html[data-theme="dark"] body:not(.admin-modern-body) :where(.admission-table th) {
