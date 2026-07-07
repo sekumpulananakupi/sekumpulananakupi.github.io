@@ -167,6 +167,8 @@ if (analyzeJobImageImport) {
   analyzeJobImageImport.addEventListener("click", async () => {
     const file = jobImportImage?.files?.[0];
 
+    console.log("[AI IMAGE IMPORT] File dipilih:", file);
+
     if (!file) {
       alert("Upload dulu gambar/poster lowongannya.");
       return;
@@ -187,6 +189,8 @@ if (analyzeJobImageImport) {
     try {
       const imageUrl = await uploadImage(file);
 
+      console.log("[AI IMAGE IMPORT] Image URL dari Supabase:", imageUrl);
+
       if (!imageUrl) {
         alert("Gagal upload gambar lowongan.");
         return;
@@ -194,8 +198,24 @@ if (analyzeJobImageImport) {
 
       setButtonLoading(analyzeJobImageImport, true, "Menganalisis gambar...");
 
-      const result = await analyzeJobImageWithAI({
+      const payload = {
         imageUrl
+      };
+
+      console.log("[AI IMAGE IMPORT] Payload ke Edge Function:", payload);
+
+      const result = await analyzeJobImageWithAI(payload);
+
+      console.log("[AI IMAGE IMPORT] Hasil mentah dari AI:", result);
+      console.table({
+        title: result.title,
+        company: result.company,
+        location: result.location,
+        deadline: result.deadline,
+        type: result.type,
+        education: result.education,
+        quality_score: result.quality_score,
+        warning: result.warning
       });
 
       if (jobRawImport) {
@@ -207,14 +227,10 @@ if (analyzeJobImageImport) {
         source: "Instagram"
       });
 
-      const jobImageInput = qs("jobImage");
-
-      if (jobImageInput) {
-        jobImageInput.value = "";
-      }
+      console.log("[AI IMAGE IMPORT] Form berhasil diisi dari hasil AI.");
 
     } catch (error) {
-      console.error(error);
+      console.error("[AI IMAGE IMPORT] Error:", error);
       alert(getFriendlyError(error, "Gagal menganalisis gambar lowongan dengan AI."));
     } finally {
       setButtonLoading(analyzeJobImageImport, false, "Analisis Gambar");
@@ -223,9 +239,14 @@ if (analyzeJobImageImport) {
 }
 
 async function analyzeJobImageWithAI(payload) {
+  console.log("[SUPABASE FUNCTION] invoke analyze-job-image:", payload);
+
   const { data, error } = await supabaseClient.functions.invoke("analyze-job-image", {
     body: payload,
   });
+
+  console.log("[SUPABASE FUNCTION] data:", data);
+  console.log("[SUPABASE FUNCTION] error:", error);
 
   if (error) throw error;
   if (data?.error) throw new Error(data.error);
@@ -272,6 +293,7 @@ function applyJobAIResult(result, options = {}) {
   }
 
   const html = result.description_html || result.deskripsi_html || result.description || fallbackDescription;
+  console.log("[AI RESULT] description_html:", html);
   setEditorHTML("job", html);
 
   if (Array.isArray(result.jurusan) && result.jurusan.length) {
@@ -326,17 +348,29 @@ function fillValue(id, value) {
 }
 
 function setEditorHTML(type, html) {
-  const editor = document.querySelector(`#${type}Editor .ql-editor`);
-
-  if (editor) {
-    editor.innerHTML = html || "";
-    editor.dispatchEvent(new Event("input", { bubbles: true }));
-  }
-
+  const safeHTML = html || "";
+  const editorContainer = document.querySelector(`#${type}Editor`);
   const hiddenInput = document.getElementById(`${type}Content`);
-  if (hiddenInput) {
-    hiddenInput.value = html || "";
+
+  if (editorContainer && typeof Quill !== "undefined") {
+    const quill = Quill.find(editorContainer);
+
+    if (quill) {
+      quill.clipboard.dangerouslyPasteHTML(safeHTML);
+    } else {
+      const editor = editorContainer.querySelector(".ql-editor");
+      if (editor) editor.innerHTML = safeHTML;
+    }
+  } else {
+    const editor = document.querySelector(`#${type}Editor .ql-editor`);
+    if (editor) editor.innerHTML = safeHTML;
   }
+
+  if (hiddenInput) {
+    hiddenInput.value = safeHTML;
+  }
+
+  updateJobAssistantStatus();
 }
 
 function updateJobAssistantStatus() {
