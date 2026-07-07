@@ -21,9 +21,13 @@ function populateFaqJurusanOptions() {
   const select = qs("faqJurusanSelect");
   if (!select) return;
 
+  const options = (jurusanAdminData.length ? jurusanAdminData : jurusanData)
+    .slice()
+    .sort((a, b) => (a.nama || "").localeCompare(b.nama || "", "id"));
+
   select.innerHTML =
     `<option value="">Pilih jurusan</option>` +
-    jurusanAdminData.map(item => `
+    options.map(item => `
       <option value="${item.id}">${item.nama}</option>
     `).join("");
 }

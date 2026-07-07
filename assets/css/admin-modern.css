@@ -2619,6 +2619,226 @@ body.admin-dark .grid-list .admin-list-item {
 }
 
 /* ==========================================
+   Lowongan: jurusan terkait multi-select polish
+========================================== */
+
+.modern-job-form > #jobJurusanMulti.multi-select,
+#jobJurusanMulti.multi-select {
+  position: relative;
+  display: block !important;
+  width: 100%;
+  max-height: none !important;
+  overflow: visible !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  z-index: 35;
+}
+
+#jobJurusanMulti .multi-select-button {
+  position: relative;
+  width: 100%;
+  min-height: 48px;
+  padding: 13px 46px 13px 16px;
+  border: 1px solid #dbe3ef;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #ffffff, #f8fafc);
+  color: #0f172a;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 850;
+  line-height: 1.35;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, .06);
+  transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease, background .2s ease;
+}
+
+#jobJurusanMulti .multi-select-button::before {
+  content: "\f19d";
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  margin-right: 10px;
+  border-radius: 10px;
+  background: rgba(37, 99, 235, .10);
+  color: #2563eb;
+  vertical-align: middle;
+}
+
+#jobJurusanMulti .multi-select-button::after {
+  content: "\f107";
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  color: #64748b;
+  transition: transform .2s ease, color .2s ease;
+}
+
+#jobJurusanMulti.open .multi-select-button {
+  border-color: rgba(37, 99, 235, .45);
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, .10), 0 18px 38px rgba(15, 23, 42, .10);
+}
+
+#jobJurusanMulti.open .multi-select-button::after {
+  transform: translateY(-50%) rotate(180deg);
+  color: #2563eb;
+}
+
+#jobJurusanMulti .multi-select-panel {
+  position: absolute;
+  inset: calc(100% + 8px) 0 auto 0;
+  display: none;
+  padding: 12px;
+  border: 1px solid rgba(148, 163, 184, .28);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, .98);
+  box-shadow: 0 24px 60px rgba(15, 23, 42, .18);
+  backdrop-filter: blur(12px);
+  z-index: 120;
+}
+
+#jobJurusanMulti.open .multi-select-panel {
+  display: block;
+}
+
+#jobJurusanMulti .multi-select-search {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  width: 100%;
+  min-height: 42px;
+  margin: 0 0 10px;
+  padding: 10px 12px 10px 38px;
+  border: 1px solid #dbe3ef;
+  border-radius: 14px;
+  background: #f8fafc;
+  color: #0f172a;
+  font: inherit;
+  font-size: 13px;
+  outline: none;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.72);
+}
+
+#jobJurusanMulti .multi-select-panel::before {
+  content: "\f002";
+  position: absolute;
+  left: 26px;
+  top: 24px;
+  z-index: 3;
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  font-size: 12px;
+  color: #94a3b8;
+  pointer-events: none;
+}
+
+#jobJurusanMulti .multi-select-search:focus {
+  border-color: rgba(37, 99, 235, .42);
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, .10);
+}
+
+#jobJurusanMulti .multi-select-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  max-height: 260px;
+  overflow: auto;
+  padding: 2px 4px 2px 0;
+}
+
+#jobJurusanMulti .multi-option,
+#jobJurusanMulti label.multi-option {
+  display: flex !important;
+  align-items: center;
+  gap: 10px;
+  width: 100% !important;
+  min-height: 42px;
+  margin: 0 !important;
+  padding: 10px 12px !important;
+  border: 1px solid rgba(148, 163, 184, .22) !important;
+  border-radius: 14px !important;
+  background: #fff !important;
+  color: #334155 !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  line-height: 1.35 !important;
+  cursor: pointer;
+  transition: background .18s ease, border-color .18s ease, box-shadow .18s ease, transform .18s ease, color .18s ease;
+}
+
+#jobJurusanMulti .multi-option:hover {
+  transform: translateY(-1px);
+  border-color: rgba(37, 99, 235, .32) !important;
+  background: #f8fbff !important;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, .07);
+}
+
+#jobJurusanMulti .multi-option:has(input:checked) {
+  border-color: rgba(37, 99, 235, .42) !important;
+  background: linear-gradient(135deg, rgba(37, 99, 235, .12), rgba(124, 58, 237, .08)) !important;
+  color: #1d4ed8 !important;
+  box-shadow: inset 0 0 0 1px rgba(37, 99, 235, .10);
+}
+
+#jobJurusanMulti .multi-option input[type="checkbox"] {
+  flex: 0 0 auto;
+  width: 16px !important;
+  height: 16px !important;
+  margin: 0 !important;
+  accent-color: #2563eb;
+}
+
+#jobJurusanMulti .multi-option span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+body.admin-dark #jobJurusanMulti .multi-select-button,
+body.admin-dark #jobJurusanMulti .multi-select-panel,
+body.admin-dark #jobJurusanMulti .multi-option {
+  background: rgba(15, 23, 42, .94) !important;
+  border-color: rgba(148, 163, 184, .22) !important;
+  color: #e5e7eb !important;
+}
+
+body.admin-dark #jobJurusanMulti .multi-select-search {
+  background: rgba(15, 23, 42, .72);
+  border-color: rgba(148, 163, 184, .22);
+  color: #f8fafc;
+}
+
+body.admin-dark #jobJurusanMulti .multi-option:hover,
+body.admin-dark #jobJurusanMulti .multi-option:has(input:checked) {
+  background: rgba(37, 99, 235, .16) !important;
+  border-color: rgba(96, 165, 250, .42) !important;
+  color: #bfdbfe !important;
+}
+
+@media (max-width: 760px) {
+  #jobJurusanMulti .multi-select-panel {
+    position: static;
+    margin-top: 8px;
+  }
+
+  #jobJurusanMulti .multi-select-options {
+    grid-template-columns: 1fr;
+    max-height: 300px;
+  }
+}
+
+/* ==========================================
    AI WIKI GENERATOR
 ========================================== */
 
@@ -3282,4 +3502,354 @@ body.admin-dark .ql-editor {
 
 body.admin-dark .ql-editor.ql-blank::before {
   color: #94a3b8 !important;
+}
+
+/* ==========================================
+   Mobile polish: Info Kampus dropdown + main dock
+========================================== */
+
+#infoKategoriMulti.compact-category-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 8px;
+  width: 100%;
+  max-height: 190px;
+  padding: 10px;
+  overflow: auto;
+  scrollbar-width: thin;
+}
+
+#infoKategoriMulti.compact-category-group label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  margin: 0;
+  padding: 8px 12px;
+  border-radius: 999px;
+  line-height: 1.25;
+  white-space: normal;
+}
+
+#infoKategoriMulti.compact-category-group input[type="checkbox"] {
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: var(--admin-blue);
+}
+
+@media (max-width: 760px) {
+  .admin-smart-dock {
+    position: sticky;
+    top: 8px;
+    z-index: 55;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(76px, 1fr);
+    grid-template-columns: none !important;
+    justify-content: start;
+    gap: 8px;
+    width: calc(100% + 24px);
+    margin: 10px -12px 18px;
+    padding: 8px 12px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+    border: 1px solid rgba(226, 232, 240, .9);
+    border-radius: 20px;
+    background: rgba(255, 255, 255, .9);
+    box-shadow: 0 12px 32px rgba(15, 23, 42, .08);
+    backdrop-filter: blur(14px);
+  }
+
+  .admin-smart-dock::-webkit-scrollbar {
+    display: none;
+  }
+
+  .admin-smart-dock .smart-dock-item {
+    scroll-snap-align: start;
+    min-width: 76px;
+    min-height: 66px;
+    padding: 9px 8px;
+    border-radius: 16px;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .admin-smart-dock .smart-dock-item::before {
+    content: none !important;
+  }
+
+  .admin-smart-dock .smart-dock-item i {
+    width: 28px;
+    height: 28px;
+    display: inline-grid;
+    place-items: center;
+    margin: 0 auto;
+    border-radius: 10px;
+    background: #eef4ff;
+    color: var(--admin-blue);
+    font-size: 14px;
+  }
+
+  .admin-smart-dock .smart-dock-item span {
+    max-width: 68px;
+    overflow: hidden;
+    color: #334155;
+    font-size: 11.5px;
+    font-weight: 850;
+    line-height: 1.15;
+    text-overflow: ellipsis;
+  }
+
+  .admin-smart-dock .smart-dock-item kbd {
+    display: none;
+  }
+
+  .admin-smart-dock .smart-dock-item.active,
+  .admin-smart-dock .smart-dock-item:hover {
+    background: linear-gradient(135deg, #2563eb, #4f46e5);
+    color: #fff;
+    box-shadow: 0 10px 24px rgba(37, 99, 235, .22);
+  }
+
+  .admin-smart-dock .smart-dock-item.active i,
+  .admin-smart-dock .smart-dock-item:hover i {
+    background: rgba(255, 255, 255, .18);
+    color: #fff;
+  }
+
+  .admin-smart-dock .smart-dock-item.active span,
+  .admin-smart-dock .smart-dock-item:hover span {
+    color: #fff;
+  }
+
+  .info-editor-page .modern-editor-form > label {
+    margin-bottom: 2px;
+  }
+
+  #infoKategoriMulti.compact-category-group {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 7px;
+    max-height: 238px;
+    padding: 8px;
+    border-radius: 18px;
+    background: #f8fafc;
+  }
+
+  #infoKategoriMulti.compact-category-group label {
+    justify-content: flex-start;
+    width: 100%;
+    min-height: 42px;
+    padding: 10px 12px;
+    border-radius: 14px;
+    background: #fff;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 420px) {
+  .admin-smart-dock {
+    grid-auto-columns: minmax(70px, 74px);
+  }
+
+  .admin-smart-dock .smart-dock-item {
+    min-width: 70px;
+    min-height: 62px;
+    padding-inline: 6px;
+  }
+
+  .admin-smart-dock .smart-dock-item span {
+    max-width: 62px;
+    font-size: 11px;
+  }
+}
+
+body.admin-dark .admin-smart-dock {
+  background: rgba(15, 23, 42, .84);
+  border-color: rgba(148, 163, 184, .18);
+}
+
+body.admin-dark .admin-smart-dock .smart-dock-item i {
+  background: rgba(59, 130, 246, .18);
+  color: #bfdbfe;
+}
+
+body.admin-dark .admin-smart-dock .smart-dock-item span {
+  color: #cbd5e1;
+}
+
+/* === Bugfix: Info Kampus multi-select must override legacy chip styles === */
+#infoKategoriMulti.multi-select {
+  position: relative;
+  display: block !important;
+  width: 100%;
+  max-height: none !important;
+  overflow: visible !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  z-index: 35;
+}
+
+#infoKategoriMulti.multi-select .multi-select-button {
+  position: relative;
+  width: 100%;
+  min-height: 46px;
+  padding: 12px 44px 12px 42px;
+  border: 1px solid rgba(148, 163, 184, .28);
+  border-radius: 16px;
+  background: #fff;
+  color: #0f172a;
+  font: inherit;
+  font-weight: 850;
+  line-height: 1.25;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: 0 10px 26px rgba(15, 23, 42, .05);
+}
+
+#infoKategoriMulti.multi-select .multi-select-button::before {
+  content: "\f02b";
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  color: var(--admin-blue);
+}
+
+#infoKategoriMulti.multi-select .multi-select-button::after {
+  content: "\f107";
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  color: #64748b;
+  transition: transform .18s ease;
+}
+
+#infoKategoriMulti.multi-select.open .multi-select-button {
+  border-color: rgba(37, 99, 235, .45);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, .10);
+}
+
+#infoKategoriMulti.multi-select.open .multi-select-button::after {
+  transform: translateY(-50%) rotate(180deg);
+}
+
+#infoKategoriMulti.multi-select .multi-select-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  z-index: 120;
+  display: none;
+  padding: 10px;
+  border: 1px solid rgba(148, 163, 184, .24);
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 22px 60px rgba(15, 23, 42, .16);
+}
+
+#infoKategoriMulti.multi-select.open .multi-select-panel {
+  display: block;
+}
+
+#infoKategoriMulti.multi-select .multi-select-search {
+  width: 100%;
+  min-height: 40px;
+  margin-bottom: 9px;
+  padding: 10px 12px;
+  border: 1px solid rgba(148, 163, 184, .24);
+  border-radius: 13px;
+  background: #f8fafc;
+  color: #0f172a;
+  outline: 0;
+}
+
+#infoKategoriMulti.multi-select .multi-select-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  max-height: 230px;
+  overflow: auto;
+  padding-right: 2px;
+  scrollbar-width: thin;
+}
+
+#infoKategoriMulti.multi-select .multi-option,
+#infoKategoriMulti.multi-select label.multi-option {
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 9px !important;
+  width: 100% !important;
+  min-height: 42px !important;
+  margin: 0 !important;
+  padding: 10px 11px !important;
+  border: 1px solid rgba(226, 232, 240, .95) !important;
+  border-radius: 14px !important;
+  background: #f8fafc !important;
+  color: #334155 !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  line-height: 1.25 !important;
+  cursor: pointer;
+}
+
+#infoKategoriMulti.multi-select .multi-option:hover {
+  border-color: rgba(37, 99, 235, .24) !important;
+  background: #eff6ff !important;
+}
+
+#infoKategoriMulti.multi-select .multi-option input[type="checkbox"] {
+  flex: 0 0 16px !important;
+  width: 16px !important;
+  height: 16px !important;
+  min-height: 16px !important;
+  margin: 1px 0 0 !important;
+  accent-color: var(--admin-blue);
+}
+
+#infoKategoriMulti.multi-select .multi-option span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+body.admin-dark #infoKategoriMulti.multi-select .multi-select-button,
+body.admin-dark #infoKategoriMulti.multi-select .multi-select-panel,
+body.admin-dark #infoKategoriMulti.multi-select .multi-option {
+  background: rgba(15, 23, 42, .92) !important;
+  border-color: rgba(148, 163, 184, .22) !important;
+  color: #e5e7eb !important;
+}
+
+body.admin-dark #infoKategoriMulti.multi-select .multi-select-search {
+  background: rgba(2, 6, 23, .72) !important;
+  border-color: rgba(148, 163, 184, .22) !important;
+  color: #f8fafc !important;
+}
+
+@media (max-width: 760px) {
+  #infoKategoriMulti.multi-select .multi-select-panel {
+    position: static;
+    margin-top: 8px;
+    box-shadow: none;
+  }
+
+  #infoKategoriMulti.multi-select .multi-select-options {
+    grid-template-columns: 1fr;
+    max-height: 238px;
+  }
 }

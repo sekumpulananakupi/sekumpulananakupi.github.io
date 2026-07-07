@@ -112,9 +112,13 @@ function fillCheckGroup(elementId, data) {
   const container = qs(elementId);
   if (!container) return;
 
+  const emptyLabel = elementId === "jobJurusanMulti"
+    ? "Pilih jurusan terkait"
+    : "Pilih data";
+
   container.className = "multi-select";
   container.innerHTML = `
-    <button type="button" class="multi-select-button">Pilih data</button>
+    <button type="button" class="multi-select-button">${emptyLabel}</button>
     <div class="multi-select-panel">
       <input type="search" class="multi-select-search" placeholder="Cari..." />
       <div class="multi-select-options">
@@ -160,8 +164,10 @@ function updateMultiSelectLabel(container) {
   const checked = container.querySelectorAll("input[type='checkbox']:checked");
   if (!button) return;
 
+  const isJobJurusan = container.id === "jobJurusanMulti";
+
   if (!checked.length) {
-    button.textContent = "Pilih data";
+    button.textContent = isJobJurusan ? "Pilih jurusan terkait" : "Pilih data";
     return;
   }
 
@@ -171,7 +177,7 @@ function updateMultiSelectLabel(container) {
     return;
   }
 
-  button.textContent = `${checked.length} data dipilih`;
+  button.textContent = `${checked.length} ${isJobJurusan ? "jurusan" : "data"} dipilih`;
 }
 
 function closeAllMultiSelect(except = null) {

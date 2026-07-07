@@ -15,6 +15,15 @@ async function checkSession() {
 
   if (isAdmin) {
     await refreshAdminData();
+    await loadInitialActiveAdminPage();
+  }
+}
+
+async function loadInitialActiveAdminPage() {
+  const activePage = document.querySelector(".admin-page.active")?.id || "dashboardPage";
+
+  if (typeof loadAdminPage === "function") {
+    await loadAdminPage(activePage);
   }
 }
 
@@ -93,6 +102,10 @@ async function preloadAdminFormOptions() {
 
   if (typeof loadJurusanAdminData === "function") {
     await loadJurusanAdminData();
+  }
+
+  if (typeof renderMasterInputs === "function") {
+    renderMasterInputs();
   }
 
   if (typeof populateFaqJurusanOptions === "function") {
@@ -175,6 +188,7 @@ if (qs("loginBtn")) {
     isAdmin = true;
     updateAdminUI();
     await refreshAdminData();
+    await loadInitialActiveAdminPage();
   });
 }
 

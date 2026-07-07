@@ -88,7 +88,10 @@ async function loadDashboardAuditData() {
 
 async function loadAdminPage(page) {
 
-  if (loadedAdminPages.has(page)) {
+  const activePage = document.getElementById(page);
+  const needsFreshFormOptions = pageNeedsFreshFormOptions(activePage);
+
+  if (loadedAdminPages.has(page) && !needsFreshFormOptions) {
     return;
   }
 
@@ -160,6 +163,25 @@ async function loadAdminPage(page) {
     throw error;
   }
 
+}
+
+function pageNeedsFreshFormOptions(activePage) {
+  if (!activePage) return false;
+
+  const multiSelectIds = ["infoKategoriMulti", "wikiKategoriMulti", "jobJurusanMulti"];
+  const hasEmptyMultiSelect = multiSelectIds.some(id => {
+    const container = activePage.querySelector(`#${id}`);
+    return container && !container.querySelector("input[type='checkbox']");
+  });
+
+  if (hasEmptyMultiSelect) return true;
+
+  const faqJurusanSelect = activePage.querySelector("#faqJurusanSelect");
+  if (faqJurusanSelect) {
+    return faqJurusanSelect.options.length <= 1;
+  }
+
+  return false;
 }
 
 /* =========================
