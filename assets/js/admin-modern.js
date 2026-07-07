@@ -1,7 +1,12 @@
 
 // Core navigation tanpa sidebar lama: semua tombol .sidebar-link tetap bisa membuka workspace.
 (function () {
-  function activateAdminPage(pageId) {
+  async function loadActiveAdminPage(pageId) {
+    if (typeof window.loadAdminPage !== "function") return;
+    await window.loadAdminPage(pageId);
+  }
+
+  function activateAdminPage(pageId, options = {}) {
     if (!pageId) return;
     const page = document.getElementById(pageId);
     if (!page) return;
@@ -25,6 +30,10 @@
     localStorage.setItem("saupi-admin-last-page", pageId);
     document.body.classList.remove("admin-menu-open", "admin-palette-open");
     window.scrollTo({ top: 0, behavior: "smooth" });
+
+    if (options.load !== false) {
+      loadActiveAdminPage(pageId);
+    }
   }
 
   window.activateAdminPage = activateAdminPage;

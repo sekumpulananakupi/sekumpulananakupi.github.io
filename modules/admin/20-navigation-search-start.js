@@ -92,68 +92,73 @@ async function loadAdminPage(page) {
     return;
   }
 
-  switch (page) {
-
-    case "infoPage":
-      await loadMasterData();
-      await loadInfoData();
-      break;
-
-    case "wikiPage":
-      await loadMasterData();
-      await loadWikiData();
-      break;
-
-    case "jobPage":
-      await loadMasterData();
-      await loadArtikelJurusanData();
-      await loadJobData();
-      break;
-
-    case "dokumenPage":
-      await loadDokumenData();
-      break;
-
-    case "faqPage":
-      await loadFaqData();
-      break;
-
-    case "jurusanPage":
-      await loadJurusanAdminData();
-      break;
-
-    case "statistikPage":
-      await loadMasterData();
-      await loadStatistikData();
-      break;
-
-    case "biayaPendidikanPage":
-      await loadJurusanAdminData();
-      populateBiayaJurusanOptions();
-      await loadBiayaPendidikanAdminData();
-      break;
-
-    case "faqJurusanPage":
-      await loadJurusanAdminData();
-      populateFaqJurusanOptions();
-      await loadFaqJurusanData();
-      break;
-
-    case "taxonomyPage":
-      await loadTaxonomyAdminData();
-      break;
-
- case "dashboardPage":
-  await loadDashboardAuditData();
-  initHealthFilters();
-  renderWebsiteHealthDashboard();
-  renderJurusanCompletenessDashboard();
-  renderJobAnalytics();
-  break;
-
-  }
-
   loadedAdminPages.add(page);
+
+  try {
+    switch (page) {
+
+      case "infoPage":
+        await loadMasterData();
+        await loadInfoData();
+        break;
+
+      case "wikiPage":
+        await loadMasterData();
+        await loadWikiData();
+        break;
+
+      case "jobPage":
+        await loadMasterData();
+        await loadArtikelJurusanData();
+        await loadJobData();
+        break;
+
+      case "dokumenPage":
+        await loadDokumenData();
+        break;
+
+      case "faqPage":
+        await loadFaqData();
+        break;
+
+      case "jurusanPage":
+        await loadJurusanAdminData();
+        break;
+
+      case "statistikPage":
+        await loadMasterData();
+        await loadStatistikData();
+        break;
+
+      case "biayaPendidikanPage":
+        await loadJurusanAdminData();
+        populateBiayaJurusanOptions();
+        await loadBiayaPendidikanAdminData();
+        break;
+
+      case "faqJurusanPage":
+        await loadJurusanAdminData();
+        populateFaqJurusanOptions();
+        await loadFaqJurusanData();
+        break;
+
+      case "taxonomyPage":
+        await loadTaxonomyAdminData();
+        break;
+
+      case "dashboardPage":
+        await loadDashboardAuditData();
+        initHealthFilters();
+        renderWebsiteHealthDashboard();
+        renderJurusanCompletenessDashboard();
+        renderJobAnalytics();
+        break;
+
+    }
+  } catch (error) {
+    loadedAdminPages.delete(page);
+    throw error;
+  }
 
 }
 

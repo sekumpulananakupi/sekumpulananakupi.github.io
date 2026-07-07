@@ -82,7 +82,22 @@ function getMonthLabel(dateString) {
 
 async function refreshAdminData() {
   await autoCloseExpiredJobs();
+  await preloadAdminFormOptions();
   await loadDashboardCounts();
+}
+
+async function preloadAdminFormOptions() {
+  if (typeof loadMasterData === "function") {
+    await loadMasterData();
+  }
+
+  if (typeof loadJurusanAdminData === "function") {
+    await loadJurusanAdminData();
+  }
+
+  if (typeof populateFaqJurusanOptions === "function") {
+    populateFaqJurusanOptions();
+  }
 }
 
 async function loadDashboardCounts() {
