@@ -134,6 +134,7 @@ function fillCheckGroup(elementId, data) {
 
   const button = container.querySelector(".multi-select-button");
   const search = container.querySelector(".multi-select-search");
+  const panel = container.querySelector(".multi-select-panel");
   const options = container.querySelector(".multi-select-options");
 
   button.addEventListener("click", event => {
@@ -143,11 +144,15 @@ function fillCheckGroup(elementId, data) {
     search.focus();
   });
 
+  panel?.addEventListener("click", event => {
+    event.stopPropagation();
+  });
+
   search.addEventListener("input", () => {
-    const keyword = search.value.toLowerCase();
+    const keyword = normalizeMultiSelectSearch(search.value);
     options.querySelectorAll(".multi-option").forEach(option => {
-      const text = option.textContent.toLowerCase();
-      option.style.display = text.includes(keyword) ? "flex" : "none";
+      const text = normalizeMultiSelectSearch(option.textContent);
+      option.hidden = keyword ? !text.includes(keyword) : false;
     });
   });
 
@@ -156,6 +161,14 @@ function fillCheckGroup(elementId, data) {
   });
 
   updateMultiSelectLabel(container);
+}
+
+function normalizeMultiSelectSearch(value) {
+  return String(value || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim();
 }
 
 function updateMultiSelectLabel(container) {

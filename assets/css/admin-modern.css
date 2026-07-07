@@ -23,6 +23,10 @@ body.admin-modern-body {
   color: var(--admin-text);
 }
 
+.multi-select .multi-option[hidden] {
+  display: none !important;
+}
+
 .admin-main.container {
   width: min(100%, 1480px);
   max-width: none;
