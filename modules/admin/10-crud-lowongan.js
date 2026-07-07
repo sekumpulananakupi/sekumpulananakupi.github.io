@@ -172,60 +172,48 @@ if (analyzeJobImageImport) {
       return;
     }
 
-    if (typeof Tesseract === "undefined") {
-      alert("Tesseract.js belum dimuat. Cek script CDN di HTML admin.");
+    if (!file.type.startsWith("image/")) {
+      alert("File harus berupa gambar.");
       return;
     }
 
-    setButtonLoading(analyzeJobImageImport, true, "Membaca teks...");
+    if (file.size > 4 * 1024 * 1024) {
+      alert("Ukuran gambar terlalu besar. Maksimal 4 MB agar AI lebih stabil.");
+      return;
+    }
+
+    setButtonLoading(analyzeJobImageImport, true, "Mengupload gambar...");
 
     try {
-      const ocrText = await extractTextFromImage(file);
+      const imageUrl = await uploadImage(file);
 
-      if (!ocrText || ocrText.length < 10) {
-        alert("Teks pada gambar tidak terbaca. Coba pakai gambar yang lebih jelas.");
+      if (!imageUrl) {
+        alert("Gagal mengupload gambar.");
         return;
       }
 
-      if (jobRawImport) {
-        jobRawImport.value = ocrText;
-      }
+      setButtonLoading(analyzeJobImageImport, true, "Menganalisis gambar...");
 
-      setButtonLoading(analyzeJobImageImport, true, "Menganalisis...");
-
-      const result = await analyzeJobWithAI(ocrText);
-
-      applyJobAIResult(result, {
-        fallbackDescription: ocrText.replace(/\n/g, "<br>"),
-        source: "Instagram"
+      const result = await analyzeJobImageWithAI({
+        imageUrl,
       });
 
+      if (jobRawImport) {
+        jobRawImport.value = result.raw_text || "";
+      }
+
+      applyJobAIResult(result, {
+        fallbackDescription:
+          result.raw_text ? result.raw_text.replace(/\n/g, "<br>") : "",
+        source: "Instagram",
+      });
     } catch (error) {
       console.error(error);
-      alert(getFriendlyError(error, "Gagal membaca gambar lowongan dengan OCR."));
+      alert(getFriendlyError(error, "Gagal menganalisis gambar lowongan dengan AI."));
     } finally {
       setButtonLoading(analyzeJobImageImport, false, "Analisis Gambar");
     }
   });
-}
-
-async function extractTextFromImage(file) {
-  const result = await Tesseract.recognize(
-    file,
-    "ind+eng",
-    {
-      logger: progress => {
-        if (!analyzeJobImageImport) return;
-
-        if (progress.status === "recognizing text") {
-          const percent = Math.round((progress.progress || 0) * 100);
-          setButtonLoading(analyzeJobImageImport, true, `OCR ${percent}%...`);
-        }
-      }
-    }
-  );
-
-  return result?.data?.text?.trim() || "";
 }
 
 async function analyzeJobImageWithAI(payload) {
