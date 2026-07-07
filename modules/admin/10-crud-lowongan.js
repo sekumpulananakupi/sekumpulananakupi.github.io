@@ -182,20 +182,20 @@ if (analyzeJobImageImport) {
       return;
     }
 
-    setButtonLoading(analyzeJobImageImport, true, "Mengupload gambar...");
+    setButtonLoading(analyzeJobImageImport, true, "Upload gambar...");
 
     try {
       const imageUrl = await uploadImage(file);
 
       if (!imageUrl) {
-        alert("Gagal mengupload gambar.");
+        alert("Gagal upload gambar lowongan.");
         return;
       }
 
       setButtonLoading(analyzeJobImageImport, true, "Menganalisis gambar...");
 
       const result = await analyzeJobImageWithAI({
-        imageUrl,
+        imageUrl
       });
 
       if (jobRawImport) {
@@ -203,10 +203,16 @@ if (analyzeJobImageImport) {
       }
 
       applyJobAIResult(result, {
-        fallbackDescription:
-          result.raw_text ? result.raw_text.replace(/\n/g, "<br>") : "",
-        source: "Instagram",
+        fallbackDescription: result.raw_text || "",
+        source: "Instagram"
       });
+
+      const jobImageInput = qs("jobImage");
+
+      if (jobImageInput) {
+        jobImageInput.value = "";
+      }
+
     } catch (error) {
       console.error(error);
       alert(getFriendlyError(error, "Gagal menganalisis gambar lowongan dengan AI."));
