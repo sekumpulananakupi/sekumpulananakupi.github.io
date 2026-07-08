@@ -149,6 +149,10 @@ async function loadAdminPage(page) {
         await loadTaxonomyAdminData();
         break;
 
+      case "menfessAnalyzerPage":
+        await loadMenfessAnalyzerData();
+        break;
+
       case "dashboardPage":
         await loadDashboardAuditData();
         initHealthFilters();

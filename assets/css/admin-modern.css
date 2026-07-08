@@ -1172,7 +1172,7 @@ body.admin-palette-open .admin-palette-backdrop { display: flex; }
   top: 12px;
   z-index: 15;
   display:grid;
-  grid-template-columns:repeat(5,minmax(0,1fr));
+  grid-template-columns:repeat(6,minmax(0,1fr));
   gap:10px;
   margin:14px 0 18px;
   padding:10px;
@@ -1265,7 +1265,7 @@ body.admin-focus-mode .form-card:not(.is-focused-form){display:none}.focus-exit-
 }body.admin-focus-mode .focus-exit-float{display:block}
 .admin-dark .admin-smart-dock{background:rgba(15,23,42,.76);border-color:rgba(148,163,184,.16)}
 .admin-dark .smart-dock-item{color:#cbd5e1}.admin-dark .smart-dock-item:hover,.admin-dark .smart-dock-item.active{background:rgba(59,130,246,.18);color:#bfdbfe}.admin-dark .form-utility-bar{background:rgba(15,23,42,.62);border-color:rgba(148,163,184,.16)}.admin-dark .admin-muted,.admin-dark .form-utility-bar span{color:#cbd5e1}.admin-dark .admin-muted strong{color:#e2e8f0}.admin-dark .focus-form-btn{background:#2563eb}
-@media (max-width: 860px){.admin-smart-dock{grid-template-columns:repeat(5,72px);overflow-x:auto;justify-content:start}.smart-dock-item{flex-direction:column;gap:4px}.smart-dock-item kbd{display:none}.admin-assist-grid{grid-template-columns:1fr}.form-card.is-focused-form{grid-template-columns:1fr}}
+@media (max-width: 860px){.admin-smart-dock{grid-template-columns:repeat(6,72px);overflow-x:auto;justify-content:start}.smart-dock-item{flex-direction:column;gap:4px}.smart-dock-item kbd{display:none}.admin-assist-grid{grid-template-columns:1fr}.form-card.is-focused-form{grid-template-columns:1fr}}
 @media (prefers-reduced-motion: reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
 
 

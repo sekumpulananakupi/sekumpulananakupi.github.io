@@ -10,8 +10,8 @@
   <link href="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css" rel="stylesheet">
   <link rel="stylesheet" href="../assets/css/style.css" />
   <link rel="stylesheet" href="../assets/css/admin-modern.css" />
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <link rel="stylesheet" href="../modules/admin/menfess-analyzer.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
 </head>
 
@@ -58,6 +58,9 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
         </button>
         <button class="smart-dock-item sidebar-link" type="button" data-page="jurusanPage" data-shortcut="5">
           <i class="fas fa-graduation-cap"></i><span>Jurusan</span><kbd>Alt 5</kbd>
+        </button>
+        <button class="smart-dock-item sidebar-link" type="button" data-page="menfessAnalyzerPage">
+          <i class="fas fa-magnifying-glass-chart"></i><span>Menfess</span><kbd>Internal</kbd>
         </button>
       </section>
 
@@ -148,6 +151,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
                   <button class="v10-launch-item sidebar-link" data-page="jurusanPage" type="button"><i class="fas fa-graduation-cap"></i><strong>Jurusan</strong><span>Profil prodi</span></button>
                   <button class="v10-launch-item sidebar-link" data-page="biayaPendidikanPage" type="button"><i class="fas fa-wallet"></i><strong>Biaya</strong><span>UKT & IPI</span></button>
                   <button class="v10-launch-item sidebar-link" data-page="faqJurusanPage" type="button"><i class="fas fa-comments"></i><strong>FAQ</strong><span>Pertanyaan prodi</span></button>
+                  <button class="v10-launch-item sidebar-link" data-page="menfessAnalyzerPage" type="button"><i class="fas fa-magnifying-glass-chart"></i><strong>Menfess</strong><span>Analyzer internal</span></button>
                 </div>
               </article>
 
@@ -948,6 +952,69 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
           
             <div class="grid-list" id="faqJurusanList"></div>
           </section>
+
+          <section class="admin-page" id="menfessAnalyzerPage">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Internal Tool</p>
+                <h2>Menfess Analyzer</h2>
+                <p>Analisis raw menfess menjadi rekomendasi FAQ, Wiki, Artikel, dan knowledge base tanpa menampilkan raw archive ke publik.</p>
+              </div>
+            </div>
+
+            <div class="menfess-analyzer-layout">
+              <section class="form-card menfess-input-card">
+                <div class="panel-head compact">
+                  <div>
+                    <p class="eyebrow">Input Internal</p>
+                    <h3>Raw menfess</h3>
+                  </div>
+                  <i class="fas fa-lock"></i>
+                </div>
+                <textarea id="menfessRawInput" placeholder="Tempel satu atau banyak menfess. Pisahkan beberapa menfess dengan baris kosong atau ---"></textarea>
+                <div class="form-actions">
+                  <button class="btn primary" type="button" id="menfessAnalyzeBtn">Analyze Menfess</button>
+                  <span class="menfess-storage-note">Storage lokal browser, siap diganti Supabase.</span>
+                </div>
+                <p id="menfessAnalysisResult" class="menfess-result-note" aria-live="polite"></p>
+              </section>
+
+              <aside class="admin-panel-card menfess-draft-card">
+                <div class="panel-head compact">
+                  <div>
+                    <p class="eyebrow">Generate Draft</p>
+                    <h3>FAQ / Wiki / Artikel</h3>
+                  </div>
+                  <i class="fas fa-wand-magic-sparkles"></i>
+                </div>
+                <textarea id="menfessDraftOutput" readonly placeholder="Klik Generate Draft pada salah satu hasil analisis."></textarea>
+                <small>Draft masih template lokal. Verifikasi fakta sebelum publikasi.</small>
+              </aside>
+            </div>
+
+            <section class="menfess-dashboard" id="menfessDashboard" aria-label="Dashboard Menfess Analyzer"></section>
+
+            <section class="admin-panel-card menfess-history-panel">
+              <div class="panel-head compact">
+                <div>
+                  <p class="eyebrow">History & Filter</p>
+                  <h3>Riwayat analisis</h3>
+                </div>
+                <span id="menfessResultCount" class="pill">0 hasil</span>
+              </div>
+
+              <div class="filter-row menfess-filter-row">
+                <input type="search" id="menfessSearch" placeholder="Cari keyword atau isi menfess..." />
+                <select id="menfessCategoryFilter"></select>
+                <select id="menfessIntentFilter"></select>
+                <select id="menfessStatusFilter"></select>
+                <select id="menfessRecommendationFilter"></select>
+                <button class="btn ghost" type="button" id="menfessClearFilters">Reset Filter</button>
+              </div>
+
+              <div class="menfess-history-list" id="menfessHistoryList"></div>
+            </section>
+          </section>
         </section>
       </div>
     </div>
@@ -976,6 +1043,10 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
   <script src="../modules/admin/17-taxonomy.js"></script>
   <script src="../modules/admin/18-biaya-pendidikan.js"></script>
   <script src="../modules/admin/19-faq-jurusan.js"></script>
+  <script src="../modules/admin/22-menfess-storage.js"></script>
+  <script src="../modules/admin/23-menfess-analyzer-logic.js"></script>
+  <script src="../modules/admin/24-menfess-draft-generator.js"></script>
+  <script src="../modules/admin/25-menfess-ui.js"></script>
   <script src="../modules/admin/20-navigation-search-start.js"></script>
   <script src="../modules/admin/21-editor-workspace-fix.js"></script>
   <script src="../assets/js/admin-modern.js"></script>
