@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <title>Generate Sitemap SA UPI</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="description" content="Tool internal untuk membuat sitemap Sekumpulan Anak UPI." />
 <link rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
@@ -51,15 +53,22 @@ function urlItem(loc, priority = "0.8", changefreq = "weekly") {
 
       const urls = [];
 
-      urls.push(urlItem(`${SITE_URL}/index.html`, "1.0", "daily"));
-      urls.push(urlItem(`${SITE_URL}/jurusan.html`, "0.9", "weekly"));
-      urls.push(urlItem(`${SITE_URL}/bandingkan-jurusan.html`, "0.9", "weekly"));
-      urls.push(urlItem(`${SITE_URL}/lowongan.html`, "0.8", "daily"));
-      urls.push(urlItem(`${SITE_URL}/dokumen.html`, "0.7", "weekly"));
-      urls.push(urlItem(`${SITE_URL}/faq.html`, "0.8", "weekly"));
-      urls.push(urlItem(`${SITE_URL}/komunitas.html`, "0.6", "monthly"));
-      urls.push(urlItem(`${SITE_URL}/tentang.html`, "0.6", "monthly"));
-      urls.push(urlItem(`${SITE_URL}/search.html`, "0.6", "weekly"));
+      urls.push(urlItem(`${SITE_URL}/`, "1.0", "daily"));
+      urls.push(urlItem(`${SITE_URL}/pages/jurusan.html`, "0.9", "weekly"));
+      urls.push(urlItem(`${SITE_URL}/pages/bandingkan-jurusan.html`, "0.9", "weekly"));
+      urls.push(urlItem(`${SITE_URL}/pages/lowongan.html`, "0.85", "daily"));
+      urls.push(urlItem(`${SITE_URL}/pages/info.html`, "0.85", "daily"));
+      urls.push(urlItem(`${SITE_URL}/pages/wiki.html`, "0.85", "weekly"));
+      urls.push(urlItem(`${SITE_URL}/pages/kalender-akademik.html`, "0.8", "weekly"));
+      urls.push(urlItem(`${SITE_URL}/pages/maba.html`, "0.8", "weekly"));
+      urls.push(urlItem(`${SITE_URL}/pages/dokumen.html`, "0.75", "weekly"));
+      urls.push(urlItem(`${SITE_URL}/pages/faq.html`, "0.75", "weekly"));
+      urls.push(urlItem(`${SITE_URL}/pages/search.html`, "0.65", "weekly"));
+      urls.push(urlItem(`${SITE_URL}/pages/kategori.html`, "0.65", "weekly"));
+      urls.push(urlItem(`${SITE_URL}/pages/asisten-ai.html`, "0.65", "monthly"));
+      urls.push(urlItem(`${SITE_URL}/pages/komunitas.html`, "0.6", "monthly"));
+      urls.push(urlItem(`${SITE_URL}/pages/tentang.html`, "0.6", "monthly"));
+      urls.push(urlItem(`${SITE_URL}/pages/hubungi-kami.html`, "0.6", "monthly"));
 
       const { data: jurusan } = await supabaseClient
         .from("jurusan")
@@ -67,7 +76,7 @@ function urlItem(loc, priority = "0.8", changefreq = "weekly") {
 
       (jurusan || []).forEach(item => {
         urls.push(
-          urlItem(`${SITE_URL}/jurusan-detail.html?id=${item.id}`, "0.9", "weekly")
+          urlItem(`${SITE_URL}/pages/jurusan-detail.html?id=${item.id}`, "0.9", "weekly")
         );
       });
 
@@ -84,7 +93,7 @@ function urlItem(loc, priority = "0.8", changefreq = "weekly") {
 
         (data || []).forEach(item => {
           urls.push(
-            urlItem(`${SITE_URL}/post.html?type=${table.type}&id=${item.id}`, "0.8", "weekly")
+            urlItem(`${SITE_URL}/pages/post.html?type=${table.type}&id=${item.id}`, "0.8", "weekly")
           );
         });
       }

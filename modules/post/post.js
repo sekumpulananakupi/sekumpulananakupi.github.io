@@ -1,4 +1,4 @@
-const SUPABASE_URL = "https://rozfgvucyiwqqmmrmbph.supabase.co";
+﻿const SUPABASE_URL = "https://rozfgvucyiwqqmmrmbph.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_KL8Jcb1hEzU-kAZiOMYWFg_hupftFmq";
 
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -169,6 +169,7 @@ function renderPost(data, relations, type) {
   const tocItems = extractHeadings(content);
 
   document.title = `${title || "Artikel"} - SA UPI`;
+  updateSeoPost(data, type, title, excerpt);
 
   postDetail.innerHTML = `
     <div class="post-layout">
@@ -302,6 +303,59 @@ function makeExcerpt(text, type) {
   if (!text) return "";
   const maxLength = type === "job" ? 145 : 170;
   return text.length > maxLength ? `${text.slice(0, maxLength).trim()}...` : text;
+}
+
+function updateSeoPost(data, type, title, excerpt) {
+  const pageTitle = `${title || "Artikel"} - SA UPI`;
+  const description = excerpt || "Baca informasi, wiki, dan lowongan terbaru dari SA UPI.";
+  const canonicalUrl = getCanonicalUrl();
+  const imageUrl = data.gambar || "https://anakupi.my.id/assets/images/og-default.svg";
+
+  setCanonicalUrl(canonicalUrl);
+  setMetaTag("description", description);
+  setMetaTag("og:type", "article", "property");
+  setMetaTag("og:site_name", "Sekumpulan Anak UPI", "property");
+  setMetaTag("og:title", pageTitle, "property");
+  setMetaTag("og:description", description, "property");
+  setMetaTag("og:url", canonicalUrl, "property");
+  setMetaTag("og:image", imageUrl, "property");
+  setMetaTag("og:locale", "id_ID", "property");
+  setMetaTag("twitter:card", "summary_large_image");
+  setMetaTag("twitter:title", pageTitle);
+  setMetaTag("twitter:description", description);
+  setMetaTag("twitter:image", imageUrl);
+}
+
+function getCanonicalUrl() {
+  const url = new URL(window.location.href);
+  url.hash = "";
+  return url.toString();
+}
+
+function setCanonicalUrl(url) {
+  let link = document.querySelector('link[rel="canonical"]');
+
+  if (!link) {
+    link = document.createElement("link");
+    link.setAttribute("rel", "canonical");
+    document.head.appendChild(link);
+  }
+
+  link.setAttribute("href", url);
+}
+
+function setMetaTag(name, content, attr = "name") {
+  if (!content) return;
+
+  let tag = document.querySelector(`meta[${attr}="${name}"]`);
+
+  if (!tag) {
+    tag = document.createElement("meta");
+    tag.setAttribute(attr, name);
+    document.head.appendChild(tag);
+  }
+
+  tag.setAttribute("content", content);
 }
 
 function countReadingTime(text) {

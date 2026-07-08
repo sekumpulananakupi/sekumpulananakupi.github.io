@@ -1,4 +1,4 @@
-const SUPABASE_URL = "https://rozfgvucyiwqqmmrmbph.supabase.co";
+﻿const SUPABASE_URL = "https://rozfgvucyiwqqmmrmbph.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_KL8Jcb1hEzU-kAZiOMYWFg_hupftFmq";
 
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -108,7 +108,7 @@ function renderChipLinks(text) {
     <div class="career-grid">
       ${items.map(item => `
         <a class="career-card" href="../pages/lowongan.html?q=${encodeURIComponent(item)}">
-          <span class="career-icon">💼</span>
+          <span class="career-icon">ðŸ’¼</span>
           <span>${escapeHTML(item)}</span>
         </a>
       `).join("")}
@@ -130,7 +130,7 @@ function renderCocokUntukSiapa(text) {
     <div class="fit-list">
       ${items.map(item => `
         <div class="fit-item">
-          <span>✓</span>
+          <span>âœ“</span>
           <p>${escapeHTML(item)}</p>
         </div>
       `).join("")}
@@ -428,9 +428,9 @@ const { data: faqJurusan, error: faqError } = await supabaseClient
   detail.innerHTML = `
     <nav class="breadcrumb detail-breadcrumb">
       <a href="../index.html">Beranda</a>
-      <span>›</span>
+      <span>â€º</span>
       <a href="../pages/jurusan.html">Jurusan</a>
-      <span>›</span>
+      <span>â€º</span>
       <span>${escapeHTML(jurusan.nama)}</span>
     </nav>
 
@@ -561,8 +561,8 @@ const { data: faqJurusan, error: faqError } = await supabaseClient
 
         <div class="program-links modern-link-row">
           ${jurusan.website_resmi ? `<a href="${escapeHTML(jurusan.website_resmi)}" target="_blank" rel="noopener noreferrer" class="btn ghost">Website Resmi</a>` : ""}
-          ${jurusan.url_kurikulum ? `<a href="${escapeHTML(jurusan.url_kurikulum)}" target="_blank" rel="noopener noreferrer" class="btn-link">📚 Lihat Kurikulum</a>` : ""}
-          ${jurusan.url_akreditasi ? `<a href="${escapeHTML(jurusan.url_akreditasi)}" target="_blank" rel="noopener noreferrer" class="btn-link">📄 Lihat Akreditasi</a>` : ""}
+          ${jurusan.url_kurikulum ? `<a href="${escapeHTML(jurusan.url_kurikulum)}" target="_blank" rel="noopener noreferrer" class="btn-link">ðŸ“š Lihat Kurikulum</a>` : ""}
+          ${jurusan.url_akreditasi ? `<a href="${escapeHTML(jurusan.url_akreditasi)}" target="_blank" rel="noopener noreferrer" class="btn-link">ðŸ“„ Lihat Akreditasi</a>` : ""}
         </div>
       </section>
 
@@ -622,9 +622,9 @@ const { data: faqJurusan, error: faqError } = await supabaseClient
         </div>
 
         <div class="share-actions">
-          <button id="shareWhatsapp" class="btn primary">📤 Bagikan Jurusan</button>
-          <button id="copyLink" class="btn ghost">🔗 Salin Link</button>
-          <a href="../pages/jurusan.html" class="btn ghost">← Daftar Jurusan</a>
+          <button id="shareWhatsapp" class="btn primary">ðŸ“¤ Bagikan Jurusan</button>
+          <button id="copyLink" class="btn ghost">ðŸ”— Salin Link</button>
+          <a href="../pages/jurusan.html" class="btn ghost">â† Daftar Jurusan</a>
         </div>
       </section>
       <nav class="mobile-detail-nav">
@@ -1519,10 +1519,10 @@ function setupShareButtons() {
       try {
         await navigator.clipboard.writeText(window.location.href);
 
-        copyBtn.textContent = "✅ Link Tersalin";
+        copyBtn.textContent = "âœ… Link Tersalin";
 
         setTimeout(() => {
-          copyBtn.textContent = "🔗 Salin Link";
+          copyBtn.textContent = "ðŸ”— Salin Link";
         }, 2000);
       } catch {
         alert("Gagal menyalin link.");
@@ -1674,16 +1674,42 @@ function updateSeoJurusan(jurusan, statistik = [], biayaList = []) {
 
   description += ` Lihat profil jurusan, kurikulum, statistik penerimaan, biaya kuliah, FAQ, dan prospek kerja.`;
 
+  const canonicalUrl = getCanonicalUrl();
+  const imageUrl = "https://anakupi.my.id/assets/images/og-default.svg";
+
   document.title = title;
 
+  setCanonicalUrl(canonicalUrl);
   setMetaTag("description", description);
   setMetaTag("og:title", title, "property");
   setMetaTag("og:description", description, "property");
   setMetaTag("og:type", "article", "property");
-  setMetaTag("og:url", window.location.href, "property");
+  setMetaTag("og:site_name", "Sekumpulan Anak UPI", "property");
+  setMetaTag("og:url", canonicalUrl, "property");
+  setMetaTag("og:image", imageUrl, "property");
+  setMetaTag("og:locale", "id_ID", "property");
   setMetaTag("twitter:card", "summary_large_image");
   setMetaTag("twitter:title", title);
   setMetaTag("twitter:description", description);
+  setMetaTag("twitter:image", imageUrl);
+}
+
+function getCanonicalUrl() {
+  const url = new URL(window.location.href);
+  url.hash = "";
+  return url.toString();
+}
+
+function setCanonicalUrl(url) {
+  let link = document.querySelector('link[rel="canonical"]');
+
+  if (!link) {
+    link = document.createElement("link");
+    link.setAttribute("rel", "canonical");
+    document.head.appendChild(link);
+  }
+
+  link.setAttribute("href", url);
 }
 
 function setMetaTag(name, content, attr = "name") {
