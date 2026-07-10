@@ -1,0 +1,87 @@
+/* SA UPI design tokens: the sole shared source for public-site visual values. */
+:root {
+  color-scheme: light;
+
+  /* Brand and semantic color */
+  --color-brand: #174783;
+  --color-brand-strong: #123968;
+  --color-brand-subtle: #e8f1fc;
+  --color-accent: #ffc53d;
+  --color-accent-strong: #d99b00;
+  --color-success: #137a45;
+  --color-success-subtle: #e7f7ee;
+  --color-warning: #a65e00;
+  --color-warning-subtle: #fff4dc;
+  --color-danger: #b42318;
+  --color-danger-subtle: #fef0ef;
+
+  /* Surfaces and text */
+  --color-canvas: #f4f7fb;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f7faff;
+  --color-surface-raised: #ffffff;
+  --color-text: #172033;
+  --color-text-strong: #082b55;
+  --color-text-muted: #5d708a;
+  --color-border: #dce6f2;
+  --color-focus: #1f73d4;
+
+  /* Typography */
+  --font-sans: Arial, Helvetica, sans-serif;
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: clamp(1.875rem, 4vw, 3rem);
+  --line-height-tight: 1.2;
+  --line-height-base: 1.6;
+
+  /* Layout and elevation */
+  --content-width: 1120px;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 2.5rem;
+  --space-8: 3rem;
+  --radius-sm: 0.75rem;
+  --radius-md: 1rem;
+  --radius-lg: 1.25rem;
+  --radius-pill: 999px;
+  --shadow-sm: 0 4px 12px rgba(15, 44, 82, 0.06);
+  --shadow-md: 0 10px 26px rgba(15, 44, 82, 0.1);
+  --shadow-lg: 0 18px 40px rgba(15, 44, 82, 0.14);
+  --transition-fast: 160ms ease;
+  --transition-base: 220ms ease;
+}
+
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --color-brand: #8bb7ff;
+  --color-brand-strong: #b9d4ff;
+  --color-brand-subtle: rgba(139, 183, 255, 0.14);
+  --color-accent: #ffd166;
+  --color-accent-strong: #ffd166;
+  --color-success: #79d9a2;
+  --color-success-subtle: rgba(63, 164, 104, 0.18);
+  --color-warning: #ffd089;
+  --color-warning-subtle: rgba(226, 158, 44, 0.18);
+  --color-danger: #ffaaa2;
+  --color-danger-subtle: rgba(208, 77, 69, 0.18);
+  --color-canvas: #070d18;
+  --color-surface: #0d1627;
+  --color-surface-muted: #0a1322;
+  --color-surface-raised: #121d30;
+  --color-text: #edf4ff;
+  --color-text-strong: #f7fbff;
+  --color-text-muted: #b8c7dd;
+  --color-border: rgba(148, 163, 184, 0.28);
+  --color-focus: #9cc0ff;
+  --shadow-sm: 0 4px 14px rgba(0, 0, 0, 0.28);
+  --shadow-md: 0 14px 34px rgba(0, 0, 0, 0.34);
+  --shadow-lg: 0 22px 54px rgba(0, 0, 0, 0.42);
+}

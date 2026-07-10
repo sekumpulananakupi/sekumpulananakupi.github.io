@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
@@ -45,7 +45,7 @@
   <main class="container jobs-page">
     <section class="jobs-hero" aria-labelledby="jobsTitle">
       <div class="jobs-hero__content">
-        <p class="jobs-eyebrow"><i class="fa-solid fa-briefcase"></i> Karier SA UPI</p>
+        <p class="jobs-eyebrow"><i class="fa-solid fa-briefcase" aria-hidden="true"></i> Karier SA UPI</p>
         <h1 id="jobsTitle">Temukan peluang kerja yang cocok dengan jurusanmu.</h1>
         <p>
           Cari lowongan magang, part-time, freelance, hingga full-time dari berbagai bidang.
@@ -121,13 +121,18 @@
           <p class="eyebrow">Hasil Pencarian</p>
           <h2>Daftar Lowongan</h2>
         </div>
-        <span id="jobCount" class="results-count"></span>
+        <div class="content-meta">
+          <span id="jobCount" class="results-count" role="status" aria-live="polite"></span>
+          <span class="source-badge"><i class="fa-solid fa-database" aria-hidden="true"></i> Sumber: SA UPI</span>
+          <span>Diperbarui saat data dimuat</span>
+        </div>
       </div>
+      <p id="jobFilterSummary" class="filter-summary" aria-live="polite">Filter aktif: Semua lowongan</p>
 
       <div class="job-grid" id="jobList"></div>
 
       <div class="load-more-wrapper">
-        <button id="loadMoreJobs" class="btn primary" style="display:none;">
+        <button id="loadMoreJobs" class="btn primary is-hidden">
           Muat Lagi
         </button>
       </div>

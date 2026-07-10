@@ -81,13 +81,13 @@ function showLoading(targetId, count = 4) {
   `).join("");
 }
 
-function showEmpty(targetId, title = "Lowongan tidak ditemukan", message = "Coba gunakan kata kunci, tag, atau jurusan lain.", icon = "💼") {
+function showEmpty(targetId, title = "Lowongan tidak ditemukan", message = "Coba gunakan kata kunci, tag, atau jurusan lain.", icon = "fa-briefcase") {
   const target = document.getElementById(targetId);
   if (!target) return;
 
   target.innerHTML = `
     <div class="empty-state">
-      <div class="empty-icon">${icon}</div>
+      <div class="empty-icon"><i class="fa-solid ${escapeHTML(icon)}" aria-hidden="true"></i></div>
       <h3>${escapeHTML(title)}</h3>
       <p>${escapeHTML(message)}</p>
     </div>
@@ -239,6 +239,21 @@ function updateJobCount() {
     : "Belum ada hasil";
 }
 
+function updateFilterSummary() {
+  const summary = document.getElementById("jobFilterSummary");
+  if (!summary) return;
+
+  const jurusanLabel = document.querySelector(`#jurusanFilter option[value="${CSS.escape(activeJurusan)}"]`)?.textContent?.replace(/ \(\d+\)$/, "");
+  const tagLabel = document.querySelector(`#tagFilter option[value="${CSS.escape(activeTag)}"]`)?.textContent;
+  const filters = [
+    activeKeyword && `kata kunci “${activeKeyword}”`,
+    activeJurusan !== "all" && `jurusan ${jurusanLabel || "dipilih"}`,
+    activeTag !== "all" && `tag ${tagLabel || "dipilih"}`
+  ].filter(Boolean);
+
+  summary.textContent = `Filter aktif: ${filters.length ? filters.join(", ") : "Semua lowongan"}`;
+}
+
 function getLoadMoreButton() {
   return document.getElementById("loadMoreJobs");
 }
@@ -247,7 +262,7 @@ function updateLoadMoreButton() {
   const button = getLoadMoreButton();
   if (!button) return;
 
-  button.style.display = hasMoreJobs ? "inline-flex" : "none";
+  button.classList.toggle("is-hidden", !hasMoreJobs);
   button.disabled = isLoadingJobs;
   button.textContent = isLoadingJobs ? "Memuat..." : "Muat Lagi";
 }
@@ -274,6 +289,7 @@ async function loadJobs(reset = false) {
   if (!jobList) return;
 
   isLoadingJobs = true;
+  updateFilterSummary();
   updateLoadMoreButton();
 
   if (reset) {
@@ -335,7 +351,7 @@ async function loadJobs(reset = false) {
   if (error) {
     console.error("Gagal mengambil lowongan:", error);
     if (reset) {
-      showEmpty("jobList", "Gagal memuat lowongan", "Coba refresh halaman atau periksa koneksi.", "⚠️");
+      showEmpty("jobList", "Gagal memuat lowongan", "Coba refresh halaman atau periksa koneksi.", "fa-triangle-exclamation");
     }
     hasMoreJobs = false;
     isLoadingJobs = false;

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rekomendasi Jurusan - SA UPI</title>
+  <meta name="description" content="Susun preferensi dan jelajahi rekomendasi jurusan UPI yang dapat dijelaskan faktor pertimbangannya." />
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="../assets/css/rekomendasi-jurusan.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+</head>
+<body class="recommendation-page">
+  <header class="site-header"><div data-component="navbar"></div></header>
+  <main class="container recommendation-layout">
+    <section class="recommendation-hero" aria-labelledby="recommendationTitle">
+      <p class="eyebrow">Pencocokan yang dapat dijelaskan</p>
+      <h1 id="recommendationTitle">Mulai dari prioritasmu, bukan dari satu jawaban mutlak.</h1>
+      <p>SA UPI mencocokkan kata kunci preferensimu dengan deskripsi, fakultas, dan prospek jurusan yang tersedia. Hasilnya adalah titik awal eksplorasi—bukan prediksi kelulusan atau penetapan jurusan terbaik.</p>
+    </section>
+
+    <div class="recommendation-workspace">
+      <form id="recommendationForm" class="recommendation-form">
+        <h2>Preferensi kamu</h2>
+        <p>Masukkan kata atau frasa, pisahkan dengan koma.</p>
+        <label for="interestInput">Minat dan bidang yang ingin dipelajari</label>
+        <input id="interestInput" name="interests" placeholder="contoh: pendidikan, teknologi, anak, desain" />
+        <label for="subjectInput">Mata pelajaran atau kekuatan akademik</label>
+        <input id="subjectInput" name="preferred_subjects" placeholder="contoh: matematika, bahasa, biologi" />
+        <label for="careerInput">Arah karier yang ingin dieksplorasi</label>
+        <input id="careerInput" name="career_goals" placeholder="contoh: guru, data, konselor, peneliti" />
+        <label for="facultyPreference">Fakultas/kampus yang diminati <span>(opsional)</span></label>
+        <input id="facultyPreference" name="campus_locations" placeholder="contoh: FPMIPA, FIP, Kampus Cibiru" />
+        <button class="btn primary" type="submit"><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i> Lihat rekomendasi</button>
+        <p id="recommendationStatus" role="status" class="recommendation-status"></p>
+      </form>
+
+      <section class="recommendation-results" aria-labelledby="resultsTitle">
+        <div class="recommendation-results-head">
+          <div><p class="eyebrow">Hasil eksplorasi</p><h2 id="resultsTitle">Isi preferensi untuk mulai</h2></div>
+          <a href="jurusan.html" class="btn ghost">Buka semua jurusan</a>
+        </div>
+        <div id="recommendationList" class="recommendation-list">
+          <div class="recommendation-empty"><i class="fa-solid fa-compass" aria-hidden="true"></i><p>Tambahkan beberapa minat atau tujuan karier. Kami akan menunjukkan jurusan dengan kecocokan teks yang paling jelas.</p></div>
+        </div>
+        <p class="recommendation-disclaimer"><strong>Catatan:</strong> data yang kosong tidak dihitung sebagai nilai negatif. Selalu periksa profil jurusan, biaya, kurikulum, dan kanal resmi sebelum mengambil keputusan.</p>
+      </section>
+    </div>
+  </main>
+  <footer data-component="footer"></footer>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/components.js"></script>
+  <script src="../assets/js/menu.js"></script>
+  <script src="../assets/js/user-account.js"></script>
+  <script src="../assets/js/rekomendasi-jurusan.js"></script>
+</body>
+</html>

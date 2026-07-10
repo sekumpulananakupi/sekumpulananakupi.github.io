@@ -1,9 +1,9 @@
 /* Dark mode hardening for public pages loaded after page styles. */
 html[data-theme="dark"] body:not(.admin-modern-body) {
-  --dark-bg: #080f1d;
-  --dark-surface: rgba(17, 26, 45, 0.9);
-  --dark-surface-strong: #101a2d;
-  --dark-surface-soft: rgba(139, 183, 255, 0.1);
+  --dark-bg: #070d18;
+  --dark-surface: rgba(13, 22, 39, 0.92);
+  --dark-surface-strong: #0b1424;
+  --dark-surface-soft: rgba(139, 183, 255, 0.08);
   --dark-border: rgba(148, 163, 184, 0.22);
   --dark-text: #edf4ff;
   --dark-text-soft: #b8c7dd;
@@ -30,7 +30,7 @@ html[data-theme="dark"] body:not(.admin-modern-body) .lowongan-page {
   background:
     radial-gradient(circle at 12% 0%, rgba(38, 92, 168, 0.34), transparent 34rem),
     radial-gradient(circle at 88% 18%, rgba(245, 185, 64, 0.11), transparent 24rem),
-    linear-gradient(180deg, #08101f 0%, #0d1424 45%, #090f1c 100%) !important;
+    linear-gradient(180deg, #070d18 0%, #0a1220 45%, #070d17 100%) !important;
   color: var(--dark-text) !important;
 }
 

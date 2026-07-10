@@ -153,6 +153,10 @@ async function loadAdminPage(page) {
         await loadMenfessAnalyzerData();
         break;
 
+      case "kosanPage":
+        await loadKosanAdminData();
+        break;
+
       case "dashboardPage":
         await loadDashboardAuditData();
         initHealthFilters();

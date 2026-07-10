@@ -95,6 +95,7 @@
       ["biaya pendidikan ukt ipi", "biayaPendidikanPage"],
       ["faq jurusan prodi", "faqJurusanPage"],
       ["menfess analyzer analisis curhat pertanyaan internal", "menfessAnalyzerPage"],
+      ["kosan kost kontrakan hunian tempat tinggal", "kosanPage"],
       ["kategori tag taxonomy pengaturan", "taxonomyPage"]
     ];
 
@@ -178,6 +179,7 @@
     { label: "Biaya Pendidikan", desc: "UKT, IPI, dan uang kuliah", page: "biayaPendidikanPage", icon: "fa-wallet", keys: "biaya pendidikan ukt ipi" },
     { label: "FAQ Jurusan", desc: "Pertanyaan per program studi", page: "faqJurusanPage", icon: "fa-comments", keys: "faq jurusan prodi" },
     { label: "Menfess Analyzer", desc: "Analisis menfess internal menjadi FAQ, Wiki, dan Artikel", page: "menfessAnalyzerPage", icon: "fa-magnifying-glass-chart", keys: "menfess analyzer analisis curhat pertanyaan internal" },
+    { label: "Data Kosan", desc: "Kelola daftar kosan halaman tersembunyi", page: "kosanPage", icon: "fa-house", keys: "kosan kost kontrakan hunian tempat tinggal" },
     { label: "Kategori & Tag", desc: "Pengaturan taxonomy konten", page: "taxonomyPage", icon: "fa-tags", keys: "kategori tag taxonomy pengaturan" },
     { label: "Ganti Tema", desc: "Aktifkan atau matikan dark mode", action: "theme", icon: "fa-moon", keys: "dark mode tema gelap terang" },
     { label: "Bantuan Admin", desc: "Buka panel bantuan dan shortcut", action: "help", icon: "fa-circle-question", keys: "bantuan help shortcut panduan" },

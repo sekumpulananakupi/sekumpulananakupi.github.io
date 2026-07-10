@@ -320,8 +320,8 @@ function fillSelect(id) {
 
 function applyCompareParamsFromURL() {
   const params = new URLSearchParams(window.location.search);
-  const jurusan1 = params.get("jurusan1");
-  const jurusan2 = params.get("jurusan2");
+  const jurusan1 = params.get("jurusanA") || params.get("jurusan1");
+  const jurusan2 = params.get("jurusanB") || params.get("jurusan2");
 
   const selectA = document.getElementById("jurusanA");
   const selectB = document.getElementById("jurusanB");

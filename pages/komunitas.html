@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
@@ -33,6 +33,7 @@
   </script>
 
   <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="../assets/css/community-directory.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
   <style>
@@ -362,7 +363,7 @@
     }
 
     .faq-list details[open] summary::after {
-      content: "âˆ’";
+      content: "−";
     }
 
     .faq-list details p {
@@ -526,6 +527,18 @@
         <strong>26 Jun</strong>
         <span>Update terakhir</span>
       </div>
+    </section>
+
+    <section class="community-section community-directory-promo" aria-labelledby="organizationDirectoryTitle">
+      <div class="community-section-header">
+        <p class="eyebrow">Direktori terkurasi</p>
+        <h2 id="organizationDirectoryTitle">Cari UKM, Ormawa, dan Organisasi Daerah</h2>
+        <p>Direktori organisasi mahasiswa kini tersedia di halaman khusus agar pencarian, pengajuan, dan moderasi informasi lebih terarah.</p>
+      </div>
+      <a href="ukm-ormawa.html" class="community-btn primary">
+        <i class="fa-solid fa-compass" aria-hidden="true"></i>
+        Buka Direktori Organisasi
+      </a>
     </section>
 
     <section class="community-section">
@@ -726,6 +739,7 @@
     <div data-component="footer"></div>
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../assets/js/menu.js"></script>
   <script src="../assets/js/components.js"></script>
 </body>

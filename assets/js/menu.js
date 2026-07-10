@@ -24,7 +24,9 @@ function initMenu() {
         menuToggle.dataset.initialized = "true";
 
         menuToggle.addEventListener("click", () => {
-            navMenu.classList.toggle("show");
+            const isOpen = navMenu.classList.toggle("show");
+            menuToggle.setAttribute("aria-expanded", String(isOpen));
+            menuToggle.setAttribute("aria-label", isOpen ? "Tutup menu navigasi" : "Buka menu navigasi");
         });
     }
 
@@ -63,6 +65,25 @@ function initMenu() {
             if (event.target.closest(".nav-dropdown")) return;
 
             document.querySelectorAll(".nav-dropdown.open").forEach(closeDropdown);
+        });
+
+        document.addEventListener("keydown", (event) => {
+            if (event.key !== "Escape") return;
+
+            const activeDropdown = document.querySelector(".nav-dropdown.open");
+            if (activeDropdown) {
+                const activeToggle = activeDropdown.querySelector(".nav-dropdown-toggle");
+                closeDropdown(activeDropdown, true);
+                activeToggle?.focus();
+                return;
+            }
+
+            if (navMenu.classList.contains("show")) {
+                navMenu.classList.remove("show");
+                menuToggle.setAttribute("aria-expanded", "false");
+                menuToggle.setAttribute("aria-label", "Buka menu navigasi");
+                menuToggle.focus();
+            }
         });
     }
 }

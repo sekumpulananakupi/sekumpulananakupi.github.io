@@ -1,66 +1,47 @@
+/* Compatibility aliases for legacy public styles. Canonical values live in tokens.css. */
 :root {
-  /* Brand */
-  --primary: #174783;
-  --primary-2: #1f5597;
-  --accent: #ffc53d;
+  --primary: var(--color-brand);
+  --primary-2: var(--color-brand-strong);
+  --accent: var(--color-accent);
+  --blue: var(--color-brand);
+  --gold: var(--color-accent);
+  --danger: var(--color-danger);
 
-  /* Text */
-  --text: #082b55;
-  --text-soft: #385678;
-  --muted: #6b7c93;
+  --text: var(--color-text);
+  --text-soft: var(--color-text-muted);
+  --muted: var(--color-text-muted);
 
-  /* Surface */
-  --white: #ffffff;
-  --surface: #f7faff;
-  --surface-2: #f2f6fc;
-  --border: #e5edf7;
+  --white: var(--color-surface);
+  --surface: var(--color-surface-muted);
+  --surface-2: var(--color-canvas);
+  --bg: var(--color-canvas);
+  --border: var(--color-border);
 
-  /* Radius */
-  --radius-sm: 12px;
-  --radius-md: 18px;
-  --radius-lg: 20px;
-  --radius-pill: 999px;
-
-  /* Shadow */
-  --shadow-sm: 0 4px 12px rgba(15, 44, 82, 0.04);
-  --shadow-md: 0 10px 26px rgba(15, 44, 82, 0.08);
-  --shadow-lg: 0 18px 40px rgba(15, 44, 82, 0.12);
-
-  /* Spacing */
-  --space-xs: 8px;
-  --space-sm: 12px;
-  --space-md: 16px;
-  --space-lg: 24px;
-  --space-xl: 32px;
-  --space-2xl: 40px;
-
-  /* Motion */
-  --transition: 0.22s ease;
+  --space-xs: var(--space-2);
+  --space-sm: var(--space-3);
+  --space-md: var(--space-4);
+  --space-lg: var(--space-5);
+  --space-xl: var(--space-6);
+  --space-2xl: var(--space-7);
+  --transition: var(--transition-base);
 }
-
-/* base.css - hasil pecahan dari style.css */
-
-:root { --blue:#163b73; --gold:#f5b940; --bg:#f4f7fb; --text:#172033; --muted:#667085; --white:#fff; --danger:#c0392b; }
 
 html[data-theme="dark"] {
   color-scheme: dark;
-  --primary: #78a9ff;
-  --primary-2: #9cc0ff;
-  --accent: #ffd166;
-  --text: #edf4ff;
-  --text-soft: #b8c7dd;
-  --muted: #93a4ba;
-  --white: #111a2d;
-  --surface: #0b1220;
-  --surface-2: #121c31;
-  --border: rgba(148, 163, 184, 0.24);
-  --blue: #8bb7ff;
-  --gold: #ffd166;
-  --bg: #080f1d;
-  --danger: #ff8a80;
-  --shadow-sm: 0 4px 14px rgba(0, 0, 0, 0.28);
-  --shadow-md: 0 14px 34px rgba(0, 0, 0, 0.34);
-  --shadow-lg: 0 22px 54px rgba(0, 0, 0, 0.42);
+  --primary: var(--color-brand);
+  --primary-2: var(--color-brand-strong);
+  --accent: var(--color-accent);
+  --blue: var(--color-brand);
+  --gold: var(--color-accent);
+  --danger: var(--color-danger);
+  --text: var(--color-text);
+  --text-soft: var(--color-text-muted);
+  --muted: var(--color-text-muted);
+  --white: var(--color-surface);
+  --surface: var(--color-surface-muted);
+  --surface-2: var(--color-canvas);
+  --bg: var(--color-canvas);
+  --border: var(--color-border);
 }
 
 

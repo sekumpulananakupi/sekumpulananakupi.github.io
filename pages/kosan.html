@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kosan Dekat UPI - SA UPI</title>
+  <meta name="description" content="Temukan pilihan kosan putra, putri, dan campur di sekitar Universitas Pendidikan Indonesia (UPI)." />
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="../assets/css/kosan.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+  <link rel="stylesheet" href="../assets/css/dark-mode.css" />
+</head>
+<body>
+  <header class="site-header"><div data-component="navbar"></div></header>
+  <main class="container kosan-page">
+    <section class="kosan-hero" aria-labelledby="kosanTitle">
+      <div>
+        <p class="kosan-eyebrow"><i class="fa-solid fa-house"></i> Hunian Mahasiswa</p>
+        <h1 id="kosanTitle">Cari kosan nyaman dekat UPI.</h1>
+        <p>Temukan pilihan tempat tinggal yang dikelola dan dibagikan untuk kebutuhan mahasiswa UPI.</p>
+      </div>
+      <div class="kosan-hero-count"><strong id="kosanTotal">0</strong><span>kosan tersedia</span></div>
+    </section>
+    <section class="kosan-tools" aria-label="Pencarian dan filter kosan">
+      <label class="kosan-search" for="kosanSearch"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><input id="kosanSearch" type="search" placeholder="Cari nama, area, atau fasilitas..." autocomplete="off" /></label>
+      <div class="kosan-filters">
+        <select id="kosanTipeFilter" aria-label="Filter tipe kosan"><option value="">Semua tipe</option><option value="Putra">Putra</option><option value="Putri">Putri</option><option value="Campur">Campur</option></select>
+        <select id="kosanAreaFilter" aria-label="Filter area kosan"><option value="">Semua area</option></select>
+        <select id="kosanHargaFilter" aria-label="Filter harga kosan"><option value="">Semua harga</option><option value="500000">Di bawah Rp500 ribu</option><option value="1000000">Di bawah Rp1 juta</option><option value="1500000">Di bawah Rp1,5 juta</option></select>
+      </div>
+    </section>
+    <section aria-label="Daftar kosan">
+      <div class="kosan-results-head"><div><p class="eyebrow">Pilihan Kosan</p><h2>Hunian yang bisa dipertimbangkan</h2></div><span id="kosanResultCount" class="kosan-result-count"></span></div>
+      <div id="kosanList" class="kosan-grid" aria-live="polite"></div>
+    </section>
+  </main>
+  <footer class="footer"><div data-component="footer"></div></footer>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/components.js"></script>
+  <script src="../assets/js/utils.js"></script>
+  <script src="../modules/kosan/kosan.js"></script>
+  <script src="../assets/js/menu.js"></script>
+</body>
+</html>

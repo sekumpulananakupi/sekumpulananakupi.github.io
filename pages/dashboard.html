@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard Member - SA UPI</title>
+  <meta name="description" content="Dashboard pribadi member SA UPI untuk mengelola progres dan aktivitas akun." />
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="../assets/css/member-dashboard.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+</head>
+<body class="member-dashboard-page">
+  <header class="site-header"><div data-component="navbar"></div></header>
+
+  <main class="container member-dashboard" aria-live="polite">
+    <section id="dashboardSignedOut" class="member-dashboard-card" hidden>
+      <p class="eyebrow">Dashboard member</p>
+      <h1>Masuk untuk membuka dashboard.</h1>
+      <p>Dashboard hanya tersedia untuk akun member yang sudah masuk.</p>
+      <a href="akun.html" class="btn primary">Masuk ke akun</a>
+    </section>
+
+    <section id="dashboardSignedIn" hidden aria-labelledby="dashboardTitle">
+      <header class="member-dashboard-header">
+        <div>
+          <p class="eyebrow">Dashboard member</p>
+          <h1 id="dashboardTitle">Halo, <span id="dashboardUserName">Member</span></h1>
+          <p>Ringkasan progres dan pintasan aktivitas akunmu di SA UPI.</p>
+        </div>
+        <p class="member-dashboard-email" id="dashboardUserEmail"></p>
+      </header>
+
+      <div class="member-dashboard-grid">
+        <article class="member-dashboard-card member-stat">
+          <i class="fa-solid fa-bookmark" aria-hidden="true"></i>
+          <strong id="dashboardSavedMajors">0</strong>
+          <span>jurusan tersimpan</span>
+        </article>
+        <article class="member-dashboard-card member-stat">
+          <i class="fa-solid fa-list-check" aria-hidden="true"></i>
+          <strong id="dashboardChecklistProgress">0</strong>
+          <span>checklist Maru selesai</span>
+        </article>
+        <article class="member-dashboard-card member-stat">
+          <i class="fa-solid fa-bell" aria-hidden="true"></i>
+          <strong id="dashboardUnreadNotifications">0</strong>
+          <span>notifikasi belum dibaca</span>
+        </article>
+
+        <article class="member-dashboard-card member-dashboard-card--wide member-dashboard-card--action">
+          <h2>Lanjutkan perjalananmu</h2>
+          <p>Eksplorasi jurusan, simpan pilihan yang menarik, lalu bandingkan untuk memantapkan keputusanmu.</p>
+          <a href="jurusan.html" class="btn primary">Eksplor jurusan <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+        </article>
+        <article class="member-dashboard-card member-dashboard-card--action">
+          <h2>Pengaturan akun</h2>
+          <p>Kelola preferensi notifikasi dan data sinkronisasi akunmu.</p>
+          <a href="akun.html" class="btn secondary">Buka akun</a>
+        </article>
+      </div>
+    </section>
+    <p class="member-dashboard-status" id="memberDashboardStatus" role="status"></p>
+  </main>
+
+  <footer data-component="footer"></footer>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/menu.js"></script>
+  <script src="../assets/js/components.js"></script>
+  <script src="../assets/js/journey-actions.js"></script>
+  <script src="../assets/js/user-account.js"></script>
+  <script src="../assets/js/member-dashboard.js"></script>
+</body>
+</html>

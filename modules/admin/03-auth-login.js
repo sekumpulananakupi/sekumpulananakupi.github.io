@@ -2,16 +2,39 @@
    LOGIN
 ========================= */
 
+async function getCurrentAdminRole(session) {
+  const userId = session?.user?.id;
+  if (!userId) return null;
+
+  const { data, error } = await supabaseClient
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  if (error) {
+    console.error("Gagal memverifikasi peran admin:", error.message);
+    return null;
+  }
+
+  return data?.role || null;
+}
+
 async function checkSession() {
   const { data, error } = await supabaseClient.auth.getSession();
 
   if (error) {
     console.error("Session error:", error);
+    isAdmin = false;
+    updateAdminUI("Sesi tidak dapat diverifikasi. Silakan masuk kembali.");
     return;
   }
 
-  isAdmin = !!data.session;
-  updateAdminUI();
+  const role = await getCurrentAdminRole(data.session);
+  isAdmin = role === "admin";
+  updateAdminUI(data.session && !isAdmin
+    ? "Akun ini tidak memiliki peran admin."
+    : undefined);
 
   if (isAdmin) {
     await refreshAdminData();
@@ -27,7 +50,7 @@ async function loadInitialActiveAdminPage() {
   }
 }
 
-function updateAdminUI() {
+function updateAdminUI(statusMessage) {
   const loginBox = qs("loginBox");
   const adminPanel = qs("adminPanel");
   const loginBtn = qs("loginBtn");
@@ -41,9 +64,9 @@ function updateAdminUI() {
   if (logoutBtn) logoutBtn.style.display = isAdmin ? "inline-block" : "none";
 
   if (loginStatus) {
-    loginStatus.textContent = isAdmin
+    loginStatus.textContent = statusMessage || (isAdmin
       ? "Login berhasil. Mode admin aktif."
-      : "Belum login.";
+      : "Belum login.");
   }
 }
 
@@ -182,6 +205,16 @@ if (qs("loginBtn")) {
 
     if (error) {
       alert("Login gagal: " + error.message);
+      return;
+    }
+
+    const { data: sessionData } = await supabaseClient.auth.getSession();
+    const role = await getCurrentAdminRole(sessionData.session);
+
+    if (role !== "admin") {
+      await supabaseClient.auth.signOut();
+      isAdmin = false;
+      updateAdminUI("Akses ditolak. Akun ini bukan admin.");
       return;
     }
 

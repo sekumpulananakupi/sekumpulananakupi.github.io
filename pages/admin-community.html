@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>Moderasi Komunitas | SA UPI</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="../assets/css/community-directory.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+</head>
+<body>
+  <header class="site-header"><div data-component="navbar"></div></header>
+  <main class="container community-page">
+    <section class="community-directory-section" aria-labelledby="moderationTitle">
+      <div class="community-directory-head">
+        <div>
+          <p class="eyebrow">Ruang staf</p>
+          <h1 id="moderationTitle">Moderasi komunitas</h1>
+          <p>Tinjau usulan direktori dan laporan pengguna. Setiap perubahan status tercatat pada audit log.</p>
+        </div>
+        <p class="community-directory-status" id="moderationStatus" role="status" aria-live="polite">Memverifikasi akses staf…</p>
+      </div>
+      <div id="moderationAccessDenied" class="community-directory-empty" hidden>
+        <i class="fa-solid fa-lock" aria-hidden="true"></i>
+        <h2>Akses staf diperlukan</h2>
+        <p>Halaman ini hanya tersedia untuk moderator atau admin SA UPI.</p>
+      </div>
+      <div id="moderationWorkspace" hidden>
+        <section class="community-section" aria-labelledby="pendingListingsTitle">
+          <div class="community-section-header">
+            <p class="eyebrow">Antrean review</p>
+            <h2 id="pendingListingsTitle">Usulan menunggu moderasi</h2>
+          </div>
+          <div id="moderationListings" class="community-directory-list" aria-live="polite"></div>
+        </section>
+        <section class="community-section" aria-labelledby="openReportsTitle">
+          <div class="community-section-header">
+            <p class="eyebrow">Keamanan komunitas</p>
+            <h2 id="openReportsTitle">Laporan terbuka</h2>
+          </div>
+          <div id="moderationReports" class="community-directory-list" aria-live="polite"></div>
+        </section>
+      </div>
+    </section>
+  </main>
+  <footer class="footer"><div data-component="footer"></div></footer>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/menu.js"></script>
+  <script src="../assets/js/components.js"></script>
+  <script src="../assets/js/user-account.js"></script>
+  <script src="../assets/js/community-moderation.js"></script>
+</body>
+</html>

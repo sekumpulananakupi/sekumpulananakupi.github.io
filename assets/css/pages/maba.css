@@ -193,6 +193,10 @@
   font-size: 14px;
 }
 
+.maba-card-action-copy {
+  margin-bottom: 16px !important;
+}
+
 
 
 .quick-card,

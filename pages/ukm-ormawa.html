@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Direktori UKM, Ormawa & Organisasi Daerah UPI | SA UPI</title>
+  <meta name="description" content="Direktori terkurasi UKM, Ormawa, dan organisasi daerah mahasiswa UPI. Temukan kanal resmi dan ajukan organisasi untuk ditinjau." />
+  <link rel="canonical" href="https://anakupi.my.id/pages/ukm-ormawa.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Sekumpulan Anak UPI" />
+  <meta property="og:title" content="Direktori UKM, Ormawa & Organisasi Daerah UPI" />
+  <meta property="og:description" content="Temukan UKM, Ormawa, dan organisasi daerah mahasiswa UPI yang telah ditinjau." />
+  <meta property="og:url" content="https://anakupi.my.id/pages/ukm-ormawa.html" />
+  <meta property="og:image" content="https://anakupi.my.id/assets/images/og-default.svg" />
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="../assets/css/community-directory.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+</head>
+<body class="organization-directory-page">
+  <header class="site-header"><div data-component="navbar"></div></header>
+
+  <main class="container organization-directory-layout">
+    <section class="organization-directory-hero" aria-labelledby="organizationDirectoryPageTitle">
+      <p class="organization-directory-eyebrow"><i class="fa-solid fa-compass" aria-hidden="true"></i> Direktori terkurasi mahasiswa</p>
+      <h1 id="organizationDirectoryPageTitle">UKM, Ormawa, dan Organisasi Daerah UPI</h1>
+      <p>Temukan ruang berkegiatan, berjejaring, dan berkarya di UPI. Entri yang tampil telah melalui peninjauan moderator agar informasinya relevan dan aman.</p>
+      <div class="organization-directory-jumps" aria-label="Jenis organisasi">
+        <a href="#organizationDirectory" data-category-slug="ukm"><i class="fa-solid fa-palette" aria-hidden="true"></i> UKM</a>
+        <a href="#organizationDirectory" data-category-slug="ormawa"><i class="fa-solid fa-landmark" aria-hidden="true"></i> Ormawa</a>
+        <a href="#organizationDirectory" data-category-slug="organisasi-daerah"><i class="fa-solid fa-map-location-dot" aria-hidden="true"></i> Organisasi Daerah</a>
+      </div>
+    </section>
+
+    <section class="community-directory-section organization-directory-section" id="organizationDirectory" aria-labelledby="communityDirectoryTitle">
+      <div class="community-directory-head">
+        <div>
+          <p class="eyebrow">Cari organisasi</p>
+          <h2 id="communityDirectoryTitle">Pilih kegiatan yang sesuai minatmu</h2>
+          <p>Gunakan pencarian atau pilih kategori untuk melihat UKM, Ormawa, dan organisasi daerah yang tersedia.</p>
+        </div>
+        <p class="community-directory-status" id="communityDirectoryStatus" role="status" aria-live="polite">Menyiapkan direktori…</p>
+      </div>
+
+      <div class="community-directory-filter-row" role="search">
+        <input type="search" id="communitySearch" placeholder="Cari nama organisasi, minat, jurusan, atau fakultas" aria-label="Cari organisasi" />
+        <select id="communityCategoryFilter" aria-label="Filter kategori organisasi">
+          <option value="">Semua kategori</option>
+        </select>
+      </div>
+      <p class="community-directory-count" id="communityListingCount">0 organisasi ditemukan</p>
+      <div class="community-directory-list" id="communityDirectoryList" aria-live="polite"></div>
+
+      <aside class="community-submission-card" aria-labelledby="communitySubmissionTitle">
+        <h2 id="communitySubmissionTitle">Tambahkan organisasi ke direktori</h2>
+        <p>Pengurus atau anggota dapat mengajukan UKM, Ormawa, atau organisasi daerah untuk ditinjau moderator sebelum ditampilkan.</p>
+        <div class="community-submission-gate" id="communitySubmissionGate">
+          <strong>Masuk diperlukan.</strong> <a href="akun.html">Masuk atau buat akun</a> untuk mengajukan organisasi dan melaporkan entri yang perlu diperbarui.
+        </div>
+        <form class="community-submission-form" id="communitySubmissionForm" hidden>
+          <label>Nama organisasi<input name="name" required maxlength="120" autocomplete="organization" /></label>
+          <label>Kategori<select name="category_id" id="communitySubmissionCategory" required></select></label>
+          <label class="community-form-full">Deskripsi singkat<textarea name="description" required maxlength="1000" placeholder="Tujuan, anggota yang sesuai, dan kegiatan organisasi."></textarea></label>
+          <label>Fakultas atau kampus (opsional)<input name="faculty" maxlength="120" placeholder="Contoh: FPMIPA" /></label>
+          <label>Tautan kanal organisasi<input name="contact_url" type="url" required placeholder="https://..." /></label>
+          <label>Jurusan terkait (opsional)<input name="majors" maxlength="300" placeholder="Pisahkan dengan koma" /></label>
+          <label>Minat/topik (opsional)<input name="interests" maxlength="300" placeholder="Pisahkan dengan koma" /></label>
+          <button class="community-btn primary" type="submit"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i> Kirim untuk moderasi</button>
+          <p class="community-submission-status" id="communitySubmissionStatus" role="status" aria-live="polite"></p>
+        </form>
+      </aside>
+    </section>
+  </main>
+
+  <footer data-component="footer"></footer>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/menu.js"></script>
+  <script src="../assets/js/components.js"></script>
+  <script src="../assets/js/user-account.js"></script>
+  <script src="../assets/js/community-directory.js"></script>
+</body>
+</html>

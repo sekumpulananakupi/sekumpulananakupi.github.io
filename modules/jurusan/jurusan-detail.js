@@ -1,4 +1,4 @@
-﻿const SUPABASE_URL = "https://rozfgvucyiwqqmmrmbph.supabase.co";
+const SUPABASE_URL = "https://rozfgvucyiwqqmmrmbph.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_KL8Jcb1hEzU-kAZiOMYWFg_hupftFmq";
 
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -108,7 +108,7 @@ function renderChipLinks(text) {
     <div class="career-grid">
       ${items.map(item => `
         <a class="career-card" href="../pages/lowongan.html?q=${encodeURIComponent(item)}">
-          <span class="career-icon">ðŸ’¼</span>
+          <span class="career-icon"><i class="fa-solid fa-briefcase" aria-hidden="true"></i></span>
           <span>${escapeHTML(item)}</span>
         </a>
       `).join("")}
@@ -130,7 +130,7 @@ function renderCocokUntukSiapa(text) {
     <div class="fit-list">
       ${items.map(item => `
         <div class="fit-item">
-          <span>âœ“</span>
+          <span><i class="fa-solid fa-check" aria-hidden="true"></i></span>
           <p>${escapeHTML(item)}</p>
         </div>
       `).join("")}
@@ -336,7 +336,17 @@ async function loadJurusanDetail() {
   if (!detail) return;
 
   if (!id) {
-    detail.innerHTML = `<div class="empty">Jurusan tidak ditemukan.</div>`;
+    detail.innerHTML = typeof renderSolutionEmptyState === "function"
+      ? renderSolutionEmptyState({
+        title: "Jurusan tidak ditemukan.",
+        message: "Buka daftar jurusan untuk memilih profil yang tersedia.",
+        resetLabel: "Buka daftar jurusan",
+        suggestions: [{ label: "Bandingkan jurusan", href: "../pages/bandingkan-jurusan.html" }]
+      })
+      : `<div class="empty">Jurusan tidak ditemukan.</div>`;
+    if (typeof bindDataRecoveryActions === "function") {
+      bindDataRecoveryActions(detail, { reset: () => { window.location.href = "../pages/jurusan.html"; } });
+    }
     return;
   }
 
@@ -375,7 +385,19 @@ if (!jurusan) {
 
   if (error || !jurusan) {
     console.error("Gagal memuat jurusan:", error?.message);
-    detail.innerHTML = `<div class="empty">Gagal memuat jurusan.</div>`;
+    detail.innerHTML = typeof renderDataRecoveryState === "function"
+      ? renderDataRecoveryState({
+        title: "Detail jurusan belum dapat dimuat.",
+        message: "Coba lagi atau segarkan data. Jika masalah berlanjut, laporkan agar kami dapat memeriksanya.",
+        reportHref: "../pages/hubungi-kami.html?subject=laporan-data-jurusan"
+      })
+      : `<div class="empty">Gagal memuat jurusan.</div>`;
+    if (typeof bindDataRecoveryActions === "function") {
+      bindDataRecoveryActions(detail, {
+        retry: () => loadJurusanDetail(),
+        refresh: () => { clearSaupiCache(jurusanCacheKey); loadJurusanDetail(); }
+      });
+    }
     return;
   }
 
@@ -426,12 +448,12 @@ const { data: faqJurusan, error: faqError } = await supabaseClient
   const mainStat = latestSNBT || latestSNBP || latestStat;
 
   detail.innerHTML = `
-    <nav class="breadcrumb detail-breadcrumb">
+    <nav class="breadcrumb detail-breadcrumb" aria-label="Breadcrumb">
       <a href="../index.html">Beranda</a>
-      <span>â€º</span>
+      <span aria-hidden="true"><i class="fa-solid fa-chevron-right"></i></span>
       <a href="../pages/jurusan.html">Jurusan</a>
-      <span>â€º</span>
-      <span>${escapeHTML(jurusan.nama)}</span>
+      <span aria-hidden="true"><i class="fa-solid fa-chevron-right"></i></span>
+      <span aria-current="page">${escapeHTML(jurusan.nama)}</span>
     </nav>
 
     <article class="jurusan-detail-shell">
@@ -482,6 +504,12 @@ const { data: faqJurusan, error: faqError } = await supabaseClient
         </aside>
       </section>
 
+      ${typeof renderMajorJourneyActions === "function" ? renderMajorJourneyActions({
+        id: jurusan.id,
+        name: jurusan.nama,
+        faculty: jurusan.fakultas
+      }) : ""}
+ 
       <div class="mobile-section-select">
   <label for="sectionJump">Lompat ke bagian</label>
   <select id="sectionJump">
@@ -561,8 +589,8 @@ const { data: faqJurusan, error: faqError } = await supabaseClient
 
         <div class="program-links modern-link-row">
           ${jurusan.website_resmi ? `<a href="${escapeHTML(jurusan.website_resmi)}" target="_blank" rel="noopener noreferrer" class="btn ghost">Website Resmi</a>` : ""}
-          ${jurusan.url_kurikulum ? `<a href="${escapeHTML(jurusan.url_kurikulum)}" target="_blank" rel="noopener noreferrer" class="btn-link">ðŸ“š Lihat Kurikulum</a>` : ""}
-          ${jurusan.url_akreditasi ? `<a href="${escapeHTML(jurusan.url_akreditasi)}" target="_blank" rel="noopener noreferrer" class="btn-link">ðŸ“„ Lihat Akreditasi</a>` : ""}
+          ${jurusan.url_kurikulum ? `<a href="${escapeHTML(jurusan.url_kurikulum)}" target="_blank" rel="noopener noreferrer" class="btn-link"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Lihat Kurikulum</a>` : ""}
+          ${jurusan.url_akreditasi ? `<a href="${escapeHTML(jurusan.url_akreditasi)}" target="_blank" rel="noopener noreferrer" class="btn-link"><i class="fa-regular fa-file-lines" aria-hidden="true"></i> Lihat Akreditasi</a>` : ""}
         </div>
       </section>
 
@@ -622,9 +650,9 @@ const { data: faqJurusan, error: faqError } = await supabaseClient
         </div>
 
         <div class="share-actions">
-          <button id="shareWhatsapp" class="btn primary">ðŸ“¤ Bagikan Jurusan</button>
-          <button id="copyLink" class="btn ghost">ðŸ”— Salin Link</button>
-          <a href="../pages/jurusan.html" class="btn ghost">â† Daftar Jurusan</a>
+          <button id="shareWhatsapp" class="btn primary" type="button"><i class="fa-solid fa-share-nodes" aria-hidden="true"></i> Bagikan Jurusan</button>
+          <button id="copyLink" class="btn ghost" type="button"><i class="fa-solid fa-link" aria-hidden="true"></i> Salin Link</button>
+          <a href="../pages/jurusan.html" class="btn ghost"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Daftar Jurusan</a>
         </div>
       </section>
       <nav class="mobile-detail-nav">
@@ -1519,10 +1547,10 @@ function setupShareButtons() {
       try {
         await navigator.clipboard.writeText(window.location.href);
 
-        copyBtn.textContent = "âœ… Link Tersalin";
+        copyBtn.innerHTML = '<i class="fa-solid fa-check" aria-hidden="true"></i> Link Tersalin';
 
         setTimeout(() => {
-          copyBtn.textContent = "ðŸ”— Salin Link";
+          copyBtn.innerHTML = '<i class="fa-solid fa-link" aria-hidden="true"></i> Salin Link';
         }, 2000);
       } catch {
         alert("Gagal menyalin link.");
@@ -1881,6 +1909,7 @@ function updateFaqSchemaJurusan(faqItems = []) {
 
 async function initJurusanDetailPage() {
   await loadJurusanDetail();
+  if (typeof setupMajorJourneyActions === "function") setupMajorJourneyActions();
   setupBiayaTabs();
 }
 

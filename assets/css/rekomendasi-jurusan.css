@@ -1,0 +1,41 @@
+.recommendation-page { background: var(--color-surface-muted); }
+
+.recommendation-layout { padding-block: clamp(3rem, 7vw, 6rem); }
+
+.recommendation-hero { max-width: 52rem; }
+
+.recommendation-hero h1 { font-size: clamp(2.25rem, 5vw, 4.1rem); letter-spacing: -.045em; line-height: 1.08; margin: .65rem 0 1rem; }
+.recommendation-hero > p:not(.eyebrow) { color: var(--color-text-muted); font-size: 1.05rem; line-height: 1.7; }
+
+.recommendation-workspace { display: grid; gap: 1.5rem; grid-template-columns: minmax(17rem, .72fr) minmax(0, 1.4fr); margin-top: 2.5rem; }
+.recommendation-form, .recommendation-results { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: clamp(1.25rem, 3vw, 2rem); }
+.recommendation-form { align-self: start; display: grid; gap: .7rem; }
+.recommendation-form h2, .recommendation-form p { margin: 0; }
+.recommendation-form > p { color: var(--color-text-muted); font-size: .9rem; line-height: 1.5; margin-bottom: .5rem; }
+.recommendation-form label { font-weight: 700; margin-top: .4rem; }
+.recommendation-form label span { color: var(--color-text-muted); font-size: .85rem; font-weight: 400; }
+.recommendation-form input { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); color: var(--color-text); font: inherit; min-height: 2.9rem; padding: .7rem .85rem; }
+.recommendation-form button { justify-content: center; margin-top: .8rem; }
+.recommendation-status { color: var(--color-success, #15803d); line-height: 1.5; margin: .25rem 0 0; min-height: 1.5rem; }
+.recommendation-status.is-error { color: var(--color-danger, #b91c1c); }
+
+.recommendation-results-head { align-items: center; display: flex; gap: 1rem; justify-content: space-between; margin-bottom: 1.25rem; }
+.recommendation-results-head h2, .recommendation-results-head p { margin: 0; }
+.recommendation-list { display: grid; gap: 1rem; }
+.recommendation-card { border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 1.25rem; }
+.recommendation-card h3 { margin: .2rem 0 .35rem; }
+.recommendation-card p { color: var(--color-text-muted); line-height: 1.6; }
+.recommendation-card-head { align-items: flex-start; display: flex; gap: 1rem; justify-content: space-between; }
+.recommendation-card-head .btn { flex: 0 0 auto; }
+.recommendation-explanation { background: var(--color-surface-muted); border-radius: var(--radius-sm); margin-top: 1rem; padding: .85rem 1rem; }
+.recommendation-explanation ul { color: var(--color-text-muted); display: grid; gap: .45rem; margin: .6rem 0 0; padding-left: 1.1rem; }
+.recommendation-explanation strong { color: var(--color-text); }
+.recommendation-explanation li span { color: var(--color-text); font-weight: 700; margin-right: .35rem; }
+.recommendation-empty { align-items: center; color: var(--color-text-muted); display: grid; gap: 1rem; grid-template-columns: auto 1fr; padding: 2rem 1rem; text-align: left; }
+.recommendation-empty i { color: var(--color-primary); font-size: 1.8rem; }
+.recommendation-empty p { line-height: 1.6; margin: 0; }
+.recommendation-disclaimer { color: var(--color-text-muted); font-size: .875rem; line-height: 1.6; margin: 1.5rem 0 0; }
+.recommendation-form :focus-visible, .recommendation-results :focus-visible { outline: 3px solid rgba(37, 99, 235, .45); outline-offset: 3px; }
+
+@media (max-width: 820px) { .recommendation-workspace { grid-template-columns: 1fr; } }
+@media (max-width: 520px) { .recommendation-results-head, .recommendation-card-head { align-items: stretch; flex-direction: column; } .recommendation-results-head .btn, .recommendation-card-head .btn { width: 100%; } }

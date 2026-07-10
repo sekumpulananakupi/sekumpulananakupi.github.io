@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
@@ -49,7 +49,7 @@
     <div class="calendar-hero-grid">
 
       <div class="calendar-hero-content">
-        <span class="eyebrow">ðŸ“… Kalender Akademik</span>
+        <span class="eyebrow"><i class="fa-regular fa-calendar-days" aria-hidden="true"></i> Kalender Akademik</span>
 
         <h1>Kalender Akademik UPI 2026/2027</h1>
 
@@ -63,8 +63,11 @@
           <a href="#kalenderBulanan" class="hero-btn secondary">Kalender Bulanan</a>
         </div>
 
-        <div class="calendar-source">
-          Sumber: SK Rektor UPI Nomor 162/UN40/PK.01/2026.
+        <div class="content-meta calendar-source">
+          <span class="source-badge"><i class="fa-solid fa-landmark" aria-hidden="true"></i> Sumber resmi</span>
+          <span>SK Rektor UPI Nomor 162/UN40/PK.01/2026</span>
+          <span class="verified-badge"><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Terverifikasi</span>
+          <span>Diperbarui: 10 Juli 2026</span>
         </div>
       </div>
 
@@ -88,7 +91,7 @@
           </div>
 
           <div>
-            <strong>2026â€“2027</strong>
+            <strong>2026–2027</strong>
             <span>Periode</span>
           </div>
         </div>
@@ -108,9 +111,9 @@
       <div class="container">
 
         <div class="calendar-month-header">
-          <button id="prevMonth" type="button">â—€</button>
+          <button id="prevMonth" class="icon-button" type="button" aria-label="Bulan sebelumnya"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></button>
           <h2 id="monthTitle">Juli 2026</h2>
-          <button id="nextMonth" type="button">â–¶</button>
+          <button id="nextMonth" class="icon-button" type="button" aria-label="Bulan berikutnya"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button>
         </div>
 
         <div class="month-weekdays">
@@ -170,7 +173,7 @@
           Sembunyikan agenda yang sudah selesai
         </label>
 
-        <div id="calendarCount" class="calendar-count"></div>
+        <div id="calendarCount" class="calendar-count result-summary" role="status" aria-live="polite"></div>
 
         <div id="calendarList" class="calendar-list"></div>
 
@@ -192,9 +195,9 @@
       </div>
     </section>
 
-    <div id="calendarModal" class="calendar-modal">
+    <div id="calendarModal" class="calendar-modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-hidden="true">
       <div class="calendar-modal-content">
-        <button id="closeCalendarModal" type="button">âœ•</button>
+        <button id="closeCalendarModal" class="icon-button" type="button" aria-label="Tutup detail agenda"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
         <h2 id="modalTitle"></h2>
         <div id="modalBody"></div>
       </div>

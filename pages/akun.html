@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Akun Saya - SA UPI</title>
+  <meta name="description" content="Masuk atau buat akun SA UPI untuk menyinkronkan jurusan tersimpan, checklist Maru, dan preferensi notifikasi." />
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="../assets/css/account.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+</head>
+<body class="account-page">
+  <header class="site-header"><div data-component="navbar"></div></header>
+
+  <main class="container account-layout">
+    <section class="account-intro" aria-labelledby="accountTitle">
+      <p class="eyebrow">Akun SA UPI</p>
+      <h1 id="accountTitle">Simpan progresmu, lanjutkan di perangkat mana pun.</h1>
+      <p>Masuk bersifat opsional. Akun menyinkronkan jurusan tersimpan dan checklist Maru, serta memberi kendali untuk notifikasi yang kamu pilih.</p>
+      <ul class="account-benefits">
+        <li><i class="fa-solid fa-bookmark" aria-hidden="true"></i> Jurusan tersimpan</li>
+        <li><i class="fa-solid fa-list-check" aria-hidden="true"></i> Progress checklist Maru</li>
+        <li><i class="fa-solid fa-bell" aria-hidden="true"></i> Preferensi notifikasi</li>
+      </ul>
+    </section>
+
+    <section class="account-card" aria-live="polite">
+      <div id="accountSignedOut">
+        <p class="eyebrow">Masuk</p>
+        <h2>Masuk dengan Google</h2>
+        <p class="account-description">Gunakan akun Google untuk menyimpan jurusan, checklist Maru, dan preferensi akunmu.</p>
+        <button type="button" class="btn primary account-google-button" id="googleSignInButton"><i class="fa-brands fa-google" aria-hidden="true"></i> Lanjutkan dengan Google</button>
+        <p class="account-privacy-note">Kami hanya menggunakan informasi dasar dari akun Google untuk membuat profil SA UPI. Tidak ada kata sandi yang disimpan oleh aplikasi ini.</p>
+      </div>
+
+      <div id="accountSignedIn" hidden>
+        <p class="eyebrow">Akun aktif</p>
+        <h2 id="accountUserName">Akun SA UPI</h2>
+        <p id="accountUserEmail" class="account-description"></p>
+        <div class="account-sync-card"><i class="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i><div><strong>Sinkronisasi perangkat</strong><p id="accountSyncStatus">Memeriksa data lokal untuk disinkronkan.</p></div></div>
+        <div class="account-stat-grid"><div><strong id="savedMajorCount">0</strong><span>jurusan tersimpan</span></div><div><strong id="checklistProgressCount">0</strong><span>checklist selesai</span></div></div>
+        <section class="account-preference-section" aria-labelledby="notificationTitle">
+          <h3 id="notificationTitle">Notifikasi</h3><p>Pilih pembaruan yang ingin kamu terima. Email tetap nonaktif sampai kamu menyetujuinya.</p>
+          <form id="notificationPreferencesForm" class="account-preference-form">
+            <label><input type="checkbox" name="in_app_enabled" checked /> Notifikasi di aplikasi</label><label><input type="checkbox" name="email_enabled" /> Izinkan notifikasi email</label><label><input type="checkbox" name="job_alerts" /> Pembaruan lowongan</label><label><input type="checkbox" name="calendar_alerts" /> Pengingat kalender akademik</label><label><input type="checkbox" name="major_alerts" /> Pembaruan jurusan tersimpan</label><button type="submit" class="btn secondary">Simpan preferensi</button>
+          </form>
+        </section>
+        <button type="button" class="btn ghost" id="accountSignOutButton">Keluar dari akun</button>
+      </div>
+      <p id="accountStatus" class="account-status" role="status"></p>
+    </section>
+  </main>
+
+  <footer data-component="footer"></footer>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/menu.js"></script>
+  <script src="../assets/js/components.js"></script>
+  <script src="../assets/js/journey-actions.js"></script>
+  <script src="../assets/js/user-account.js"></script>
+  <script src="../assets/js/account-page.js"></script>
+</body>
+</html>

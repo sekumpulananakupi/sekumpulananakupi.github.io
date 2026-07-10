@@ -25,6 +25,35 @@ const monthNames = [
 
 let currentMonth = 6;
 let currentYear = 2026;
+let lastModalTrigger = null;
+
+function closeModal() {
+  if (!calendarModal) return;
+
+  calendarModal.classList.remove("show");
+  calendarModal.setAttribute("aria-hidden", "true");
+  lastModalTrigger?.focus();
+  lastModalTrigger = null;
+}
+
+function trapModalFocus(event) {
+  if (event.key !== "Tab" || !calendarModal?.classList.contains("show")) return;
+
+  const focusable = [...calendarModal.querySelectorAll(
+    'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+  )];
+  if (!focusable.length) return;
+
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+  if (event.shiftKey && document.activeElement === first) {
+    event.preventDefault();
+    last.focus();
+  } else if (!event.shiftKey && document.activeElement === last) {
+    event.preventDefault();
+    first.focus();
+  }
+}
 
 function renderMonth() {
   if (!monthTitle || !monthGrid) return;
@@ -109,22 +138,31 @@ document.addEventListener("click", (e) => {
     )
     .join("");
 
+  lastModalTrigger = moreBtn || day;
   calendarModal.classList.add("show");
+  calendarModal.setAttribute("aria-hidden", "false");
+  closeCalendarModal?.focus();
 });
 
 if (closeCalendarModal && calendarModal) {
-  closeCalendarModal.onclick = () => {
-    calendarModal.classList.remove("show");
-  };
+  closeCalendarModal.onclick = closeModal;
 }
 
 if (calendarModal) {
   calendarModal.onclick = (e) => {
-    if (e.target.id === "calendarModal") {
-      calendarModal.classList.remove("show");
-    }
+    if (e.target === calendarModal) closeModal();
   };
 }
+
+document.addEventListener("keydown", (event) => {
+  if (!calendarModal?.classList.contains("show")) return;
+  if (event.key === "Escape") {
+    event.preventDefault();
+    closeModal();
+    return;
+  }
+  trapModalFocus(event);
+});
 
 if (prevMonthBtn) {
   prevMonthBtn.onclick = () => {

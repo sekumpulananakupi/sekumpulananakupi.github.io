@@ -953,6 +953,34 @@
             <div class="grid-list" id="faqJurusanList"></div>
           </section>
 
+          <section class="admin-page" id="kosanPage">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">CRUD Privat</p>
+                <h2>Data Kosan</h2>
+                <p>Kelola daftar kosan yang tampil pada halaman publik tersembunyi.</p>
+              </div>
+            </div>
+
+            <form id="kosanForm" class="form-card">
+              <input type="hidden" id="kosanId" />
+              <input type="text" id="kosanNama" placeholder="Nama kosan" required />
+              <div class="form-row">
+                <select id="kosanTipe" required><option value="Putra">Putra</option><option value="Putri">Putri</option><option value="Campur">Campur</option></select>
+                <input type="text" id="kosanArea" placeholder="Area, contoh: Gegerkalong" required />
+              </div>
+              <input type="text" id="kosanAlamat" placeholder="Alamat lengkap" />
+              <input type="number" id="kosanHarga" placeholder="Harga per bulan (Rp)" min="0" required />
+              <input type="text" id="kosanFasilitas" placeholder="Fasilitas, pisahkan dengan koma" />
+              <textarea id="kosanDeskripsi" placeholder="Deskripsi singkat kosan"></textarea>
+              <input type="url" id="kosanGambar" placeholder="URL foto kosan (opsional)" />
+              <input type="tel" id="kosanKontak" placeholder="Nomor WhatsApp pemilik" />
+              <label class="checkbox-label"><input type="checkbox" id="kosanTersedia" checked /> Masih tersedia</label>
+              <div class="form-actions"><button class="btn primary" type="submit">Simpan Kosan</button><button class="btn ghost" type="button" onclick="clearKosanForm()">Bersihkan</button></div>
+            </form>
+            <div class="admin-list" id="kosanAdminList"></div>
+          </section>
+
           <section class="admin-page" id="menfessAnalyzerPage">
             <div class="section-heading">
               <div>
@@ -1044,6 +1072,7 @@
   <script src="../modules/admin/18-biaya-pendidikan.js"></script>
   <script src="../modules/admin/19-faq-jurusan.js"></script>
   <script src="../modules/admin/22-menfess-storage.js"></script>
+  <script src="../modules/admin/26-crud-kosan.js"></script>
   <script src="../modules/admin/23-menfess-analyzer-logic.js"></script>
   <script src="../modules/admin/24-menfess-draft-generator.js"></script>
   <script src="../modules/admin/25-menfess-ui.js"></script>

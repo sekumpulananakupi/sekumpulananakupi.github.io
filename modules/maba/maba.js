@@ -56,6 +56,7 @@ function initChecklist() {
   const checklistInputs = document.querySelectorAll("#mabaChecklist input[type='checkbox']");
   const progressText = document.getElementById("progressText");
   const progressFill = document.getElementById("progressFill");
+  let currentUser = null;
 
   function updateProgress() {
     const total = checklistInputs.length;
@@ -66,32 +67,86 @@ function initChecklist() {
     if (progressFill) progressFill.style.width = percent + "%";
   }
 
-  function loadChecklist() {
-    const saved = JSON.parse(localStorage.getItem(checklistKey) || "{}");
+  function readLocalChecklist() {
+    try {
+      return JSON.parse(localStorage.getItem(checklistKey) || "{}");
+    } catch (error) {
+      console.warn("Checklist lokal tidak dapat dibaca:", error);
+      return {};
+    }
+  }
 
+  function applyChecklist(saved) {
     checklistInputs.forEach(input => {
       input.checked = Boolean(saved[input.dataset.id]);
     });
-
     updateProgress();
   }
 
-  function saveChecklist() {
-    const data = {};
+  async function syncChecklistFromAccount() {
+    if (!supabaseClient) return;
+    const { data: userData } = await supabaseClient.auth.getUser();
+    currentUser = userData?.user || null;
+    if (!currentUser) return;
 
+    const { data, error } = await supabaseClient
+      .from("checklist_progress")
+      .select("item_key, completed")
+      .eq("user_id", currentUser.id)
+      .eq("checklist_key", "maba");
+    if (error) {
+      console.warn("Progress akun belum dapat dimuat:", error.message);
+      return;
+    }
+
+    const local = readLocalChecklist();
+    const remote = Object.fromEntries((data || []).map(item => [item.item_key, item.completed]));
+    const merged = { ...local, ...remote };
+    applyChecklist(merged);
+    localStorage.setItem(checklistKey, JSON.stringify(merged));
+
+    const rows = checklistInputs.map(input => ({
+      user_id: currentUser.id,
+      checklist_key: "maba",
+      item_key: input.dataset.id,
+      completed: Boolean(merged[input.dataset.id]),
+      updated_at: new Date().toISOString()
+    }));
+    const { error: syncError } = await supabaseClient
+      .from("checklist_progress")
+      .upsert(rows, { onConflict: "user_id,checklist_key,item_key" });
+    if (syncError) console.warn("Progress lokal belum dapat disinkronkan:", syncError.message);
+  }
+
+  function loadChecklist() {
+    applyChecklist(readLocalChecklist());
+  }
+
+  async function saveChecklist(changedInput) {
+    const data = {};
     checklistInputs.forEach(input => {
       data[input.dataset.id] = input.checked;
     });
-
     localStorage.setItem(checklistKey, JSON.stringify(data));
     updateProgress();
+
+    if (!currentUser || !changedInput) return;
+    const { error } = await supabaseClient.from("checklist_progress").upsert({
+      user_id: currentUser.id,
+      checklist_key: "maba",
+      item_key: changedInput.dataset.id,
+      completed: changedInput.checked,
+      updated_at: new Date().toISOString()
+    }, { onConflict: "user_id,checklist_key,item_key" });
+    if (error) console.warn("Progress belum dapat disinkronkan:", error.message);
   }
 
   checklistInputs.forEach(input => {
-    input.addEventListener("change", saveChecklist);
+    input.addEventListener("change", () => saveChecklist(input));
   });
 
   loadChecklist();
+  syncChecklistFromAccount().catch(error => console.warn("Sinkronisasi checklist gagal:", error));
 }
 
 function initQuickScroll() {
